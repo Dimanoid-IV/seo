@@ -1,0 +1,42 @@
+import type { Locale } from "@/i18n/config";
+import type { Dictionary } from "@/i18n/dictionaries/ru";
+import { services } from "@/data/services";
+import { SectionHeading } from "@/components/ui/SectionHeading";
+import { ServiceCard } from "@/components/ui/ServiceCard";
+
+type ServicesSectionProps = {
+  locale: Locale;
+  dict: Dictionary;
+  detailed?: boolean;
+};
+
+export function ServicesSection({
+  locale,
+  dict,
+  detailed = false,
+}: ServicesSectionProps) {
+  return (
+    <section className="py-20 lg:py-28">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        {detailed && (
+          <SectionHeading
+            title={dict.services.pageTitle}
+            subtitle={dict.services.pageSubtitle}
+          />
+        )}
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2">
+          {services.map((service) => (
+            <ServiceCard
+              key={service.id}
+              service={service}
+              locale={locale}
+              ctaLabel={dict.services.ctaConsultation}
+              whatsIncluded={dict.services.whatsIncluded}
+              detailed={detailed}
+            />
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
