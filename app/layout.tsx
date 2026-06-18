@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { GoogleAnalytics } from "@/components/analytics/GoogleAnalytics";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -30,7 +31,10 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} dark h-full antialiased`}
       suppressHydrationWarning
     >
-      <body className="min-h-full flex flex-col bg-[#050816]">{children}</body>
+      <body className="min-h-full flex flex-col bg-[#050816]">
+        <GoogleAnalytics />
+        {children}
+      </body>
     </html>
   );
 }
