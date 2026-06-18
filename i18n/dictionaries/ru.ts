@@ -436,7 +436,7 @@ export const dictionary: Dictionary = {
       submitting: "Отправка...",
       success: "Спасибо! Заявка отправлена. Мы свяжемся с вами в ближайшее время.",
       error:
-        "Не удалось отправить заявку. Попробуйте еще раз или напишите напрямую на seoagenth@gmail.com.",
+        "Не удалось отправить заявку. Попробуйте еще раз или напишите напрямую на info@rankboost.eu.",
     },
     info: {
       title: "Контактная информация",
@@ -510,7 +510,7 @@ export const dictionary: Dictionary = {
       {
         title: "5. Ваши права",
         content:
-          "Вы имеете право на доступ, исправление и удаление ваших данных. Для запроса удаления или уточнения данных напишите на seoagenth@gmail.com.",
+          "Вы имеете право на доступ, исправление и удаление ваших данных. Для запроса удаления или уточнения данных напишите на info@rankboost.eu.",
       },
       {
         title: "6. Cookies",
@@ -550,7 +550,7 @@ export const dictionary: Dictionary = {
       },
       {
         title: "6. Контакты",
-        content: "По всем вопросам: seoagenth@gmail.com",
+        content: "По всем вопросам: info@rankboost.eu",
       },
     ],
   },

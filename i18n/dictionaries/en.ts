@@ -238,7 +238,7 @@ export const dictionary: Dictionary = {
       submitting: "Sending...",
       success: "Thank you! Your request has been sent. We will contact you soon.",
       error:
-        "Failed to send the request. Please try again or email us directly at seoagenth@gmail.com.",
+        "Failed to send the request. Please try again or email us directly at info@rankboost.eu.",
     },
     info: {
       title: "Contact information",
@@ -312,7 +312,7 @@ export const dictionary: Dictionary = {
       {
         title: "5. Your rights",
         content:
-          "You have the right to access, correct, and delete your data. To request deletion, email seoagenth@gmail.com.",
+          "You have the right to access, correct, and delete your data. To request deletion, email info@rankboost.eu.",
       },
       {
         title: "6. Cookies",
@@ -352,7 +352,7 @@ export const dictionary: Dictionary = {
       },
       {
         title: "6. Contact",
-        content: "For all questions: seoagenth@gmail.com",
+        content: "For all questions: info@rankboost.eu",
       },
     ],
   },

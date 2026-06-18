@@ -3,7 +3,7 @@ import type { Locale } from "@/i18n/config";
 import type { Dictionary } from "@/i18n/dictionaries/ru";
 import { LocaleLink } from "@/components/ui/LocaleLink";
 import { LanguageSwitcher } from "@/components/layout/LanguageSwitcher";
-import { CONTACT_EMAIL } from "@/lib/resend";
+import { PUBLIC_EMAIL } from "@/lib/site";
 import { services } from "@/data/services";
 import { getContactPath } from "@/lib/contact-links";
 import { getBlogPosts } from "@/data/blog-posts";
@@ -35,11 +35,11 @@ export function Footer({ locale, dict }: FooterProps) {
               {dict.footer.description}
             </p>
             <a
-              href={`mailto:${CONTACT_EMAIL}`}
+              href={`mailto:${PUBLIC_EMAIL}`}
               className="inline-flex items-center gap-2 text-sm text-blue-400 hover:text-cyan-400"
             >
               <Mail className="h-4 w-4" />
-              {CONTACT_EMAIL}
+              {PUBLIC_EMAIL}
             </a>
           </div>
 

@@ -1,5 +1,6 @@
 import { siteUrl, type Locale } from "@/i18n/config";
 import { getLocalizedPath } from "@/lib/i18n";
+import { PUBLIC_EMAIL } from "@/lib/site";
 
 type OrganizationSchemaProps = {
   locale: Locale;
@@ -17,7 +18,7 @@ export function getOrganizationJsonLd({ locale, description }: OrganizationSchem
         url: siteUrl,
         logo: `${siteUrl}/opengraph-image`,
         description,
-        email: "seoagenth@gmail.com",
+        email: PUBLIC_EMAIL,
         areaServed: ["EE", "EU"],
         knowsLanguage: ["ru", "et", "en"],
         sameAs: [],
@@ -28,7 +29,7 @@ export function getOrganizationJsonLd({ locale, description }: OrganizationSchem
         name: "RankBoost.eu",
         url: `${siteUrl}${getLocalizedPath(locale, "/")}`,
         description,
-        email: "seoagenth@gmail.com",
+        email: PUBLIC_EMAIL,
         address: {
           "@type": "PostalAddress",
           addressCountry: "EE",

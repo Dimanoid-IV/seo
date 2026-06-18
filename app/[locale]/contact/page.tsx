@@ -4,7 +4,7 @@ import { Mail, Clock } from "lucide-react";
 import { locales, type Locale } from "@/i18n/config";
 import { getDictionary, isValidLocale } from "@/lib/i18n";
 import { generatePageMetadata, SEO_KEYWORDS } from "@/lib/seo";
-import { CONTACT_EMAIL } from "@/lib/resend";
+import { PUBLIC_EMAIL } from "@/lib/site";
 import { ContactFormSection } from "@/components/forms/ContactFormSection";
 
 type PageProps = {
@@ -60,11 +60,11 @@ export default async function ContactPage({ params }: PageProps) {
                   <div>
                     <p className="text-sm text-slate-500">{dict.contact.info.email}</p>
                     <a
-                      href={`mailto:${CONTACT_EMAIL}`}
+                      href={`mailto:${PUBLIC_EMAIL}`}
                       className="mt-1 flex items-center gap-2 text-blue-400 hover:text-cyan-400"
                     >
                       <Mail className="h-4 w-4" />
-                      {CONTACT_EMAIL}
+                      {PUBLIC_EMAIL}
                     </a>
                   </div>
                   <div>

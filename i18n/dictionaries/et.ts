@@ -238,7 +238,7 @@ export const dictionary: Dictionary = {
       submitting: "Saatmine...",
       success: "Aitäh! Päring on saadetud. Võtame teiega peagi ühendust.",
       error:
-        "Päringu saatmine ebaõnnestus. Proovige uuesti või kirjutage otse aadressile seoagenth@gmail.com.",
+        "Päringu saatmine ebaõnnestus. Proovige uuesti või kirjutage otse aadressile info@rankboost.eu.",
     },
     info: {
       title: "Kontaktandmed",
@@ -312,7 +312,7 @@ export const dictionary: Dictionary = {
       {
         title: "5. Teie õigused",
         content:
-          "Teil on õigus andmetele juurdepääsuks, parandamiseks ja kustutamiseks. Andmete kustutamiseks kirjutage aadressil seoagenth@gmail.com.",
+          "Teil on õigus andmetele juurdepääsuks, parandamiseks ja kustutamiseks. Andmete kustutamiseks kirjutage aadressil info@rankboost.eu.",
       },
       {
         title: "6. Küpsised",
@@ -352,7 +352,7 @@ export const dictionary: Dictionary = {
       },
       {
         title: "6. Kontakt",
-        content: "Kõikide küsimuste korral: seoagenth@gmail.com",
+        content: "Kõikide küsimuste korral: info@rankboost.eu",
       },
     ],
   },
