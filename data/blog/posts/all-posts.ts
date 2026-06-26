@@ -1,5 +1,6 @@
 import { buildPost } from "../types";
 import type { ArticleInput } from "../types";
+import { expertPosts2026 } from "./expert-posts-2026";
 
 const articles: ArticleInput[] = [
   {
@@ -7444,7 +7445,8 @@ const articles: ArticleInput[] = [
         answer: "Map organic leads to average deal value and compare acquisition cost with Ads for the same period."
       }
     ]
-  }
+  },
+  ...expertPosts2026,
 ];
 
 export const allPosts = articles.map(buildPost);
