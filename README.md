@@ -8,6 +8,28 @@ Production-ready multilingual SEO agency website for Estonia and Europe.
 
 ---
 
+## RankBoost SaaS MVP Development
+
+This repository will grow from the **production marketing site** into a **SaaS MVP** (AI Growth Platform). The marketing site must keep working on every commit.
+
+| Document | Purpose |
+|----------|---------|
+| [`docs/Product-Bible.md`](docs/Product-Bible.md) | Product vision, tariffs, MVP scope |
+| [`docs/System-Architecture.md`](docs/System-Architecture.md) | Technical architecture (frontend, API, Hermes, queue) |
+| [`docs/MASTER-BUILD-PLAN.md`](docs/MASTER-BUILD-PLAN.md) | **Start here before writing code** — master entry point |
+| [`docs/MVP-Build-Plan.md`](docs/MVP-Build-Plan.md) | Step-by-step prompts (51 blocks) |
+| [`docs/Integration-Roadmap.md`](docs/Integration-Roadmap.md) | How to add SaaS without breaking the landing |
+| [`docs/engineering/REPO-MAP.md`](docs/engineering/REPO-MAP.md) | Repo zones: marketing vs planned SaaS paths |
+
+**Rules:**
+
+- Do **not** break the existing marketing site (`/ru`, `/et`, `/en`, blog, contact form).
+- SaaS is added **alongside** the current site — new routes (`/app`, `/audit`, `/api/auth`, …), not a rewrite of `app/[locale]/`.
+- Follow `docs/MASTER-BUILD-PLAN.md` and `docs/MVP-Build-Plan.md` prompt order.
+- After each step: `npm run lint` && `npm run build`.
+
+---
+
 ## Quick start
 
 ### 1. Install dependencies

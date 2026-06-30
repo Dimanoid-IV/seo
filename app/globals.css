@@ -122,6 +122,11 @@
       linear-gradient(90deg, rgba(59, 130, 246, 0.03) 1px, transparent 1px);
     background-size: 64px 64px;
   }
+
+  /* SaaS app shell — isolated from marketing layout */
+  .app-content {
+    @apply pb-20 lg:pb-8;
+  }
 }
 
 .prose-blog h2 {

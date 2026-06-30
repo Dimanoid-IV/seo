@@ -8,6 +8,9 @@ export function middleware(request: NextRequest) {
 
   if (
     pathname.startsWith("/api") ||
+    pathname.startsWith("/app") ||
+    pathname.startsWith("/login") ||
+    pathname.startsWith("/register") ||
     pathname.startsWith("/_next") ||
     pathname.startsWith("/favicon") ||
     pathname === "/sitemap.xml" ||

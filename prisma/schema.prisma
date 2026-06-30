@@ -1,0 +1,1181 @@
+// RankBoost.eu — SaaS schema
+// 3.1: User, Organization, Website, Subscription, Payment, PlanLimit
+// 3.2: Audit, AuditCheck, GrowthScoreSnapshot, AIReadinessSnapshot, Activity
+// 3.3: Task, Content, Integrations, AIJob, AIUsage, EmailLog, AdminNote, ErrorLog
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ---------------------------------------------------------------------------
+// Enums
+// ---------------------------------------------------------------------------
+
+enum UserRole {
+  USER
+  SUPPORT
+  ANALYST
+  ADMIN
+}
+
+enum Locale {
+  RU
+  ET
+  EN
+}
+
+enum OrganizationStatus {
+  ACTIVE
+  SUSPENDED
+  DELETED
+}
+
+enum WebsiteStatus {
+  ACTIVE
+  PAUSED
+  ARCHIVED
+}
+
+enum WebsiteNiche {
+  BEAUTY
+  RESTAURANT
+  ECOMMERCE
+  B2B
+  OTHER
+}
+
+enum WebsiteCms {
+  WORDPRESS
+  SHOPIFY
+  WEBFLOW
+  TILDA
+  NEXTJS
+  OTHER
+}
+
+enum WebsiteLanguage {
+  RU
+  ET
+  EN
+}
+
+enum SubscriptionPlan {
+  FREE
+  AUDIT
+  START
+  GROWTH
+  PRO
+}
+
+enum SubscriptionStatus {
+  INCOMPLETE
+  TRIALING
+  ACTIVE
+  PAST_DUE
+  CANCELED
+  UNPAID
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  FAILED
+  REFUNDED
+}
+
+enum PaymentType {
+  ONE_TIME
+  SUBSCRIPTION
+  REFUND
+}
+
+enum AuditType {
+  PREVIEW
+  FULL
+  EXPRESS
+}
+
+enum AuditStatus {
+  QUEUED
+  CRAWLING
+  ANALYZING
+  SCORING
+  COMPLETED
+  FAILED
+  CANCELED
+}
+
+enum AuditTriggeredBy {
+  USER
+  CRON
+  SYSTEM
+  ONBOARDING
+}
+
+enum AuditCheckCategory {
+  TECHNICAL
+  CONTENT
+  LOCAL_SEO
+  PERFORMANCE
+  ACCESSIBILITY
+  AI_READINESS
+  SECURITY
+  CONVERSION
+  SOCIAL
+  OTHER
+}
+
+enum AuditCheckSeverity {
+  INFO
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+enum AuditCheckStatus {
+  PASS
+  WARNING
+  FAIL
+  NOT_APPLICABLE
+}
+
+enum ScoreSource {
+  AUDIT
+  MANUAL
+  SYSTEM
+  CRON
+  IMPORT
+}
+
+enum ActivityType {
+  AUDIT_STARTED
+  AUDIT_COMPLETED
+  AUDIT_FAILED
+  GROWTH_SCORE_UPDATED
+  AI_READINESS_UPDATED
+  TASK_CREATED
+  TASK_COMPLETED
+  ARTICLE_CREATED
+  ARTICLE_DRAFT_CREATED
+  SOCIAL_POST_CREATED
+  INTEGRATION_CONNECTED
+  INTEGRATION_DISCONNECTED
+  REPORT_SENT
+  SUBSCRIPTION_CREATED
+  SUBSCRIPTION_UPDATED
+  PAYMENT_RECEIVED
+  SYSTEM_NOTICE
+}
+
+enum TaskCategory {
+  TECHNICAL
+  CONTENT
+  LOCAL_SEO
+  PERFORMANCE
+  ACCESSIBILITY
+  AI_READINESS
+  SECURITY
+  CONVERSION
+  SOCIAL
+  INTEGRATION
+  OTHER
+}
+
+enum TaskPriority {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+enum TaskStatus {
+  OPEN
+  IN_PROGRESS
+  WAITING_REVIEW
+  COMPLETED
+  DISMISSED
+  FAILED
+}
+
+enum TaskEffort {
+  LOW
+  MEDIUM
+  HIGH
+}
+
+enum TaskSource {
+  AUDIT
+  AI
+  SYSTEM
+  USER
+  ADMIN
+}
+
+enum MonthlyPlanStatus {
+  DRAFT
+  ACTIVE
+  LOCKED
+  COMPLETED
+  CANCELED
+}
+
+enum PlanItemType {
+  TASK
+  ARTICLE
+  SOCIAL_POST
+  REPORT
+  INTEGRATION
+  OTHER
+}
+
+enum PlanItemStatus {
+  PLANNED
+  IN_PROGRESS
+  DONE
+  SKIPPED
+  FAILED
+}
+
+enum ArticleStatus {
+  IDEA
+  DRAFT
+  WAITING_REVIEW
+  APPROVED
+  WORDPRESS_DRAFT_CREATED
+  PUBLISHED
+  ARCHIVED
+  FAILED
+}
+
+enum SocialPlatform {
+  FACEBOOK
+  INSTAGRAM
+  LINKEDIN
+  GOOGLE_BUSINESS
+  OTHER
+}
+
+enum SocialPostStatus {
+  DRAFT
+  READY
+  COPIED
+  SCHEDULED
+  PUBLISHED_EXTERNALLY
+  ARCHIVED
+}
+
+enum ReportType {
+  MONTHLY
+  AUDIT
+  MID_MONTH
+  SYSTEM
+}
+
+enum ReportStatus {
+  DRAFT
+  READY
+  SENT
+  FAILED
+}
+
+enum IntegrationProvider {
+  GOOGLE_SEARCH_CONSOLE
+  GOOGLE_ANALYTICS
+  GOOGLE_BUSINESS_PROFILE
+  WORDPRESS
+  STRIPE
+  OTHER
+}
+
+enum IntegrationStatus {
+  DISCONNECTED
+  CONNECTING
+  CONNECTED
+  ERROR
+  REVOKED
+}
+
+enum WordPressConnectionStatus {
+  PENDING
+  CONNECTED
+  ERROR
+  DISCONNECTED
+}
+
+enum AIJobType {
+  AUDIT_PREVIEW
+  AUDIT_FULL
+  GENERATE_TASKS
+  GENERATE_MONTHLY_PLAN
+  GENERATE_ARTICLE
+  GENERATE_SOCIAL_POSTS
+  QUALITY_CHECK
+  GENERATE_REPORT
+  OTHER
+}
+
+enum AIJobStatus {
+  QUEUED
+  RUNNING
+  COMPLETED
+  FAILED
+  CANCELED
+  RETRYING
+}
+
+enum AIUsagePurpose {
+  AUDIT
+  TASK_GENERATION
+  CONTENT_GENERATION
+  SOCIAL_GENERATION
+  REPORT_GENERATION
+  QUALITY_CHECK
+  OTHER
+}
+
+enum EmailType {
+  VERIFY_EMAIL
+  PASSWORD_RESET
+  AUDIT_READY
+  MONTHLY_REPORT
+  PAYMENT_RECEIPT
+  SYSTEM_ALERT
+  MARKETING
+}
+
+enum EmailStatus {
+  QUEUED
+  SENT
+  FAILED
+  OPENED
+  CLICKED
+}
+
+enum AdminNoteVisibility {
+  INTERNAL
+  SUPPORT
+  ADMIN_ONLY
+}
+
+enum ErrorArea {
+  API
+  AUTH
+  BILLING
+  HERMES
+  WORDPRESS
+  GOOGLE
+  EMAIL
+  DATABASE
+  CRON
+  SYSTEM
+}
+
+enum ErrorSeverity {
+  INFO
+  WARNING
+  ERROR
+  CRITICAL
+}
+
+// ---------------------------------------------------------------------------
+// Models
+// ---------------------------------------------------------------------------
+
+model User {
+  id                    String    @id @default(uuid()) @db.Uuid
+  email                 String    @unique
+  passwordHash          String?
+  name                  String?
+  avatarUrl             String?
+  role                  UserRole  @default(USER)
+  locale                Locale    @default(RU)
+  timezone              String?
+  emailVerified         Boolean   @default(false)
+  emailVerifiedAt       DateTime?
+  googleAuthId          String?
+  stripeCustomerId      String?
+  onboardingCompletedAt DateTime?
+  lastLoginAt           DateTime?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+  deletedAt             DateTime?
+
+  ownedOrganizations    Organization[] @relation("OrganizationOwner")
+  billingOrganizations  Organization[] @relation("OrganizationBilling")
+  subscriptions         Subscription[]
+  payments              Payment[]
+  triggeredAudits       Audit[]        @relation("AuditTriggeredByUser")
+  activities            Activity[]
+  aiJobs                AIJob[]
+  aiUsages              AIUsage[]
+  emailLogs             EmailLog[]
+  adminNotesCreated     AdminNote[]    @relation("AdminNoteAuthor")
+  adminNotesReceived    AdminNote[]    @relation("AdminNoteTarget")
+  errorLogs             ErrorLog[]
+
+  @@index([stripeCustomerId])
+  @@index([googleAuthId])
+  @@index([role])
+  @@index([deletedAt])
+  @@map("users")
+}
+
+model Organization {
+  id             String             @id @default(uuid()) @db.Uuid
+  name           String
+  slug           String?
+  country        String?
+  city           String?
+  ownerUserId    String             @db.Uuid
+  billingUserId  String?            @db.Uuid
+  status         OrganizationStatus @default(ACTIVE)
+  createdAt      DateTime           @default(now())
+  updatedAt      DateTime           @updatedAt
+  deletedAt      DateTime?
+
+  owner          User               @relation("OrganizationOwner", fields: [ownerUserId], references: [id])
+  billingUser    User?              @relation("OrganizationBilling", fields: [billingUserId], references: [id])
+  websites       Website[]
+  subscriptions  Subscription[]
+  payments       Payment[]
+  planLimits            PlanLimit[]
+  activities            Activity[]
+  tasks                 Task[]
+  monthlyPlans          MonthlyPlan[]
+  articles              Article[]
+  socialPosts           SocialPost[]
+  reports               Report[]
+  integrations          Integration[]
+  wordpressConnections  WordPressConnection[]
+  aiJobs                AIJob[]
+  aiUsages              AIUsage[]
+  emailLogs             EmailLog[]
+  adminNotes            AdminNote[]
+  errorLogs             ErrorLog[]
+
+  @@index([ownerUserId])
+  @@index([billingUserId])
+  @@index([status])
+  @@index([deletedAt])
+  @@map("organizations")
+}
+
+model Website {
+  id                      String          @id @default(uuid()) @db.Uuid
+  organizationId          String          @db.Uuid
+  url                     String
+  displayName             String?
+  niche                   WebsiteNiche?
+  cms                     WebsiteCms?
+  primaryLanguage         WebsiteLanguage @default(RU)
+  contentLanguages        Json            @default("[]")
+  businessGoals           Json?
+  status                  WebsiteStatus   @default(ACTIVE)
+  lastAuditAt             DateTime?
+  currentGrowthScore      Int?
+  currentAIReadinessScore Int?
+  createdAt               DateTime        @default(now())
+  updatedAt               DateTime        @updatedAt
+  deletedAt               DateTime?
+
+  organization            Organization            @relation(fields: [organizationId], references: [id])
+  audits                  Audit[]
+  auditChecks             AuditCheck[]
+  growthScoreSnapshots    GrowthScoreSnapshot[]
+  aiReadinessSnapshots    AIReadinessSnapshot[]
+  activities              Activity[]
+  tasks                   Task[]
+  monthlyPlans            MonthlyPlan[]
+  articles                Article[]
+  socialPosts             SocialPost[]
+  reports                 Report[]
+  integrations            Integration[]
+  wordpressConnections    WordPressConnection[]
+  aiJobs                  AIJob[]
+  aiUsages                AIUsage[]
+  emailLogs               EmailLog[]
+  adminNotes              AdminNote[]
+  errorLogs               ErrorLog[]
+
+  @@unique([organizationId, url])
+  @@index([organizationId])
+  @@index([status])
+  @@index([lastAuditAt])
+  @@index([currentGrowthScore])
+  @@index([deletedAt])
+  @@map("websites")
+}
+
+model Subscription {
+  id                   String             @id @default(uuid()) @db.Uuid
+  organizationId       String             @db.Uuid
+  userId               String?            @db.Uuid
+  plan                 SubscriptionPlan   @default(FREE)
+  status               SubscriptionStatus @default(INCOMPLETE)
+  stripeCustomerId     String?
+  stripeSubscriptionId String?            @unique
+  stripePriceId        String?
+  currentPeriodStart   DateTime?
+  currentPeriodEnd     DateTime?
+  cancelAtPeriodEnd    Boolean            @default(false)
+  canceledAt           DateTime?
+  trialEndsAt          DateTime?
+  createdAt            DateTime           @default(now())
+  updatedAt            DateTime           @updatedAt
+  deletedAt            DateTime?
+
+  organization Organization @relation(fields: [organizationId], references: [id])
+  user           User?        @relation(fields: [userId], references: [id])
+  payments       Payment[]
+  planLimits     PlanLimit[]
+
+  @@index([organizationId])
+  @@index([userId])
+  @@index([status])
+  @@index([plan])
+  @@index([currentPeriodEnd])
+  @@index([deletedAt])
+  @@map("subscriptions")
+}
+
+model Payment {
+  id                    String        @id @default(uuid()) @db.Uuid
+  subscriptionId        String?       @db.Uuid
+  organizationId        String        @db.Uuid
+  userId                String?       @db.Uuid
+  stripePaymentIntentId String?       @unique
+  stripeInvoiceId       String?       @unique
+  stripeEventId         String?       @unique
+  amountCents           Int
+  currency              String        @default("EUR")
+  status                PaymentStatus @default(PENDING)
+  type                  PaymentType
+  paidAt                DateTime?
+  createdAt             DateTime      @default(now())
+  updatedAt             DateTime      @updatedAt
+
+  organization Organization  @relation(fields: [organizationId], references: [id])
+  user           User?         @relation(fields: [userId], references: [id])
+  subscription   Subscription? @relation(fields: [subscriptionId], references: [id])
+
+  @@index([organizationId])
+  @@index([userId])
+  @@index([subscriptionId])
+  @@index([status])
+  @@index([paidAt])
+  @@index([createdAt])
+  @@map("payments")
+}
+
+model PlanLimit {
+  id                 String   @id @default(uuid()) @db.Uuid
+  subscriptionId     String   @db.Uuid
+  organizationId     String   @db.Uuid
+  periodStart        DateTime
+  periodEnd          DateTime
+  auditsLimit        Int      @default(0)
+  auditsUsed         Int      @default(0)
+  articlesLimit      Int      @default(0)
+  articlesUsed       Int      @default(0)
+  socialPostsLimit   Int      @default(0)
+  socialPostsUsed    Int      @default(0)
+  aiCreditsLimitCents Int?
+  aiCreditsUsedCents Int      @default(0)
+  websitesLimit      Int      @default(1)
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  subscription Subscription @relation(fields: [subscriptionId], references: [id])
+  organization Organization @relation(fields: [organizationId], references: [id])
+
+  @@index([subscriptionId])
+  @@index([organizationId])
+  @@index([periodStart, periodEnd])
+  @@map("plan_limits")
+}
+
+model Audit {
+  id                String           @id @default(uuid()) @db.Uuid
+  websiteId         String           @db.Uuid
+  type              AuditType
+  status            AuditStatus      @default(QUEUED)
+  triggeredBy       AuditTriggeredBy
+  triggeredByUserId String?          @db.Uuid
+  growthScore       Int?
+  aiReadinessScore  Int?
+  summaryJson       Json?
+  rawResultJson     Json?
+  visiblePreviewJson Json?
+  startedAt         DateTime?
+  completedAt       DateTime?
+  failedAt          DateTime?
+  errorCode         String?
+  errorMessage      String?
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
+  deletedAt         DateTime?
+
+  website               Website                 @relation(fields: [websiteId], references: [id])
+  triggeredByUser       User?                   @relation("AuditTriggeredByUser", fields: [triggeredByUserId], references: [id])
+  checks                AuditCheck[]
+  growthScoreSnapshots  GrowthScoreSnapshot[]
+  aiReadinessSnapshots  AIReadinessSnapshot[]
+  tasks                 Task[]
+
+  @@index([websiteId])
+  @@index([status])
+  @@index([type])
+  @@index([createdAt])
+  @@index([completedAt])
+  @@index([deletedAt])
+  @@map("audits")
+}
+
+model AuditCheck {
+  id                  String             @id @default(uuid()) @db.Uuid
+  auditId             String             @db.Uuid
+  websiteId           String             @db.Uuid
+  category            AuditCheckCategory
+  code                String
+  title               String
+  description         String?
+  severity            AuditCheckSeverity
+  status              AuditCheckStatus
+  scoreImpact         Int?
+  isVisibleInPreview  Boolean            @default(false)
+  recommendationJson  Json?
+  evidenceJson        Json?
+  createdAt           DateTime           @default(now())
+
+  audit   Audit   @relation(fields: [auditId], references: [id], onDelete: Cascade)
+  website Website @relation(fields: [websiteId], references: [id])
+
+  @@index([auditId])
+  @@index([websiteId])
+  @@index([category])
+  @@index([severity])
+  @@index([status])
+  @@index([isVisibleInPreview])
+  @@index([code])
+  @@map("audit_checks")
+}
+
+model GrowthScoreSnapshot {
+  id            String      @id @default(uuid()) @db.Uuid
+  websiteId     String      @db.Uuid
+  auditId       String?     @db.Uuid
+  score         Int
+  previousScore Int?
+  delta         Int?
+  breakdownJson Json
+  reason        String?
+  source        ScoreSource
+  createdAt     DateTime    @default(now())
+
+  website Website @relation(fields: [websiteId], references: [id])
+  audit   Audit?  @relation(fields: [auditId], references: [id])
+
+  @@index([websiteId])
+  @@index([auditId])
+  @@index([createdAt])
+  @@index([score])
+  @@map("growth_score_snapshots")
+}
+
+model AIReadinessSnapshot {
+  id            String      @id @default(uuid()) @db.Uuid
+  websiteId     String      @db.Uuid
+  auditId       String?     @db.Uuid
+  score         Int
+  previousScore Int?
+  delta         Int?
+  breakdownJson Json
+  reason        String?
+  source        ScoreSource
+  createdAt     DateTime    @default(now())
+
+  website Website @relation(fields: [websiteId], references: [id])
+  audit   Audit?  @relation(fields: [auditId], references: [id])
+
+  @@index([websiteId])
+  @@index([auditId])
+  @@index([createdAt])
+  @@index([score])
+  @@map("ai_readiness_snapshots")
+}
+
+model Activity {
+  id             String       @id @default(uuid()) @db.Uuid
+  organizationId String       @db.Uuid
+  websiteId      String?      @db.Uuid
+  userId         String?      @db.Uuid
+  type           ActivityType
+  title          String
+  description    String?
+  metadataJson   Json?
+  createdAt      DateTime     @default(now())
+
+  organization Organization @relation(fields: [organizationId], references: [id])
+  website      Website?     @relation(fields: [websiteId], references: [id])
+  user         User?        @relation(fields: [userId], references: [id])
+
+  @@index([organizationId])
+  @@index([websiteId])
+  @@index([userId])
+  @@index([type])
+  @@index([createdAt])
+  @@map("activities")
+}
+
+model Task {
+  id                 String        @id @default(uuid()) @db.Uuid
+  websiteId          String        @db.Uuid
+  organizationId     String        @db.Uuid
+  auditId            String?       @db.Uuid
+  title              String
+  description        String?
+  category           TaskCategory
+  priority           TaskPriority  @default(MEDIUM)
+  status             TaskStatus    @default(OPEN)
+  impactScore        Int?
+  effort             TaskEffort?
+  source             TaskSource
+  recommendationJson Json?
+  resultJson         Json?
+  dueAt              DateTime?
+  completedAt        DateTime?
+  createdAt          DateTime      @default(now())
+  updatedAt          DateTime      @updatedAt
+  deletedAt          DateTime?
+
+  website      Website    @relation(fields: [websiteId], references: [id])
+  organization Organization @relation(fields: [organizationId], references: [id])
+  audit        Audit?     @relation(fields: [auditId], references: [id])
+  planItems    PlanItem[]
+
+  @@index([websiteId])
+  @@index([organizationId])
+  @@index([auditId])
+  @@index([status])
+  @@index([priority])
+  @@index([category])
+  @@index([dueAt])
+  @@index([createdAt])
+  @@index([deletedAt])
+  @@map("tasks")
+}
+
+model MonthlyPlan {
+  id             String            @id @default(uuid()) @db.Uuid
+  websiteId      String            @db.Uuid
+  organizationId String            @db.Uuid
+  month          String
+  status         MonthlyPlanStatus @default(DRAFT)
+  goalsJson      Json?
+  summary        String?
+  createdAt      DateTime          @default(now())
+  updatedAt      DateTime          @updatedAt
+  lockedAt       DateTime?
+
+  website      Website      @relation(fields: [websiteId], references: [id])
+  organization Organization @relation(fields: [organizationId], references: [id])
+  items        PlanItem[]
+  articles     Article[]
+  socialPosts  SocialPost[]
+
+  @@unique([websiteId, month])
+  @@index([websiteId])
+  @@index([organizationId])
+  @@index([month])
+  @@index([status])
+  @@map("monthly_plans")
+}
+
+model PlanItem {
+  id                String         @id @default(uuid()) @db.Uuid
+  monthlyPlanId     String         @db.Uuid
+  type              PlanItemType
+  title             String
+  description       String?
+  status            PlanItemStatus @default(PLANNED)
+  scheduledFor      DateTime?
+  completedAt       DateTime?
+  linkedTaskId      String?        @db.Uuid
+  linkedArticleId   String?        @db.Uuid
+  linkedSocialPostId String?       @db.Uuid
+  metadataJson      Json?
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
+
+  monthlyPlan      MonthlyPlan @relation(fields: [monthlyPlanId], references: [id], onDelete: Cascade)
+  linkedTask       Task?       @relation(fields: [linkedTaskId], references: [id])
+  linkedArticle    Article?    @relation(fields: [linkedArticleId], references: [id])
+  linkedSocialPost SocialPost? @relation(fields: [linkedSocialPostId], references: [id])
+
+  @@index([monthlyPlanId])
+  @@index([type])
+  @@index([status])
+  @@index([scheduledFor])
+  @@map("plan_items")
+}
+
+model Article {
+  id                 String          @id @default(uuid()) @db.Uuid
+  websiteId          String          @db.Uuid
+  organizationId     String          @db.Uuid
+  monthlyPlanId      String?         @db.Uuid
+  title              String
+  slug               String?
+  language           WebsiteLanguage
+  status             ArticleStatus   @default(IDEA)
+  topic              String?
+  targetKeyword      String?
+  metaTitle          String?
+  metaDescription    String?
+  contentHtml        String?
+  contentJson        Json?
+  faqJson            Json?
+  schemaJson         Json?
+  wordpressPostId    String?
+  wordpressEditUrl   String?
+  generatedByAIJobId String?         @db.Uuid
+  reviewedAt         DateTime?
+  approvedAt         DateTime?
+  publishedAt        DateTime?
+  createdAt          DateTime        @default(now())
+  updatedAt          DateTime        @updatedAt
+  deletedAt          DateTime?
+
+  website          Website      @relation(fields: [websiteId], references: [id])
+  organization     Organization @relation(fields: [organizationId], references: [id])
+  monthlyPlan      MonthlyPlan? @relation(fields: [monthlyPlanId], references: [id])
+  generatedByAIJob AIJob?       @relation("ArticleAIJob", fields: [generatedByAIJobId], references: [id])
+  socialPosts      SocialPost[]
+  planItems        PlanItem[]
+
+  @@index([websiteId])
+  @@index([organizationId])
+  @@index([monthlyPlanId])
+  @@index([status])
+  @@index([language])
+  @@index([targetKeyword])
+  @@index([publishedAt])
+  @@index([deletedAt])
+  @@map("articles")
+}
+
+model SocialPost {
+  id                    String           @id @default(uuid()) @db.Uuid
+  websiteId             String           @db.Uuid
+  organizationId        String           @db.Uuid
+  articleId             String?          @db.Uuid
+  monthlyPlanId         String?          @db.Uuid
+  platform              SocialPlatform
+  language              WebsiteLanguage
+  status                SocialPostStatus @default(DRAFT)
+  text                  String
+  hook                  String?
+  hashtagsJson          Json?
+  imagePrompt           String?
+  scheduledFor          DateTime?
+  copiedAt              DateTime?
+  publishedExternallyAt DateTime?
+  generatedByAIJobId    String?          @db.Uuid
+  createdAt             DateTime         @default(now())
+  updatedAt             DateTime         @updatedAt
+  deletedAt             DateTime?
+
+  website          Website      @relation(fields: [websiteId], references: [id])
+  organization     Organization @relation(fields: [organizationId], references: [id])
+  article          Article?     @relation(fields: [articleId], references: [id])
+  monthlyPlan      MonthlyPlan? @relation(fields: [monthlyPlanId], references: [id])
+  generatedByAIJob AIJob?       @relation("SocialPostAIJob", fields: [generatedByAIJobId], references: [id])
+  planItems        PlanItem[]
+
+  @@index([websiteId])
+  @@index([organizationId])
+  @@index([articleId])
+  @@index([platform])
+  @@index([status])
+  @@index([scheduledFor])
+  @@index([deletedAt])
+  @@map("social_posts")
+}
+
+model Report {
+  id             String       @id @default(uuid()) @db.Uuid
+  websiteId      String       @db.Uuid
+  organizationId String       @db.Uuid
+  type           ReportType
+  periodStart    DateTime
+  periodEnd      DateTime
+  status         ReportStatus @default(DRAFT)
+  title          String
+  summary        String?
+  reportJson     Json
+  emailedAt      DateTime?
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  website      Website      @relation(fields: [websiteId], references: [id])
+  organization Organization @relation(fields: [organizationId], references: [id])
+
+  @@index([websiteId])
+  @@index([organizationId])
+  @@index([type])
+  @@index([status])
+  @@index([periodStart])
+  @@index([periodEnd])
+  @@index([createdAt])
+  @@map("reports")
+}
+
+/// OAuth tokens and API keys — store encrypted values only (never plaintext).
+model Integration {
+  id                    String              @id @default(uuid()) @db.Uuid
+  websiteId             String              @db.Uuid
+  organizationId        String              @db.Uuid
+  provider              IntegrationProvider
+  status                IntegrationStatus   @default(DISCONNECTED)
+  displayName           String?
+  scopesJson            Json?
+  /// AES-encrypted at rest
+  accessTokenEncrypted  String?
+  /// AES-encrypted at rest
+  refreshTokenEncrypted String?
+  /// AES-encrypted at rest
+  apiKeyEncrypted       String?
+  lastSyncAt            DateTime?
+  lastSuccessAt         DateTime?
+  lastErrorAt           DateTime?
+  lastErrorMessage      String?
+  createdAt             DateTime            @default(now())
+  updatedAt             DateTime            @updatedAt
+  disconnectedAt        DateTime?
+
+  website      Website                @relation(fields: [websiteId], references: [id])
+  organization Organization           @relation(fields: [organizationId], references: [id])
+  googleData   GoogleIntegrationData?
+
+  @@unique([websiteId, provider])
+  @@index([websiteId])
+  @@index([organizationId])
+  @@index([provider])
+  @@index([status])
+  @@index([lastSyncAt])
+  @@map("integrations")
+}
+
+model GoogleIntegrationData {
+  id                         String    @id @default(uuid()) @db.Uuid
+  integrationId              String    @unique @db.Uuid
+  propertyId                 String?
+  siteUrl                    String?
+  searchConsoleSiteUrl       String?
+  businessProfileAccountId   String?
+  businessProfileLocationId  String?
+  analyticsPropertyId        String?
+  metricsJson                Json?
+  lastFetchedAt              DateTime?
+  createdAt                  DateTime  @default(now())
+  updatedAt                  DateTime  @updatedAt
+
+  integration Integration @relation(fields: [integrationId], references: [id], onDelete: Cascade)
+
+  @@map("google_integration_data")
+}
+
+/// WordPress connector — apiKeyHash is SHA-256 hash for verification; secret encrypted.
+model WordPressConnection {
+  id                   String                    @id @default(uuid()) @db.Uuid
+  websiteId            String                    @db.Uuid
+  organizationId       String                    @db.Uuid
+  status               WordPressConnectionStatus @default(PENDING)
+  siteUrl              String
+  pluginVersion        String?
+  apiKeyHash           String
+  /// AES-encrypted shared secret for HMAC
+  apiSecretEncrypted   String?
+  permissionsJson      Json
+  lastPingAt           DateTime?
+  lastDraftCreatedAt   DateTime?
+  createdAt            DateTime                  @default(now())
+  updatedAt            DateTime                  @updatedAt
+  disconnectedAt       DateTime?
+
+  website      Website      @relation(fields: [websiteId], references: [id])
+  organization Organization @relation(fields: [organizationId], references: [id])
+
+  @@unique([websiteId, siteUrl])
+  @@index([websiteId])
+  @@index([organizationId])
+  @@index([status])
+  @@index([siteUrl])
+  @@map("wordpress_connections")
+}
+
+model AIJob {
+  id             String      @id @default(uuid()) @db.Uuid
+  websiteId      String?     @db.Uuid
+  organizationId String?     @db.Uuid
+  userId         String?     @db.Uuid
+  type           AIJobType
+  status         AIJobStatus @default(QUEUED)
+  provider       String?
+  model          String?
+  promptVersion  String?
+  inputJson      Json?
+  outputJson     Json?
+  errorCode      String?
+  errorMessage   String?
+  costCents      Int?
+  startedAt      DateTime?
+  completedAt    DateTime?
+  failedAt       DateTime?
+  retryCount     Int         @default(0)
+  nextRetryAt    DateTime?
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+
+  website            Website?     @relation(fields: [websiteId], references: [id])
+  organization       Organization? @relation(fields: [organizationId], references: [id])
+  user               User?        @relation(fields: [userId], references: [id])
+  usages             AIUsage[]
+  generatedArticles  Article[]    @relation("ArticleAIJob")
+  generatedSocialPosts SocialPost[] @relation("SocialPostAIJob")
+
+  @@index([websiteId])
+  @@index([organizationId])
+  @@index([userId])
+  @@index([type])
+  @@index([status])
+  @@index([createdAt])
+  @@index([nextRetryAt])
+  @@map("ai_jobs")
+}
+
+model AIUsage {
+  id             String         @id @default(uuid()) @db.Uuid
+  aiJobId        String?        @db.Uuid
+  websiteId      String?        @db.Uuid
+  organizationId String?        @db.Uuid
+  userId         String?        @db.Uuid
+  provider       String
+  model          String
+  inputTokens    Int?
+  outputTokens   Int?
+  totalTokens    Int?
+  costCents      Int
+  currency       String         @default("EUR")
+  purpose        AIUsagePurpose
+  createdAt      DateTime       @default(now())
+
+  aiJob        AIJob?        @relation(fields: [aiJobId], references: [id])
+  website      Website?      @relation(fields: [websiteId], references: [id])
+  organization Organization? @relation(fields: [organizationId], references: [id])
+  user         User?         @relation(fields: [userId], references: [id])
+
+  @@index([aiJobId])
+  @@index([websiteId])
+  @@index([organizationId])
+  @@index([userId])
+  @@index([provider])
+  @@index([model])
+  @@index([purpose])
+  @@index([createdAt])
+  @@map("ai_usages")
+}
+
+model EmailLog {
+  id             String       @id @default(uuid()) @db.Uuid
+  organizationId String?      @db.Uuid
+  websiteId      String?      @db.Uuid
+  userId         String?      @db.Uuid
+  toEmail        String
+  fromEmail      String?
+  subject        String
+  type           EmailType
+  status         EmailStatus  @default(QUEUED)
+  resendId       String?
+  errorMessage   String?
+  sentAt         DateTime?
+  openedAt       DateTime?
+  clickedAt      DateTime?
+  createdAt      DateTime     @default(now())
+
+  organization Organization? @relation(fields: [organizationId], references: [id])
+  website      Website?      @relation(fields: [websiteId], references: [id])
+  user         User?         @relation(fields: [userId], references: [id])
+
+  @@index([organizationId])
+  @@index([websiteId])
+  @@index([userId])
+  @@index([type])
+  @@index([status])
+  @@index([sentAt])
+  @@index([createdAt])
+  @@map("email_logs")
+}
+
+model AdminNote {
+  id             String              @id @default(uuid()) @db.Uuid
+  adminUserId    String              @db.Uuid
+  targetUserId   String?             @db.Uuid
+  organizationId String?             @db.Uuid
+  websiteId      String?             @db.Uuid
+  note           String
+  visibility     AdminNoteVisibility @default(INTERNAL)
+  createdAt      DateTime            @default(now())
+  updatedAt      DateTime            @updatedAt
+  deletedAt      DateTime?
+
+  adminUser    User          @relation("AdminNoteAuthor", fields: [adminUserId], references: [id])
+  targetUser   User?         @relation("AdminNoteTarget", fields: [targetUserId], references: [id])
+  organization Organization? @relation(fields: [organizationId], references: [id])
+  website      Website?      @relation(fields: [websiteId], references: [id])
+
+  @@index([adminUserId])
+  @@index([targetUserId])
+  @@index([organizationId])
+  @@index([websiteId])
+  @@index([createdAt])
+  @@index([deletedAt])
+  @@map("admin_notes")
+}
+
+/// Critical/system errors only — not routine validation failures.
+model ErrorLog {
+  id             String        @id @default(uuid()) @db.Uuid
+  requestId      String?
+  organizationId String?       @db.Uuid
+  websiteId      String?       @db.Uuid
+  userId         String?       @db.Uuid
+  area           ErrorArea
+  severity       ErrorSeverity
+  code           String
+  message        String
+  stack          String?
+  metadataJson   Json?
+  resolvedAt     DateTime?
+  createdAt      DateTime      @default(now())
+
+  organization Organization? @relation(fields: [organizationId], references: [id])
+  website      Website?      @relation(fields: [websiteId], references: [id])
+  user         User?         @relation(fields: [userId], references: [id])
+
+  @@index([requestId])
+  @@index([organizationId])
+  @@index([websiteId])
+  @@index([userId])
+  @@index([area])
+  @@index([severity])
+  @@index([code])
+  @@index([createdAt])
+  @@index([resolvedAt])
+  @@map("error_logs")
+}
