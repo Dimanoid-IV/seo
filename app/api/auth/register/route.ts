@@ -42,6 +42,8 @@ export async function POST(request: Request) {
         subscription: result.subscription,
         accessToken: result.accessToken,
         expiresIn: result.expiresIn,
+        ...(result.warnings?.length ? { warnings: result.warnings } : {}),
+        ...(result.previewAuditId ? { previewAuditId: result.previewAuditId } : {}),
       },
       { status: 201, refreshToken: result.refreshToken }
     );

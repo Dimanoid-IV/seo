@@ -9,14 +9,25 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-export default function RegisterPage() {
+type RegisterPageProps = {
+  searchParams: Promise<{ website?: string; previewToken?: string }>;
+};
+
+export default async function RegisterPage({ searchParams }: RegisterPageProps) {
+  const params = await searchParams;
+  const initialWebsite = params.website?.trim() ?? "";
+  const initialPreviewToken = params.previewToken?.trim() ?? "";
+
   return (
     <main className="hero-grid flex min-h-screen items-center justify-center bg-[#050816] px-4 py-12">
       <AuthCard
         title="Регистрация"
         subtitle="Начните с бесплатного аккаунта RankBoost"
       >
-        <RegisterForm />
+        <RegisterForm
+          initialWebsite={initialWebsite}
+          initialPreviewToken={initialPreviewToken}
+        />
       </AuthCard>
     </main>
   );

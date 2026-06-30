@@ -47,8 +47,10 @@ rankboost.eu/  (package name: seoch)
 │   │   └── page.tsx               # Demo preview (static)
 │   ├── login/page.tsx             # ★ Auth UI (prompt 4.3)
 │   ├── register/page.tsx          # ★ Auth UI (prompt 4.3)
+│   ├── audit/page.tsx             # ★ Public free audit UI (prompt 6.2)
 │   └── api/
-│       ├── contact/route.ts       # ★ Единственный marketing API (Resend lead form)
+│       ├── contact/route.ts       # ★ Marketing API (Resend lead form)
+│       ├── audit/preview/route.ts # ★ Public preview audit API (prompt 6.1)
 │       └── auth/                  # ★ SaaS auth API (prompt 4.2)
 │           ├── register/route.ts
 │           ├── login/route.ts
@@ -60,6 +62,7 @@ rankboost.eu/  (package name: seoch)
 │   ├── analytics/                 # GoogleAnalytics
 │   ├── blog/                      # Blog UI (7 components)
 │   ├── dashboard/                 # ★ SaaS dashboard UI primitives (prompt 2.1)
+│   ├── audit/                     # ★ Public audit UI (prompt 6.2)
 │   ├── forms/                     # ContactForm, ContactFormSection
 │   ├── layout/                    # Header, Footer, AppSidebar, AppHeader, …
 │   ├── sections/                  # ★ MARKETING sections (14 files)
@@ -176,14 +179,21 @@ rankboost.eu/  (package name: seoch)
 
 ### 4.1. Public audit
 
-| Планируемый путь | URL | MVP блок |
-|------------------|-----|----------|
-| `app/audit/check/page.tsx` | `/audit/check` | 5–6 |
-| `app/audit/[auditId]/page.tsx` | `/audit/:id` | 6–7 |
-| `components/audit/**` | — | 6–7 |
-| `lib/url/normalize.ts` | — | 5 |
-| `lib/security/ssrf.ts` | — | 6 |
-| `lib/auth/preview-token.ts` | — | 6–7 |
+| Путь | URL | Статус |
+|------|-----|--------|
+| `app/audit/page.tsx` | `/audit` | ✅ Public free audit UI (prompt 6.2) |
+| `app/api/audit/preview/route.ts` | `POST /api/audit/preview` | ✅ Stateless preview API (prompt 6.1) |
+| `components/audit/**` | — | ✅ Form, loading, score, issues (prompt 6.2) |
+| `lib/audit/preview-response.ts` | — | ✅ API response builder (prompt 6.1) |
+| `lib/audit/persist-preview.ts` | — | ✅ Preview token create/consume (prompt 6.3) |
+| `lib/audit/client-messages.ts` | — | ✅ UI labels + error messages (prompt 6.2) |
+| `app/audit/[auditId]/page.tsx` | `/audit/:id` | ⏳ Saved report (future) |
+| `lib/auth/preview-token.ts` | — | ⏳ Signed preview tokens (future) |
+
+> **`/audit`** — публичная страница **вне** `app/[locale]/`, без locale prefix.  
+> Preview token (6.3): `AuditPreviewToken` хранит результат 24ч; при регистрации создаётся Audit + checks + snapshot.  
+> Fallback: без DB preview работает stateless (`previewToken: null`).  
+> CTA ведёт на `/register?website=…&previewToken=…`.
 
 ### 4.2. Auth
 
@@ -216,13 +226,16 @@ rankboost.eu/  (package name: seoch)
 
 | Планируемый путь | URL | Статус |
 |------------------|-----|--------|
-| `app/app/layout.tsx` | `/app` | ✅ App shell + client auth guard (4.3) |
-| `app/app/page.tsx` | `/app` | ✅ Demo preview (static data, auth required) |
+| `app/app/layout.tsx` | `/app` | ✅ App shell + auth + overview provider (6.4) |
+| `app/app/page.tsx` | `/app` | ✅ Real user data v1 (prompt 6.4) |
+| `app/api/dashboard/overview/route.ts` | `GET /api/dashboard/overview` | ✅ Authenticated overview API (6.4) |
+| `lib/dashboard/overview.ts` | — | ✅ `getDashboardOverview()` (6.4) |
 | `app/app/**` | `/app/*` | ⏳ Sub-routes (tasks, billing, …) |
-| `components/dashboard/**` | — | ✅ UI primitives (prompt 2.1) |
-| `components/layout/AppSidebar.tsx`, `AppHeader.tsx` | — | ✅ App shell layout |
+| `components/dashboard/**` | — | ✅ UI primitives + real data page (6.4) |
+| `components/layout/AppSidebar.tsx`, `AppHeader.tsx` | — | ✅ App shell layout (real website URL, 6.4) |
 
-> `/app` — **client-side auth guard** (`AuthSessionProvider`); demo data остаётся статическим.  
+> `/app` — **client-side auth guard** + **`GET /api/dashboard/overview`** for real website, audit checks, activity, plan limits.  
+> После регистрации с preview token dashboard показывает сохранённый PREVIEW audit.  
 > App shell **не импортирует** `components/sections/**` и marketing layout.
 
 ### 4.4. Admin
@@ -240,6 +253,7 @@ app/api/
   contact/route.ts          ← СУЩЕСТВУЕТ — не ломать contract
   auth/                     ← ADD
   audit/                    ← ADD
+  dashboard/                ← ADD (overview)
   billing/                  ← ADD
   webhooks/stripe/          ← ADD
   hermes/callback/          ← ADD

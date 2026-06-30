@@ -14,12 +14,19 @@ import {
   storeAccessToken,
 } from "@/lib/auth/client-session";
 
-export function RegisterForm() {
+export function RegisterForm({
+  initialWebsite = "",
+  initialPreviewToken = "",
+}: {
+  initialWebsite?: string;
+  initialPreviewToken?: string;
+}) {
   const router = useRouter();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [websiteUrl, setWebsiteUrl] = useState("");
+  const [websiteUrl, setWebsiteUrl] = useState(initialWebsite);
+  const previewToken = initialPreviewToken.trim() || undefined;
   const [acceptTerms, setAcceptTerms] = useState(false);
   const [error, setError] = useState("");
   const [fieldErrors, setFieldErrors] = useState<string[]>([]);
@@ -47,6 +54,7 @@ export function RegisterForm() {
           email,
           password,
           websiteUrl: websiteUrl.trim() || undefined,
+          previewToken,
           acceptTerms: true,
           locale: "ru",
         }),

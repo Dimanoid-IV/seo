@@ -31,6 +31,13 @@ function createPrismaClient(): PrismaClient {
 }
 
 /**
+ * Returns true when DATABASE_URL is configured (does not connect).
+ */
+export function isDatabaseConfigured(): boolean {
+  return Boolean(process.env.DATABASE_URL?.trim());
+}
+
+/**
  * Returns the Prisma client singleton. Throws if DATABASE_URL is missing.
  * Import only from server-side code (API routes, services) — never from marketing pages.
  */

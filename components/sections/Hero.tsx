@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { motion } from "framer-motion";
 import { ArrowRight, Sparkles } from "lucide-react";
 import type { Locale } from "@/i18n/config";
@@ -46,7 +47,7 @@ export function Hero({ locale, dict }: HeroProps) {
               {dict.hero.subtitle}
             </p>
 
-            <div className="mt-10 flex flex-col gap-4 sm:flex-row">
+            <div className="mt-10 flex flex-col gap-4 sm:flex-row sm:items-center">
               <ButtonLink
                 locale={locale}
                 href={getContactPath({ service: "seo-audit", source: "hero" })}
@@ -66,6 +67,12 @@ export function Hero({ locale, dict }: HeroProps) {
                 {dict.hero.ctaSecondary}
               </ButtonLink>
             </div>
+            <Link
+              href="/audit"
+              className="mt-4 inline-flex text-sm text-blue-400 transition-colors hover:text-cyan-400"
+            >
+              Проверить сайт бесплатно →
+            </Link>
           </motion.div>
 
           <HeroDashboard dict={dict} />

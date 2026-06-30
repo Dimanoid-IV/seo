@@ -10,6 +10,11 @@ import { Prisma } from "@prisma/client";
 import { getPrisma } from "@/lib/db";
 import { AppError, ErrorCode } from "@/lib/errors";
 
+import {
+  consumeAuditPreviewTokenForRegistration,
+  findValidAuditPreviewToken,
+} from "@/lib/audit/persist-preview";
+
 import { authLocaleToPrismaLocale, localeToAuthLocale, userRoleToAuthRole } from "./mappers";
 import { hashPassword, validatePasswordStrength, verifyPassword } from "./password";
 import {
@@ -70,9 +75,24 @@ export async function registerUser(input: RegisterInput) {
 
   const prisma = getPrisma();
   const prismaLocale = authLocaleToPrismaLocale(input.locale);
-  const websiteUrl = input.websiteUrl?.trim()
+  const previewTokenValue = input.previewToken?.trim() || null;
+  const warnings: string[] = [];
+
+  let websiteUrl = input.websiteUrl?.trim()
     ? normalizeWebsiteUrl(input.websiteUrl)
     : null;
+
+  if (previewTokenValue) {
+    const previewRecord = await findValidAuditPreviewToken(previewTokenValue);
+    if (previewRecord) {
+      if (!websiteUrl) {
+        websiteUrl = normalizeWebsiteUrl(previewRecord.finalUrl);
+      }
+    } else {
+      warnings.push("preview_token_invalid");
+      // TODO: track invalid preview token attempts for abuse monitoring
+    }
+  }
 
   try {
     const result = await prisma.$transaction(async (tx) => {
@@ -156,7 +176,28 @@ export async function registerUser(input: RegisterInput) {
         },
       });
 
-      return { user, organization, website, subscription };
+      let previewAuditId: string | undefined;
+
+      if (previewTokenValue && website) {
+        const attachResult = await consumeAuditPreviewTokenForRegistration({
+          token: previewTokenValue,
+          userId: user.id,
+          organizationId: organization.id,
+          websiteId: website.id,
+          tx,
+        });
+
+        if (attachResult.attached) {
+          previewAuditId = attachResult.auditId;
+          website = await tx.website.findUniqueOrThrow({
+            where: { id: website.id },
+          });
+        } else {
+          warnings.push(`preview_attach_${attachResult.reason ?? "failed"}`);
+        }
+      }
+
+      return { user, organization, website, subscription, previewAuditId };
     });
 
     const tokens = await issueAuthTokens(result.user, result.organization.id);
@@ -169,6 +210,8 @@ export async function registerUser(input: RegisterInput) {
       accessToken: tokens.accessToken,
       expiresIn: tokens.expiresIn,
       refreshToken: tokens.refreshToken,
+      ...(warnings.length > 0 ? { warnings } : {}),
+      ...(result.previewAuditId ? { previewAuditId: result.previewAuditId } : {}),
     };
   } catch (error) {
     if (error instanceof AppError) {

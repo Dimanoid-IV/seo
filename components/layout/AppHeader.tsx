@@ -4,12 +4,9 @@ import { useState } from "react";
 
 import { PlanBadge, type PlanBadgeVariant } from "@/components/dashboard/PlanBadge";
 import { useAuthSession } from "@/components/auth/AuthSessionProvider";
+import { useDashboardOverview } from "@/components/dashboard/DashboardOverviewProvider";
 import { Button } from "@/components/ui/button";
 import { Globe, Loader2, LogOut, Sparkles, User } from "lucide-react";
-
-type AppHeaderProps = {
-  siteName?: string;
-};
 
 function subscriptionToBadge(plan: string | undefined): PlanBadgeVariant {
   const normalized = plan?.toLowerCase();
@@ -17,19 +14,30 @@ function subscriptionToBadge(plan: string | undefined): PlanBadgeVariant {
   if (normalized === "growth") return "growth";
   if (normalized === "pro") return "pro";
   if (normalized === "partner") return "partner";
+  if (normalized === "free") return "demo";
   return "demo";
 }
 
-export function AppHeader({ siteName = "beautystudio.ee" }: AppHeaderProps) {
+function formatWebsiteLabel(url: string): string {
+  return url.replace(/^https?:\/\//, "").replace(/\/$/, "");
+}
+
+export function AppHeader() {
   const { user, organization, subscription, loading, logout } = useAuthSession();
+  const { overview, loading: overviewLoading } = useDashboardOverview();
   const [loggingOut, setLoggingOut] = useState(false);
 
-  const displaySiteName = organization?.name ?? siteName;
-  const planVariant = subscription
-    ? subscriptionToBadge(subscription.plan)
+  const planSource = overview?.subscription ?? subscription;
+  const planVariant = planSource
+    ? subscriptionToBadge(planSource.plan)
     : "demo";
-  const planLabel =
-    subscription?.plan?.toUpperCase() ?? (loading ? undefined : "Demo");
+  const planLabel = planSource?.plan?.toUpperCase() ?? (loading ? undefined : "FREE");
+
+  const headerTitle = overview?.website
+    ? overview.website.displayName ?? formatWebsiteLabel(overview.website.url)
+    : overviewLoading
+      ? (organization?.name ?? "…")
+      : (organization?.name ?? "RankBoost");
 
   async function handleLogout() {
     setLoggingOut(true);
@@ -51,12 +59,9 @@ export function AppHeader({ siteName = "beautystudio.ee" }: AppHeaderProps) {
             <div className="flex flex-wrap items-center gap-2">
               <Globe className="hidden size-4 shrink-0 text-slate-500 sm:block" />
               <h1 className="truncate text-base font-semibold text-white sm:text-lg">
-                {displaySiteName}
+                {headerTitle}
               </h1>
-              <PlanBadge
-                variant={planVariant}
-                label={planLabel}
-              />
+              <PlanBadge variant={planVariant} label={planLabel} />
             </div>
             <p className="hidden items-center gap-1.5 text-xs text-slate-500 sm:flex">
               {loading ? (
@@ -69,10 +74,14 @@ export function AppHeader({ siteName = "beautystudio.ee" }: AppHeaderProps) {
                   <User className="size-3" />
                   {user.name ? `${user.name} · ` : ""}
                   {user.email}
+                  {overview?.website ? (
+                    <>
+                      {" · "}
+                      <span className="truncate">{overview.website.url}</span>
+                    </>
+                  ) : null}
                 </>
-              ) : (
-                "Демо-превью кабинета · статические данные"
-              )}
+              ) : null}
             </p>
           </div>
         </div>

@@ -32,6 +32,7 @@ export const registerSchema = z
       .max(100),
     locale: authLocaleSchema.optional().default("ru"),
     websiteUrl: z.string().trim().max(500).optional().or(z.literal("")),
+    previewToken: z.string().trim().max(100).optional().or(z.literal("")),
     acceptTerms: z.literal(true, {
       message: "Необходимо принять условия использования",
     }),

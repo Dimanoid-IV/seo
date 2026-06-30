@@ -33,7 +33,14 @@ function buildBlogAlternates(translationKey: string): Record<string, string> {
 }
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const entries: MetadataRoute.Sitemap = [];
+  const entries: MetadataRoute.Sitemap = [
+    {
+      url: `${siteUrl}/audit`,
+      lastModified: new Date(),
+      changeFrequency: "weekly",
+      priority: 0.9,
+    },
+  ];
 
   for (const locale of locales) {
     for (const page of staticPages) {

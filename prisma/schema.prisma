@@ -2,6 +2,7 @@
 // 3.1: User, Organization, Website, Subscription, Payment, PlanLimit
 // 3.2: Audit, AuditCheck, GrowthScoreSnapshot, AIReadinessSnapshot, Activity
 // 3.3: Task, Content, Integrations, AIJob, AIUsage, EmailLog, AdminNote, ErrorLog
+// 6.3: AuditPreviewToken — temporary preview storage before registration
 
 generator client {
   provider = "prisma-client-js"
@@ -1178,4 +1179,27 @@ model ErrorLog {
   @@index([createdAt])
   @@index([resolvedAt])
   @@map("error_logs")
+}
+
+/// Temporary storage for stateless audit preview results (24h TTL, consumed on registration).
+model AuditPreviewToken {
+  id                  String    @id @default(uuid()) @db.Uuid
+  token               String    @unique
+  inputUrl            String
+  normalizedUrl       String
+  finalUrl            String
+  statusCode          Int?
+  rawScore            Int
+  estimatedFixMinutes Int
+  summaryJson         Json
+  previewIssuesJson   Json
+  checksJson          Json
+  expiresAt           DateTime
+  usedAt              DateTime?
+  createdAt           DateTime  @default(now())
+
+  @@index([token])
+  @@index([expiresAt])
+  @@index([usedAt])
+  @@map("audit_preview_tokens")
 }

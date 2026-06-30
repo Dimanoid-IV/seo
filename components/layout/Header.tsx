@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { Menu, X, TrendingUp } from "lucide-react";
 import type { Locale } from "@/i18n/config";
 import type { Dictionary } from "@/i18n/dictionaries/ru";
@@ -58,6 +59,12 @@ export function Header({ locale, dict }: HeaderProps) {
 
         <div className="hidden items-center gap-3 md:flex">
           <LanguageSwitcher currentLocale={locale} />
+          <Link
+            href="/audit"
+            className="rounded-lg px-3 py-2 text-sm text-slate-300 transition-colors hover:bg-white/5 hover:text-white"
+          >
+            SEO-аудит
+          </Link>
           <ButtonLink
             locale={locale}
             href={getContactPath({ service: "seo-audit", source: "header" })}
@@ -94,6 +101,15 @@ export function Header({ locale, dict }: HeaderProps) {
                     {dict.nav[item.key]}
                   </LocaleLink>
                 ))}
+                <Link
+                  href="/audit"
+                  onClick={() => setOpen(false)}
+                  className={cn(
+                    "rounded-lg px-4 py-3 text-base text-slate-300 transition-colors hover:bg-white/5 hover:text-white"
+                  )}
+                >
+                  SEO-аудит
+                </Link>
                 <ButtonLink
                   locale={locale}
                   href={getContactPath({ service: "seo-audit", source: "header" })}
