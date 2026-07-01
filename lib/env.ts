@@ -36,14 +36,21 @@ const serverEnvSchema = z.object({
   GOOGLE_AUTH_CLIENT_SECRET: optionalString,
   STRIPE_SECRET_KEY: optionalString,
   STRIPE_WEBHOOK_SECRET: optionalString,
+  STRIPE_STARTER_PRICE_ID: optionalString,
+  STRIPE_PRO_PRICE_ID: optionalString,
+  STRIPE_AGENCY_PRICE_ID: optionalString,
   HERMES_API_URL: optionalUrl,
   HERMES_API_SECRET: optionalString,
   GOOGLE_INTEGRATIONS_CLIENT_ID: optionalString,
   GOOGLE_INTEGRATIONS_CLIENT_SECRET: optionalString,
   GOOGLE_INTEGRATIONS_REDIRECT_URI: optionalUrl,
+  GOOGLE_CLIENT_ID: optionalString,
+  GOOGLE_CLIENT_SECRET: optionalString,
+  GOOGLE_REDIRECT_URI: optionalUrl,
   WORDPRESS_CONNECTOR_SECRET: optionalString,
   CRON_SECRET: optionalString,
   ENCRYPTION_SECRET: optionalString,
+  ENCRYPTION_KEY: optionalString,
 });
 
 const publicEnvSchema = z.object({
@@ -54,6 +61,7 @@ const publicEnvSchema = z.object({
     )
     .default("https://rankboost.eu"),
   NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: optionalString,
+  NEXT_PUBLIC_APP_URL: z.preprocess(emptyToUndefined, z.string().url().optional()),
 });
 
 export type ServerEnv = z.infer<typeof serverEnvSchema>;
@@ -75,6 +83,9 @@ function parseServerEnv(): ServerEnv {
     GOOGLE_AUTH_CLIENT_SECRET: process.env.GOOGLE_AUTH_CLIENT_SECRET,
     STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY,
     STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET,
+    STRIPE_STARTER_PRICE_ID: process.env.STRIPE_STARTER_PRICE_ID,
+    STRIPE_PRO_PRICE_ID: process.env.STRIPE_PRO_PRICE_ID,
+    STRIPE_AGENCY_PRICE_ID: process.env.STRIPE_AGENCY_PRICE_ID,
     HERMES_API_URL: process.env.HERMES_API_URL,
     HERMES_API_SECRET: process.env.HERMES_API_SECRET,
     GOOGLE_INTEGRATIONS_CLIENT_ID: process.env.GOOGLE_INTEGRATIONS_CLIENT_ID,
@@ -82,9 +93,13 @@ function parseServerEnv(): ServerEnv {
       process.env.GOOGLE_INTEGRATIONS_CLIENT_SECRET,
     GOOGLE_INTEGRATIONS_REDIRECT_URI:
       process.env.GOOGLE_INTEGRATIONS_REDIRECT_URI,
+    GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
+    GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
+    GOOGLE_REDIRECT_URI: process.env.GOOGLE_REDIRECT_URI,
     WORDPRESS_CONNECTOR_SECRET: process.env.WORDPRESS_CONNECTOR_SECRET,
     CRON_SECRET: process.env.CRON_SECRET,
     ENCRYPTION_SECRET: process.env.ENCRYPTION_SECRET,
+    ENCRYPTION_KEY: process.env.ENCRYPTION_KEY,
   });
 }
 
@@ -93,6 +108,7 @@ function parsePublicEnv(): PublicEnv {
     NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL,
     NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY:
       process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY,
+    NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,
   });
 }
 

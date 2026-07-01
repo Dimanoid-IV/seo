@@ -25,6 +25,30 @@ export async function findPrimaryOrganization(
   });
 }
 
+/**
+ * Resolves the user's organization, verifying ownership when a JWT org hint is present.
+ */
+export async function resolveOwnedOrganization(
+  db: DbClient,
+  userId: string,
+  organizationIdHint?: string | null
+) {
+  if (organizationIdHint) {
+    const owned = await db.organization.findFirst({
+      where: {
+        id: organizationIdHint,
+        ownerUserId: userId,
+        deletedAt: null,
+      },
+    });
+    if (owned) {
+      return owned;
+    }
+  }
+
+  return findPrimaryOrganization(db, userId);
+}
+
 export async function findActiveSubscription(
   db: DbClient,
   organizationId: string

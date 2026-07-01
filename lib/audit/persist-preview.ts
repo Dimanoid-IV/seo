@@ -14,6 +14,7 @@ import { getPrisma, isDatabaseConfigured } from "@/lib/db";
 import { generateToken } from "@/lib/security";
 
 import type { AuditPreviewResponseData } from "./preview-response";
+import { generateTasksFromAuditChecks } from "./generate-tasks";
 import type { AuditRuleResult } from "./rules-types";
 
 const PREVIEW_TOKEN_TTL_MS = 24 * 60 * 60 * 1000;
@@ -231,6 +232,14 @@ export async function consumeAuditPreviewTokenForRegistration(
         data: checks.map((check) =>
           ruleResultToAuditCheck(check, audit.id, input.websiteId)
         ),
+      });
+
+      await generateTasksFromAuditChecks({
+        auditId: audit.id,
+        websiteId: input.websiteId,
+        organizationId: input.organizationId,
+        userId: input.userId,
+        tx: input.tx,
       });
     }
 
