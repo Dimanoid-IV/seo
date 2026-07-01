@@ -6,11 +6,16 @@ import {
   BarChart3,
   CreditCard,
   FileText,
+  History,
   LayoutDashboard,
   ListTodo,
   Menu,
   Plug,
+  Rocket,
+  Mail,
+  Gauge,
   Settings,
+  Share2,
   Sparkles,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -22,6 +27,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
+import { OnboardingSidebarLink } from "@/components/onboarding/OnboardingSidebarLink";
 
 type NavItem = {
   href: string;
@@ -32,11 +38,16 @@ type NavItem = {
 
 const navItems: NavItem[] = [
   { href: "/app", label: "Dashboard", icon: LayoutDashboard, enabled: true },
-  { href: "/app/tasks", label: "AI Tasks", icon: ListTodo, enabled: false },
-  { href: "/app/content", label: "Content Plan", icon: FileText, enabled: false },
-  { href: "/app/reports", label: "Reports", icon: BarChart3, enabled: false },
-  { href: "/app/integrations", label: "Integrations", icon: Plug, enabled: false },
-  { href: "/app/billing", label: "Billing", icon: CreditCard, enabled: false },
+  { href: "/app/autopilot-control", label: "Control Center", icon: Gauge, enabled: true },
+  { href: "/app/timeline", label: "Timeline", icon: History, enabled: true },
+  { href: "/app/tasks", label: "Growth Tasks", icon: ListTodo, enabled: false },
+  { href: "/app/content-plan", label: "Content Plan", icon: FileText, enabled: true },
+  { href: "/app/social-posts", label: "Social Posts", icon: Share2, enabled: true },
+  { href: "/app/autopilot", label: "Autopilot", icon: Rocket, enabled: true },
+  { href: "/app/email-approvals", label: "Email Approvals", icon: Mail, enabled: true },
+  { href: "/app/reports", label: "Reports", icon: BarChart3, enabled: true },
+  { href: "/app/integrations", label: "Integrations", icon: Plug, enabled: true },
+  { href: "/app/billing", label: "Billing", icon: CreditCard, enabled: true },
   { href: "/app/settings", label: "Settings", icon: Settings, enabled: false },
 ];
 
@@ -107,15 +118,14 @@ export function AppSidebar() {
           </div>
 
           <nav className="flex-1 space-y-1 overflow-y-auto p-3">
+            <OnboardingSidebarLink />
             {navItems.map((item) => (
               <NavLink key={item.href} item={item} pathname={pathname} />
             ))}
           </nav>
 
           <div className="border-t border-white/10 p-4">
-            <p className="text-xs text-slate-500">
-              Demo preview · без auth
-            </p>
+            <p className="text-xs text-slate-500">RankBoost SaaS</p>
           </div>
         </div>
       </aside>

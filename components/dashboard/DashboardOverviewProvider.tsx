@@ -12,11 +12,15 @@ import {
 import { authFetch } from "@/lib/auth/client-session";
 import type { DashboardOverviewData } from "@/lib/dashboard/overview";
 
+type RefetchOptions = {
+  silent?: boolean;
+};
+
 type DashboardOverviewContextValue = {
   overview: DashboardOverviewData | null;
   loading: boolean;
   error: string | null;
-  refetch: () => Promise<void>;
+  refetch: (options?: RefetchOptions) => Promise<void>;
 };
 
 const DashboardOverviewContext =
@@ -59,14 +63,20 @@ export function DashboardOverviewProvider({
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const refetch = useCallback(async () => {
-    setLoading(true);
-    setError(null);
+  const refetch = useCallback(async (options?: RefetchOptions) => {
+    if (!options?.silent) {
+      setLoading(true);
+      setError(null);
+    }
 
     const result = await fetchOverview();
     setOverview(result.data);
-    setError(result.error);
-    setLoading(false);
+    if (!options?.silent) {
+      setError(result.error);
+      setLoading(false);
+    } else if (result.error) {
+      setError(result.error);
+    }
   }, []);
 
   useEffect(() => {

@@ -17,6 +17,39 @@ export function formatCheckCategory(category: string): string {
   return CATEGORY_LABELS[category] ?? category;
 }
 
+export function taskPriorityToCardPriority(priority: string): TaskPriority {
+  const normalized = priority.toLowerCase();
+  if (normalized === "critical") {
+    return "critical";
+  }
+  if (normalized === "high") {
+    return "high";
+  }
+  if (normalized === "medium") {
+    return "medium";
+  }
+  return "low";
+}
+
+export function taskStatusToCardStatus(
+  status: string
+): "open" | "in_progress" | "waiting" | "completed" | "dismissed" {
+  const normalized = status.toLowerCase();
+  if (normalized === "in_progress") {
+    return "in_progress";
+  }
+  if (normalized === "waiting_review") {
+    return "waiting";
+  }
+  if (normalized === "completed") {
+    return "completed";
+  }
+  if (normalized === "dismissed" || normalized === "failed") {
+    return "dismissed";
+  }
+  return "open";
+}
+
 export function severityToTaskPriority(severity: string): TaskPriority {
   if (severity === "CRITICAL") {
     return "critical";

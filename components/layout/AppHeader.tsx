@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 
 import { PlanBadge, type PlanBadgeVariant } from "@/components/dashboard/PlanBadge";
@@ -103,13 +104,13 @@ export function AppHeader() {
             Выйти
           </Button>
           <Button
+            render={<Link href="/app/billing" />}
+            nativeButton={false}
             type="button"
             size="sm"
             className="bg-gradient-to-r from-blue-500 to-violet-600 text-white hover:from-blue-600 hover:to-violet-700"
-            aria-label="Upgrade — скоро"
-            disabled
           >
-            Upgrade
+            Upgrade plan
           </Button>
         </div>
       </div>

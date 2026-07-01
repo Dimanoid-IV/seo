@@ -45,6 +45,11 @@ export function clearAccessToken(): void {
 type ApiErrorBody = {
   error?: {
     message?: string;
+    code?: string;
+    details?: {
+      billingError?: string;
+      upgradeUrl?: string;
+    };
   };
 };
 
@@ -54,7 +59,20 @@ export async function parseApiErrorMessage(
 ): Promise<string> {
   try {
     const body = (await response.json()) as ApiErrorBody;
-    return body.error?.message ?? fallback;
+    const message = body.error?.message ?? fallback;
+    const upgradeUrl = body.error?.details?.upgradeUrl;
+
+    if (
+      upgradeUrl &&
+      (body.error?.code === "PLAN_LIMIT_EXCEEDED" ||
+        body.error?.code === "FEATURE_NOT_AVAILABLE" ||
+        body.error?.code === "BILLING_REQUIRED" ||
+        body.error?.details?.billingError)
+    ) {
+      return `${message} Upgrade in Billing.`;
+    }
+
+    return message;
   } catch {
     return fallback;
   }

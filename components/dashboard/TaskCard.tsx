@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 import {
   AlertCircle,
@@ -18,6 +19,11 @@ type TaskCardProps = {
   status?: TaskStatus;
   impactScore?: number;
   className?: string;
+  showActions?: boolean;
+  actionLoading?: boolean;
+  footerAction?: ReactNode;
+  onComplete?: () => void;
+  onDismiss?: () => void;
 };
 
 const priorityStyles: Record<TaskPriority, string> = {
@@ -69,8 +75,17 @@ export function TaskCard({
   status = "open",
   impactScore,
   className,
+  showActions = false,
+  actionLoading = false,
+  footerAction,
+  onComplete,
+  onDismiss,
 }: TaskCardProps) {
   const StatusIcon = statusConfig[status].icon;
+  const canShowActions =
+    showActions &&
+    (status === "open" || status === "in_progress") &&
+    (onComplete != null || onDismiss != null);
 
   return (
     <article
@@ -118,6 +133,38 @@ export function TaskCard({
         />
         {statusConfig[status].label}
       </div>
+
+      {footerAction ? <div className="pt-1">{footerAction}</div> : null}
+
+      {canShowActions ? (
+        <div className="flex flex-wrap gap-2 border-t border-white/5 pt-3">
+          {onComplete ? (
+            <button
+              type="button"
+              onClick={onComplete}
+              disabled={actionLoading}
+              className="inline-flex items-center gap-1.5 rounded-md border border-emerald-500/30 bg-emerald-500/10 px-3 py-1.5 text-xs font-medium text-emerald-300 transition hover:bg-emerald-500/20 disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              {actionLoading ? (
+                <Loader2 className="size-3 animate-spin" />
+              ) : (
+                <CheckCircle2 className="size-3" />
+              )}
+              Готово
+            </button>
+          ) : null}
+          {onDismiss ? (
+            <button
+              type="button"
+              onClick={onDismiss}
+              disabled={actionLoading}
+              className="inline-flex items-center gap-1.5 rounded-md border border-white/10 bg-white/5 px-3 py-1.5 text-xs font-medium text-slate-400 transition hover:bg-white/10 hover:text-slate-300 disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              Скрыть
+            </button>
+          ) : null}
+        </div>
+      ) : null}
     </article>
   );
 }
