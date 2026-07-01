@@ -68,8 +68,10 @@ enum SubscriptionPlan {
   FREE
   AUDIT
   START
+  STARTER
   GROWTH
   PRO
+  AGENCY
 }
 
 enum SubscriptionStatus {
@@ -92,6 +94,32 @@ enum PaymentType {
   ONE_TIME
   SUBSCRIPTION
   REFUND
+}
+
+enum UsageKey {
+  AUDIT_RUN
+  AI_GENERATION
+  ARTICLE_DRAFT
+  SOCIAL_POST
+  MONTHLY_AUTOPILOT
+  EMAIL_APPROVAL
+  REPORT
+}
+
+enum OnboardingStatus {
+  NOT_STARTED
+  IN_PROGRESS
+  COMPLETED
+  SKIPPED
+}
+
+enum OnboardingStep {
+  ADD_WEBSITE
+  RUN_AUDIT
+  CONNECT_GSC
+  REVIEW_RESULTS
+  GENERATE_PLAN
+  COMPLETE
 }
 
 enum AuditType {
@@ -163,6 +191,9 @@ enum ActivityType {
   TASK_COMPLETED
   ARTICLE_CREATED
   ARTICLE_DRAFT_CREATED
+  ARTICLE_VALIDATED
+  ARTICLE_REPAIRED
+  GROWTH_OPPORTUNITY_FOUND
   SOCIAL_POST_CREATED
   INTEGRATION_CONNECTED
   INTEGRATION_DISCONNECTED
@@ -171,6 +202,50 @@ enum ActivityType {
   SUBSCRIPTION_UPDATED
   PAYMENT_RECEIVED
   SYSTEM_NOTICE
+}
+
+enum TimelineEventType {
+  AUDIT_COMPLETED
+  SCORE_CHANGED
+  TASK_CREATED
+  TASK_COMPLETED
+  GSC_INSIGHT_FOUND
+  GSC_OPPORTUNITY_FOUND
+  CONTENT_IDEA_CREATED
+  ARTICLE_DRAFT_CREATED
+  WORDPRESS_DRAFT_CREATED
+  REPORT_CREATED
+  INTEGRATION_CONNECTED
+  INTEGRATION_ERROR
+  AI_RECOMMENDATION_CREATED
+  SOCIAL_POST_DRAFT_CREATED
+  MONTHLY_AUTOPILOT_PLAN_CREATED
+  EMAIL_APPROVAL_CREATED
+  DAILY_SUMMARY
+  SYSTEM_NOTE
+}
+
+enum TimelineEventSource {
+  AUDIT_ENGINE
+  RULE_ENGINE
+  GROWTH_SCORE
+  TASKS
+  CONTENT_PLAN
+  REPORTS
+  GSC
+  WORDPRESS
+  HERMES
+  AI_QUALITY_PIPELINE
+  CONTINUOUS_IMPROVEMENT
+  SYSTEM
+}
+
+enum TimelineEventSeverity {
+  INFO
+  SUCCESS
+  WARNING
+  ERROR
+  OPPORTUNITY
 }
 
 enum TaskCategory {
@@ -225,6 +300,41 @@ enum MonthlyPlanStatus {
   CANCELED
 }
 
+enum MonthlyAutopilotStatus {
+  DRAFT
+  READY
+  APPROVED
+  ARCHIVED
+}
+
+enum EmailApprovalType {
+  MONTHLY_PLAN_REVIEW
+  CONTENT_REVIEW
+  SOCIAL_POST_REVIEW
+  GROWTH_ALERT
+  INTEGRATION_ALERT
+  GENERAL_REVIEW
+}
+
+enum EmailApprovalStatus {
+  DRAFT
+  READY
+  APPROVED
+  SENT
+  ARCHIVED
+}
+
+enum EmailApprovalSource {
+  MONTHLY_AUTOPILOT
+  ARTICLE
+  SOCIAL_POST
+  TIMELINE
+  GSC
+  INTEGRATION
+  MANUAL
+  SYSTEM
+}
+
 enum PlanItemType {
   TASK
   ARTICLE
@@ -257,14 +367,28 @@ enum SocialPlatform {
   FACEBOOK
   INSTAGRAM
   LINKEDIN
+  X
   GOOGLE_BUSINESS
+  GENERIC
   OTHER
+}
+
+enum SocialPostSource {
+  TASK
+  ARTICLE
+  CONTENT_IDEA
+  GSC_INSIGHT
+  TIMELINE_EVENT
+  GROWTH_SCORE
+  CONTINUOUS_IMPROVEMENT
+  MANUAL
 }
 
 enum SocialPostStatus {
   DRAFT
   READY
   COPIED
+  APPROVED
   SCHEDULED
   PUBLISHED_EXTERNALLY
   ARCHIVED
@@ -333,6 +457,7 @@ enum AIUsagePurpose {
   AUDIT
   TASK_GENERATION
   CONTENT_GENERATION
+  QUALITY_REPAIR
   SOCIAL_GENERATION
   REPORT_GENERATION
   QUALITY_CHECK
@@ -418,6 +543,13 @@ model User {
   adminNotesCreated     AdminNote[]    @relation("AdminNoteAuthor")
   adminNotesReceived    AdminNote[]    @relation("AdminNoteTarget")
   errorLogs             ErrorLog[]
+  timelineEvents        TimelineEvent[]
+  websiteUserStates     WebsiteUserState[]
+  socialPostsCreated    SocialPost[] @relation("SocialPostAuthor")
+  monthlyAutopilotPlans MonthlyAutopilotPlan[]
+  emailApprovals        EmailApproval[]
+  usageCounters         UsageCounter[]
+  onboardingState       OnboardingState?
 
   @@index([stripeCustomerId])
   @@index([googleAuthId])
@@ -447,7 +579,10 @@ model Organization {
   planLimits            PlanLimit[]
   activities            Activity[]
   tasks                 Task[]
-  monthlyPlans          MonthlyPlan[]
+  monthlyPlans            MonthlyPlan[]
+  monthlyAutopilotPlans   MonthlyAutopilotPlan[]
+  emailApprovals          EmailApproval[]
+  usageCounters           UsageCounter[]
   articles              Article[]
   socialPosts           SocialPost[]
   reports               Report[]
@@ -492,6 +627,9 @@ model Website {
   activities              Activity[]
   tasks                   Task[]
   monthlyPlans            MonthlyPlan[]
+  monthlyAutopilotPlans   MonthlyAutopilotPlan[]
+  emailApprovals          EmailApproval[]
+  usageCounters           UsageCounter[]
   articles                Article[]
   socialPosts             SocialPost[]
   reports                 Report[]
@@ -502,6 +640,9 @@ model Website {
   emailLogs               EmailLog[]
   adminNotes              AdminNote[]
   errorLogs               ErrorLog[]
+  timelineEvents          TimelineEvent[]
+  websiteUserStates       WebsiteUserState[]
+  onboardingStates        OnboardingState[]
 
   @@unique([organizationId, url])
   @@index([organizationId])
@@ -598,6 +739,30 @@ model PlanLimit {
   @@index([organizationId])
   @@index([periodStart, periodEnd])
   @@map("plan_limits")
+}
+
+model UsageCounter {
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String   @db.Uuid
+  websiteId String?  @db.Uuid
+  organizationId String @db.Uuid
+  month     String
+  key       UsageKey
+  count     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user         User         @relation(fields: [userId], references: [id])
+  website      Website?     @relation(fields: [websiteId], references: [id])
+  organization Organization @relation(fields: [organizationId], references: [id])
+
+  @@unique([organizationId, userId, month, key])
+  @@index([userId])
+  @@index([websiteId])
+  @@index([organizationId])
+  @@index([month])
+  @@index([key])
+  @@map("usage_counters")
 }
 
 model Audit {
@@ -797,6 +962,81 @@ model MonthlyPlan {
   @@map("monthly_plans")
 }
 
+model MonthlyAutopilotPlan {
+  id                  String                 @id @default(uuid()) @db.Uuid
+  userId              String                 @db.Uuid
+  websiteId           String                 @db.Uuid
+  organizationId      String                 @db.Uuid
+  month               String
+  status              MonthlyAutopilotStatus @default(DRAFT)
+  title               String
+  summary             String?
+  focusAreasJson      Json?
+  metricsJson         Json?
+  taskIds             String[]               @default([])
+  articleIds          String[]               @default([])
+  socialPostIds       String[]               @default([])
+  timelineEventIds    String[]               @default([])
+  recommendationsJson Json?
+  risksJson           Json?
+  nextActionsJson     Json?
+  generatedBy         String?                @default("system")
+  approvedAt          DateTime?
+  archivedAt          DateTime?
+  createdAt           DateTime               @default(now())
+  updatedAt           DateTime               @updatedAt
+
+  user         User         @relation(fields: [userId], references: [id])
+  website      Website      @relation(fields: [websiteId], references: [id])
+  organization Organization @relation(fields: [organizationId], references: [id])
+
+  @@unique([websiteId, month])
+  @@index([userId])
+  @@index([websiteId])
+  @@index([organizationId])
+  @@index([month])
+  @@index([status])
+  @@map("monthly_autopilot_plans")
+}
+
+model EmailApproval {
+  id                      String              @id @default(uuid()) @db.Uuid
+  userId                  String              @db.Uuid
+  websiteId               String              @db.Uuid
+  organizationId          String              @db.Uuid
+  type                    EmailApprovalType
+  status                  EmailApprovalStatus @default(DRAFT)
+  subject                 String
+  body                    String
+  recipientEmail          String?
+  language                String?
+  source                  EmailApprovalSource
+  sourceId                String?             @db.Uuid
+  relatedPlanId           String?             @db.Uuid
+  relatedArticleIds       String[]            @default([])
+  relatedSocialPostIds    String[]            @default([])
+  relatedTaskIds          String[]            @default([])
+  relatedTimelineEventIds String[]            @default([])
+  approvedAt              DateTime?
+  sentAt                  DateTime?
+  archivedAt              DateTime?
+  createdAt               DateTime            @default(now())
+  updatedAt               DateTime            @updatedAt
+
+  user         User         @relation(fields: [userId], references: [id])
+  website      Website      @relation(fields: [websiteId], references: [id])
+  organization Organization @relation(fields: [organizationId], references: [id])
+
+  @@index([userId])
+  @@index([websiteId])
+  @@index([organizationId])
+  @@index([status])
+  @@index([type])
+  @@index([source])
+  @@index([createdAt])
+  @@map("email_approvals")
+}
+
 model PlanItem {
   id                String         @id @default(uuid()) @db.Uuid
   monthlyPlanId     String         @db.Uuid
@@ -845,6 +1085,10 @@ model Article {
   wordpressPostId    String?
   wordpressEditUrl   String?
   generatedByAIJobId String?         @db.Uuid
+  qualityScore       Int?
+  qualityPassed      Boolean?
+  qualityIssuesJson  Json?
+  qualityRepairAttempts Int          @default(0)
   reviewedAt         DateTime?
   approvedAt         DateTime?
   publishedAt        DateTime?
@@ -874,17 +1118,25 @@ model SocialPost {
   id                    String           @id @default(uuid()) @db.Uuid
   websiteId             String           @db.Uuid
   organizationId        String           @db.Uuid
+  userId                String?          @db.Uuid
   articleId             String?          @db.Uuid
   monthlyPlanId         String?          @db.Uuid
   platform              SocialPlatform
   language              WebsiteLanguage
   status                SocialPostStatus @default(DRAFT)
+  title                 String?
   text                  String
   hook                  String?
   hashtagsJson          Json?
+  cta                   String?
   imagePrompt           String?
+  source                SocialPostSource @default(MANUAL)
+  sourceId              String?          @db.Uuid
+  qualityScore          Int?
+  qualityIssuesJson     Json?
   scheduledFor          DateTime?
   copiedAt              DateTime?
+  approvedAt            DateTime?
   publishedExternallyAt DateTime?
   generatedByAIJobId    String?          @db.Uuid
   createdAt             DateTime         @default(now())
@@ -893,6 +1145,7 @@ model SocialPost {
 
   website          Website      @relation(fields: [websiteId], references: [id])
   organization     Organization @relation(fields: [organizationId], references: [id])
+  user             User?        @relation("SocialPostAuthor", fields: [userId], references: [id])
   article          Article?     @relation(fields: [articleId], references: [id])
   monthlyPlan      MonthlyPlan? @relation(fields: [monthlyPlanId], references: [id])
   generatedByAIJob AIJob?       @relation("SocialPostAIJob", fields: [generatedByAIJobId], references: [id])
@@ -900,10 +1153,13 @@ model SocialPost {
 
   @@index([websiteId])
   @@index([organizationId])
+  @@index([userId])
   @@index([articleId])
   @@index([platform])
   @@index([status])
+  @@index([source])
   @@index([scheduledFor])
+  @@index([createdAt])
   @@index([deletedAt])
   @@map("social_posts")
 }
@@ -1181,6 +1437,52 @@ model ErrorLog {
   @@map("error_logs")
 }
 
+model TimelineEvent {
+  id                 String                @id @default(uuid()) @db.Uuid
+  userId             String                @db.Uuid
+  websiteId          String                @db.Uuid
+  type               TimelineEventType
+  source             TimelineEventSource
+  title              String
+  summary            String?
+  details            Json?
+  severity           TimelineEventSeverity @default(INFO)
+  relatedTaskId      String?               @db.Uuid
+  relatedArticleId   String?               @db.Uuid
+  relatedReportId    String?               @db.Uuid
+  relatedIntegration String?
+  isRead             Boolean               @default(false)
+  createdAt          DateTime              @default(now())
+
+  user    User    @relation(fields: [userId], references: [id])
+  website Website @relation(fields: [websiteId], references: [id])
+
+  @@index([userId])
+  @@index([websiteId])
+  @@index([type])
+  @@index([source])
+  @@index([isRead])
+  @@index([createdAt])
+  @@index([websiteId, userId, createdAt])
+  @@map("timeline_events")
+}
+
+model WebsiteUserState {
+  id                 String    @id @default(uuid()) @db.Uuid
+  userId             String    @db.Uuid
+  websiteId          String    @db.Uuid
+  timelineLastSeenAt DateTime?
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+
+  user    User    @relation(fields: [userId], references: [id])
+  website Website @relation(fields: [websiteId], references: [id])
+
+  @@unique([userId, websiteId])
+  @@index([websiteId])
+  @@map("website_user_states")
+}
+
 /// Temporary storage for stateless audit preview results (24h TTL, consumed on registration).
 model AuditPreviewToken {
   id                  String    @id @default(uuid()) @db.Uuid
@@ -1202,4 +1504,35 @@ model AuditPreviewToken {
   @@index([expiresAt])
   @@index([usedAt])
   @@map("audit_preview_tokens")
+}
+
+model OnboardingState {
+  id        String @id @default(uuid()) @db.Uuid
+
+  userId    String @unique @db.Uuid
+  websiteId String? @db.Uuid
+
+  status    OnboardingStatus @default(NOT_STARTED)
+  currentStep OnboardingStep @default(ADD_WEBSITE)
+
+  addWebsiteCompletedAt DateTime?
+  firstAuditCompletedAt DateTime?
+  gscStepCompletedAt DateTime?
+  growthScoreViewedAt DateTime?
+  firstTasksViewedAt DateTime?
+  firstPlanGeneratedAt DateTime?
+  completedAt DateTime?
+  skippedAt DateTime?
+
+  metadata Json?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user    User     @relation(fields: [userId], references: [id])
+  website Website? @relation(fields: [websiteId], references: [id])
+
+  @@index([websiteId])
+  @@index([status])
+  @@map("onboarding_states")
 }

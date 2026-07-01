@@ -21,6 +21,7 @@ import {
   ReportType,
   ScoreSource,
   SocialPlatform,
+  SocialPostSource,
   SocialPostStatus,
   SubscriptionPlan,
   SubscriptionStatus,
@@ -399,7 +400,9 @@ async function seedDemoContentData({
         language: WebsiteLanguage.EN,
         status: SocialPostStatus.READY,
         text: "Demo LinkedIn post about local SEO wins.",
+        title: "Local SEO wins",
         hook: "3 quick wins for local visibility",
+        source: SocialPostSource.MANUAL,
         hashtagsJson: ["#SEO", "#Estonia"],
       },
       {
@@ -411,6 +414,8 @@ async function seedDemoContentData({
         language: WebsiteLanguage.EN,
         status: SocialPostStatus.DRAFT,
         text: "Demo Facebook post promoting the new article draft.",
+        title: "New article draft",
+        source: SocialPostSource.ARTICLE,
       },
     ],
   });
