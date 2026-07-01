@@ -1,6 +1,6 @@
 # Production QA — RankBoost.eu SaaS
 
-> **Prompt 10.3** — Live DB QA against Neon development database.  
+> **Prompt 10.5** — Production Neon + Vercel deploy preparation.  
 > **Last updated:** 2026-07-01
 
 **Related:** `docs/engineering/REPO-MAP.md` · `.env.example` · `lib/env.ts`
@@ -52,13 +52,37 @@ npm run prisma:seed   # optional dev admin
 
 | Item | Status |
 |------|--------|
-| Neon project | **RankBoost Development** (`jolly-surf-79369149`) |
-| Database / branch | `neondb` / `main` |
+| **Development** Neon project | **RankBoost Development** (`jolly-surf-79369149`) |
+| Dev region | `aws-us-east-2` |
+| Dev database / branch | `neondb` / `main` |
+| **Production** Neon project | **RankBoost Production** (`wandering-sea-76656755`) |
+| Prod region | `aws-us-west-2` *(EU not selectable via MCP; consider Neon console transfer if latency matters)* |
+| Prod database / branch | `neondb` / `main` (`br-patient-credit-a6gpggsh`) |
+| Dev/prod separated | **Yes** — separate Neon projects |
 | `prisma/schema.prisma` | Validates locally |
-| `prisma/migrations/20260701214117_production_initial/` | **Present and applied** on Neon dev |
-| Duplicate migrations | **None** (single initial migration) |
-| Schema sync | **In sync** (`prisma migrate status` clean) |
-| Basic query | **Passed** (users/orgs/websites readable via Prisma) |
+| `prisma/migrations/20260701214117_production_initial/` | Applied on **dev** and **production** |
+| Duplicate migrations | **None** |
+| Production tables after migrate | **33** (empty app data) |
+
+### Production migration (deploy only)
+
+Use **`migrate deploy`**, never `migrate dev` or `db push` on production:
+
+```bash
+# Point DATABASE_URL at production DIRECT endpoint (no -pooler in host)
+npx prisma migrate deploy
+```
+
+**Connection string policy (this repo uses a single `DATABASE_URL` env name):**
+
+| Context | URL type | Host pattern |
+|---------|----------|--------------|
+| Vercel runtime | **Pooled** | `…-pooler.<region>.aws.neon.tech` |
+| Local dev / CI migrations | **Direct** | `….<region>.aws.neon.tech` (no `-pooler`) |
+
+Copy both URLs from [Neon Console](https://console.neon.tech) → RankBoost Production → Connect. **Do not commit.**
+
+Production migrate deploy status (prompt 10.5): **applied** `20260701214117_production_initial`.
 
 ### Apply on a fresh database
 
@@ -109,6 +133,75 @@ See `.env.example`. Required for full SaaS operation:
 | `RESEND_API_KEY` | Contact form + optional email send |
 
 Missing optional Stripe keys must **not** crash the app — billing page shows upgrade UI with checkout disabled.
+
+### Vercel env checklist (production)
+
+Set in Vercel project **`seo`** (`prj_xHiSv8d9WV7MBjs7KkQUfS8lNRX1`, team `dimanoid-ivs-projects`). Source of truth: `.env.example` + `lib/env.ts`.
+
+| Variable | Required for beta | Notes |
+|----------|-------------------|--------|
+| `DATABASE_URL` | **Yes** | Neon **pooled** URL for serverless |
+| `JWT_ACCESS_SECRET` | **Yes** | New random 32+ chars (not dev value) |
+| `JWT_REFRESH_SECRET` | **Yes** | New random 32+ chars |
+| `NEXT_PUBLIC_APP_URL` | **Yes** | `https://rankboost.eu` (or preview URL for staging) |
+| `NEXT_PUBLIC_SITE_URL` | **Yes** | `https://rankboost.eu` |
+| `ENCRYPTION_KEY` | **Yes** for GSC | 64-char hex; encrypts OAuth tokens |
+| `GOOGLE_CLIENT_ID` | For GSC | Or legacy `GOOGLE_INTEGRATIONS_CLIENT_ID` |
+| `GOOGLE_CLIENT_SECRET` | For GSC | Or legacy `GOOGLE_INTEGRATIONS_CLIENT_SECRET` |
+| `GOOGLE_REDIRECT_URI` | For GSC | Must match callback route exactly |
+| `STRIPE_SECRET_KEY` | For checkout | Optional until billing goes live |
+| `STRIPE_WEBHOOK_SECRET` | For checkout | From Stripe webhook endpoint |
+| `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` | For checkout | |
+| `STRIPE_STARTER_PRICE_ID` / `PRO` / `AGENCY` | For checkout | |
+| `HERMES_API_URL` | For AI | App degrades gracefully without |
+| `HERMES_API_SECRET` | For AI | Not `HERMES_API_KEY` in this repo |
+| `RESEND_API_KEY` | Contact + email send | Marketing contact works without SaaS send |
+| `FROM_EMAIL` / `RESEND_FROM_EMAIL` | Email | Verify `rankboost.eu` domain in Resend |
+| `CONTACT_EMAIL` | Contact form | Internal recipient |
+| `WORDPRESS_CONNECTOR_SECRET` | WP integration | Shared with plugin settings |
+| `CRON_SECRET` | Scheduled jobs | If cron routes enabled later |
+
+**Not used in `lib/env.ts`:** `DIRECT_DATABASE_URL` — use direct URL only when running `prisma migrate deploy` locally/CI.
+
+**Missing secrets for first deploy:** Stripe, Hermes, GSC OAuth, Resend (optional for view-only beta), `ENCRYPTION_KEY`, production JWT secrets.
+
+### External service URLs (production)
+
+| Service | URL / setting |
+|---------|----------------|
+| Google OAuth redirect | `https://rankboost.eu/api/integrations/google/callback` |
+| GSC connect start | `https://rankboost.eu/api/integrations/google/connect` |
+| Stripe webhook | `https://rankboost.eu/api/billing/webhook` |
+| WordPress plugin ping | `POST https://rankboost.eu/api/wordpress/ping` |
+| SaaS app | `https://rankboost.eu/app` |
+
+For **preview deploys**, replace `rankboost.eu` with the Vercel preview host and register matching OAuth/Stripe test URLs.
+
+### Vercel build settings
+
+| Setting | Value |
+|---------|--------|
+| Framework | Next.js |
+| Install | `npm install` |
+| Build | `npm run build` |
+| Node | 24.x (matches current Vercel project) |
+
+**Do not deploy** until production `DATABASE_URL` + JWT secrets are set in Vercel.
+
+### Deploy steps (when ready)
+
+1. Push `main` to GitHub *(done in 10.5)*.
+2. Set Vercel env vars (production + preview as needed).
+3. Confirm production Neon `migrate deploy` applied *(done in 10.5)*.
+4. Trigger Vercel production deploy (or push to linked branch).
+5. Smoke-test: `/login`, `/app`, `/api/auth/me`, onboarding, billing page.
+6. Configure Stripe webhook + Google OAuth redirect for final domain.
+
+### Rollback notes
+
+- **App:** revert Vercel deployment to previous build in dashboard.
+- **Database:** do **not** reset Neon. Forward-fix with a new Prisma migration if schema changes are needed.
+- **Secrets:** rotate JWT secrets invalidates sessions; rotate Stripe webhook secret requires Stripe dashboard update.
 
 ---
 
@@ -212,8 +305,12 @@ Missing optional Stripe keys must **not** crash the app — billing page shows u
 
 - [x] `DATABASE_URL` set in development (Neon)
 - [x] Apply `production_initial` migration on dev DB
-- [ ] `DATABASE_URL` set in production
-- [ ] Deploy `production_initial` migration to production
+- [x] Production Neon project created (separate from dev)
+- [x] Apply `production_initial` on production Neon
+- [x] Push `main` to GitHub
+- [ ] Set Vercel production env vars
+- [ ] `DATABASE_URL` (pooled) set in Vercel production
+- [ ] Deploy to Vercel production with secrets configured
 - [ ] Auth secrets rotated (32+ char random)
 - [ ] `ENCRYPTION_KEY` set (64-char hex)
 - [ ] Stripe live/test keys + webhook endpoint configured
