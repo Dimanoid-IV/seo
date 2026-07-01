@@ -36,6 +36,9 @@ It is **server-only** (`assertServerOnly`) and uses the native `fetch` API with 
 | `rules/` | Modular rule registry (20 checks by category) |
 | `rule-engine.ts` | `runAuditRules`, `getPreviewIssues`, `calculateRawRuleScore`, `calculateEstimatedFixTime` |
 | `preview-response.ts` | Preview API response builder + error mapping |
+| `persist-preview.ts` | Preview token create/consume on registration |
+| `persist-audit.ts` | Dashboard audit rerun — persist Audit, checks, snapshot |
+| `generate-tasks.ts` | Rule-based Task creation from AuditCheck (no AI) |
 | `index.ts` | Public exports |
 
 ---
@@ -503,6 +506,92 @@ If `DATABASE_URL` is missing or token persistence fails:
 ### Out of scope (6.3)
 
 - Paid full audit, dashboard real data, Stripe, Hermes, email, public report page, AIReadinessSnapshot
+
+---
+
+## Persisted Audit Flow (prompt 6.5)
+
+Dashboard re-run saves a **new** audit record — old audits are never overwritten or deleted.
+
+### Synchronous MVP
+
+```
+POST /api/websites/:websiteId/audits/run (authenticated)
+  → PlanLimit check (403 PLAN_LIMIT_EXCEEDED if auditsUsed >= auditsLimit)
+  → runAndPersistWebsiteAudit()
+       → Audit (QUEUED) + Activity AUDIT_STARTED
+       → scanWebsite → extractOnPageSeo → runAuditRules
+       → AuditCheck[] for new auditId
+       → generateTasksFromAuditChecks (max 10, FAIL/WARNING, dedupe)
+       → Activity TASK_CREATED (when tasks created)
+       → GrowthScoreSnapshot (previousScore, delta, breakdownJson source rule_engine_v1)
+       → Audit COMPLETED + Website.currentGrowthScore + lastAuditAt
+       → Activity AUDIT_COMPLETED + GROWTH_SCORE_UPDATED
+  → increment PlanLimit.auditsUsed (when row exists)
+  → client refetches GET /api/dashboard/overview
+```
+
+**No background queue yet** — the HTTP request blocks until the scan completes (up to ~15s). Queue/worker is a later step.
+
+On failure: Audit → `FAILED`, `errorCode` / `errorMessage` saved, Activity `AUDIT_FAILED`, `AppError` returned to client.
+
+### Helpers & routes
+
+| File | Role |
+|------|------|
+| `lib/audit/persist-audit.ts` | `runAndPersistWebsiteAudit({ websiteId, userId, trigger })` |
+| `app/api/websites/[websiteId]/audits/run/route.ts` | `POST` — auth + plan limit + persist |
+
+### Out of scope (6.5)
+
+- Background queue / cron
+- Hermes / AI explanations
+- Stripe upgrade flow
+- Deleting old audits
+- Email report / public report page
+
+---
+
+## AuditChecks → Tasks (prompt 6.6)
+
+After every persisted audit (registration preview attach or dashboard rerun), important checks become real `Task` rows — **rule-based, no AI, no Hermes**.
+
+### Selection rules
+
+| Rule | Value |
+|------|-------|
+| Status filter | `FAIL`, `WARNING` only |
+| Sort | `scoreImpact` desc, then severity desc |
+| Max per audit | 10 |
+| Dedupe | Skip if OPEN/IN_PROGRESS task exists for same `websiteId` + `source=AUDIT` + matching `title` or `auditCheckCode` |
+
+### Task mapping
+
+| AuditCheck | Task |
+|------------|------|
+| `title` | `title` |
+| `recommendationJson.recommendation` or `description` | `description` |
+| `category` | `category` (mapped to `TaskCategory`) |
+| `severity` CRITICAL/HIGH → HIGH; MEDIUM → MEDIUM; LOW/INFO → LOW | `priority` |
+| — | `status = OPEN`, `source = AUDIT` |
+| `scoreImpact` | `impactScore` |
+| `estimatedFixMinutes` ≤10 / 11–45 / >45 | `effort` LOW / MEDIUM / HIGH |
+| enriched JSON | `recommendationJson` (+ `auditCheckCode`, `auditCheckId`) |
+
+### Call sites
+
+| Flow | Helper call |
+|------|-------------|
+| Registration + preview token | `consumeAuditPreviewTokenForRegistration` → `generateTasksFromAuditChecks` |
+| Dashboard rerun | `runAndPersistWebsiteAudit` → `generateTasksFromAuditChecks` |
+
+Activity `TASK_CREATED` when `tasksCreated > 0`. Dashboard overview returns top 5 OPEN/IN_PROGRESS tasks from DB.
+
+### Out of scope (6.6)
+
+- Task detail page, mark complete, edit/delete
+- AI-generated tasks
+- Paid task limits
 
 ---
 
