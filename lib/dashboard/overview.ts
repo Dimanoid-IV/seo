@@ -1,16 +1,54 @@
 import {
   AuditStatus,
+  TaskStatus,
   WebsiteStatus,
   type Prisma,
 } from "@prisma/client";
 
-import { findActiveSubscription, findPrimaryOrganization } from "@/lib/auth/queries";
+import { sortDashboardTasks } from "@/lib/audit/generate-tasks";
+
+import { findActiveSubscription, resolveOwnedOrganization } from "@/lib/auth/queries";
 import {
   serializeOrganization,
   serializeSubscription,
 } from "@/lib/auth/serialize";
 import type { CurrentUser } from "@/lib/auth/types";
 import { getPrisma } from "@/lib/db";
+import { AppError, ErrorCode } from "@/lib/errors";
+
+import { loadDashboardGoogleSearchConsole } from "./gsc-overview";
+import {
+  sortGrowthOpportunities,
+} from "@/lib/growth/opportunities";
+import { syncGrowthOpportunitiesForWebsite } from "@/lib/growth/sync-opportunities";
+import type { GrowthOpportunity } from "@/lib/growth/types";
+import {
+  EMPTY_DASHBOARD_GSC,
+  type DashboardGoogleSearchConsole,
+} from "./types";
+
+export type { DashboardGoogleSearchConsole } from "./types";
+
+export type DashboardOverviewGrowthHistoryEntry = {
+  id: string;
+  score: number;
+  previousScore: number | null;
+  delta: number | null;
+  reason: string | null;
+  source: string;
+  createdAt: string;
+};
+
+export type DashboardOverviewTask = {
+  id: string;
+  title: string;
+  description: string | null;
+  category: string;
+  priority: string;
+  status: string;
+  impactScore: number | null;
+  createdAt: string;
+};
 
 export type DashboardOverviewCheck = {
   code: string;
@@ -63,7 +101,9 @@ export type DashboardOverviewData = {
     completedAt: string | null;
   } | null;
   growthScoreDelta: number | null;
+  growthHistory: DashboardOverviewGrowthHistoryEntry[];
   checks: DashboardOverviewCheck[];
+  tasks: DashboardOverviewTask[];
   activities: {
     id: string;
     type: string;
@@ -71,6 +111,9 @@ export type DashboardOverviewData = {
     description: string | null;
     createdAt: string;
   }[];
+  googleSearchConsole: DashboardGoogleSearchConsole;
+  growthOpportunities: GrowthOpportunity[];
+  growthOpportunityCount: number;
 };
 
 export type DashboardOverviewResponse = {
@@ -137,18 +180,14 @@ export async function getDashboardOverview(
   });
 
   if (!dbUser) {
-    throw new Error("User not found");
+    throw new AppError(ErrorCode.NOT_FOUND, "User not found");
   }
 
-  let organization = currentUser.organizationId
-    ? await prisma.organization.findFirst({
-        where: { id: currentUser.organizationId, deletedAt: null },
-      })
-    : null;
-
-  if (!organization) {
-    organization = await findPrimaryOrganization(prisma, currentUser.id);
-  }
+  const organization = await resolveOwnedOrganization(
+    prisma,
+    currentUser.id,
+    currentUser.organizationId
+  );
 
   const subscription = organization
     ? await findActiveSubscription(prisma, organization.id)
@@ -195,6 +234,7 @@ export async function getDashboardOverview(
           displayName: true,
           currentGrowthScore: true,
           lastAuditAt: true,
+          organizationId: true,
         },
       })
     : null;
@@ -220,7 +260,9 @@ export async function getDashboardOverview(
         planLimit: serializePlanLimit(planLimitRecord),
         latestAudit: null,
         growthScoreDelta: null,
+        growthHistory: [],
         checks: [],
+        tasks: [],
         activities: activities.map((activity) => ({
           id: activity.id,
           type: activity.type,
@@ -228,6 +270,9 @@ export async function getDashboardOverview(
           description: activity.description,
           createdAt: activity.createdAt.toISOString(),
         })),
+        googleSearchConsole: EMPTY_DASHBOARD_GSC,
+        growthOpportunities: [],
+        growthOpportunityCount: 0,
       },
     };
   }
@@ -300,6 +345,63 @@ export async function getDashboardOverview(
     select: { delta: true },
   });
 
+  const tasksRaw = await prisma.task.findMany({
+    where: {
+      websiteId: website.id,
+      deletedAt: null,
+      status: {
+        in: [TaskStatus.OPEN, TaskStatus.IN_PROGRESS],
+      },
+    },
+    select: {
+      id: true,
+      title: true,
+      description: true,
+      category: true,
+      priority: true,
+      status: true,
+      impactScore: true,
+      createdAt: true,
+    },
+  });
+
+  const tasks = sortDashboardTasks(tasksRaw).slice(0, 5);
+
+  const growthHistoryRaw = await prisma.growthScoreSnapshot.findMany({
+    where: { websiteId: website.id },
+    orderBy: { createdAt: "desc" },
+    take: 12,
+    select: {
+      id: true,
+      score: true,
+      previousScore: true,
+      delta: true,
+      reason: true,
+      source: true,
+      createdAt: true,
+    },
+  });
+
+  const growthHistory = [...growthHistoryRaw].reverse().map((snapshot) => ({
+    id: snapshot.id,
+    score: snapshot.score,
+    previousScore: snapshot.previousScore,
+    delta: snapshot.delta,
+    reason: snapshot.reason,
+    source: snapshot.source,
+    createdAt: snapshot.createdAt.toISOString(),
+  }));
+
+  const googleSearchConsole = await loadDashboardGoogleSearchConsole(website.id);
+
+  const growthOpportunities = sortGrowthOpportunities(
+    await syncGrowthOpportunitiesForWebsite({
+      websiteId: website.id,
+      organizationId: website.organizationId,
+      userId: currentUser.id,
+    })
+  );
+
   return {
     data: {
       user: {
@@ -334,6 +436,7 @@ export async function getDashboardOverview(
           }
         : null,
       growthScoreDelta: latestSnapshot?.delta ?? null,
+      growthHistory,
       checks: checks.map((check) => ({
         code: check.code,
         category: check.category,
@@ -345,6 +448,16 @@ export async function getDashboardOverview(
         isVisibleInPreview: check.isVisibleInPreview,
         recommendationJson: check.recommendationJson,
       })),
+      tasks: tasks.map((task) => ({
+        id: task.id,
+        title: task.title,
+        description: task.description,
+        category: task.category,
+        priority: task.priority,
+        status: task.status,
+        impactScore: task.impactScore,
+        createdAt: task.createdAt.toISOString(),
+      })),
       activities: activities.map((activity) => ({
         id: activity.id,
         type: activity.type,
@@ -352,6 +465,9 @@ export async function getDashboardOverview(
         description: activity.description,
         createdAt: activity.createdAt.toISOString(),
       })),
+      googleSearchConsole,
+      growthOpportunities: growthOpportunities.slice(0, 5),
+      growthOpportunityCount: growthOpportunities.length,
     },
   };
 }

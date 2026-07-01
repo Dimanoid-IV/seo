@@ -1,4 +1,4 @@
-import { getServerEnv } from "@/lib/env";
+import { assertSaasConfigured } from "@/lib/auth/saas-config";
 import { AppError, ErrorCode } from "@/lib/errors";
 import { getRefreshTokenFromCookies } from "@/lib/auth/cookies";
 import {
@@ -8,13 +8,7 @@ import {
 import { refreshAuthSession } from "@/lib/auth/service";
 
 function assertDatabaseConfigured(): void {
-  if (!getServerEnv().DATABASE_URL) {
-    throw new AppError(
-      ErrorCode.INTERNAL_ERROR,
-      "База данных не настроена. Установите DATABASE_URL.",
-      { statusCode: 503 }
-    );
-  }
+  assertSaasConfigured();
 }
 
 export async function POST(request: Request) {

@@ -1,5 +1,4 @@
-import { getServerEnv } from "@/lib/env";
-import { AppError, ErrorCode } from "@/lib/errors";
+import { assertSaasConfigured } from "@/lib/auth/saas-config";
 import {
   authErrorResponse,
   authJsonResponse,
@@ -10,13 +9,7 @@ import { loginUser } from "@/lib/auth/service";
 import { loginSchema } from "@/lib/validators/auth";
 
 function assertDatabaseConfigured(): void {
-  if (!getServerEnv().DATABASE_URL) {
-    throw new AppError(
-      ErrorCode.INTERNAL_ERROR,
-      "База данных не настроена. Установите DATABASE_URL.",
-      { statusCode: 503 }
-    );
-  }
+  assertSaasConfigured();
 }
 
 // TODO: rate limit — 10 login attempts / min / IP (docs/API-Design.md)

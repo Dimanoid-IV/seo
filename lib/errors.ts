@@ -13,6 +13,8 @@ export const ErrorCode = {
   HERMES_UNAVAILABLE: "HERMES_UNAVAILABLE",
   WEBSITE_UNREACHABLE: "WEBSITE_UNREACHABLE",
   SSRF_BLOCKED: "SSRF_BLOCKED",
+  FEATURE_NOT_AVAILABLE: "FEATURE_NOT_AVAILABLE",
+  BILLING_REQUIRED: "BILLING_REQUIRED",
   INTERNAL_ERROR: "INTERNAL_ERROR",
 } as const;
 
@@ -38,6 +40,8 @@ const DEFAULT_STATUS_BY_CODE: Record<ErrorCode, number> = {
   [ErrorCode.PAYMENT_FAILED]: 402,
   [ErrorCode.RATE_LIMIT_EXCEEDED]: 429,
   [ErrorCode.PLAN_LIMIT_EXCEEDED]: 403,
+  [ErrorCode.FEATURE_NOT_AVAILABLE]: 403,
+  [ErrorCode.BILLING_REQUIRED]: 402,
   [ErrorCode.INTEGRATION_ERROR]: 502,
   [ErrorCode.HERMES_UNAVAILABLE]: 503,
   [ErrorCode.WEBSITE_UNREACHABLE]: 502,
@@ -95,6 +99,14 @@ export function toAppError(error: unknown): AppError {
   }
 
   if (error instanceof Error) {
+    if (error.message.startsWith("Missing required environment variable:")) {
+      return new AppError(
+        ErrorCode.INTERNAL_ERROR,
+        "Server configuration is incomplete. Check DATABASE_URL and auth secrets in .env.local.",
+        { statusCode: 503, cause: error }
+      );
+    }
+
     return new AppError(ErrorCode.INTERNAL_ERROR, "Internal server error", {
       cause: error,
     });

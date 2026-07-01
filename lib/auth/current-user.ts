@@ -1,7 +1,8 @@
 import { getPrisma } from "@/lib/db";
-import { getServerEnv } from "@/lib/env";
 import { AppError, ErrorCode } from "@/lib/errors";
 import { assertServerOnly } from "@/lib/security";
+
+import { assertSaasConfigured } from "./saas-config";
 
 import { localeToAuthLocale, userRoleToAuthRole } from "./mappers";
 import { verifyAccessToken } from "./tokens";
@@ -38,14 +39,7 @@ function mapPayloadToCurrentUser(
 }
 
 function assertDatabaseConfigured(): void {
-  const databaseUrl = getServerEnv().DATABASE_URL;
-  if (!databaseUrl) {
-    throw new AppError(
-      ErrorCode.INTERNAL_ERROR,
-      "База данных не настроена. Установите DATABASE_URL для использования auth helpers.",
-      { statusCode: 503 }
-    );
-  }
+  assertSaasConfigured();
 }
 
 /**

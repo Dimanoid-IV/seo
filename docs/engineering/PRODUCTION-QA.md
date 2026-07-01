@@ -1,0 +1,341 @@
+# Production QA — RankBoost.eu SaaS
+
+> **Prompt 10.3** — Live DB QA against Neon development database.  
+> **Last updated:** 2026-07-01
+
+**Related:** `docs/engineering/REPO-MAP.md` · `.env.example` · `lib/env.ts`
+
+---
+
+## 1. Major product flows
+
+| Flow | Entry | Server gates | Notes |
+|------|-------|--------------|-------|
+| Auth | `/login`, `/register` | JWT cookies | Session refresh via `/api/auth/refresh` |
+| Onboarding | `/app/onboarding`, Setup sidebar | Website limit on create | GSC optional; legacy users auto-completed |
+| Dashboard | `/app` | View only | Onboarding banner when incomplete |
+| Audit | Dashboard / onboarding | `assertCanRunAudit` on rerun | Preview audit is public |
+| Content Plan | `/app/content-plan` | Article generation gated | Articles open at `/app/articles/[id]` |
+| Social Posts | `/app/social-posts` | Generation gated | Copy-only; no auto-publish |
+| Autopilot | `/app/autopilot` | Monthly plan generation gated | Plans are drafts; no auto-execution |
+| Control Center | `/app/autopilot-control` | View + manual quick actions | No auto send/publish |
+| Email Approvals | `/app/email-approvals` | Generate + manual send gated | Approve ≠ send |
+| Timeline | `/app/timeline` | View only | Deduped events; not source of truth |
+| Integrations | `/app/integrations` | OAuth connect | GSC + WordPress |
+| Billing | `/app/billing` | Stripe optional | Missing Stripe env disables checkout, not viewing |
+
+---
+
+## 2. Validation commands
+
+Run from repository root:
+
+```bash
+npm run prisma:validate
+npm run prisma:generate
+npm run lint
+npm run build
+```
+
+Optional (when PostgreSQL is running and `DATABASE_URL` is set):
+
+```bash
+npm run prisma:migrate:dev -- --name production_initial
+npm run prisma:seed   # optional dev admin
+```
+
+**Tests:** No `npm test` script in this repo (lint + build only).
+
+---
+
+## 3. Database / migration status
+
+| Item | Status |
+|------|--------|
+| Neon project | **RankBoost Development** (`jolly-surf-79369149`) |
+| Database / branch | `neondb` / `main` |
+| `prisma/schema.prisma` | Validates locally |
+| `prisma/migrations/20260701214117_production_initial/` | **Present and applied** on Neon dev |
+| Duplicate migrations | **None** (single initial migration) |
+| Schema sync | **In sync** (`prisma migrate status` clean) |
+| Basic query | **Passed** (users/orgs/websites readable via Prisma) |
+
+### Apply on a fresh database
+
+```bash
+# Ensure DATABASE_URL is set in .env.local (do not commit)
+npm run prisma:migrate:deploy
+# or for local dev:
+npm run prisma:migrate:dev -- --name production_initial   # only if no migration folder yet
+```
+
+Do **not** reset Neon or create duplicate migrations for timeline, social posts, autopilot, etc. — all tables are in `production_initial`.
+
+### Local dev env (minimum for auth + DB QA)
+
+```bash
+set -a && . ./.env.local && set +a
+npm run dev
+```
+
+Required in `.env.local` for SaaS auth (not just `DATABASE_URL`):
+
+| Variable | Notes |
+|----------|--------|
+| `DATABASE_URL` | Neon direct connection string |
+| `JWT_ACCESS_SECRET` | 32+ char random |
+| `JWT_REFRESH_SECRET` | 32+ char random |
+| `NEXT_PUBLIC_APP_URL` | e.g. `http://localhost:3000` |
+
+Missing JWT secrets → register/login return **503** with friendly message (`assertSaasConfigured()` in `lib/auth/saas-config.ts`).
+
+---
+
+## 4. Environment variables
+
+See `.env.example`. Required for full SaaS operation:
+
+| Variable | Purpose |
+|----------|---------|
+| `DATABASE_URL` | PostgreSQL |
+| `JWT_ACCESS_SECRET`, `JWT_REFRESH_SECRET` | Auth tokens |
+| `NEXT_PUBLIC_APP_URL` | SaaS app URL (checkout return) |
+| `NEXT_PUBLIC_SITE_URL` | Marketing site URL |
+| `ENCRYPTION_KEY` | OAuth/token encryption |
+| `HERMES_API_URL`, `HERMES_API_SECRET` | AI generation |
+| `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `GOOGLE_REDIRECT_URI` | GSC OAuth |
+| `WORDPRESS_CONNECTOR_SECRET` | WP connector |
+| `STRIPE_*` | Billing (optional for dev viewing) |
+| `RESEND_API_KEY` | Contact form + optional email send |
+
+Missing optional Stripe keys must **not** crash the app — billing page shows upgrade UI with checkout disabled.
+
+---
+
+## 5. Stripe test instructions
+
+1. Set `STRIPE_SECRET_KEY`, `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`, price IDs, `STRIPE_WEBHOOK_SECRET`, `NEXT_PUBLIC_APP_URL`.
+2. Use Stripe CLI for local webhooks:
+   ```bash
+   stripe listen --forward-to localhost:3000/api/billing/webhook
+   ```
+3. Open `/app/billing` → choose Starter/Pro/Agency → complete test checkout.
+4. Confirm webhook updates `Subscription` and `PlanLimit`.
+5. Trigger a gated action at plan limit → expect `PLAN_LIMIT_EXCEEDED` with upgrade hint.
+6. Confirm **existing data remains visible** when over limit.
+
+---
+
+## 6. GSC test notes
+
+1. Connect from `/app/integrations` → Google OAuth.
+2. Pick property in property picker (empty state if no sites).
+3. Sync metrics; disconnect gracefully if token expired (re-auth prompt).
+4. GSC insight → task bridge should not create duplicate timeline spam (dedupe windows in `lib/timeline/hooks.ts`).
+
+---
+
+## 7. WordPress test notes
+
+1. Create connection in Integrations → copy API secret to plugin.
+2. Plugin ping from WP admin → status Connected.
+3. From Article Editor or Content Plan → **Create WordPress draft** → post stays **draft** in WP.
+4. Failure cases: site unreachable, bad secret, missing plugin → user-friendly error, logged server-side (`wordpress.draft`).
+
+---
+
+## 8. Hermes test notes
+
+1. Set `HERMES_API_URL` and `HERMES_API_SECRET`.
+2. Generate article / social post → quality pipeline runs before user sees content.
+3. If Hermes down → `HERMES_UNAVAILABLE` message; logged as `hermes.fetch` / `hermes.response`.
+
+---
+
+## 9. Known limitations (beta)
+
+- No automatic publishing, email sending, or approvals.
+- AI Tasks and Settings nav items disabled (coming soon).
+- No dedicated `/app/articles` list — articles accessed from Content Plan.
+- Report **creation** route not implemented (view-only reports).
+- Marketing site pricing not synced with Stripe products.
+- Hermes, GSC OAuth, Stripe, Resend, and WordPress connector require env vars for full integration QA.
+- FREE plan limits block **second** email approval generation in the same month (`PLAN_LIMIT_EXCEEDED` — expected).
+- Social AI generate returns `HERMES_UNAVAILABLE` (503) when Hermes env is unset — manual draft create still works.
+- Onboarding completion requires website + completed audit + monthly plan (GSC optional via skip).
+
+---
+
+## 10. Live DB QA results (prompt 10.3)
+
+**Date:** 2026-07-01 · **User:** `qa-beta@rankboost.test` · **Dev server:** `localhost:3000` + Neon
+
+| Area | Result | Notes |
+|------|--------|-------|
+| Neon connection | **Passed** | Prisma connect + queries |
+| Migration `production_initial` | **Passed** | Applied on Neon main |
+| Schema sync | **Passed** | validate + generate OK |
+| Auth / session | **Passed** | login, `/api/auth/me`, unauth → 401 |
+| SaaS env guard | **Passed** | Missing JWT → 503 (fixed in 10.3) |
+| Onboarding | **Passed** | website → audit → skip GSC → plan → complete → Control Center |
+| Dashboard | **Passed** | overview loads; null Growth Score safe |
+| Control Center | **Passed** | `/api/autopilot-control` 200 |
+| Timeline | **Passed** | events after plan/social/email/audit; mark-read 200 |
+| Billing | **Passed** | FREE plan + usage counters; checkout 402 when Stripe missing |
+| Social Posts | **Passed** | manual create 200; AI generate 503 without Hermes (graceful) |
+| Autopilot | **Passed** | monthly plan generate 200; reuse on regen |
+| Email Approvals | **Passed** | generate 200; approve/send not auto; FREE limit on 2nd gen |
+| Integrations | **Passed** | overview 200; GSC/WP need OAuth/env |
+| Responsive smoke | **Not fully tested** | No automated viewport pass; spot-check recommended |
+
+### Beta blockers fixed in 10.3
+
+1. **Auth 500 when JWT secrets missing** — `lib/auth/saas-config.ts` + 503 on auth routes.
+2. **Orphan users on failed register** — prevented once env guard is in place (existing orphan may need manual cleanup).
+3. **`onboardingCompleted` false for SKIPPED** — `/api/auth/me` treats `SKIPPED` as complete.
+4. **Legacy auto-complete heuristic removed** — onboarding only completes via explicit steps or `onboardingCompletedAt`.
+5. **Dashboard `User not found` raw error** — mapped to `NOT_FOUND` AppError.
+
+### Known beta blockers (remaining)
+
+| Blocker | Severity | Mitigation |
+|---------|----------|------------|
+| Production env checklist incomplete | High | Set all secrets per §4 before beta users |
+| Hermes not configured in dev | Medium | Manual drafts work; AI shows friendly error |
+| Stripe not configured | Low | Billing page viewable; checkout disabled |
+| Resend not configured | Low | Send button disabled; approve does not send |
+| Responsive not systematically tested | Low | Manual 375px pass before public beta |
+
+---
+
+## 11. Launch checklist
+
+- [x] `DATABASE_URL` set in development (Neon)
+- [x] Apply `production_initial` migration on dev DB
+- [ ] `DATABASE_URL` set in production
+- [ ] Deploy `production_initial` migration to production
+- [ ] Auth secrets rotated (32+ char random)
+- [ ] `ENCRYPTION_KEY` set (64-char hex)
+- [ ] Stripe live/test keys + webhook endpoint configured
+- [ ] GSC OAuth redirect URIs match production domain
+- [ ] Hermes worker reachable from Vercel/host
+- [ ] `npm run lint` && `npm run build` pass in CI
+- [ ] Manual QA flows below completed
+
+---
+
+## 12. Manual QA checklist
+
+### New user flow
+
+- [x] 1. Sign up / login (Neon dev)
+- [x] 2. See onboarding banner or Setup sidebar link
+- [x] 3. Add website (respects website limit on free plan)
+- [x] 4. Run audit
+- [x] 5. See Growth Score / tasks on dashboard
+- [x] 6. Skip or connect GSC
+- [x] 7. Generate monthly plan
+- [x] 8. Open Control Center
+- [ ] 9. See recommended actions (no auto-execution) — API OK; UI spot-check pending
+
+### Existing user flow
+
+- [ ] 1. Existing user logs in
+- [ ] 2. No forced onboarding redirect
+- [ ] 3. Existing data visible
+- [ ] 4. Billing gates only block **new generation** actions
+
+### Billing flow
+
+- [x] 1. Billing page loads without Stripe env
+- [x] 2. Checkout disabled when Stripe missing (402 `BILLING_REQUIRED`)
+- [ ] 3. Checkout works when Stripe configured
+- [ ] 4. Webhook updates subscription
+- [x] 5. Usage limits block generation after limit reached
+- [x] 6. Existing data remains visible when limited
+
+### AI draft flow
+
+- [ ] 1. Generate article
+- [ ] 2. Quality pipeline runs
+- [ ] 3. Draft appears in Content Plan / editor
+- [ ] 4. WordPress draft creation remains draft-only
+
+### Social flow
+
+- [x] 1. Generate social post (503 graceful without Hermes)
+- [ ] 2. Quality checks run (needs Hermes)
+- [x] 3. Manual create + copy path available
+- [x] 4. No external publishing
+
+### Email approval flow
+
+- [x] 1. Generate email approval draft
+- [ ] 2. Edit subject/body (UI spot-check)
+- [ ] 3. Approve email (does not send) — API route exists
+- [x] 4. Send only via explicit manual click (if Resend configured)
+- [x] 5. Approval alone does not send
+
+### Autopilot flow
+
+- [x] 1. Generate monthly plan
+- [x] 2. Open Control Center
+- [ ] 3. Generate approval email from queue (UI spot-check)
+- [x] 4. No actions execute automatically
+
+### Integrations flow
+
+- [ ] 1. GSC connect + property picker
+- [ ] 2. GSC metrics load or graceful empty/error
+- [ ] 3. WordPress connect + ping
+- [ ] 4. WordPress draft failure handled gracefully
+
+### Responsive UI (spot check)
+
+- [ ] Dashboard, Control Center, Timeline, Content Plan usable at 375px width
+- [ ] Mobile bottom nav + “More” sheet work
+- [ ] Tables/cards do not overflow horizontally
+
+---
+
+## 13. UX checklist (prompt 10.2)
+
+See also `docs/engineering/DESIGN-SYSTEM.md`.
+
+### Visual consistency
+
+- [ ] Dashboard pages use consistent headers (`PageHeader`)
+- [ ] Cards have consistent spacing and glass styling
+- [ ] Status badges are consistent across modules
+- [ ] Empty states are helpful and action-oriented
+- [ ] Trust notes appear on billing, AI content, email, WordPress flows
+- [ ] No technical logs or internal terms in user-facing UI
+
+### Mobile
+
+- [ ] Main dashboard pages usable at ~375px width
+- [ ] Dialogs fit viewport (`max-h`, scroll)
+- [ ] Cards stack correctly on small screens
+- [ ] Buttons remain tappable (44px-ish targets)
+- [ ] Bottom nav does not block primary content (`pb-24`)
+
+### Safety copy
+
+- [ ] AI drafts clearly require review
+- [ ] WordPress described as drafts only
+- [ ] Email approval does not imply sending
+- [ ] Billing says cancel anytime + existing data stays available
+- [ ] Integrations page does not promise auto-publishing
+
+---
+
+## 15. Security / ownership audit (10.1 + 10.3)
+
+- `resolveOwnedOrganization()` in `lib/auth/queries.ts` — verifies JWT org hint against `ownerUserId`.
+- Used in: billing, dashboard/reports/content-plan overviews, GSC context, timeline website resolution, `/api/auth/me`.
+- Website-scoped API routes use ownership helpers (`resolveActiveWebsiteForUser`, article/org checks).
+- API errors use `AppError` + `createErrorResponse()` — no stack traces in responses.
+- Server logging via `lib/logging.ts` — no secrets in logs.
+- Stale JWT `X-Organization-Id` / org hint does not leak other orgs — server resolves owned org only (verified 10.3).
+
+---
