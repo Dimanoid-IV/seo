@@ -1,6 +1,6 @@
 # Production QA — RankBoost.eu SaaS
 
-> **Prompt 10.5** — Production Neon + Vercel deploy preparation.  
+> **Prompt 10.5.1** — Vercel Production env configured from Neon + generated secrets.  
 > **Last updated:** 2026-07-01
 
 **Related:** `docs/engineering/REPO-MAP.md` · `.env.example` · `lib/env.ts`
@@ -163,7 +163,30 @@ Set in Vercel project **`seo`** (`prj_xHiSv8d9WV7MBjs7KkQUfS8lNRX1`, team `diman
 
 **Not used in `lib/env.ts`:** `DIRECT_DATABASE_URL` — use direct URL only when running `prisma migrate deploy` locally/CI.
 
-**Missing secrets for first deploy:** Stripe, Hermes, GSC OAuth, Resend (optional for view-only beta), `ENCRYPTION_KEY`, production JWT secrets.
+### Vercel Production env status (prompt 10.5.1)
+
+Project **`seo`** · environment **Production** · configured **2026-07-01**
+
+| Variable | Status |
+|----------|--------|
+| `DATABASE_URL` | ✅ Neon Production **pooled** URL |
+| `JWT_ACCESS_SECRET` | ✅ generated (64-byte base64) |
+| `JWT_REFRESH_SECRET` | ✅ generated (64-byte base64) |
+| `ENCRYPTION_KEY` | ✅ generated (32-byte hex) |
+| `WORDPRESS_CONNECTOR_SECRET` | ✅ generated (48-byte base64) |
+| `NEXT_PUBLIC_APP_URL` | ✅ `https://rankboost.eu` |
+| `NEXT_PUBLIC_SITE_URL` | ✅ `https://rankboost.eu` |
+| `GOOGLE_REDIRECT_URI` | ✅ `https://rankboost.eu/api/integrations/google/callback` |
+| `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` | ❌ manual — Google Cloud Console |
+| `STRIPE_*` (6 vars) | ❌ manual — Stripe Dashboard |
+| `HERMES_API_URL` / `HERMES_API_SECRET` | ❌ manual — Hermes worker |
+| `RESEND_API_KEY` | ✅ already present |
+| `FROM_EMAIL` / `CONTACT_EMAIL` | ✅ already present |
+| `RESEND_FROM_EMAIL` | ❌ optional (`FROM_EMAIL` used) |
+
+**Minimum beta env:** configured. **Deploy:** pending (Prompt 10.6).
+
+**ENCRYPTION_KEY format:** `lib/security/encryption.ts` accepts 64-char hex (used) or 32-byte base64.
 
 ### External service URLs (production)
 
@@ -186,7 +209,7 @@ For **preview deploys**, replace `rankboost.eu` with the Vercel preview host and
 | Build | `npm run build` |
 | Node | 24.x (matches current Vercel project) |
 
-**Do not deploy** until production `DATABASE_URL` + JWT secrets are set in Vercel.
+**Do not deploy** until remaining external secrets are set if those features are required at launch (GSC, Stripe checkout, Hermes AI). Minimum env for auth + DB is configured.
 
 ### Deploy steps (when ready)
 
@@ -308,8 +331,8 @@ For **preview deploys**, replace `rankboost.eu` with the Vercel preview host and
 - [x] Production Neon project created (separate from dev)
 - [x] Apply `production_initial` on production Neon
 - [x] Push `main` to GitHub
-- [ ] Set Vercel production env vars
-- [ ] `DATABASE_URL` (pooled) set in Vercel production
+- [x] Set Vercel production env vars (minimum: DATABASE_URL, JWT, ENCRYPTION_KEY, public URLs)
+- [ ] Set remaining external secrets (Google OAuth, Stripe, Hermes)
 - [ ] Deploy to Vercel production with secrets configured
 - [ ] Auth secrets rotated (32+ char random)
 - [ ] `ENCRYPTION_KEY` set (64-char hex)

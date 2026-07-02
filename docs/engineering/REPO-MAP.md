@@ -713,21 +713,28 @@ Audit / GSC sync / Article generate / Task complete / Dashboard load
 
 **QA:** Full API smoke against Neon — onboarding, audit, autopilot, timeline, billing, social, email approvals. Hermes/Stripe/Resend/GSC fail gracefully when unset.
 
-> **Не сделано:** Systematic responsive viewport QA; Vercel env + production deploy; Stripe/Hermes prod secrets.
+> **Не сделано:** Systematic responsive viewport QA; Vercel production deploy; Stripe/Hermes/Google OAuth prod secrets.
 
 ### 4.3.27. Production Neon + Vercel deploy prep (prompt 10.5)
 
 | Item | Status |
 |------|--------|
-| Git push `main` → `origin` | ✅ (`aa76f16`) |
+| Git push `main` → `origin` | ✅ (`246ff20`) |
 | Neon **RankBoost Production** | ✅ `wandering-sea-76656755`, region `aws-us-west-2` |
 | Dev/prod DB separation | ✅ separate projects |
 | `prisma migrate deploy` on production | ✅ `20260701214117_production_initial` |
 | Vercel project **seo** | ✅ linked (`prj_xHiSv8d9WV7MBjs7KkQUfS8lNRX1`) |
-| Vercel production deploy | ⏸ deferred — env vars required first |
-| `docs/engineering/PRODUCTION-QA.md` | ✅ deploy checklist added |
 
-**Note:** Repo uses single `DATABASE_URL`; pooled URL on Vercel, direct URL for migrations only.
+### 4.3.28. Vercel Production env (prompt 10.5.1)
+
+| Item | Status |
+|------|--------|
+| Vercel Production `DATABASE_URL` | ✅ Neon pooled (RankBoost Production) |
+| Generated secrets (JWT, ENCRYPTION_KEY, WP) | ✅ via Vercel CLI |
+| Public URLs (`NEXT_PUBLIC_*`) | ✅ `https://rankboost.eu` |
+| `GOOGLE_REDIRECT_URI` | ✅ configured |
+| External secrets (Google, Stripe, Hermes) | ⏸ manual |
+| Production deploy | ⏸ Prompt 10.6 |
 
 ### 4.4. Admin
 
@@ -1009,3 +1016,4 @@ curl -s -o /dev/null -w "%{http_code}" -X POST http://localhost:3000/api/contact
 | 2026-07-01 | 10.3 | Live DB QA — Neon dev, production_initial migration, saas-config, PRODUCTION-QA — промпт 10.3 |
 | 2026-07-01 | 10.4 | Commit hygiene — schema, SaaS backend/UI, integrations, docs — промпт 10.4 |
 | 2026-07-01 | 10.5 | Production Neon + Vercel deploy prep — prod DB, migrate deploy, env checklist — промпт 10.5 |
+| 2026-07-01 | 10.5.1 | Vercel Production env — Neon pooled DATABASE_URL, generated secrets — промпт 10.5.1 |
