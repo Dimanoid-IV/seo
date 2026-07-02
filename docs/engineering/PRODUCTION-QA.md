@@ -174,17 +174,17 @@ Project **`seo`** · environment **Production** · configured **2026-07-01**
 | `JWT_REFRESH_SECRET` | ✅ generated (64-byte base64) |
 | `ENCRYPTION_KEY` | ✅ generated (32-byte hex) |
 | `WORDPRESS_CONNECTOR_SECRET` | ✅ generated (48-byte base64) |
-| `NEXT_PUBLIC_APP_URL` | ✅ `https://rankboost.eu` |
-| `NEXT_PUBLIC_SITE_URL` | ✅ `https://rankboost.eu` |
-| `GOOGLE_REDIRECT_URI` | ✅ `https://rankboost.eu/api/integrations/google/callback` |
+| `NEXT_PUBLIC_APP_URL` | ✅ `https://www.rankboost.eu` |
+| `NEXT_PUBLIC_SITE_URL` | ✅ `https://www.rankboost.eu` |
+| `GOOGLE_REDIRECT_URI` | ✅ `https://www.rankboost.eu/api/integrations/google/callback` |
 | `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` | ❌ manual — Google Cloud Console |
 | `STRIPE_*` (6 vars) | ❌ manual — Stripe Dashboard |
 | `HERMES_API_URL` / `HERMES_API_SECRET` | ❌ manual — Hermes worker |
 | `RESEND_API_KEY` | ✅ already present |
 | `FROM_EMAIL` / `CONTACT_EMAIL` | ✅ already present |
-| `RESEND_FROM_EMAIL` | ❌ optional (`FROM_EMAIL` used) |
+| `RESEND_FROM_EMAIL` | ✅ added (matches `FROM_EMAIL`) |
 
-**Minimum beta env:** configured. **Deploy:** pending (Prompt 10.6).
+**Minimum beta env:** configured. **Deploy:** live at `www.rankboost.eu`.
 
 **ENCRYPTION_KEY format:** `lib/security/encryption.ts` accepts 64-char hex (used) or 32-byte base64.
 
@@ -192,11 +192,11 @@ Project **`seo`** · environment **Production** · configured **2026-07-01**
 
 | Service | URL / setting |
 |---------|----------------|
-| Google OAuth redirect | `https://rankboost.eu/api/integrations/google/callback` |
-| GSC connect start | `https://rankboost.eu/api/integrations/google/connect` |
-| Stripe webhook | `https://rankboost.eu/api/billing/webhook` |
-| WordPress plugin ping | `POST https://rankboost.eu/api/wordpress/ping` |
-| SaaS app | `https://rankboost.eu/app` |
+| Google OAuth redirect | `https://www.rankboost.eu/api/integrations/google/callback` |
+| GSC connect start | `https://www.rankboost.eu/api/integrations/google/connect` |
+| Stripe webhook | `https://www.rankboost.eu/api/billing/webhook` |
+| WordPress plugin ping | `POST https://www.rankboost.eu/api/wordpress/ping` |
+| SaaS app | `https://www.rankboost.eu/app` |
 
 For **preview deploys**, replace `rankboost.eu` with the Vercel preview host and register matching OAuth/Stripe test URLs.
 
@@ -234,6 +234,23 @@ For **preview deploys**, replace `rankboost.eu` with the Vercel preview host and
 - Stripe keys missing → checkout returns 402 `BILLING_REQUIRED`.
 - Hermes missing → social AI returns 503.
 - `DATABASE_URL` in Vercel must be a single line (no embedded newlines).
+
+### Production integrations QA (prompt 10.7)
+
+**Deployment:** `dpl_32ppF92McERS6aTCSnTFaFj3uipq` · **2026-07-02**
+
+| Integration | Result | Notes |
+|-------------|--------|-------|
+| Auth | **Passed** | login, `/api/auth/me`, unauth 401 |
+| GSC OAuth | **Blocked** | Redirects to integrations with `gsc_connection_failed` until Google client id/secret set |
+| Stripe checkout | **Blocked** | 402 `BILLING_REQUIRED` for Starter/Pro/Agency |
+| Stripe webhook | **Not tested** | Requires Stripe dashboard + `STRIPE_WEBHOOK_SECRET` |
+| Hermes AI | **Blocked** | 503 `HERMES_UNAVAILABLE` |
+| Email (Resend) | **Partial** | `RESEND_API_KEY` present; approval list loads |
+
+**Env updates in 10.7:** `GOOGLE_REDIRECT_URI`, `NEXT_PUBLIC_APP_URL`, `NEXT_PUBLIC_SITE_URL` → `www`; `RESEND_FROM_EMAIL` added.
+
+**Manual blockers:** `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, all `STRIPE_*` keys, `HERMES_API_URL`, `HERMES_API_SECRET` — not available in repo; add in Vercel Production and redeploy.
 
 ### Deploy steps (when ready)
 
