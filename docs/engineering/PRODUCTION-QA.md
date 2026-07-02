@@ -1,6 +1,6 @@
 # Production QA — RankBoost.eu SaaS
 
-> **Prompt 10.6** — Vercel Production deploy + smoke test.  
+> **Prompt 10.7** — Production secrets & integrations QA.  
 > **Last updated:** 2026-07-02
 
 **Related:** `docs/engineering/REPO-MAP.md` · `.env.example` · `lib/env.ts`

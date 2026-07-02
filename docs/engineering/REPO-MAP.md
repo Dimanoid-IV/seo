@@ -744,7 +744,20 @@ Audit / GSC sync / Article generate / Task complete / Dashboard load
 | Build fix | ✅ `prisma generate && next build` |
 | Production smoke test | ✅ API flows against Neon Production |
 | QA user | `qa-prod@rankboost.test` |
-| External integrations | ⏸ Google/Stripe/Hermes manual |
+| External integrations | ⏸ Google/Stripe/Hermes — secrets not in repo; manual Vercel setup required |
+
+### 4.3.30. Production integrations QA (prompt 10.7)
+
+| Item | Status |
+|------|--------|
+| `GOOGLE_REDIRECT_URI` → www callback | ✅ |
+| `NEXT_PUBLIC_*` → www | ✅ |
+| `RESEND_FROM_EMAIL` | ✅ |
+| Google OAuth client secrets | ❌ manual blocker |
+| Stripe keys + webhook | ❌ manual blocker |
+| Hermes URL/secret | ❌ manual blocker |
+| Integration QA (live) | ✅ graceful fallbacks verified |
+| Deploy after env update | ✅ `dpl_32ppF92McERS6aTCSnTFaFj3uipq` |
 
 ### 4.4. Admin
 
@@ -1028,3 +1041,4 @@ curl -s -o /dev/null -w "%{http_code}" -X POST http://localhost:3000/api/contact
 | 2026-07-01 | 10.5 | Production Neon + Vercel deploy prep — prod DB, migrate deploy, env checklist — промпт 10.5 |
 | 2026-07-01 | 10.5.1 | Vercel Production env — Neon pooled DATABASE_URL, generated secrets — промпт 10.5.1 |
 | 2026-07-02 | 10.6 | Vercel deploy + production smoke test — промпт 10.6 |
+| 2026-07-02 | 10.7 | Production integrations QA — www URLs, Resend alias, blocked secrets documented — промпт 10.7 |
