@@ -734,7 +734,17 @@ Audit / GSC sync / Article generate / Task complete / Dashboard load
 | Public URLs (`NEXT_PUBLIC_*`) | ✅ `https://rankboost.eu` |
 | `GOOGLE_REDIRECT_URI` | ✅ configured |
 | External secrets (Google, Stripe, Hermes) | ⏸ manual |
-| Production deploy | ⏸ Prompt 10.6 |
+| Production deploy | ✅ Prompt 10.6 (`www.rankboost.eu`) |
+
+### 4.3.29. Vercel deploy + production smoke test (prompt 10.6)
+
+| Item | Status |
+|------|--------|
+| Vercel production deploy | ✅ `dpl_3Nx2aicKvxjxXtNPmntZNRyg2ixh` |
+| Build fix | ✅ `prisma generate && next build` |
+| Production smoke test | ✅ API flows against Neon Production |
+| QA user | `qa-prod@rankboost.test` |
+| External integrations | ⏸ Google/Stripe/Hermes manual |
 
 ### 4.4. Admin
 
@@ -1017,3 +1027,4 @@ curl -s -o /dev/null -w "%{http_code}" -X POST http://localhost:3000/api/contact
 | 2026-07-01 | 10.4 | Commit hygiene — schema, SaaS backend/UI, integrations, docs — промпт 10.4 |
 | 2026-07-01 | 10.5 | Production Neon + Vercel deploy prep — prod DB, migrate deploy, env checklist — промпт 10.5 |
 | 2026-07-01 | 10.5.1 | Vercel Production env — Neon pooled DATABASE_URL, generated secrets — промпт 10.5.1 |
+| 2026-07-02 | 10.6 | Vercel deploy + production smoke test — промпт 10.6 |

@@ -1,7 +1,7 @@
 # Production QA — RankBoost.eu SaaS
 
-> **Prompt 10.5.1** — Vercel Production env configured from Neon + generated secrets.  
-> **Last updated:** 2026-07-01
+> **Prompt 10.6** — Vercel Production deploy + smoke test.  
+> **Last updated:** 2026-07-02
 
 **Related:** `docs/engineering/REPO-MAP.md` · `.env.example` · `lib/env.ts`
 
@@ -206,18 +206,42 @@ For **preview deploys**, replace `rankboost.eu` with the Vercel preview host and
 |---------|--------|
 | Framework | Next.js |
 | Install | `npm install` |
-| Build | `npm run build` |
+| Build | `npm run build` (`prisma generate && next build`) |
 | Node | 24.x (matches current Vercel project) |
 
 **Do not deploy** until remaining external secrets are set if those features are required at launch (GSC, Stripe checkout, Hermes AI). Minimum env for auth + DB is configured.
+
+### Vercel Production deploy (prompt 10.6)
+
+| Item | Status |
+|------|--------|
+| Deploy | ✅ **2026-07-02** |
+| Deployment ID | `dpl_3Nx2aicKvxjxXtNPmntZNRyg2ixh` (current) |
+| Production URL | `https://www.rankboost.eu` |
+| Apex redirect | `https://rankboost.eu` → `www` |
+| Build fix | `prisma generate` before `next build` (`ba1713b`) |
+| Env fix | `DATABASE_URL` reset without trailing newlines |
+
+**QA user (production):** `qa-prod@rankboost.test` (password not stored in repo)
+
+**Production smoke test (API):** passed — auth, dashboard, onboarding flow, audit, monthly plan, timeline, billing (FREE + checkout blocked), social (manual + Hermes 503), email generate, integrations overview, GSC connect redirect without crash.
+
+**Production DB records (Neon Production):** user + org + 1 website + onboarding COMPLETED + 8 timeline events + 1 monthly plan.
+
+**Known production issues (non-blocking):**
+
+- Google OAuth client id/secret missing → GSC connect redirects/errors gracefully.
+- Stripe keys missing → checkout returns 402 `BILLING_REQUIRED`.
+- Hermes missing → social AI returns 503.
+- `DATABASE_URL` in Vercel must be a single line (no embedded newlines).
 
 ### Deploy steps (when ready)
 
 1. Push `main` to GitHub *(done in 10.5)*.
 2. Set Vercel env vars (production + preview as needed).
 3. Confirm production Neon `migrate deploy` applied *(done in 10.5)*.
-4. Trigger Vercel production deploy (or push to linked branch).
-5. Smoke-test: `/login`, `/app`, `/api/auth/me`, onboarding, billing page.
+4. Trigger Vercel production deploy *(done 10.6)*.
+5. Smoke-test: `/login`, `/app`, `/api/auth/me`, onboarding, billing page *(done 10.6)*.
 6. Configure Stripe webhook + Google OAuth redirect for final domain.
 
 ### Rollback notes
@@ -333,7 +357,8 @@ For **preview deploys**, replace `rankboost.eu` with the Vercel preview host and
 - [x] Push `main` to GitHub
 - [x] Set Vercel production env vars (minimum: DATABASE_URL, JWT, ENCRYPTION_KEY, public URLs)
 - [ ] Set remaining external secrets (Google OAuth, Stripe, Hermes)
-- [ ] Deploy to Vercel production with secrets configured
+- [x] Deploy to Vercel production with secrets configured
+- [ ] Set remaining external secrets (Google OAuth, Stripe, Hermes)
 - [ ] Auth secrets rotated (32+ char random)
 - [ ] `ENCRYPTION_KEY` set (64-char hex)
 - [ ] Stripe live/test keys + webhook endpoint configured
