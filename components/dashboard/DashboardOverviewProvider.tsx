@@ -11,6 +11,7 @@ import {
 
 import { authFetch } from "@/lib/auth/client-session";
 import type { DashboardOverviewData } from "@/lib/dashboard/overview";
+import type { SimpleDashboardViewModel } from "@/lib/dashboard/simple-overview";
 
 type RefetchOptions = {
   silent?: boolean;
@@ -18,6 +19,7 @@ type RefetchOptions = {
 
 type DashboardOverviewContextValue = {
   overview: DashboardOverviewData | null;
+  simple: SimpleDashboardViewModel | null;
   loading: boolean;
   error: string | null;
   refetch: (options?: RefetchOptions) => Promise<void>;
@@ -37,20 +39,36 @@ export function useDashboardOverview(): DashboardOverviewContextValue {
 }
 
 async function fetchOverview(): Promise<{
-  data: DashboardOverviewData | null;
+  overview: DashboardOverviewData | null;
+  simple: SimpleDashboardViewModel | null;
   error: string | null;
 }> {
   try {
     const response = await authFetch("/api/dashboard/overview");
 
     if (!response.ok) {
-      return { data: null, error: "Не удалось загрузить данные кабинета" };
+      return {
+        overview: null,
+        simple: null,
+        error: "Could not load your dashboard right now.",
+      };
     }
 
-    const body = (await response.json()) as { data: DashboardOverviewData };
-    return { data: body.data, error: null };
+    const body = (await response.json()) as {
+      data: DashboardOverviewData;
+      simple?: SimpleDashboardViewModel;
+    };
+    return {
+      overview: body.data,
+      simple: body.simple ?? null,
+      error: null,
+    };
   } catch {
-    return { data: null, error: "Сетевая ошибка при загрузке кабинета" };
+    return {
+      overview: null,
+      simple: null,
+      error: "Network error while loading the dashboard.",
+    };
   }
 }
 
@@ -60,6 +78,7 @@ export function DashboardOverviewProvider({
   children: React.ReactNode;
 }) {
   const [overview, setOverview] = useState<DashboardOverviewData | null>(null);
+  const [simple, setSimple] = useState<SimpleDashboardViewModel | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -70,7 +89,8 @@ export function DashboardOverviewProvider({
     }
 
     const result = await fetchOverview();
-    setOverview(result.data);
+    setOverview(result.overview);
+    setSimple(result.simple);
     if (!options?.silent) {
       setError(result.error);
       setLoading(false);
@@ -87,7 +107,8 @@ export function DashboardOverviewProvider({
       if (cancelled) {
         return;
       }
-      setOverview(result.data);
+      setOverview(result.overview);
+      setSimple(result.simple);
       setError(result.error);
       setLoading(false);
     }
@@ -102,11 +123,12 @@ export function DashboardOverviewProvider({
   const value = useMemo(
     () => ({
       overview,
+      simple,
       loading,
       error,
       refetch,
     }),
-    [overview, loading, error, refetch]
+    [overview, simple, loading, error, refetch]
   );
 
   return (

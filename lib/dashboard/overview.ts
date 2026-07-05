@@ -16,6 +16,7 @@ import type { CurrentUser } from "@/lib/auth/types";
 import { getPrisma } from "@/lib/db";
 import { AppError, ErrorCode } from "@/lib/errors";
 
+import { getSimpleDashboardOverview } from "./simple-overview";
 import { loadDashboardGoogleSearchConsole } from "./gsc-overview";
 import {
   sortGrowthOpportunities,
@@ -118,6 +119,7 @@ export type DashboardOverviewData = {
 
 export type DashboardOverviewResponse = {
   data: DashboardOverviewData;
+  simple?: import("./simple-overview").SimpleDashboardViewModel;
 };
 
 const DEFAULT_PLAN_LIMIT = {
@@ -240,6 +242,12 @@ export async function getDashboardOverview(
     : null;
 
   if (!website) {
+    const simple = await getSimpleDashboardOverview(currentUser, {
+      subscriptionPlan: subscription
+        ? serializeSubscription(subscription).plan
+        : undefined,
+    });
+
     return {
       data: {
         user: {
@@ -274,6 +282,7 @@ export async function getDashboardOverview(
         growthOpportunities: [],
         growthOpportunityCount: 0,
       },
+      simple,
     };
   }
 
@@ -402,6 +411,13 @@ export async function getDashboardOverview(
     })
   );
 
+  const simple = await getSimpleDashboardOverview(currentUser, {
+    opportunitiesCount: growthOpportunities.length,
+    subscriptionPlan: subscription
+      ? serializeSubscription(subscription).plan
+      : undefined,
+  });
+
   return {
     data: {
       user: {
@@ -469,5 +485,6 @@ export async function getDashboardOverview(
       growthOpportunities: growthOpportunities.slice(0, 5),
       growthOpportunityCount: growthOpportunities.length,
     },
+    simple,
   };
 }

@@ -1,7 +1,7 @@
 /** User-facing trust and safety copy for the SaaS dashboard. */
 
 export const AI_DRAFT_SAFETY_COPY =
-  "AI drafts are prepared for review. Nothing is published automatically.";
+  "RankBoost prepares drafts and recommendations. You decide what gets published or sent.";
 
 export const EMAIL_APPROVAL_SAFETY_COPY =
   "Approval does not send the email. Sending always requires an explicit manual action.";
