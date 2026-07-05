@@ -740,10 +740,11 @@ Audit / GSC sync / Article generate / Task complete / Dashboard load
 
 | Item | Status |
 |------|--------|
-| Vercel production deploy | ✅ `dpl_3Nx2aicKvxjxXtNPmntZNRyg2ixh` |
+| Vercel production deploy (latest) | ✅ `dpl_Bv3dsj9NewVMbvhDfm7BDSwQQQ3X` (**2026-07-05**, commit `db724f8`) |
+| Prior deploy | `dpl_3Nx2aicKvxjxXtNPmntZNRyg2ixh` (2026-07-02) |
 | Build fix | ✅ `prisma generate && next build` |
-| Production smoke test | ✅ API flows against Neon Production |
-| QA user | `qa-prod@rankboost.test` |
+| Production smoke test | ✅ API + simplified dashboard against Neon Production |
+| QA users | `qa-prod@rankboost.test`, `qa-prod-2@rankboost.test` |
 | External integrations | ⏸ Google/Stripe/Hermes — secrets not in repo; manual Vercel setup required |
 
 ### 4.3.30. Production integrations QA (prompt 10.7)
@@ -1041,4 +1042,5 @@ curl -s -o /dev/null -w "%{http_code}" -X POST http://localhost:3000/api/contact
 | 2026-07-01 | 10.5 | Production Neon + Vercel deploy prep — prod DB, migrate deploy, env checklist — промпт 10.5 |
 | 2026-07-01 | 10.5.1 | Vercel Production env — Neon pooled DATABASE_URL, generated secrets — промпт 10.5.1 |
 | 2026-07-02 | 10.6 | Vercel deploy + production smoke test — промпт 10.6 |
+| 2026-07-05 | 10.6 | Redeploy + smoke test after dashboard simplification (`db724f8`, `dpl_Bv3dsj9NewVMbvhDfm7BDSwQQQ3X`) |
 | 2026-07-02 | 10.7 | Production integrations QA — www URLs, Resend alias, blocked secrets documented — промпт 10.7 |

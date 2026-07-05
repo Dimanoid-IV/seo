@@ -1,7 +1,7 @@
 # Production QA — RankBoost.eu SaaS
 
 > **Prompt 10.7** — Production secrets & integrations QA.  
-> **Last updated:** 2026-07-02
+> **Last updated:** 2026-07-05
 
 **Related:** `docs/engineering/REPO-MAP.md` · `.env.example` · `lib/env.ts`
 
@@ -215,24 +215,52 @@ For **preview deploys**, replace `rankboost.eu` with the Vercel preview host and
 
 | Item | Status |
 |------|--------|
-| Deploy | ✅ **2026-07-02** |
-| Deployment ID | `dpl_3Nx2aicKvxjxXtNPmntZNRyg2ixh` (current) |
+| Deploy (initial) | ✅ **2026-07-02** — `dpl_3Nx2aicKvxjxXtNPmntZNRyg2ixh` |
+| Deploy (dashboard simplification) | ✅ **2026-07-05** — `dpl_Bv3dsj9NewVMbvhDfm7BDSwQQQ3X` |
+| Git commit | `db724f8` — `feat: simplify main dashboard experience` |
 | Production URL | `https://www.rankboost.eu` |
-| Apex redirect | `https://rankboost.eu` → `www` |
+| Deployment URL | `https://seo-hp96plrdv-dimanoid-ivs-projects.vercel.app` |
+| Apex redirect | `https://rankboost.eu` → `www` (308) |
 | Build fix | `prisma generate` before `next build` (`ba1713b`) |
 | Env fix | `DATABASE_URL` reset without trailing newlines |
 
-**QA user (production):** `qa-prod@rankboost.test` (password not stored in repo)
+**QA users (production):**
 
-**Production smoke test (API):** passed — auth, dashboard, onboarding flow, audit, monthly plan, timeline, billing (FREE + checkout blocked), social (manual + Hermes 503), email generate, integrations overview, GSC connect redirect without crash.
+| Email | Notes |
+|-------|--------|
+| `qa-prod@rankboost.test` | Original smoke user (password not in repo) |
+| `qa-prod-2@rankboost.test` | Dashboard simplification smoke user (password not in repo) |
 
-**Production DB records (Neon Production):** user + org + 1 website + onboarding COMPLETED + 8 timeline events + 1 monthly plan.
+**Production smoke test (2026-07-05, post–dashboard simplification):**
+
+| Area | Result |
+|------|--------|
+| Marketing / home | ✅ 200 (`rankboost.eu` → `www`, `/en`) |
+| Login / register | ✅ 200 |
+| Auth session | ✅ login + `/api/auth/me` 200; unauth 401 |
+| Simplified dashboard | ✅ `/app` 200; `simple` VM: NEEDS_REVIEW, 3 metrics, next action, findings, prepared summary |
+| Onboarding | ✅ website create, GSC skip, monthly plan generate |
+| Control Center | ✅ `NEEDS_REVIEW`; recommended action present |
+| Timeline | ✅ events created; mark-read 200 |
+| Billing | ✅ FREE plan + usage; checkout 402 `BILLING_REQUIRED` (Stripe missing) |
+| Social posts | ✅ page loads; AI generate 404/503 graceful (Hermes missing); manual validation enforced |
+| Autopilot | ✅ monthly plan `ready` for July 2026 |
+| Email approvals | ✅ generate + list; approve 200; send blocked (403 plan / no auto-send) |
+| Integrations | ✅ overview loads; GSC connect returns OAuth HTML (no crash without Google secrets) |
+
+**Production DB records (Neon Production, read-only check):**
+
+| User | Website | Onboarding | Timeline | Plans | Emails |
+|------|---------|------------|----------|-------|--------|
+| `qa-prod@rankboost.test` | rankboost.eu | COMPLETED | 8 | 1 | 1 |
+| `qa-prod-2@rankboost.test` | example-smoke.rankboost.test | SKIPPED | 3 | 1 | 1 |
 
 **Known production issues (non-blocking):**
 
-- Google OAuth client id/secret missing → GSC connect redirects/errors gracefully.
+- Google OAuth client id/secret missing → GSC connect cannot complete OAuth.
 - Stripe keys missing → checkout returns 402 `BILLING_REQUIRED`.
-- Hermes missing → social AI returns 503.
+- Hermes missing → social AI generation fails gracefully (404/503).
+- Email send on FREE plan returns 403 `FEATURE_NOT_AVAILABLE` (expected; no auto-send).
 - `DATABASE_URL` in Vercel must be a single line (no embedded newlines).
 
 ### Production integrations QA (prompt 10.7)
