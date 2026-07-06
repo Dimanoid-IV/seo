@@ -800,6 +800,19 @@ Audit / GSC sync / Article generate / Task complete / Dashboard load
 | Failed AI jobs | ✅ `FAILED` + `HERMES_UNAVAILABLE`, no broken drafts |
 | Redeploy after Hermes secrets | ⏸ pending deployment/credentials |
 
+### 4.3.42. Legal & trust copy cleanup (prompt 11.8)
+
+| Item | Status |
+|------|--------|
+| Privacy policy SaaS copy (en/ru/et) | ✅ |
+| Terms of service SaaS copy (en/ru/et) | ✅ |
+| Legal pages light marketing UI | ✅ `/[locale]/privacy`, `/[locale]/terms` |
+| SEO agency wording removed from legal dicts | ✅ |
+| Ranking guarantee claims removed from legal | ✅ |
+| Blog article bodies (historical) | ⏸ legacy agency copy |
+| Commit | `f59dee6` — `fix: align legal copy with SaaS positioning` |
+| Production deploy | ✅ `dpl_FNueqcCTNru3jgVoZ1vmdi3ehbNz` (2026-07-07) |
+
 ### 4.3.41. Final public content cleanup (prompt 11.7)
 
 | Item | Status |

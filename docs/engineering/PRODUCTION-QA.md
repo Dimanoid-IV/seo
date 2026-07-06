@@ -1,6 +1,6 @@
 # Production QA — RankBoost.eu SaaS
 
-> **Prompt 11.7** — Final public content cleanup (SaaS positioning).  
+> **Prompt 11.8** — Legal & trust copy cleanup (SaaS positioning).  
 > **Last updated:** 2026-07-06
 
 **Related:** `docs/engineering/REPO-MAP.md` · `.env.example` · `lib/env.ts`
@@ -1021,7 +1021,6 @@ Switched from dark footer to **light slate footer** aligned with marketing pages
 ### Remaining public content issues
 
 - Historical blog article bodies may still mention SEO services/agency packages.
-- Privacy/terms dictionary snippets still reference “SEO services” in legal boilerplate (low priority).
 - `/audit` route is **not** locale-prefixed (`/audit`, not `/en/audit`).
 
 ### Production deploy (11.7)
@@ -1030,6 +1029,41 @@ Switched from dark footer to **light slate footer** aligned with marketing pages
 |------|-------|
 | Deployment ID | `dpl_CxirANU7wvRcdxMMouKA7sg1MbQv` |
 | Deployment URL | https://seo-9u8c4uovn-dimanoid-ivs-projects.vercel.app |
+| Production domain | https://www.rankboost.eu |
+
+---
+
+## 8.10. Legal & trust copy cleanup (prompt 11.8)
+
+**Date:** 2026-07-07  
+**Commit:** `f59dee6` — `fix: align legal copy with SaaS positioning`
+
+### Changes
+
+| Area | Updates |
+|------|---------|
+| Privacy policy (en/ru/et) | SaaS platform data processing; account/audit/integration/billing data; no “SEO services” wording |
+| Terms of service (en/ru/et) | Software/SaaS description; user review responsibility; no ranking guarantees; subscription/cancel language; third-party integrations |
+| Legal page UI | Light `marketing-page` styling on `/[locale]/privacy` and `/[locale]/terms` |
+| Header light mode | `privacy` and `terms` added to `lib/marketing-paths.ts` |
+
+### Trust principles preserved
+
+- Nothing published automatically
+- User reviews recommendations/drafts
+- No guaranteed rankings/traffic/revenue
+- Cancel anytime / no long-term contracts (when billing enabled)
+
+### Intentionally left as historical
+
+- Blog article bodies in `data/blog/posts/**` may still reference SEO agency/services.
+
+### Production deploy (11.8)
+
+| Item | Value |
+|------|-------|
+| Deployment ID | `dpl_FNueqcCTNru3jgVoZ1vmdi3ehbNz` |
+| Deployment URL | https://seo-2pvq9xjxb-dimanoid-ivs-projects.vercel.app |
 | Production domain | https://www.rankboost.eu |
 
 ---
