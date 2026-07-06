@@ -33,12 +33,12 @@ export const dictionary: Dictionary = {
     privacy: {
       title: "Privaatsuspoliitika | RankBoost.eu",
       description:
-        "Kuidas RankBoost.eu töötleb konto-, veebilehe- ja integratsiooniandmeid AI Growth Manager SaaS platvormil.",
+        "Kuidas RankBoost.eu töötleb konto-, veebilehe-, integratsiooni- ja automatiseerimisandmeid SEO autopiloodi SaaS platvormil.",
     },
     terms: {
       title: "Kasutustingimused | RankBoost.eu",
       description:
-        "RankBoost.eu AI Growth Manager SaaS platvormi kasutustingimused.",
+        "RankBoost.eu SEO autopiloodi ja AI Growth Manager SaaS platvormi kasutustingimused.",
     },
   },
   nav: {
@@ -373,7 +373,7 @@ export const dictionary: Dictionary = {
     productTitle: "Toode",
     blogTitle: "Blogi",
     trustNote:
-      "Alustage turvaliselt ülevaatusrežiimis. Automatiseerige rohkem, kui olete valmis. Ilma pikaajaliste lepinguteta. Tühistamine igal ajal.",
+      "Vaikimisi ülevaatusrežiim. Automatiseerimine ainult selgesõnalise lubamise korral. Ilma pikaajaliste lepinguteta. Tühistamine igal ajal.",
     legal: "Juriidiline info",
     privacy: "Privaatsus",
     terms: "Tingimused",
@@ -388,17 +388,17 @@ export const dictionary: Dictionary = {
       {
         title: "1. Üldtingimused",
         content:
-          "RankBoost.eu («meie») on AI Growth Manager SaaS platvorm. See poliitika kirjeldab, kuidas me kogume ja kasutame andmeid rankboost.eu kasutamisel, konto loomisel, töölaual töötamisel või meiega ühenduse võtmisel.",
+          "RankBoost.eu («meie») on SEO autopiloodi ja AI Growth Manager SaaS platvorm. See poliitika kirjeldab, kuidas me kogume ja kasutame andmeid rankboost.eu kasutamisel, konto loomisel, töölaual töötamisel või meiega ühenduse võtmisel.",
       },
       {
         title: "2. Milliseid andmeid kogume",
         content:
-          "Sõltuvalt RankBoosti kasutamisest võime töödelda: kontoandmeid (nimi, email), veebilehe ja domeeni URL-e, auditi ja kasvuvõimaluste andmeid, teie ülevaatuseks valmistatud sisu- ja sotsiaalmeedia mustandeid, integratsiooni metaandmeid (nt Google Search Console saidi valik või WordPressi ühenduse detailid, kui need ühendate), tellimuse ja arvelduse andmeid, kui tasulised paketid on makseteenuse kaudu lubatud, kontaktivormi andmeid (nimi, email, veebilehe URL, sõnum) ning tehnilisi logisid (IP-aadress, brauser, viitav leht, sessiooni identifikaatorid).",
+          "Sõltuvalt RankBoosti kasutamisest võime töödelda: kontoandmeid (nimi, email), veebilehe ja domeeni URL-e, auditi ja kasvuvõimaluste andmeid, teie ülevaatuseks valmistatud sisu- ja sotsiaalmeedia mustandeid, integratsiooni metaandmeid (nt Google Search Console saidi valik või WordPressi ühenduse detailid, kui need ühendate), automatiseerimise seadeid ja tegevuslogisid, kui lubate automatiseerimisfunktsioone (kui need on saadaval), tellimuse ja arvelduse andmeid, kui tasulised paketid on makseteenuse kaudu lubatud, kontaktivormi andmeid (nimi, email, veebilehe URL, sõnum) ning tehnilisi logisid (IP-aadress, brauser, viitav leht, sessiooni identifikaatorid).",
       },
       {
         title: "3. Kuidas andmeid kasutame",
         content:
-          "Kasutame andmeid platvormi töös hoidmiseks, auditeerimiseks, ülevaatamiseks valmis soovituste ja mustandite loomiseks, konto ja tellimuse haldamiseks, toe pakkumiseks ja teenuse parandamiseks. Me ei müü isikuandmeid kolmandatele osapooltele turunduse eesmärgil. Kui ühendate integratsiooni (nt Google Search Console või WordPress), töötleb RankBoost ainult integratsiooni jaoks vajalikke andmeid.",
+          "Kasutame andmeid platvormi töös hoidmiseks, auditeerimiseks, ülevaatamiseks valmis soovituste ja mustandite loomiseks, konto ja tellimuse haldamiseks, toe pakkumiseks ja teenuse parandamiseks. Me ei müü isikuandmeid kolmandatele osapooltele turunduse eesmärgil. Kui ühendate integratsiooni (nt Google Search Console või WordPress), töötleb RankBoost ainult integratsiooni jaoks vajalikke andmeid. Kui automatiseerimisfunktsioonid on saadaval ja te need lubate, võib RankBoost töödelda seadeid, reegleid, logisid ja sisu, mis on vajalikud nende toimingute tegemiseks.",
       },
       {
         title: "4. Säilitamine ja turvalisus",
@@ -424,17 +424,17 @@ export const dictionary: Dictionary = {
       {
         title: "1. Üldtingimused",
         content:
-          "RankBoost.eu pakub tellimuspõhist SaaS tarkvara, mis aitab analüüsida veebilehti, leida kasvuvõimalusi, valmistada SEO-, sisu- ja sotsiaalmeedia soovitusi ning hallata ülevaatamiseks valmis mustandeid. Saidi või konto kasutamisega nõustute nende tingimustega.",
+          "RankBoost.eu pakub tellimuspõhist SEO autopiloodi SaaS tarkvara, mis aitab analüüsida veebilehti, leida kasvuvõimalusi, valmistada SEO-, sisu- ja sotsiaalmeedia soovitusi ning hallata ülevaatamiseks valmis mustandeid ja automatiseerimise töövooge. Saidi või konto kasutamisega nõustute nende tingimustega.",
       },
       {
         title: "2. Platvormi kasutamine ja teie vastutus",
         content:
-          "RankBoost võib luua auditeid, soovitusi, mustandeid ja tegevusplaane. Teie vastutate soovituste ülevaatamise eest enne avaldamist, saatmist või rakendamist. Midagi ei avaldata, saadeta ega muudeta teie veebilehel automaatselt, kuni te ei tee selget toimingut (nt mustandi kinnitamine või toetatud integratsiooni toiming).",
+          "Vaikimisi töötab RankBoost ülevaatusrežiimis. Platvorm võib luua auditeid, soovitusi, mustandeid ja tegevusplaane teie ülevaatamiseks. Teie vastutate soovituste ülevaatamise eest enne avaldamist, saatmist või rakendamist. Sisu ja tegevused valmistatakse ette teie ülevaatamiseks, välja arvatud juhul, kui lubate selgesõnaliselt saadaolevad automatiseerimisfunktsioonid. Automaatne avaldamine või saatmine, kui see on saadaval, nõuab teie selget seadistamist, ühendatud integratsioone ja reegleid.",
       },
       {
         title: "3. Tulemuste garantii puudub",
         content:
-          "RankBoost ei garanteeri otsingupositsioone, liiklust, tulu, lead'e ega muid äritulemusi. Tulemus sõltub veebilehest, konkurentsist, sisust, ühendatud integratsioonidest ja sellest, kui regulaarselt te soovitusi üle vaatate ja rakendate.",
+          "RankBoost ei garanteeri otsingupositsioone, AI-assistentide mainimisi, liiklust, tulu, lead'e ega muid äritulemusi. Tulemus sõltub veebilehest, konkurentsist, sisust, ühendatud integratsioonidest ja sellest, kui regulaarselt te soovitusi üle vaatate ja rakendate.",
       },
       {
         title: "4. Tellimused ja arveldus",

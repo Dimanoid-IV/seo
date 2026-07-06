@@ -53,7 +53,7 @@ export const saasDictionary: SaasDictionary = {
     emailApprovalSafety:
       "Kinnitamine ei saada e-kirja. Saatmine nõuab alati eraldi toimingut.",
     wordpressDraftSafety:
-      "RankBoost loob ainult WordPressi mustandeid. Teie otsustate, millal avaldada.",
+      "RankBoost loob praegu WordPressi mustandeid. Teie otsustate, millal avaldada.",
     billingCancelAnytime: "Pikaajalisi lepinguid pole. Tühistage igal ajal.",
     billingDataAvailability:
       "Teie andmed jäävad kättesaadavaks ka tellimuse muutumisel.",
@@ -446,7 +446,7 @@ export const saasDictionary: SaasDictionary = {
         'Klõpsake WordPressis "Testi ühendust".',
       ],
       draftOnlyMessage:
-        "RankBoost loob ainult WordPressi mustandeid — teie otsustate, millal avaldada.",
+        "RankBoost loob praegu WordPressi mustandeid — teie otsustate, millal avaldada.",
       permissions: {
         canCreateDrafts: "Luua mustandeid",
         canUpdateMeta: "Uuendada meta-silte",
@@ -638,7 +638,7 @@ export const saasDictionary: SaasDictionary = {
     generateDraft: "Genereeri mustand",
     generateTitle: "Genereeri ülevaatav e-kiri",
     generateDescription:
-      "RankBoost koostab e-kirja mustandi tegelike andmete põhjal. Midagi ei saadeta automaatselt.",
+      "RankBoost koostab e-kirja mustandi tegelike andmete põhjal. Ülevaatusrežiimis kinnitate teie enne saatmist.",
     emailType: "E-kirja tüüp",
     reviewTitle: "Vaadake e-kirja mustand üle",
     subject: "Teema",

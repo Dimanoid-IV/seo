@@ -76,15 +76,17 @@ WordPress stores RankBoost meta:
 - `_rankboost_meta_description`
 - `_rankboost_language`
 
-Posts are always created with `post_status = draft`. Nothing is published automatically.
+Posts are always created with `post_status = draft`. The current plugin does not publish posts. Future automation features in RankBoost, if added, will require explicit user configuration, connected integrations, and rules.
 
 ## What this plugin does NOT do
 
-- Does **not** publish posts
+- Does **not** publish posts (current version creates drafts only)
 - Does **not** update existing posts
 - Does **not** use HMAC request signing
 - Does **not** run autopilot or background sync
 - Does **not** assign categories or tags
+
+Future RankBoost automation features, if added, will require explicit user setup in the RankBoost dashboard.
 
 ## Security
 

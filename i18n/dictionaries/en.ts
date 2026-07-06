@@ -33,12 +33,12 @@ export const dictionary: Dictionary = {
     privacy: {
       title: "Privacy Policy | RankBoost.eu",
       description:
-        "How RankBoost.eu processes account, website, and integration data for its AI Growth Manager SaaS platform.",
+        "How RankBoost.eu processes account, website, integration, and automation data for its SEO Autopilot SaaS platform.",
     },
     terms: {
       title: "Terms of Service | RankBoost.eu",
       description:
-        "Terms of use for the RankBoost.eu AI Growth Manager SaaS platform.",
+        "Terms of use for the RankBoost.eu SEO Autopilot and AI Growth Manager SaaS platform.",
     },
   },
   nav: {
@@ -377,7 +377,7 @@ export const dictionary: Dictionary = {
     productTitle: "Product",
     blogTitle: "Blog",
     trustNote:
-      "Start safely in Review Mode. Automate more when you are ready. No long-term contracts. Cancel anytime.",
+      "Review Mode by default. Automation only when explicitly enabled. No long-term contracts. Cancel anytime.",
     legal: "Legal",
     privacy: "Privacy",
     terms: "Terms",
@@ -392,17 +392,17 @@ export const dictionary: Dictionary = {
       {
         title: "1. General",
         content:
-          "RankBoost.eu («we») operates an AI Growth Manager SaaS platform. This policy describes how we collect and use data when you use rankboost.eu, create an account, use the dashboard, or contact us.",
+          "RankBoost.eu («we») operates an SEO Autopilot and AI Growth Manager SaaS platform. This policy describes how we collect and use data when you use rankboost.eu, create an account, use the dashboard, or contact us.",
       },
       {
         title: "2. Data we collect",
         content:
-          "Depending on how you use RankBoost, we may process: account details (name, email), website and domain URLs, audit and growth-opportunity data, content and social drafts prepared for your review, integration metadata (for example Google Search Console site selection or WordPress connection details when you connect them), subscription and billing-related data when paid plans are enabled through our payment provider, contact form submissions (name, email, website URL, message), and technical logs (IP address, browser type, referring page, session identifiers).",
+          "Depending on how you use RankBoost, we may process: account details (name, email), website and domain URLs, audit and growth-opportunity data, content and social drafts prepared for your review, integration metadata (for example Google Search Console site selection or WordPress connection details when you connect them), automation settings and activity logs when you enable automation features (if available), subscription and billing-related data when paid plans are enabled through our payment provider, contact form submissions (name, email, website URL, message), and technical logs (IP address, browser type, referring page, session identifiers).",
       },
       {
         title: "3. How we use data",
         content:
-          "We use data to operate the platform, provide website audits and review-ready recommendations, save drafts you choose to review, manage your account and subscription, respond to support requests, and improve the service. We do not sell your personal data to third parties for marketing purposes. If you connect an integration such as Google Search Console or WordPress, RankBoost processes only the data needed to provide that integration.",
+          "We use data to operate the platform, provide website audits and review-ready recommendations, save drafts you choose to review, manage your account and subscription, respond to support requests, and improve the service. We do not sell your personal data to third parties for marketing purposes. If you connect an integration such as Google Search Console or WordPress, RankBoost processes only the data needed to provide that integration. If automation features are available and you enable them, RankBoost may process the settings, rules, logs, and content needed to perform those actions.",
       },
       {
         title: "4. Storage and security",
@@ -428,17 +428,17 @@ export const dictionary: Dictionary = {
       {
         title: "1. General terms",
         content:
-          "RankBoost.eu provides software tools that help users analyze websites, identify growth opportunities, prepare SEO, content, and social recommendations, and manage review-ready drafts through a subscription-based SaaS platform. By using the site or creating an account, you agree to these terms.",
+          "RankBoost.eu provides software tools that help users analyze websites, identify growth opportunities, prepare SEO, content, and social recommendations, and manage review-ready drafts and automation workflows through a subscription-based SEO Autopilot SaaS platform. By using the site or creating an account, you agree to these terms.",
       },
       {
         title: "2. Platform use and your responsibility",
         content:
-          "RankBoost may generate audits, suggestions, drafts, and action plans. You are responsible for reviewing recommendations before publishing, sending, or applying them. Nothing is published, sent, or changed on your website automatically unless you take explicit action (for example approving a draft or triggering a supported integration action).",
+          "By default, RankBoost works in Review Mode. The platform may generate audits, suggestions, drafts, and action plans for your review. You are responsible for reviewing recommendations before publishing, sending, or applying them. Content and actions are prepared for your review unless you explicitly enable available automation features. Automatic publishing or sending, where available, requires your explicit setup, connected integrations, and rules.",
       },
       {
         title: "3. No guaranteed results",
         content:
-          "RankBoost does not guarantee search rankings, traffic, revenue, leads, or other business results. Outcomes depend on your website, market competition, content quality, integrations you connect, and how consistently you review and apply recommendations.",
+          "RankBoost does not guarantee search rankings, AI assistant mentions, traffic, revenue, leads, or other business results. Outcomes depend on your website, market competition, content quality, integrations you connect, and how consistently you review and apply recommendations.",
       },
       {
         title: "4. Subscriptions and billing",

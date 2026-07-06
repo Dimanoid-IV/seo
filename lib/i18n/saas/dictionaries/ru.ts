@@ -53,7 +53,7 @@ export const saasDictionary: SaasDictionary = {
     emailApprovalSafety:
       "Одобрение не отправляет письмо. Отправка всегда требует отдельного действия.",
     wordpressDraftSafety:
-      "RankBoost создаёт только черновики в WordPress. Вы решаете, когда публиковать.",
+      "RankBoost сейчас создаёт черновики в WordPress. Вы решаете, когда публиковать.",
     billingCancelAnytime: "Без долгосрочных контрактов. Отмена в любой момент.",
     billingDataAvailability:
       "Ваши данные остаются доступными даже при смене подписки.",
@@ -446,7 +446,7 @@ export const saasDictionary: SaasDictionary = {
         "Нажмите «Проверить соединение» в WordPress.",
       ],
       draftOnlyMessage:
-        "RankBoost создаёт только черновики в WordPress — вы решаете, когда публиковать.",
+        "RankBoost сейчас создаёт черновики в WordPress — вы решаете, когда публиковать.",
       permissions: {
         canCreateDrafts: "Создавать черновики",
         canUpdateMeta: "Обновлять meta-теги",
@@ -638,7 +638,7 @@ export const saasDictionary: SaasDictionary = {
     generateDraft: "Создать черновик",
     generateTitle: "Создать письмо на проверку",
     generateDescription:
-      "RankBoost подготовит черновик письма на основе реальных данных. Ничего не отправляется автоматически.",
+      "RankBoost подготовит черновик письма на основе реальных данных. В режиме проверки вы одобряете отправку.",
     emailType: "Тип письма",
     reviewTitle: "Проверка черновика письма",
     subject: "Тема",

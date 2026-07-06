@@ -53,7 +53,7 @@ export const saasDictionary: SaasDictionary = {
     emailApprovalSafety:
       "Approval does not send the email. Sending always requires an explicit manual action.",
     wordpressDraftSafety:
-      "RankBoost creates WordPress drafts only. You decide when to publish.",
+      "RankBoost currently creates WordPress drafts. You decide when to publish.",
     billingCancelAnytime: "No long-term contracts. You can cancel anytime.",
     billingDataAvailability:
       "Your existing data stays available even if your subscription changes.",
@@ -446,7 +446,7 @@ export const saasDictionary: SaasDictionary = {
         'Click "Test connection" in WordPress.',
       ],
       draftOnlyMessage:
-        "RankBoost only creates WordPress drafts — you decide when to publish.",
+        "RankBoost currently creates WordPress drafts — you decide when to publish.",
       permissions: {
         canCreateDrafts: "Create drafts",
         canUpdateMeta: "Update meta tags",
@@ -638,7 +638,7 @@ export const saasDictionary: SaasDictionary = {
     generateDraft: "Generate draft",
     generateTitle: "Generate review email",
     generateDescription:
-      "RankBoost will prepare an email draft from real data. Nothing is sent automatically.",
+      "RankBoost will prepare an email draft from real data. In Review Mode, you approve before anything is sent.",
     emailType: "Email type",
     reviewTitle: "Review email draft",
     subject: "Subject",
