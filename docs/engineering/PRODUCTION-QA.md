@@ -1272,9 +1272,10 @@ stripe listen --forward-to localhost:3000/api/billing/webhook
 
 | Item | Value |
 |------|-------|
-| Deployment ID | _see post-deploy_ |
-| Deployment URL | _see post-deploy_ |
+| Deployment ID | _pending redeploy after merge_ |
+| Deployment URL | _pending_ |
 | Production domain | https://www.rankboost.eu |
+| Note | Code pushed; Stripe test env vars still manual on Vercel |
 
 ---
 
