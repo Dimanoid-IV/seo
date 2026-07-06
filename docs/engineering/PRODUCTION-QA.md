@@ -1187,6 +1187,97 @@ JSON-LD (`lib/json-ld.ts`) continues to use `SoftwareApplication` with descripti
 
 ---
 
+## 8.14. Stripe Test Mode Setup (Production Prompt 11.10)
+
+**Date:** 2026-07-07  
+**Commit:** `cdf299a` — `feat: complete Stripe test mode billing foundation`
+
+### Summary
+
+Stripe Checkout + webhook + Customer Portal foundation confirmed and extended for **test mode only**. No live keys. No schema migration required — `Subscription` model already includes Stripe fields.
+
+### Routes
+
+| Route | Purpose |
+|-------|---------|
+| `POST /api/billing/checkout` | Authenticated checkout — body `{ plan: "starter" \| "pro" \| "agency" }` (case-insensitive) |
+| `POST /api/billing/webhook` | Primary Stripe webhook (signature verified) |
+| `POST /api/stripe/webhook` | Alias → same handler (Stripe CLI / Dashboard compatibility) |
+| `POST /api/billing/portal` | Stripe Customer Portal (requires `stripeCustomerId`) |
+| `GET /api/billing/subscription` | Billing overview for `/app/billing` |
+
+### Env vars (test mode)
+
+```txt
+STRIPE_SECRET_KEY=sk_test_...
+STRIPE_WEBHOOK_SECRET=whsec_...
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_...
+STRIPE_STARTER_PRICE_ID=price_...
+STRIPE_PRO_PRICE_ID=price_...
+STRIPE_AGENCY_PRICE_ID=price_...
+NEXT_PUBLIC_APP_URL=https://www.rankboost.eu
+STRIPE_CUSTOMER_PORTAL_RETURN_URL=   # optional
+```
+
+### Webhook events handled
+
+- `checkout.session.completed`
+- `customer.subscription.created` / `updated` / `deleted`
+- `invoice.payment_succeeded` / `payment_failed`
+
+Idempotency via `Payment.stripeEventId`.
+
+### UI integration
+
+| Area | Behavior |
+|------|----------|
+| `/app/billing` | Upgrade buttons when Stripe env complete; trust note when not |
+| `/[locale]/pricing` | Per-plan test checkout buttons when env configured; login required for checkout |
+| Logged out on pricing | “Log in to upgrade” → `/login` |
+| Billing not configured | Safe empty/disabled state; no “live payments enabled” copy |
+
+### Local QA
+
+```bash
+# 1. Set test env vars in .env.local
+# 2. Start app
+npm run dev
+
+# 3. Forward webhooks (use either URL)
+stripe listen --forward-to localhost:3000/api/billing/webhook
+# Copy whsec_... → STRIPE_WEBHOOK_SECRET
+
+# 4. Log in → /app/billing or /en/pricing → Starter checkout
+# 5. Test card: 4242 4242 4242 4242, any future expiry/CVC
+# 6. Confirm subscription row updates in DB
+```
+
+### Vercel QA
+
+1. Add all test-mode `STRIPE_*` vars + `NEXT_PUBLIC_APP_URL` to Vercel Production.
+2. Redeploy.
+3. Stripe Dashboard → Webhooks → `https://www.rankboost.eu/api/billing/webhook` (or `/api/stripe/webhook`).
+4. Select subscription + invoice events; copy signing secret → `STRIPE_WEBHOOK_SECRET`.
+5. Redeploy after webhook secret added.
+6. Run test checkout from production; verify DB subscription state.
+
+### Limitations
+
+- **Test mode only** — do not use live keys until separate live launch checklist (§5 Stripe live mode).
+- Stripe env vars still **not set on Vercel** until credentials are added manually.
+- Customer Portal requires Stripe Dashboard portal configuration.
+- No auto-publish/send/approval behavior introduced.
+
+### Production deploy (11.10)
+
+| Item | Value |
+|------|-------|
+| Deployment ID | _see post-deploy_ |
+| Deployment URL | _see post-deploy_ |
+| Production domain | https://www.rankboost.eu |
+
+---
+
 ## 9. Known limitations (beta)
 
 - No automatic publishing, email sending, or approvals.

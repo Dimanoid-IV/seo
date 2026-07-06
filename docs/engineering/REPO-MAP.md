@@ -800,6 +800,22 @@ Audit / GSC sync / Article generate / Task complete / Dashboard load
 | Failed AI jobs | ✅ `FAILED` + `HERMES_UNAVAILABLE`, no broken drafts |
 | Redeploy after Hermes secrets | ⏸ pending deployment/credentials |
 
+### 4.3.46. Stripe Test Mode Setup (prompt 11.10)
+
+| Item | Status |
+|------|--------|
+| Stripe package (`stripe@^22`) | ✅ already installed |
+| Checkout `POST /api/billing/checkout` | ✅ auth + org + test price IDs |
+| Webhook signature verification | ✅ `/api/billing/webhook` + `/api/stripe/webhook` alias |
+| Customer portal `POST /api/billing/portal` | ✅ |
+| Subscription state in Prisma | ✅ existing `Subscription` model (no migration) |
+| Marketing pricing checkout buttons | ✅ `MarketingPlanCheckoutButton` when env configured |
+| App billing UI | ✅ `/app/billing` — `BillingPage.tsx` |
+| `isStripeConfigured()` checks secret + price IDs | ✅ |
+| `.env.example` Stripe test docs | ✅ |
+| Commit | `cdf299a` — `feat: complete Stripe test mode billing foundation` |
+| Production deploy | ⏸ code pushed; redeploy when ready (Stripe env still manual) |
+
 ### 4.3.45. Legal & trust copy for autopilot (prompt 11.9)
 
 | Item | Status |
