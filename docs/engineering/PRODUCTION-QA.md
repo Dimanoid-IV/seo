@@ -543,13 +543,107 @@ vercel --prod   # redeploy after adding secrets
 
 ---
 
-## 8. Hermes test notes
+## 8. Hermes production setup & AI generation QA (prompt 10.9)
 
-1. Set `HERMES_API_URL` and `HERMES_API_SECRET`.
-2. Generate article / social post → quality pipeline runs before user sees content.
-3. If Hermes down → `HERMES_UNAVAILABLE` message; logged as `hermes.fetch` / `hermes.response`.
+**Status (2026-07-06):** **Blocked** — `HERMES_API_URL` and `HERMES_API_SECRET` missing from Vercel Production and repo. AI generation returns `503 HERMES_UNAVAILABLE`; app does not crash; no broken drafts saved. No redeploy performed.
+
+### Env vars (`lib/env.ts`)
+
+```txt
+HERMES_API_URL      # base URL, no trailing slash
+HERMES_API_SECRET   # Bearer token sent as Authorization header
+```
+
+### Hermes API endpoints (called by RankBoost)
+
+| Method | Path | Purpose | Auth |
+|--------|------|---------|------|
+| `POST` | `/v1/generate/article` | Article draft generation | `Bearer ${HERMES_API_SECRET}` |
+| `POST` | `/v1/generate/article/repair` | Quality repair (max 2 attempts) | same |
+| `POST` | `/v1/generate/social-post` | Social post draft generation | same |
+| `POST` | `/v1/jobs` | Generic async job (optional) | same |
+| `GET` | `/v1/jobs/{id}` | Job status polling (optional) | same |
+
+**Client:** `lib/hermes/client.ts` — timeout **120s**; logs `hermes.fetch` / `hermes.response` on failure; never exposes secret in UI/errors.
+
+### RankBoost AI generation routes
+
+| Route | Hermes? | Billing gate | Notes |
+|-------|---------|--------------|-------|
+| `POST /api/articles/generate` | ✅ | `AI_GENERATION` + `ARTICLE` usage | Quality pipeline in `lib/hermes/article-quality.ts` |
+| `POST /api/social-posts/generate` | ✅ | `AI_GENERATION` + `SOCIAL_POST` usage | Quality in `lib/social-posts/quality.ts` |
+| `POST /api/email-approvals/generate` | ❌ | `EMAIL_APPROVAL` usage | Deterministic templates — **not** Hermes |
+| `POST /api/autopilot/monthly/generate` | partial | monthly plan limit | Uses Hermes summary if available; falls back without crash |
+
+**UI:** Content Plan / article editor, `/app/social-posts`, `/app/email-approvals`.
+
+### Quality pipeline
+
+**Articles** (`lib/hermes/article-quality.ts`):
+
+- Rule-based validation (title length, meta, word count, H2, FAQ, schema, CTA, keyword)
+- Pass threshold: score ≥ 80
+- Up to 2 Hermes repair calls via `/v1/generate/article/repair`
+- Saved as `ArticleStatus.DRAFT` with `qualityScore` / `qualityIssuesJson`
+
+**Social posts** (`lib/social-posts/quality.ts`):
+
+- Validates title, text, platform limits, forbidden auto-publish language
+- Status `READY` or `DRAFT` based on pass/fail
+
+### Hermes deployment requirements (manual)
+
+1. Deploy Hermes worker with endpoints above (or compatible API).
+2. Generate a shared secret for RankBoost → `HERMES_API_SECRET`.
+3. Ensure Vercel/server can reach `HERMES_API_URL` over HTTPS.
+4. Add to Vercel Production:
+   ```bash
+   vercel env add HERMES_API_URL production
+   vercel env add HERMES_API_SECRET production
+   vercel --prod
+   ```
+
+### Production AI QA (verified 2026-07-06 — without Hermes)
+
+| Test | Result |
+|------|--------|
+| `POST /api/articles/generate` | ✅ 503 `HERMES_UNAVAILABLE` — friendly Russian message |
+| `POST /api/social-posts/generate` (TIMELINE_EVENT) | ✅ 503 `HERMES_UNAVAILABLE` |
+| `POST /api/email-approvals/generate` | ✅ 403 `PLAN_LIMIT_EXCEEDED` (FREE limit; not Hermes) |
+| `/app/social-posts` page | ✅ loads |
+| AI job on failure | ✅ `ai_jobs.status=FAILED`, `errorCode=HERMES_UNAVAILABLE` — no orphan draft |
+| Dashboard / billing / onboarding | ✅ unaffected |
+
+### AI QA checklist (run after Hermes configured)
+
+1. Generate article → draft saved, quality score/issues present, status DRAFT.
+2. Generate social post → draft/ready saved, no external posting.
+3. Confirm timeline event only after successful draft creation.
+4. Confirm WordPress draft button does not auto-publish.
+5. Confirm email approval generate still works (deterministic, separate from Hermes).
+6. Confirm billing gates block generation when limits reached **before** Hermes call.
+
+### Failure handling (verified or expected)
+
+| Scenario | Expected | Verified |
+|----------|----------|----------|
+| Missing env | 503 `HERMES_UNAVAILABLE` | ✅ |
+| Timeout (>120s) | 503, no broken draft | Code path |
+| Auth failure (401/403) | 503, secret not leaked | Code path |
+| Invalid response | 500 validation error | Code path |
+| Billing limit | 403/402 before Hermes | ✅ email limit |
+
+### Troubleshooting
+
+- **503 on all AI routes:** Check `HERMES_API_URL` and `HERMES_API_SECRET` in Vercel; redeploy after adding.
+- **Social 404 before Hermes:** Source context missing (no task/article/timeline) — not a Hermes failure.
+- **Article quality low:** Draft saved as DRAFT with issues; repair attempts logged in `qualityIssuesJson`.
+
+**Production DB (2026-07-06):** Failed `ai_jobs` row with `HERMES_UNAVAILABLE`; no article/social drafts from failed Hermes calls.
 
 ---
+
+## 8.1. Hermes test notes (local dev)
 
 ## 9. Known limitations (beta)
 

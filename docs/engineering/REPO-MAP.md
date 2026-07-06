@@ -786,6 +786,19 @@ Audit / GSC sync / Article generate / Task complete / Dashboard load
 | Redeploy after Stripe secrets | ⏸ pending user credentials |
 | Neon Stripe IDs | none yet (QA users FREE) |
 
+### 4.3.33. Hermes production setup & AI generation QA (prompt 10.9)
+
+| Item | Status |
+|------|--------|
+| Hermes client/endpoints documented | ✅ `/v1/generate/article`, `/repair`, `/social-post`, `/jobs` |
+| `HERMES_API_URL` / `HERMES_API_SECRET` in Vercel | ❌ missing |
+| Article AI generate | ⏸ 503 `HERMES_UNAVAILABLE` |
+| Social AI generate | ⏸ 503 when source valid; 404 when source missing |
+| Email generation | ✅ deterministic (not Hermes); plan gates work |
+| Quality pipeline | ⏸ not testable without Hermes |
+| Failed AI jobs | ✅ `FAILED` + `HERMES_UNAVAILABLE`, no broken drafts |
+| Redeploy after Hermes secrets | ⏸ pending deployment/credentials |
+
 ### 4.4. Admin
 
 | Планируемый путь | URL | MVP блок |
@@ -1071,4 +1084,5 @@ curl -s -o /dev/null -w "%{http_code}" -X POST http://localhost:3000/api/contact
 | 2026-07-05 | 10.6 | Redeploy + smoke test after dashboard simplification (`db724f8`, `dpl_Bv3dsj9NewVMbvhDfm7BDSwQQQ3X`) |
 | 2026-07-06 | 10.7 GSC | Google OAuth routes documented; production GSC blocked pending client secrets |
 | 2026-07-06 | 10.8 | Stripe test mode setup documented; billing checkout blocked pending Stripe keys |
+| 2026-07-06 | 10.9 | Hermes setup documented; AI generation blocked pending Hermes URL/secret |
 | 2026-07-02 | 10.7 | Production integrations QA — www URLs, Resend alias, blocked secrets documented — промпт 10.7 |
