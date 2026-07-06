@@ -60,7 +60,7 @@ export const saasDictionary: SaasDictionary = {
     pageErrorFallback:
       "Не удалось загрузить страницу. Попробуйте снова или откройте обзор.",
     stripeNotConfigured:
-      "Оплата пока не настроена. Вы можете продолжать использовать RankBoost на текущем плане.",
+      "Оплата настраивается. Тестовый Stripe checkout доступен после настройки env-переменных.",
   },
   errors: {
     billingRequired:
@@ -790,7 +790,14 @@ export const saasDictionary: SaasDictionary = {
       { name: "Pro", description: "Для растущего бизнеса: больше черновиков, инсайтов и рабочих процессов." },
       { name: "Agency", description: "Для агентств и команд с несколькими сайтами." },
     ],
-    noCheckoutNote: "Платные улучшения появятся, когда оплата будет настроена.",
+    noCheckoutNote:
+      "Платные улучшения через Stripe test checkout после настройки env-переменных.",
+    upgradePlan: "Начать тестовый checkout",
+    loginToUpgrade: "Войти для апгрейда",
+    checkoutLoading: "Перенаправляем…",
+    checkoutNetworkError: "Не удалось начать checkout. Попробуйте снова.",
+    testModeNote:
+      "Stripe test mode для внутреннего QA. Не live-оплата. Начните с режима проверки.",
   },
   publicAudit: {
     pageTitle: "Бесплатный preview роста сайта",

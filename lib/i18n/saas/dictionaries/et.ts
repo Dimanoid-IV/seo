@@ -60,7 +60,7 @@ export const saasDictionary: SaasDictionary = {
     pageErrorFallback:
       "Seda lehte ei õnnestunud laadida. Proovige uuesti või avage ülevaade.",
     stripeNotConfigured:
-      "Makse ei ole veel seadistatud. Saate RankBoosti kasutada praegusel paketil.",
+      "Arveldus on seadistamisel. Stripe test checkout on saadaval pärast env muutujate lisamist.",
   },
   errors: {
     billingRequired:
@@ -790,7 +790,14 @@ export const saasDictionary: SaasDictionary = {
       { name: "Pro", description: "Kasvavatele ettevõtetele: rohkem mustandeid, ülevaateid ja töövooge." },
       { name: "Agency", description: "Agentuuridele ja meeskondadele, kes haldavad mitut veebilehte." },
     ],
-    noCheckoutNote: "Tasulised uuendused tulevad, kui makse on seadistatud.",
+    noCheckoutNote:
+      "Tasulised uuendused Stripe test checkout kaudu pärast env muutujate seadistamist.",
+    upgradePlan: "Alusta test checkouti",
+    loginToUpgrade: "Logi sisse uuendamiseks",
+    checkoutLoading: "Suunan edasi…",
+    checkoutNetworkError: "Checkouti ei õnnestunud alustada. Proovige uuesti.",
+    testModeNote:
+      "Stripe test mode sisemiseks QA-ks. Mitte live arveldus. Alustage ülevaatusrežiimis.",
   },
   publicAudit: {
     pageTitle: "Tasuta veebilehe kasvu eelvaade",

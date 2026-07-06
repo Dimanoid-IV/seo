@@ -27,10 +27,13 @@ export async function createCustomerPortalSession(input: {
     );
   }
   const appUrl = getBillingAppUrl();
+  const returnUrl =
+    process.env.STRIPE_CUSTOMER_PORTAL_RETURN_URL?.trim() ??
+    `${appUrl}/app/billing`;
 
   const session = await stripe.billingPortal.sessions.create({
     customer: current.subscription.stripeCustomerId,
-    return_url: `${appUrl}/app/billing`,
+    return_url: returnUrl,
   });
 
   return { portalUrl: session.url };

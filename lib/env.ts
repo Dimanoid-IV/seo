@@ -39,6 +39,7 @@ const serverEnvSchema = z.object({
   STRIPE_STARTER_PRICE_ID: optionalString,
   STRIPE_PRO_PRICE_ID: optionalString,
   STRIPE_AGENCY_PRICE_ID: optionalString,
+  STRIPE_CUSTOMER_PORTAL_RETURN_URL: optionalUrl,
   HERMES_API_URL: optionalUrl,
   HERMES_API_SECRET: optionalString,
   GOOGLE_INTEGRATIONS_CLIENT_ID: optionalString,
@@ -86,6 +87,8 @@ function parseServerEnv(): ServerEnv {
     STRIPE_STARTER_PRICE_ID: process.env.STRIPE_STARTER_PRICE_ID,
     STRIPE_PRO_PRICE_ID: process.env.STRIPE_PRO_PRICE_ID,
     STRIPE_AGENCY_PRICE_ID: process.env.STRIPE_AGENCY_PRICE_ID,
+    STRIPE_CUSTOMER_PORTAL_RETURN_URL:
+      process.env.STRIPE_CUSTOMER_PORTAL_RETURN_URL,
     HERMES_API_URL: process.env.HERMES_API_URL,
     HERMES_API_SECRET: process.env.HERMES_API_SECRET,
     GOOGLE_INTEGRATIONS_CLIENT_ID: process.env.GOOGLE_INTEGRATIONS_CLIENT_ID,

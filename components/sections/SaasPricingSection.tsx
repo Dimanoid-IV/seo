@@ -1,20 +1,31 @@
 import Link from "next/link";
 
+import { MarketingPlanCheckoutButton } from "@/components/marketing/MarketingPlanCheckoutButton";
 import { ButtonLink } from "@/components/ui/ButtonLink";
 import { SectionHeading } from "@/components/ui/SectionHeading";
+import type { BillingPlanKey } from "@/lib/billing/plans";
 import { getSaasDictionary } from "@/lib/i18n/saas";
 import type { SaasLocale } from "@/lib/i18n/saas/locales";
+
+const PAID_PLAN_KEYS: Array<BillingPlanKey | null> = [
+  null,
+  "STARTER",
+  "PRO",
+  "AGENCY",
+];
 
 type SaasPricingSectionProps = {
   locale: SaasLocale;
   theme?: "marketing" | "dark";
   hideHeading?: boolean;
+  checkoutEnabled?: boolean;
 };
 
 export function SaasPricingSection({
   locale,
   theme = "marketing",
   hideHeading = false,
+  checkoutEnabled = false,
 }: SaasPricingSectionProps) {
   const pricing = getSaasDictionary(locale).pricing;
   const isMarketing = theme === "marketing";
@@ -59,6 +70,26 @@ export function SaasPricingSection({
               >
                 {plan.description}
               </p>
+              {PAID_PLAN_KEYS[index] ? (
+                <MarketingPlanCheckoutButton
+                  plan={PAID_PLAN_KEYS[index]!}
+                  checkoutEnabled={checkoutEnabled}
+                />
+              ) : (
+                <div className="mt-4">
+                  <ButtonLink
+                    locale={locale}
+                    href="/register"
+                    className={
+                      isMarketing
+                        ? "inline-flex min-h-10 w-full items-center justify-center rounded-xl bg-blue-600 px-4 text-sm font-medium text-white hover:bg-blue-700"
+                        : "inline-flex min-h-10 w-full items-center justify-center rounded-xl bg-gradient-to-r from-blue-500 to-violet-600 px-4 text-sm font-medium text-white"
+                    }
+                  >
+                    {pricing.startFree}
+                  </ButtonLink>
+                </div>
+              )}
             </div>
           ))}
         </div>
@@ -78,7 +109,7 @@ export function SaasPricingSection({
               : "mx-auto mt-3 max-w-2xl text-center text-xs text-slate-500"
           }
         >
-          {pricing.noCheckoutNote}
+          {checkoutEnabled ? pricing.testModeNote : pricing.noCheckoutNote}
         </p>
         <div className="mt-8 flex flex-wrap justify-center gap-3">
           <ButtonLink

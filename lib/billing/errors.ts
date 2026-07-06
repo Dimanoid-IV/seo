@@ -24,5 +24,11 @@ export function billingError(
 }
 
 export function isStripeConfigured(): boolean {
-  return Boolean(process.env.STRIPE_SECRET_KEY?.trim());
+  const env = process.env;
+  return Boolean(
+    env.STRIPE_SECRET_KEY?.trim() &&
+      env.STRIPE_STARTER_PRICE_ID?.trim() &&
+      env.STRIPE_PRO_PRICE_ID?.trim() &&
+      env.STRIPE_AGENCY_PRICE_ID?.trim()
+  );
 }

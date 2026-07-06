@@ -24,7 +24,10 @@ function assertDatabaseConfigured(): void {
 }
 
 const checkoutSchema = z.object({
-  plan: z.enum(["STARTER", "PRO", "AGENCY"]),
+  plan: z.preprocess(
+    (value) => (typeof value === "string" ? value.toUpperCase() : value),
+    z.enum(["STARTER", "PRO", "AGENCY"])
+  ),
 });
 
 export async function POST(request: Request) {

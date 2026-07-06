@@ -4,6 +4,7 @@ import { locales, type Locale } from "@/i18n/config";
 import { getDictionary, isValidLocale } from "@/lib/i18n";
 import type { SaasLocale } from "@/lib/i18n/saas/locales";
 import { generatePageMetadata, SEO_KEYWORDS } from "@/lib/seo";
+import { isStripeConfigured } from "@/lib/billing/errors";
 import { SaasPricingSection } from "@/components/sections/SaasPricingSection";
 import { CTASection } from "@/components/sections/CTASection";
 
@@ -48,7 +49,11 @@ export default async function PricingPage({ params }: PageProps) {
             </p>
           </div>
         </div>
-        <SaasPricingSection locale={saasLocale} hideHeading />
+        <SaasPricingSection
+          locale={saasLocale}
+          hideHeading
+          checkoutEnabled={isStripeConfigured()}
+        />
         <CTASection locale={loc} dict={dict} source="pricing" theme="marketing" />
       </div>
     </>

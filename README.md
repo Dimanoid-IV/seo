@@ -1,6 +1,6 @@
 # RankBoost.eu
 
-Production-ready multilingual SEO agency website for Estonia and Europe.
+Production-ready SEO Autopilot SaaS platform and multilingual marketing site for Estonia and Europe.
 
 **Stack:** Next.js 16 (App Router), TypeScript, Tailwind CSS v4, shadcn/ui, Framer Motion, Resend, Zod.
 

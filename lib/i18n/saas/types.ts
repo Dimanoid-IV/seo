@@ -643,6 +643,11 @@ export type SaasDictionary = {
     createAccount: string;
     plans: Array<{ name: string; description: string }>;
     noCheckoutNote: string;
+    upgradePlan: string;
+    loginToUpgrade: string;
+    checkoutLoading: string;
+    checkoutNetworkError: string;
+    testModeNote: string;
   };
   publicAudit: {
     pageTitle: string;

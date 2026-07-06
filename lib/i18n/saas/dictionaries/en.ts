@@ -60,7 +60,7 @@ export const saasDictionary: SaasDictionary = {
     pageErrorFallback:
       "We couldn't load this page right now. Please try again, or open the dashboard and continue from there.",
     stripeNotConfigured:
-      "Billing upgrades are not available yet. You can keep using RankBoost on your current plan.",
+      "Billing is being configured. Stripe test checkout is available after env vars are set.",
   },
   errors: {
     billingRequired:
@@ -790,7 +790,14 @@ export const saasDictionary: SaasDictionary = {
       { name: "Pro", description: "For growing businesses that need more drafts, insights, and review workflows." },
       { name: "Agency", description: "For agencies or teams managing multiple websites." },
     ],
-    noCheckoutNote: "Paid upgrades will be available when billing is configured.",
+    noCheckoutNote:
+      "Paid upgrades use Stripe test checkout after billing env vars are configured.",
+    upgradePlan: "Start test checkout",
+    loginToUpgrade: "Log in to upgrade",
+    checkoutLoading: "Redirecting…",
+    checkoutNetworkError: "Could not start checkout. Try again.",
+    testModeNote:
+      "Stripe test mode for internal QA. Not live billing. Start in Review Mode.",
   },
   publicAudit: {
     pageTitle: "Free website growth preview",

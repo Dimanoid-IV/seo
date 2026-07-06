@@ -71,7 +71,7 @@ export async function createCheckoutSession(input: {
     customer: customerId,
     line_items: [{ price: priceId, quantity: 1 }],
     success_url: `${appUrl}/app/billing?checkout=success`,
-    cancel_url: `${appUrl}/app/billing?checkout=canceled`,
+    cancel_url: `${appUrl}/pricing?checkout=cancelled`,
     metadata: {
       userId: input.userId,
       organizationId: input.organizationId,
