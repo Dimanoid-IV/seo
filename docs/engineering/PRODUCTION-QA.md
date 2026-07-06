@@ -1,6 +1,6 @@
 # Production QA — RankBoost.eu SaaS
 
-> **Prompt 11.6** — Critical UI consistency fixes.  
+> **Prompt 11.7** — Final public content cleanup (SaaS positioning).  
 > **Last updated:** 2026-07-06
 
 **Related:** `docs/engineering/REPO-MAP.md` · `.env.example` · `lib/env.ts`
@@ -984,6 +984,52 @@ Hooks refetch server data when locale changes: dashboard overview, onboarding, c
 |------|-------|
 | Deployment ID | `dpl_8VdjTwEAtNcqRf8HHox2tL6195KZ` |
 | Deployment URL | https://seo-8z8tjnypr-dimanoid-ivs-projects.vercel.app |
+| Production domain | https://www.rankboost.eu |
+
+---
+
+## 8.9. Final public content cleanup (prompt 11.7)
+
+**Date:** 2026-07-07  
+**Commit:** `23b5df4` — `fix: clean up public product positioning`
+
+### Positioning goal
+
+RankBoost presented consistently as **AI Growth Manager for small businesses** — not an SEO agency / service package site.
+
+### Pages updated
+
+| Area | Changes |
+|------|---------|
+| `/audit` | Light marketing shell; localized copy (en/ru/et via `publicAudit` SaaS dict); SaaS CTAs → `/register`; trust note |
+| `/[locale]/services` | Platform capabilities data; ServiceCard CTA → `/register`; nav label → Product/Продукт/Toode |
+| `/[locale]/blog` | Light marketing index; SaaS blog title/subtitle; marketing CTAs |
+| `/[locale]/blog/[slug]` | Light article shell; marketing CTAs; related cards light theme |
+| Footer | Light `bg-slate-100`; product column; trust note; login/register links |
+| Open Graph image | AI Growth Manager copy + light gradient |
+| SEO keywords / JSON-LD | SaaS keywords; `SoftwareApplication` schema instead of `ProfessionalService` |
+
+### Intentionally left as historical
+
+- Blog article **bodies** in `data/blog/posts/**` — legacy SEO agency framing in older articles (index/CTAs updated; full rewrite deferred).
+- `data/pricing.ts` legacy agency tiers — unused on public `/pricing` (SaaS tiers via `SaasPricingSection`).
+
+### Footer decision
+
+Switched from dark footer to **light slate footer** aligned with marketing pages (`components/layout/Footer.tsx`).
+
+### Remaining public content issues
+
+- Historical blog article bodies may still mention SEO services/agency packages.
+- Privacy/terms dictionary snippets still reference “SEO services” in legal boilerplate (low priority).
+- `/audit` route is **not** locale-prefixed (`/audit`, not `/en/audit`).
+
+### Production deploy (11.7)
+
+| Item | Value |
+|------|-------|
+| Deployment ID | `dpl_CxirANU7wvRcdxMMouKA7sg1MbQv` |
+| Deployment URL | https://seo-9u8c4uovn-dimanoid-ivs-projects.vercel.app |
 | Production domain | https://www.rankboost.eu |
 
 ---

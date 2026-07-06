@@ -215,7 +215,8 @@ rankboost.eu/  (package name: seoch)
 | `lib/audit/persist-audit.ts` | — | ✅ Dashboard audit rerun persist (prompt 6.5) |
 | `lib/audit/generate-tasks.ts` | — | ✅ AuditCheck → Task generation (prompt 6.6) |
 | `app/api/websites/[websiteId]/audits/run/route.ts` | `POST /api/websites/:id/audits/run` | ✅ Re-run audit from dashboard (6.5) |
-| `lib/audit/client-messages.ts` | — | ✅ UI labels + error messages (prompt 6.2) |
+| `lib/marketing-paths.ts` | — | Light header routes incl. blog |
+| `lib/i18n/saas/` publicAudit | — | `/audit` localized strings (11.7) |
 | `app/audit/[auditId]/page.tsx` | `/audit/:id` | ⏳ Saved report (future) |
 | `lib/auth/preview-token.ts` | — | ⏳ Signed preview tokens (future) |
 
@@ -799,6 +800,20 @@ Audit / GSC sync / Article generate / Task complete / Dashboard load
 | Failed AI jobs | ✅ `FAILED` + `HERMES_UNAVAILABLE`, no broken drafts |
 | Redeploy after Hermes secrets | ⏸ pending deployment/credentials |
 
+### 4.3.41. Final public content cleanup (prompt 11.7)
+
+| Item | Status |
+|------|--------|
+| `/audit` SaaS positioning + light UI | ✅ `components/audit/*`, `lib/i18n/saas/publicAudit` |
+| Services → platform capabilities | ✅ `data/services.ts`, nav Product label |
+| Blog index + article shell light marketing | ✅ `/[locale]/blog`, `/[locale]/blog/[slug]` |
+| Footer light + SaaS copy | ✅ `components/layout/Footer.tsx` |
+| Public CTAs → `/register` | ✅ ServiceCard, blog helpers, CTASection |
+| Open Graph + SEO keywords | ✅ SaaS framing |
+| Blog article bodies (historical) | ⏸ legacy agency copy in `data/blog/posts/**` |
+| Commit | `23b5df4` — `fix: clean up public product positioning` |
+| Production deploy | ✅ `dpl_CxirANU7wvRcdxMMouKA7sg1MbQv` (2026-07-07) |
+
 ### 4.3.40. Critical UI consistency (prompt 11.6)
 
 | Item | Status |
@@ -808,7 +823,7 @@ Audit / GSC sync / Article generate / Task complete / Dashboard load
 | SaaS pricing copy (Free/Starter/Pro/Agency) | ✅ |
 | Contact form simplified | ✅ |
 | Legacy SEO pricing removed from priority public pages | ✅ |
-| Blog/audit legacy content | ⏸ deferred |
+| Blog/audit legacy content | ✅ index/audit/services/footer cleaned (11.7); article bodies historical |
 | Commit | `0872a9c` — `fix: resolve public UI consistency issues` |
 | Production deploy | ✅ `dpl_8VdjTwEAtNcqRf8HHox2tL6195KZ` (2026-07-06) |
 
