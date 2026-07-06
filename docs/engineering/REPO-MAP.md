@@ -772,6 +772,20 @@ Audit / GSC sync / Article generate / Task complete / Dashboard load
 | Redeploy after Google secrets | ⏸ pending user credentials |
 | Neon GSC integration rows | none yet |
 
+### 4.3.32. Stripe test mode setup & billing QA (prompt 10.8)
+
+| Item | Status |
+|------|--------|
+| Billing routes confirmed | ✅ checkout, subscription, portal, webhook |
+| Org-level subscriptions | ✅ |
+| Stripe env vars in Vercel | ❌ all six missing |
+| Production billing page | ✅ FREE plan + usage |
+| Checkout QA | ⏸ blocked — 402 `BILLING_REQUIRED` |
+| Webhook QA | ⏸ blocked — 503 unconfigured |
+| Portal QA | ⏸ blocked — no Stripe customer |
+| Redeploy after Stripe secrets | ⏸ pending user credentials |
+| Neon Stripe IDs | none yet (QA users FREE) |
+
 ### 4.4. Admin
 
 | Планируемый путь | URL | MVP блок |
@@ -1056,4 +1070,5 @@ curl -s -o /dev/null -w "%{http_code}" -X POST http://localhost:3000/api/contact
 | 2026-07-02 | 10.6 | Vercel deploy + production smoke test — промпт 10.6 |
 | 2026-07-05 | 10.6 | Redeploy + smoke test after dashboard simplification (`db724f8`, `dpl_Bv3dsj9NewVMbvhDfm7BDSwQQQ3X`) |
 | 2026-07-06 | 10.7 GSC | Google OAuth routes documented; production GSC blocked pending client secrets |
+| 2026-07-06 | 10.8 | Stripe test mode setup documented; billing checkout blocked pending Stripe keys |
 | 2026-07-02 | 10.7 | Production integrations QA — www URLs, Resend alias, blocked secrets documented — промпт 10.7 |

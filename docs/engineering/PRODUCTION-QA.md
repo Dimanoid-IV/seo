@@ -387,7 +387,131 @@ vercel --prod   # redeploy after adding secrets
 
 ---
 
-## 5. Stripe test instructions
+## 5. Stripe test mode setup & billing QA (prompt 10.8)
+
+**Status (2026-07-06):** **Blocked** — all six Stripe env vars missing from Vercel Production and repo. Billing page and FREE plan work; checkout returns `402 BILLING_REQUIRED`; webhook returns `503` when unconfigured. No redeploy performed (env vars not yet available).
+
+### Confirmed implementation (from code)
+
+| Item | Detail |
+|------|--------|
+| **Billing scope** | Organization-level — `subscriptions.organizationId` |
+| **Plans** | `FREE`, `STARTER`, `PRO`, `AGENCY` (`lib/billing/plans.ts`) |
+| **Checkout** | `POST /api/billing/checkout` — body `{ plan: "STARTER" \| "PRO" \| "AGENCY" }` |
+| **Subscription API** | `GET /api/billing/subscription` |
+| **Customer portal** | `POST /api/billing/portal` — requires existing `stripeCustomerId` |
+| **Webhook** | `POST /api/billing/webhook` — Stripe signature required |
+| **UI** | `/app/billing` — `BillingPage.tsx` |
+
+**Env vars** (`lib/env.ts`):
+
+```txt
+STRIPE_SECRET_KEY
+STRIPE_WEBHOOK_SECRET
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
+STRIPE_STARTER_PRICE_ID
+STRIPE_PRO_PRICE_ID
+STRIPE_AGENCY_PRICE_ID
+```
+
+**Webhook events handled** (`lib/billing/webhook.ts`):
+
+- `checkout.session.completed`
+- `customer.subscription.created`
+- `customer.subscription.updated`
+- `customer.subscription.deleted`
+- `invoice.payment_failed` → `PAST_DUE`
+- `invoice.payment_succeeded` → idempotency record
+
+**Idempotency:** `Payment.stripeEventId` — duplicate events skipped.
+
+**Status mapping:** Stripe `active` → `ACTIVE`, `trialing` → `TRIALING`, `past_due` → `PAST_DUE`, `canceled` → `CANCELED`.
+
+**Feature gates:** `lib/billing/feature-gates.ts` — `assertCanUseFeature`, `assertUsageLimit`; existing data remains viewable when over limit.
+
+### Stripe Dashboard setup (test mode — manual)
+
+1. Open [Stripe Dashboard](https://dashboard.stripe.com/) → toggle **Test mode**.
+2. **Products** → create three recurring monthly products:
+   - **RankBoost Starter** (e.g. €19/month test price)
+   - **RankBoost Pro** (e.g. €49/month)
+   - **RankBoost Agency** (e.g. €149/month)
+3. Copy each **Price ID** (`price_...`) — do not commit.
+4. **Developers → API keys** → copy **Publishable key** (`pk_test_...`) and **Secret key** (`sk_test_...`) — do not commit secret.
+5. **Developers → Webhooks** → Add endpoint:
+   - URL: `https://www.rankboost.eu/api/billing/webhook`
+   - Events: `checkout.session.completed`, `customer.subscription.created`, `customer.subscription.updated`, `customer.subscription.deleted`, `invoice.payment_failed`, `invoice.payment_succeeded`
+   - Copy **Signing secret** (`whsec_...`) — do not commit.
+6. **Settings → Billing → Customer portal** — enable portal (required for `/api/billing/portal`).
+
+### Vercel Production env (when credentials available)
+
+```bash
+vercel env add STRIPE_SECRET_KEY production          # sk_test_...
+vercel env add STRIPE_WEBHOOK_SECRET production        # whsec_...
+vercel env add NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY production  # pk_test_...
+vercel env add STRIPE_STARTER_PRICE_ID production      # price_...
+vercel env add STRIPE_PRO_PRICE_ID production
+vercel env add STRIPE_AGENCY_PRICE_ID production
+vercel --prod   # redeploy after adding secrets
+```
+
+| Variable | Status (2026-07-06) |
+|----------|---------------------|
+| `STRIPE_SECRET_KEY` | ❌ missing |
+| `STRIPE_WEBHOOK_SECRET` | ❌ missing |
+| `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` | ❌ missing |
+| `STRIPE_STARTER_PRICE_ID` | ❌ missing |
+| `STRIPE_PRO_PRICE_ID` | ❌ missing |
+| `STRIPE_AGENCY_PRICE_ID` | ❌ missing |
+
+### Production billing QA (verified 2026-07-06 — without Stripe)
+
+| Test | Result |
+|------|--------|
+| `GET /api/billing/subscription` | ✅ 200, plan `free`, usage items present |
+| `POST /api/billing/checkout` (STARTER/PRO/AGENCY) | ✅ 402 `BILLING_REQUIRED` — graceful |
+| `POST /api/billing/portal` (FREE user) | ✅ 402 — no Stripe customer yet |
+| `POST /api/billing/webhook` (no signature) | ✅ 503 — not configured / invalid |
+| Billing page loads | ✅ (prior smoke test) |
+| Existing data viewable | ✅ |
+
+### Checkout QA checklist (run after Stripe test keys added)
+
+1. Log in → `/app/billing` → confirm FREE plan + usage.
+2. Click upgrade **Starter** → Stripe Checkout opens.
+3. Pay with test card `4242 4242 4242 4242`, any future expiry/CVC.
+4. Return to `/app/billing?checkout=success`.
+5. Wait for webhook → refresh → plan shows **Starter**, status **ACTIVE**.
+6. Neon: `subscriptions.stripeCustomerId`, `stripeSubscriptionId`, `plan=STARTER` set.
+7. `POST /api/billing/portal` → Stripe Customer Portal opens.
+8. Paid features (e.g. `emailSend`, `wordpress`) allowed per plan config.
+9. FREE users still get 402 on checkout until configured; limits enforced.
+
+### Failure QA (verified or expected)
+
+| Scenario | Expected | Verified |
+|----------|----------|----------|
+| Missing Stripe env | Checkout 402, page loads | ✅ |
+| Webhook without signature | Safe error, no DB update | ✅ 503 |
+| Invalid webhook signature | 400, no subscription change | Code in `webhook/route.ts` |
+| Unknown price ID | Falls back to STARTER mapping | Code in `webhook.ts` |
+| Payment failed | `PAST_DUE` status | Code path confirmed |
+| Subscription deleted | Plan → FREE, `CANCELED` | Code path confirmed |
+
+### Live mode checklist (later — do not use yet)
+
+- [ ] Switch Stripe Dashboard to **Live mode**
+- [ ] Create live products/prices (or map live price IDs)
+- [ ] Replace all `sk_test_` / `pk_test_` / `whsec_` with live keys in Vercel
+- [ ] Register live webhook endpoint
+- [ ] Test one real payment in staging before public launch
+
+**Production DB (2026-07-06):** QA users on FREE/ACTIVE; no `stripeCustomerId` or `stripeSubscriptionId` stored.
+
+---
+
+## 5.1. Stripe test instructions (local dev)
 
 1. Set `STRIPE_SECRET_KEY`, `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`, price IDs, `STRIPE_WEBHOOK_SECRET`, `NEXT_PUBLIC_APP_URL`.
 2. Use Stripe CLI for local webhooks:
