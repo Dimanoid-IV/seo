@@ -760,6 +760,18 @@ Audit / GSC sync / Article generate / Task complete / Dashboard load
 | Integration QA (live) | ✅ graceful fallbacks verified |
 | Deploy after env update | ✅ `dpl_32ppF92McERS6aTCSnTFaFj3uipq` |
 
+### 4.3.31. Google OAuth / GSC production setup (prompt 10.7 — GSC)
+
+| Item | Status |
+|------|--------|
+| Routes confirmed | ✅ `connect`, `callback`, `search-console/sites`, `select-site`, `sync` |
+| `GOOGLE_REDIRECT_URI` in Vercel | ✅ |
+| `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` | ❌ manual blocker — not in repo/Vercel |
+| Production connect QA | ⏸ blocked — graceful `gsc_connection_failed` redirect |
+| Google Cloud OAuth client | ⏸ manual — see `PRODUCTION-QA.md` § GSC setup |
+| Redeploy after Google secrets | ⏸ pending user credentials |
+| Neon GSC integration rows | none yet |
+
 ### 4.4. Admin
 
 | Планируемый путь | URL | MVP блок |
@@ -1043,4 +1055,5 @@ curl -s -o /dev/null -w "%{http_code}" -X POST http://localhost:3000/api/contact
 | 2026-07-01 | 10.5.1 | Vercel Production env — Neon pooled DATABASE_URL, generated secrets — промпт 10.5.1 |
 | 2026-07-02 | 10.6 | Vercel deploy + production smoke test — промпт 10.6 |
 | 2026-07-05 | 10.6 | Redeploy + smoke test after dashboard simplification (`db724f8`, `dpl_Bv3dsj9NewVMbvhDfm7BDSwQQQ3X`) |
+| 2026-07-06 | 10.7 GSC | Google OAuth routes documented; production GSC blocked pending client secrets |
 | 2026-07-02 | 10.7 | Production integrations QA — www URLs, Resend alias, blocked secrets documented — промпт 10.7 |

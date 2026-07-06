@@ -1,7 +1,7 @@
 # Production QA — RankBoost.eu SaaS
 
 > **Prompt 10.7** — Production secrets & integrations QA.  
-> **Last updated:** 2026-07-05
+> **Last updated:** 2026-07-06
 
 **Related:** `docs/engineering/REPO-MAP.md` · `.env.example` · `lib/env.ts`
 
@@ -280,7 +280,97 @@ For **preview deploys**, replace `rankboost.eu` with the Vercel preview host and
 
 **Manual blockers:** `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, all `STRIPE_*` keys, `HERMES_API_URL`, `HERMES_API_SECRET` — not available in repo; add in Vercel Production and redeploy.
 
-### Deploy steps (when ready)
+### Google OAuth / GSC production setup (prompt 10.7 — GSC)
+
+**Status (2026-07-06):** **Blocked** — `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` are not in Vercel Production or repo. `GOOGLE_REDIRECT_URI` is present. Connect flow fails gracefully with redirect to `/app/integrations?error=gsc_connection_failed`. No redeploy performed (env vars not yet available).
+
+#### Confirmed routes (from code)
+
+| Step | Route | Handler |
+|------|-------|---------|
+| OAuth start | `GET /api/integrations/google/connect` | `app/api/integrations/google/connect/route.ts` |
+| OAuth callback | `GET /api/integrations/google/callback` | `app/api/integrations/google/callback/route.ts` |
+| List properties | `GET /api/integrations/google/search-console/sites` | `app/api/integrations/google/search-console/sites/route.ts` |
+| Select property | `POST /api/integrations/google/search-console/select-site` | `app/api/integrations/google/search-console/select-site/route.ts` |
+| Sync metrics | `POST /api/integrations/google/search-console/sync` | `app/api/integrations/google/search-console/sync/route.ts` |
+| UI | `/app/integrations` | Property picker in `GoogleSearchConsolePropertyPicker.tsx` |
+
+**Env vars** (`lib/google/config.ts`): `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `GOOGLE_REDIRECT_URI` (legacy aliases `GOOGLE_INTEGRATIONS_*` supported).
+
+**OAuth scopes:** `openid`, `email`, `profile`, `https://www.googleapis.com/auth/webmasters.readonly`
+
+**Token storage:** `encryptSecret()` in `lib/integrations/gsc-connect.ts` → `integrations.accessTokenEncrypted` / `refreshTokenEncrypted`. Tokens never returned to UI.
+
+**Timeline:** `timelineAfterIntegrationConnected` with label `Google Search Console` on successful connect.
+
+**Post-OAuth redirects:** success → `/app/integrations?connected=gsc`; failure/denied → `/app/integrations?error=gsc_connection_failed`.
+
+#### Google Cloud Console setup (manual)
+
+1. Open [Google Cloud Console](https://console.cloud.google.com/) → project **RankBoost Production** (create if needed).
+2. **APIs & Services → Enable APIs** → enable **Google Search Console API** (Webmasters API).
+3. **OAuth consent screen:**
+   - App name: `RankBoost`
+   - User type: External (or Internal for workspace testing)
+   - Authorized domains: `rankboost.eu`
+   - Scopes: include `.../auth/webmasters.readonly`, `openid`, `email`, `profile`
+4. **Credentials → Create OAuth client ID:**
+   - Type: **Web application**
+   - Name: `RankBoost Production Web Client`
+   - **Authorized JavaScript origins:**
+     - `https://rankboost.eu`
+     - `https://www.rankboost.eu`
+   - **Authorized redirect URIs** (must match `GOOGLE_REDIRECT_URI` exactly):
+     - `https://www.rankboost.eu/api/integrations/google/callback` *(recommended — canonical www)*
+     - `https://rankboost.eu/api/integrations/google/callback` *(optional — apex redirects to www)*
+5. Copy **Client ID** and **Client secret** (do not commit).
+
+#### Vercel Production env (when credentials available)
+
+```bash
+# Do not echo secrets in terminal history; use Vercel dashboard or:
+vercel env add GOOGLE_CLIENT_ID production
+vercel env add GOOGLE_CLIENT_SECRET production
+# GOOGLE_REDIRECT_URI should already be set; verify it matches Google Console:
+# https://www.rankboost.eu/api/integrations/google/callback
+vercel --prod   # redeploy after adding secrets
+```
+
+| Variable | Status (2026-07-06) |
+|----------|---------------------|
+| `GOOGLE_CLIENT_ID` | ❌ missing |
+| `GOOGLE_CLIENT_SECRET` | ❌ missing |
+| `GOOGLE_REDIRECT_URI` | ✅ present |
+
+#### Production GSC QA checklist (run after secrets added)
+
+1. Log in → `/app/integrations` → Connect Google Search Console.
+2. Complete Google OAuth → callback → banner “Google Search Console успешно подключён.”
+3. Property picker loads (`GET .../search-console/sites`).
+4. Select property → `POST .../select-site`.
+5. Sync metrics → `POST .../search-console/sync`.
+6. Control Center shows GSC **CONNECTED**; dashboard findings may mention GSC.
+7. Timeline shows integration-connected event.
+8. Neon: `integrations` row with `GOOGLE_SEARCH_CONSOLE`, encrypted tokens, correct `websiteId` / `organizationId`.
+
+#### Error handling QA (verified or expected)
+
+| Scenario | Expected behavior | Verified |
+|----------|-------------------|----------|
+| Missing `GOOGLE_CLIENT_*` | Redirect `?error=gsc_connection_failed`, no crash | ✅ 2026-07-06 |
+| User denies OAuth | Callback `?error=...` → `gsc_connection_failed` banner | Code path confirmed |
+| `redirect_uri_mismatch` | Google error page; fix URI in Console + Vercel | Documented |
+| No Search Console properties | Empty state in property picker | UI in `GoogleSearchConsolePropertyPicker.tsx` |
+| Token refresh failure | Integration `ERROR` status, reconnect prompt | `gsc-context.ts` |
+
+#### Troubleshooting
+
+- **`redirect_uri_mismatch`:** `GOOGLE_REDIRECT_URI` in Vercel must exactly match an authorized redirect URI in Google Console (including `www` vs apex).
+- **`gsc_connection_failed`:** Check Vercel logs; common causes: missing env, wrong secret, state expired (>10m), user/org mismatch.
+- **No properties:** Google account has no GSC access — not an app bug; show empty state.
+- **Connect requires browser session:** OAuth start uses `requireUserFromSession` (refresh cookie), not Bearer token alone.
+
+**Production DB (2026-07-06):** No `GOOGLE_SEARCH_CONSOLE` integration rows in Neon Production.
 
 1. Push `main` to GitHub *(done in 10.5)*.
 2. Set Vercel env vars (production + preview as needed).
