@@ -800,6 +800,16 @@ Audit / GSC sync / Article generate / Task complete / Dashboard load
 | Failed AI jobs | ✅ `FAILED` + `HERMES_UNAVAILABLE`, no broken drafts |
 | Redeploy after Hermes secrets | ⏸ pending deployment/credentials |
 
+### 4.3.43. Dashboard layout & loading hotfix
+
+| Item | Status |
+|------|--------|
+| Main column top alignment (`app/app/layout.tsx`) | ✅ |
+| Page loading state top-aligned (no `py-24` center) | ✅ |
+| Session loading i18n (`auth.loadingDashboard`) | ✅ |
+| Commit | `38652f2` — `fix: correct dashboard layout and loading copy` |
+| Production deploy | ✅ `dpl_FqX2pj9XHi2GKazMRoyLZnBDZ4ee` (2026-07-07) |
+
 ### 4.3.42. Legal & trust copy cleanup (prompt 11.8)
 
 | Item | Status |

@@ -1068,6 +1068,32 @@ Switched from dark footer to **light slate footer** aligned with marketing pages
 
 ---
 
+## 8.11. Dashboard layout & loading hotfix
+
+**Date:** 2026-07-07  
+**Commit:** `38652f2` — `fix: correct dashboard layout and loading copy`
+
+### Issues fixed
+
+- Main SaaS content rendered too low below the header during page/data loading (`PageLoadingState` used `justify-center` + `py-24`).
+- Session bootstrap showed hardcoded Russian `Загружаем кабинет…` for all users.
+
+### Fix
+
+- App shell content wrapper: `flex min-h-0 flex-1 flex-col` so pages align to the top of the main column.
+- `PageLoadingState`: top-aligned compact spinner (matches dashboard padding, `max-w-6xl`).
+- `AuthSessionProvider`: `dict.auth.loadingDashboard` via SaaS i18n (en/ru/et).
+
+### Production deploy (hotfix)
+
+| Item | Value |
+|------|-------|
+| Deployment ID | `dpl_FqX2pj9XHi2GKazMRoyLZnBDZ4ee` |
+| Deployment URL | https://seo-dqw802427-dimanoid-ivs-projects.vercel.app |
+| Production domain | https://www.rankboost.eu |
+
+---
+
 ## 9. Known limitations (beta)
 
 - No automatic publishing, email sending, or approvals.
