@@ -1,6 +1,6 @@
 # Production QA — RankBoost.eu SaaS
 
-> **Prompt 10.7** — Production secrets & integrations QA.  
+> **Prompt 11.1** — Real browser beta QA & critical fixes.  
 > **Last updated:** 2026-07-06
 
 **Related:** `docs/engineering/REPO-MAP.md` · `.env.example` · `lib/env.ts`
@@ -230,6 +230,7 @@ For **preview deploys**, replace `rankboost.eu` with the Vercel preview host and
 |-------|--------|
 | `qa-prod@rankboost.test` | Original smoke user (password not in repo) |
 | `qa-prod-2@rankboost.test` | Dashboard simplification smoke user (password not in repo) |
+| `qa-beta-browser@rankboost.test` | Real browser QA user (prompt 11.1; password not in repo) |
 
 **Production smoke test (2026-07-05, post–dashboard simplification):**
 
@@ -681,6 +682,59 @@ HERMES_API_SECRET   # Bearer token sent as Authorization header
 
 ---
 
+## 8.3. Real browser beta QA (prompt 11.1)
+
+**Date:** 2026-07-06  
+**Tool:** Playwright (Chrome headless) against `https://www.rankboost.eu`  
+**Viewports:** desktop 1440×900, mobile 375×812  
+**QA user:** `qa-beta-browser@rankboost.test` (registered during QA; password not in repo)
+
+### Browser QA summary
+
+| Area | Desktop | Mobile 375px | Notes |
+|------|---------|--------------|-------|
+| Public pages (`/`, `/login`, `/register`) | **Passed** | **Passed** | No 5xx, no horizontal overflow, no raw error codes |
+| Registration / login | **Passed** | **Passed** | Register → `/app`; logout → re-login; session survives refresh |
+| Simplified dashboard (`/app`) | **Passed** | **Passed** | Hero, metrics, next action readable; no overflow |
+| Onboarding (`/app/onboarding`) | **Passed** | **Passed** | Clear setup or complete state |
+| Control Center | **Passed** | **Passed** | Loads; recommended actions not overwhelming on mobile |
+| Core app pages | **Passed** | **Passed** | All listed routes load without crash |
+| Blocked integrations UX | **Passed** | **Passed** | Billing checkout friendly; GSC error banner fixed post-deploy |
+| Console / network | **Passed** | **Passed** | No uncaught exceptions or 5xx on tested routes |
+
+### Pages tested
+
+`/`, `/login`, `/register`, `/app`, `/app/onboarding`, `/app/autopilot-control`, `/app/content-plan`, `/app/social-posts`, `/app/email-approvals`, `/app/timeline`, `/app/autopilot`, `/app/reports`, `/app/billing`, `/app/integrations`
+
+### Issues found
+
+1. **GSC OAuth error banner never shown** — `IntegrationsPage` stripped `?error=gsc_connection_failed` from the URL on load before React could render the banner.
+
+### Fixes applied
+
+| Commit | Change |
+|--------|--------|
+| `aeb2afc` | Clear OAuth query params only when user dismisses banner; GSC success sheet unchanged |
+
+### Production redeploy (11.1)
+
+| Item | Value |
+|------|-------|
+| Deployment ID | `dpl_C5266XRxSe9ppBC82qL42tsAUjcf` |
+| Deployment URL | https://seo-3jckttrn2-dimanoid-ivs-projects.vercel.app |
+| Production domain | https://www.rankboost.eu |
+| Smoke test | **Passed** — key routes HTTP 200; GSC banner verified after fix |
+
+### Known remaining beta issues
+
+- External credentials still missing (Google OAuth, Stripe, Hermes) — UI fails gracefully
+- Control Center still information-dense on small phones (acceptable for beta)
+- Some integration timestamps remain RU/EN mixed
+- Full onboarding website→audit→plan flow not re-run end-to-end in browser this pass (user already registered with partial setup)
+- `/api/auth/me` requires Bearer token (via `authFetch`); cookie-only fetch returns 401 — expected
+
+---
+
 ## 9. Known limitations (beta)
 
 - No automatic publishing, email sending, or approvals.
@@ -826,9 +880,9 @@ HERMES_API_SECRET   # Bearer token sent as Authorization header
 
 ### Responsive UI (spot check)
 
-- [ ] Dashboard, Control Center, Timeline, Content Plan usable at 375px width
-- [ ] Mobile bottom nav + “More” sheet work
-- [ ] Tables/cards do not overflow horizontally
+- [x] Dashboard, Control Center, Timeline, Content Plan usable at 375px width (prompt 11.1 browser QA)
+- [x] Mobile bottom nav + “More” sheet work (spot-check via page load + layout CSS)
+- [x] Tables/cards do not overflow horizontally on tested routes (375px)
 
 ---
 

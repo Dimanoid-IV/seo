@@ -744,7 +744,7 @@ Audit / GSC sync / Article generate / Task complete / Dashboard load
 | Prior deploy | `dpl_3Nx2aicKvxjxXtNPmntZNRyg2ixh` (2026-07-02) |
 | Build fix | ✅ `prisma generate && next build` |
 | Production smoke test | ✅ API + simplified dashboard against Neon Production |
-| QA users | `qa-prod@rankboost.test`, `qa-prod-2@rankboost.test` |
+| QA users | `qa-prod@rankboost.test`, `qa-prod-2@rankboost.test`, `qa-beta-browser@rankboost.test` |
 | External integrations | ⏸ Google/Stripe/Hermes — secrets not in repo; manual Vercel setup required |
 
 ### 4.3.30. Production integrations QA (prompt 10.7)
@@ -798,6 +798,16 @@ Audit / GSC sync / Article generate / Task complete / Dashboard load
 | Quality pipeline | ⏸ not testable without Hermes |
 | Failed AI jobs | ✅ `FAILED` + `HERMES_UNAVAILABLE`, no broken drafts |
 | Redeploy after Hermes secrets | ⏸ pending deployment/credentials |
+
+### 4.3.35. Real browser beta QA (prompt 11.1)
+
+| Item | Status |
+|------|--------|
+| Playwright browser QA (desktop + 375px) | ✅ all core routes pass |
+| QA user | ✅ `qa-beta-browser@rankboost.test` |
+| GSC error banner fix | ✅ `IntegrationsPage` — persist banner until dismiss |
+| Production deploy | ✅ `dpl_C5266XRxSe9ppBC82qL42tsAUjcf` (2026-07-06) |
+| Commit | `aeb2afc` — `fix: resolve beta browser QA issues` |
 
 ### 4.3.34. Mobile UX QA & beta polish (prompt 11.0)
 
@@ -1096,4 +1106,5 @@ curl -s -o /dev/null -w "%{http_code}" -X POST http://localhost:3000/api/contact
 | 2026-07-06 | 10.8 | Stripe test mode setup documented; billing checkout blocked pending Stripe keys |
 | 2026-07-06 | 10.9 | Hermes setup documented; AI generation blocked pending Hermes URL/secret |
 | 2026-07-06 | 11.0 | Mobile UX polish — overflow, friendly errors, tap targets |
+| 2026-07-06 | 11.1 | Real browser beta QA — GSC banner fix, Playwright pass at 375px |
 | 2026-07-02 | 10.7 | Production integrations QA — www URLs, Resend alias, blocked secrets documented — промпт 10.7 |
