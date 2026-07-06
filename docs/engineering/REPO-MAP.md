@@ -800,6 +800,21 @@ Audit / GSC sync / Article generate / Task complete / Dashboard load
 | Failed AI jobs | ✅ `FAILED` + `HERMES_UNAVAILABLE`, no broken drafts |
 | Redeploy after Hermes secrets | ⏸ pending deployment/credentials |
 
+### 4.3.45. Legal & trust copy for autopilot (prompt 11.9)
+
+| Item | Status |
+|------|--------|
+| Privacy policy Review Mode + automation data (en/ru/et) | ✅ |
+| Terms Review Mode + optional automation (en/ru/et) | ✅ |
+| No absolute “never publishes” on legal pages | ✅ |
+| AI assistant mention disclaimer in terms | ✅ |
+| Footer trust note — Review Mode by default | ✅ |
+| WordPress plugin README — draft-only + future automation note | ✅ |
+| SaaS WordPress/email trust strings aligned | ✅ |
+| Blog article bodies (historical) | ⏸ legacy agency copy |
+| Commit | `e62b1a9` — `fix: align legal copy with autopilot positioning` |
+| Production deploy | ✅ `dpl_7SDqXonusd6WzMkd4AaVVtkdMCH2` (2026-07-07) |
+
 ### 4.3.44. SEO Autopilot & AI search positioning (prompt 11.8 — autopilot copy)
 
 | Item | Status |

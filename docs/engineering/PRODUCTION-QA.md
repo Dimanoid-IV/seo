@@ -1150,6 +1150,43 @@ JSON-LD (`lib/json-ld.ts`) continues to use `SoftwareApplication` with descripti
 
 ---
 
+## 8.13. Legal & trust copy cleanup for autopilot (Production Prompt 11.9)
+
+**Date:** 2026-07-07  
+**Commit:** `e62b1a9` — `fix: align legal copy with autopilot positioning`
+
+### Changes
+
+| Area | Updates |
+|------|---------|
+| Privacy policy (en/ru/et) | SEO Autopilot platform wording; automation settings/logs (if enabled); integration + future automation data processing |
+| Terms of service (en/ru/et) | Review Mode default; optional explicit automation; no absolute “never publishes”; AI assistant mention disclaimer |
+| Footer trust note (en/ru/et) | “Review Mode by default. Automation only when explicitly enabled.” |
+| WordPress plugin README | Current draft-only behavior preserved; future automation requires explicit RankBoost configuration |
+| SaaS trust strings (en/ru/et) | WordPress draft + email generate copy aligned with Review Mode (no absolute never-publish claims) |
+
+### Legal/trust principles
+
+- RankBoost described as **SEO Autopilot SaaS software**, not SEO agency/services
+- **Review Mode** is the default/current safe mode
+- **Auto-Publish Mode** not claimed as currently active; optional automation described as requiring explicit setup, integrations, and rules
+- No guaranteed rankings, AI mentions, traffic, or revenue on legal pages
+
+### Intentionally unchanged
+
+- Blog article bodies in `data/blog/posts/**` (historical SEO agency articles)
+- No business logic, billing gates, migrations, or credentials changes
+
+### Production deploy (11.9)
+
+| Item | Value |
+|------|-------|
+| Deployment ID | `dpl_7SDqXonusd6WzMkd4AaVVtkdMCH2` |
+| Deployment URL | https://seo-hy0yortv5-dimanoid-ivs-projects.vercel.app |
+| Production domain | https://www.rankboost.eu |
+
+---
+
 ## 9. Known limitations (beta)
 
 - No automatic publishing, email sending, or approvals.
