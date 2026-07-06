@@ -161,70 +161,72 @@ export function SimpleDashboardPage() {
 
   return (
     <main className={DASHBOARD_MAIN}>
-      <div className="saas-page-stack">
-        <OnboardingBanner />
-        <DashboardHero
-          status={simple.status}
-          websiteDomain={simple.website.domain ?? simple.website.name}
-        />
-
-        {nextAction ? (
-          <NextBestActionCard
-            title={nextAction.title}
-            description={nextAction.description}
-            label={nextAction.label}
-            href={nextHref}
-            onAction={nextHref ? undefined : () => void handlePrimaryAction()}
-            loading={actionLoading}
-            secondaryLabel={simple.secondaryAction?.label}
-            secondaryHref={simple.secondaryAction?.href}
+      <OnboardingBanner />
+      <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_min(360px,100%)] lg:items-start">
+        <div className="saas-page-stack min-w-0">
+          <DashboardHero
+            status={simple.status}
+            websiteDomain={simple.website.domain ?? simple.website.name}
           />
-        ) : null}
 
-        {actionError ? (
-          <div className="rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-300">
-            {actionError}
-          </div>
-        ) : null}
+          {nextAction ? (
+            <NextBestActionCard
+              title={nextAction.title}
+              description={nextAction.description}
+              label={nextAction.label}
+              href={nextHref}
+              onAction={nextHref ? undefined : () => void handlePrimaryAction()}
+              loading={actionLoading}
+              secondaryLabel={simple.secondaryAction?.label}
+              secondaryHref={simple.secondaryAction?.href}
+            />
+          ) : null}
 
-        <section className="grid gap-5 sm:grid-cols-3">
-          <DashboardMetricCard
-            title={d.growthScore}
-            value={growthScoreDisplay}
-            subtitle={simple.metrics.growthScoreLabel}
-            accent="emerald"
-          />
-          <DashboardMetricCard
-            title={d.opportunities}
-            value={opportunitiesDisplay}
-            subtitle={d.opportunitiesSubtitle}
-            accent="cyan"
-          />
-          <DashboardMetricCard
-            title={d.needsReview}
-            value={reviewDisplay}
-            subtitle={d.needsReviewSubtitle}
-            accent="amber"
-          />
-        </section>
+          {actionError ? (
+            <div className="rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-300">
+              {actionError}
+            </div>
+          ) : null}
 
-        <FindingsCard findings={simple.findings} />
+          <section className="grid gap-5 sm:grid-cols-3">
+            <DashboardMetricCard
+              title={d.growthScore}
+              value={growthScoreDisplay}
+              subtitle={simple.metrics.growthScoreLabel}
+              accent="emerald"
+            />
+            <DashboardMetricCard
+              title={d.opportunities}
+              value={opportunitiesDisplay}
+              subtitle={d.opportunitiesSubtitle}
+              accent="cyan"
+            />
+            <DashboardMetricCard
+              title={d.needsReview}
+              value={reviewDisplay}
+              subtitle={d.needsReviewSubtitle}
+              accent="amber"
+            />
+          </section>
 
-        <div className="grid gap-6 lg:grid-cols-2 lg:gap-8">
-          <PreparedForYouCard {...simple.preparedForYou} />
-          <RecentActivityCompact items={simple.recentActivity} />
+          <FindingsCard findings={simple.findings} />
+
+          <TrustNote variant="ai" />
+
+          {simple.billingNote ? (
+            <p className="text-center text-xs text-slate-500 lg:text-left">
+              {d.billingNote}{" "}
+              <Link href="/app/billing" className="text-blue-300 hover:text-blue-200">
+                {dict.common.viewPlans}
+              </Link>
+            </p>
+          ) : null}
         </div>
 
-        <TrustNote variant="ai" />
-
-        {simple.billingNote ? (
-          <p className="text-center text-xs text-slate-500">
-            {d.billingNote}{" "}
-            <Link href="/app/billing" className="text-blue-300 hover:text-blue-200">
-              {dict.common.viewPlans}
-            </Link>
-          </p>
-        ) : null}
+        <aside className="flex min-w-0 flex-col gap-6 self-start">
+          <PreparedForYouCard {...simple.preparedForYou} />
+          <RecentActivityCompact items={simple.recentActivity} />
+        </aside>
       </div>
     </main>
   );
