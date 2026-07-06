@@ -25,7 +25,7 @@ export const saasDictionary: SaasDictionary = {
     more: "Rohkem",
     menu: "Menüü",
     comingSoon: "Peagi",
-    trustFooter: "Midagi ei avaldata automaatselt",
+    trustFooter: "Alustage ülevaatusrežiimis",
   },
   header: {
     loadingProfile: "Profiili laadimine…",
@@ -290,7 +290,7 @@ export const saasDictionary: SaasDictionary = {
       generatePlan: {
         title: "Genereerige kuine kasvuplaan",
         description:
-          "RankBoost koostab mustandplaani — midagi ei avaldata automaatselt.",
+          "RankBoost koostab mustandplaani teie ülevaatuseks — ülevaatusrežiimis.",
         action: "Genereeri plaan",
       },
     },
@@ -575,7 +575,7 @@ export const saasDictionary: SaasDictionary = {
     editTitle: "Muuda sotsiaalpostitust",
     generateTitle: "Genereeri postitus",
     generateDescription:
-      "RankBoost kasutab kontekstina teie uusimaid kasvuandmeid. Midagi ei avaldata automaatselt.",
+      "RankBoost kasutab kontekstina teie uusimaid kasvuandmeid. Ülevaatusrežiimis kinnitate teie, mis avaldatakse.",
     manualTitle: "Loo käsitsi",
     platform: "Platvorm",
     source: "Allikas",
@@ -781,7 +781,7 @@ export const saasDictionary: SaasDictionary = {
     pageSubtitle:
       "Alustage tasuta. Uuendage paketti, kui vajate rohkem kasvutoiminguid. Pikaajalisi lepinguid pole. Tühistage igal ajal.",
     trustNote:
-      "Ilma pikaajaliste lepinguteta. Tühistamine igal ajal. Midagi ei avaldata automaatselt. Looge tasuta konto, et RankBoosti avastada.",
+      "Ilma pikaajaliste lepinguteta. Tühistamine igal ajal. Alustage turvaliselt ülevaatusrežiimis. Looge tasuta konto, et RankBoosti avastada.",
     startFree: "Alusta tasuta",
     createAccount: "Loo konto",
     plans: [
@@ -795,14 +795,14 @@ export const saasDictionary: SaasDictionary = {
   publicAudit: {
     pageTitle: "Tasuta veebilehe kasvu eelvaade",
     pageSubtitle:
-      "Kiire eelvaade kasvuvõimalustest. RankBoost kontrollib põhilisi SEO signaale ja näitab, mida saab parandada.",
+      "Vaadake, mida teie SEO-autopiloot esmalt otsiks. RankBoost kontrollib põhilisi SEO signaale ja näitab, mida saab parandada.",
     loginRegister: "Logi sisse / Loo konto",
     urlLabel: "Veebilehe URL",
     urlPlaceholder: "example.com või https://example.com",
     runPreview: "Käivita eelvaade",
     running: "Kontrollin…",
     trustNote:
-      "Midagi teie veebilehel ei muutu. RankBoost valmistab ainult soovitused teie ülevaatamiseks.",
+      "Eelvaade analüüsib ainult avalikke veebisignaale. Teie veebilehel midagi ei muutu.",
     checkAnother: "Kontrolli teist veebilehte",
     createAccountCta: "Loo konto",
     fullPlanTitle: "Muutke leiud kasvuplaaniks",

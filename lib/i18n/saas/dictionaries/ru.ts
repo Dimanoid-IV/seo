@@ -25,7 +25,7 @@ export const saasDictionary: SaasDictionary = {
     more: "Ещё",
     menu: "Меню",
     comingSoon: "Скоро",
-    trustFooter: "Ничего не публикуется автоматически",
+    trustFooter: "Начните с режима проверки",
   },
   header: {
     loadingProfile: "Загрузка профиля…",
@@ -290,7 +290,7 @@ export const saasDictionary: SaasDictionary = {
       generatePlan: {
         title: "Создайте месячный план роста",
         description:
-          "RankBoost подготовит черновик плана — ничего не публикуется автоматически.",
+          "RankBoost подготовит черновик плана на ваше одобрение — в режиме проверки.",
         action: "Создать план",
       },
     },
@@ -575,7 +575,7 @@ export const saasDictionary: SaasDictionary = {
     editTitle: "Редактировать пост",
     generateTitle: "Создать пост",
     generateDescription:
-      "RankBoost использует ваши данные роста как контекст. Ничего не публикуется автоматически.",
+      "RankBoost использует ваши данные роста как контекст. Вы одобряете, что публикуется, в режиме проверки.",
     manualTitle: "Создать вручную",
     platform: "Платформа",
     source: "Источник",
@@ -781,7 +781,7 @@ export const saasDictionary: SaasDictionary = {
     pageSubtitle:
       "Начните бесплатно. Улучшайте план, когда нужно больше действий. Без долгосрочных контрактов. Отмена в любой момент.",
     trustNote:
-      "Без долгосрочных контрактов. Отмена в любой момент. Ничего не публикуется автоматически. Создайте бесплатный аккаунт, чтобы изучить RankBoost.",
+      "Без долгосрочных контрактов. Отмена в любой момент. Начните безопасно с режима проверки. Создайте бесплатный аккаунт, чтобы изучить RankBoost.",
     startFree: "Начать бесплатно",
     createAccount: "Создать аккаунт",
     plans: [
@@ -795,14 +795,14 @@ export const saasDictionary: SaasDictionary = {
   publicAudit: {
     pageTitle: "Бесплатный preview роста сайта",
     pageSubtitle:
-      "Быстрый preview возможностей роста. RankBoost проверяет базовые SEO-сигналы и показывает, что можно улучшить.",
+      "Посмотрите, с чего начнёт ваш SEO-автопилот. RankBoost проверяет базовые SEO-сигналы и показывает, что можно улучшить.",
     loginRegister: "Войти / Создать аккаунт",
     urlLabel: "URL сайта",
     urlPlaceholder: "example.com или https://example.com",
     runPreview: "Запустить preview",
     running: "Проверяем…",
     trustNote:
-      "Ничего на сайте не меняется. RankBoost только готовит рекомендации на ваше одобрение.",
+      "Preview анализирует только публичные сигналы сайта. Ничего на сайте не меняется.",
     checkAnother: "Проверить другой сайт",
     createAccountCta: "Создать аккаунт",
     fullPlanTitle: "Превратите находки в план роста",

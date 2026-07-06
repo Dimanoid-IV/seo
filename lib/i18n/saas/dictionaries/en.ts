@@ -25,7 +25,7 @@ export const saasDictionary: SaasDictionary = {
     more: "More",
     menu: "Menu",
     comingSoon: "Coming soon",
-    trustFooter: "Nothing publishes automatically",
+    trustFooter: "Start in Review Mode",
   },
   header: {
     loadingProfile: "Loading profile…",
@@ -575,7 +575,7 @@ export const saasDictionary: SaasDictionary = {
     editTitle: "Edit social post",
     generateTitle: "Generate post",
     generateDescription:
-      "RankBoost will use your latest growth data as context. Nothing is published automatically.",
+      "RankBoost will use your latest growth data as context. You approve what goes live in Review Mode.",
     manualTitle: "Create manually",
     platform: "Platform",
     source: "Source",
@@ -781,7 +781,7 @@ export const saasDictionary: SaasDictionary = {
     pageSubtitle:
       "Start free. Upgrade when you need more growth actions. No long-term contracts. Cancel anytime.",
     trustNote:
-      "No long-term contracts. Cancel anytime. Nothing is published automatically. Create a free account to explore RankBoost.",
+      "No long-term contracts. Cancel anytime. Start safely in Review Mode. Create a free account to explore RankBoost.",
     startFree: "Start free",
     createAccount: "Create account",
     plans: [
@@ -795,14 +795,14 @@ export const saasDictionary: SaasDictionary = {
   publicAudit: {
     pageTitle: "Free website growth preview",
     pageSubtitle:
-      "Get a quick preview of your website growth opportunities. RankBoost checks basic SEO and website signals, then shows what could be improved.",
+      "See what your SEO Autopilot would look for first. RankBoost checks basic SEO and website signals, then shows what could be improved.",
     loginRegister: "Log in / Create account",
     urlLabel: "Website URL",
     urlPlaceholder: "example.com or https://example.com",
     runPreview: "Run preview",
     running: "Running preview…",
     trustNote:
-      "Nothing is changed on your website. RankBoost only prepares recommendations for review.",
+      "The preview only analyzes public website signals. Nothing is changed on your website.",
     checkAnother: "Check another website",
     createAccountCta: "Create account",
     fullPlanTitle: "Turn findings into a growth plan",

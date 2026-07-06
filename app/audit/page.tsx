@@ -3,13 +3,13 @@ import type { Metadata } from "next";
 import { AuditPageContent } from "@/components/audit/AuditPageContent";
 
 export const metadata: Metadata = {
-  title: "Free website growth preview — RankBoost",
+  title: "Free website growth preview — SEO Autopilot | RankBoost",
   description:
-    "Get a quick preview of your website growth opportunities. RankBoost checks basic SEO signals and shows what could be improved.",
+    "See what your SEO Autopilot would look for first. RankBoost checks basic SEO and website signals, then shows growth opportunities.",
   openGraph: {
-    title: "Free website growth preview — RankBoost",
+    title: "Free website growth preview — SEO Autopilot | RankBoost",
     description:
-      "Get a quick preview of your website growth opportunities. RankBoost checks basic SEO signals and shows what could be improved.",
+      "See what your SEO Autopilot would look for first. RankBoost checks basic SEO and website signals, then shows growth opportunities.",
   },
 };
 

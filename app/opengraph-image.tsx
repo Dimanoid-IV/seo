@@ -1,7 +1,7 @@
 import { ImageResponse } from "next/og";
 
 export const runtime = "edge";
-export const alt = "RankBoost.eu — AI Growth Manager for small businesses";
+export const alt = "RankBoost.eu — SEO Autopilot for small businesses";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -48,10 +48,10 @@ export default function OpenGraphImage() {
           </span>
         </div>
         <p style={{ fontSize: "36px", color: "#334155", maxWidth: "900px", lineHeight: 1.4 }}>
-          AI Growth Manager for small businesses
+          SEO Autopilot for small businesses
         </p>
         <p style={{ fontSize: "24px", color: "#64748b", marginTop: "16px" }}>
-          Website audits · Growth actions · Review-ready drafts
+          Google + AI search visibility · Review Mode first
         </p>
       </div>
     ),

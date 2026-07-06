@@ -133,14 +133,52 @@ export const services: Service[] = [
       et: "WordPressi mustandid",
     },
     description: {
-      en: "Create WordPress drafts from approved content — nothing is published automatically.",
-      ru: "Создавайте черновики WordPress из одобренного контента — без автопубликации.",
-      et: "Looge WordPressi mustandid kinnitatud sisust — automaatselt ei avaldata.",
+      en: "Create WordPress drafts from approved content — start in Review Mode before any live publish.",
+      ru: "Создавайте черновики WordPress из одобренного контента — начните в режиме проверки.",
+      et: "Looge WordPressi mustandid kinnitatud sisust — alustage ülevaatusrežiimis.",
     },
     features: {
-      en: ["Draft-only publishing", "Connector setup", "Review before live", "Secure connection"],
-      ru: ["Только черновики", "Настройка коннектора", "Проверка перед публикацией", "Безопасное подключение"],
-      et: ["Ainult mustandid", "Konnektori seadistus", "Ülevaatus enne avaldamist", "Turvaline ühendus"],
+      en: ["Draft-first workflow", "Connector setup", "Review before live", "Secure connection"],
+      ru: ["Сначала черновики", "Настройка коннектора", "Проверка перед публикацией", "Безопасное подключение"],
+      et: ["Esmalt mustandid", "Konnektori seadistus", "Ülevaatus enne avaldamist", "Turvaline ühendus"],
+    },
+  },
+  {
+    id: "ai-search-readiness",
+    icon: "Sparkles",
+    title: {
+      en: "AI search readiness",
+      ru: "Готовность к AI-поиску",
+      et: "AI-otsingu valmidus",
+    },
+    description: {
+      en: "Improve clarity and structure so search engines and AI assistants can better understand your business and content.",
+      ru: "Улучшайте ясность и структуру, чтобы поисковые и AI-системы лучше понимали ваш бизнес и контент.",
+      et: "Parandage selgust ja struktuuri, et otsingu- ja AI-süsteemid mõistaksid teie ettevõtet ja sisu paremini.",
+    },
+    features: {
+      en: ["Clear page structure", "FAQ-friendly content", "No ranking guarantees", "Google + AI focus"],
+      ru: ["Понятная структура", "Контент для FAQ", "Без гарантий позиций", "Google + AI"],
+      et: ["Selge lehe struktuur", "KKK-sõbralik sisu", "Positsioonigarantiid puuduvad", "Google + AI"],
+    },
+  },
+  {
+    id: "auto-publish-controls",
+    icon: "Rocket",
+    title: {
+      en: "Future auto-publishing controls",
+      ru: "Будущие настройки автопубликации",
+      et: "Tulevased automaattse avaldamise seaded",
+    },
+    description: {
+      en: "Planned controlled Auto-Publish Mode — publish selected action types automatically only after you enable rules and integrations.",
+      ru: "Планируемый контролируемый Auto-Publish Mode — автоматическая публикация выбранных действий только после включения правил и интеграций.",
+      et: "Plaanitud kontrollitud Auto-Publish Mode — valitud tegevuste automaatne avaldamine ainult pärast reeglite ja integratsioonide lubamist.",
+    },
+    features: {
+      en: ["Explicitly enabled", "Rule-based", "Pause anytime", "Activity log"],
+      ru: ["Явное включение", "На основе правил", "Пауза в любой момент", "Журнал активности"],
+      et: ["Selge lubamine", "Reeglipõhine", "Peatamine igal ajal", "Tegevuste logi"],
     },
   },
 ];

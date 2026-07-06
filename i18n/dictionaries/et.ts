@@ -4,31 +4,31 @@ export const dictionary: Dictionary = {
   meta: {
     siteName: "RankBoost.eu",
     siteDescription:
-      "AI Growth Manager väikeettevõtetele — veebilehe audit, kasvuvõimalused ja ülevaatamiseks valmis SEO, sisu ja sotsiaalmeedia tegevused.",
+      "SEO autopiloot ja AI Growth Manager väikeettevõtetele — audit, kasvuvõimalused ja ülevaatamiseks valmis SEO, sisu ja sotsiaalmeedia tegevused Google'i ja AI-otsingu jaoks.",
     home: {
-      title: "RankBoost — AI Growth Manager väikeettevõtetele",
+      title: "RankBoost — SEO autopiloot väikeettevõtetele",
       description:
-        "Leidke veebilehe kasvuvõimalused, valmistage SEO ja sisu tegevused ning parandage nähtavust Google'is ja AI-otsingus — iga samm teie kontrolli all.",
+        "Leidke veebilehe kasvuvõimalusi, valmistage SEO- ja sisutegevusi ning parandage nähtavust Google'is ja AI-otsingus. Alustage ülevaatusrežiimis ja automatiseerige rohkem siis, kui olete valmis.",
     },
     services: {
-      title: "Platvormi võimalused | RankBoost.eu",
+      title: "SEO autopiloodi võimalused | RankBoost.eu",
       description:
-        "Mida RankBoost teeb: veebilehe audit, kasvuvõimalused, SEO, sisu ja sotsiaalmeedia — kõik teie kinnitusega.",
+        "Mida SEO autopiloot valmistab: audit, kasvülesanded, mustandid, GSC ülevaated ja AI-otsingu valmidus.",
     },
     pricing: {
-      title: "Paketid kasvuks | RankBoost.eu",
+      title: "Alustage SEO autopilooti | RankBoost.eu",
       description:
-        "RankBoost SaaS paketid: Free, Starter, Pro ja Agency. Alustage tasuta ja uuendage, kui vajate rohkem tegevusi.",
+        "Alustage tasuta ja uuendage rohkemate tegevuste, ülevaatuste ja tulevaste automatiseerimisseadete jaoks.",
     },
     blog: {
-      title: "Veebi kasvu blogi | RankBoost.eu",
+      title: "Veebi kasv, SEO autopiloot ja AI-otsing | RankBoost.eu",
       description:
-        "Praktilised artiklid veebilehe kasvust, SEO põhitõdedest, AI-otsingust ja ülevaatamiseks valmis tegevustest.",
+        "Praktilised juhendid väikeettevõtetele, kes soovivad parandada nähtavust Google'is ja AI-otsingus ilma SEO eksperdiks saamata.",
     },
     contact: {
       title: "Kontakt | RankBoost.eu",
       description:
-        "Küsimused RankBoosti kohta? Rääkige meile oma veebilehest — vastame peagi.",
+        "Küsimus SEO autopiloodi kohta? Rääkige meile oma veebilehest — vastame peagi.",
     },
     privacy: {
       title: "Privaatsuspoliitika | RankBoost.eu",
@@ -51,14 +51,13 @@ export const dictionary: Dictionary = {
     cta: "Alusta tasuta",
   },
   hero: {
-    badge: "AI Growth Manager",
-    title: "Teie AI Growth Manager parema veebinähtavuse jaoks",
+    badge: "SEO autopiloot",
+    title: "SEO autopiloot väikeettevõtetele",
     subtitle:
-      "RankBoost auditeerib teie veebilehte, leiab SEO ja sisu võimalusi, valmistab kasvutegevused ette ja aitab parandada nähtavust Google'is ja AI-otsingus — teie otsustate.",
+      "RankBoost analüüsib teie veebilehte, leiab kasvuvõimalusi ning valmistab ette SEO, sisu ja sotsiaalmeedia tegevused, et parandada nähtavust Google'is ja AI-otsingus. Alustage ülevaatusrežiimis ja automatiseerige rohkem siis, kui olete valmis.",
     ctaPrimary: "Alusta tasuta",
     ctaSecondary: "Kuidas see töötab",
-    trustLine:
-      "Ilma pikaajaliste lepinguteta. Midagi ei avaldata automaatselt.",
+    trustLine: "Esmalt ülevaatus. Automaatne avaldamine ainult siis, kui te selle ise lubate.",
     dashboard: {
       overview: "Teie veebilehe kasvu ülevaade",
       status: "Jälgime teie saiti",
@@ -76,8 +75,8 @@ export const dictionary: Dictionary = {
   },
   trust: {
     items: [
-      "Midagi ei avaldata automaatselt",
-      "Te vaatate iga tegevuse üle",
+      "Alustage ülevaatusrežiimis",
+      "Automatiseerige reeglite järgi",
       "Tühistamine igal ajal",
       "Google ja AI-otsing",
     ],
@@ -93,31 +92,31 @@ export const dictionary: Dictionary = {
     ],
   },
   solution: {
-    title: "RankBoost on teie AI Growth Manager",
+    title: "RankBoost on teie SEO autopiloot",
     subtitle:
-      "Platvorm leiab võimalused, valmistab plaanid ja mustandid — te otsustate, mis avaldatakse.",
+      "Platvorm leiab võimalused ja valmistab tegevused automaatselt — te otsustate ülevaatusrežiimis, mis avaldatakse.",
     items: [
       {
         title: "Leiab võimalused",
-        description: "Veebiaudit, ülesanded ja kasvuideed andmete põhjal.",
+        description: "Veebiaudit, kasvülesanded ja SEO prioriteedid teie saidi signaalide põhjal.",
       },
       {
         title: "Valmistab tegevused",
-        description: "Kuine plaan, SEO-ülesanded ja prioriteedid ühes kohas.",
+        description: "Kuine plaan, SEO-ülesanded, sisuideed ja sotsiaalmeedia mustandid.",
       },
       {
-        title: "Loob mustandid",
-        description: "Artiklid, postitused ja e-kirjad ülevaatuseks, mitte autopublitseerimiseks.",
+        title: "Ülevaatamiseks valmis mustandid",
+        description: "Artiklid, postitused ja e-kirjad ülevaatusrežiimis — kinnitate enne avaldamist.",
       },
       {
         title: "Jälgib progressi",
-        description: "Growth Score, tegevus ja järgmine samm on alati nähtaval.",
+        description: "Growth Score, tegevuste logi ja järgmine autopiloodi samm on alati nähtaval.",
       },
     ],
   },
   outputs: {
-    title: "Mida RankBoost valmistada saab",
-    subtitle: "Valmis teie ülevaatuseks — mitte automaatseks avaldamiseks.",
+    title: "Mida SEO autopiloot valmistada saab",
+    subtitle: "Ülevaatusrežiimis valmis tegevused — te jääte kontrolli alla.",
     items: [
       "SEO-ülesanded",
       "Kuine kasvuplaan",
@@ -125,28 +124,47 @@ export const dictionary: Dictionary = {
       "Sotsiaalpostituste mustandid",
       "Kinnituse e-kirjad",
       "WordPressi mustandid",
+      "AI-otsingu valmiduse kontrollid",
     ],
-    trustNote: "Valmistatud ülevaatuseks — midagi ei avaldata automaatselt.",
+    trustNote: "Alustage ülevaatamiseks valmis tegevustest. Automatiseerige valitud tegevusi hiljem, kui reeglid on lubatud.",
   },
   aiSearch: {
+    eyebrow: "Google + AI-otsing",
     title: "Loodud Google'i ja AI-otsingu jaoks",
     description:
-      "RankBoost aitab luua selgemaid ja kasulikumaid lehti, mis vastavad klientide küsimustele ja parandavad nähtavust kaasaegsetes AI-otsingutes. Ilma garanteeritud positsioonide lubadusteta.",
+      "Inimesed ei leia ettevõtteid ainult Google'ist — nad küsivad ka AI-assistentidelt nagu ChatGPT, Gemini ja Perplexity. RankBoost aitab luua selgemat ja kasulikumaid veebisisu, mis vastab klientide küsimustele ja on paremini mõistetav otsingu- ja AI-süsteemidele.",
+    disclaimer:
+      "RankBoost ei garanteeri positsioone ega AI mainimisi, kuid aitab muuta veebilehe selgemaks, struktureeritumaks ja otsingusüsteemidele arusaadavamaks.",
   },
-  control: {
-    title: "Te jääte kontrolli alla",
-    items: [
-      "Midagi ei avaldata automaatselt",
-      "E-kirju ei saadeta ilma teie kinnituseta",
-      "WordPressi sisu luuakse mustanditena",
-      "Iga soovitust saab enne tegevust üle vaadata",
+  autopilotModes: {
+    title: "Valige, kui palju SEO autopiloot teha saab",
+    subtitle: "Alustage turvaliselt ülevaatusrežiimis. Lisage kontrollitud automatiseerimist, kui olete valmis.",
+    reviewMode: {
+      badge: "Saadaval nüüd",
+      title: "Ülevaatusrežiim (Review Mode)",
+      description:
+        "RankBoost leiab võimalused ja valmistab tegevused, mustandid, e-kirjad ja WordPressi sisu teie ülevaatuseks. Te kinnitate, mis avaldatakse.",
+    },
+    autoPublishMode: {
+      badge: "Plaanitud kontrollitud režiim",
+      title: "Automaatse avaldamise režiim (Auto-Publish Mode)",
+      description:
+        "Tulevane kontrollitud režiim ettevõtetele, kes soovivad valitud tegevusi automaatselt avaldada — ainult pärast selget lubamist, integratsioonide ühendamist ja reeglite seadistamist.",
+    },
+    safeguards: [
+      "Lubatakse selgelt",
+      "Reeglipõhine",
+      "Saab peatada",
+      "Tegevuste logi",
     ],
+    note: "Auto-Publish Mode on kavandatud valikulise kontrollitud automatiseerimise kihina — vaikimisi pole lubatud. Alustage täna turvaliselt ülevaatusrežiimis.",
   },
   pricingPreview: {
-    title: "Paketid kasvuks",
-    subtitle: "Alustage tasuta. Uuendage, kui vajate rohkem tegevusi.",
+    title: "Alustage SEO autopilooti",
+    subtitle:
+      "Alustage tasuta ja uuendage rohkemate tegevuste, mustandite, ülevaatuste ja tulevaste automatiseerimisseadete jaoks.",
     trustNote:
-      "Ilma pikaajaliste lepinguteta. Tühistamine igal ajal. Midagi ei avaldata automaatselt.",
+      "Ilma pikaajaliste lepinguteta. Tühistamine igal ajal. Alustage turvaliselt ülevaatusrežiimis.",
     plans: [
       { name: "Free", description: "Proovige RankBoosti ja mõistke oma veebilehe kasvuvõimalusi." },
       { name: "Starter", description: "Väikeettevõtetele, kes soovivad regulaarseid SEO ja sisu tegevusi." },
@@ -165,13 +183,13 @@ export const dictionary: Dictionary = {
     items: ["kohalikud ettevõtted", "e-poed"],
   },
   services: {
-    title: "Platvormi võimalused",
-    subtitle: "Kasvutegevused, mida RankBoost valmistab teie kinnituseks ette",
+    title: "SEO autopiloodi võimalused",
+    subtitle: "Kasvutegevused, mida autopiloot valmistab ülevaatuseks",
     viewAll: "Kõik võimalused",
     learnMore: "Loe lähemalt",
-    pageTitle: "Mida RankBoost teeb",
+    pageTitle: "Mida SEO autopiloot teie jaoks valmistada saab",
     pageSubtitle:
-      "AI Growth Manager: auditeerib veebilehte, leiab võimalusi ja valmistab SEO, sisu ja sotsiaalmeedia mustandid — teie kinnitate iga sammu.",
+      "Audit, SEO-ülesanded, sisukava, mustandid, GSC ülevaated ja AI-otsingu valmidus — alustage ülevaatusrežiimis, automatiseerige reeglite järgi.",
     ctaConsultation: "Alusta tasuta",
     whatsIncluded: "Mis sisaldub",
   },
@@ -201,9 +219,9 @@ export const dictionary: Dictionary = {
     title: "Hinnakiri",
     subtitle: "SaaS paketid veebilehe kasvuks — alustage tasuta, uuendage vajadusel",
     popular: "Populaarne",
-    pageTitle: "Paketid kasvuks",
+    pageTitle: "Alustage SEO autopilooti",
     pageSubtitle:
-      "Alustage tasuta. Uuendage, kui vajate rohkem kasvutegevusi. Ilma pikaajaliste lepinguteta.",
+      "Alustage tasuta. Uuendage rohkemate tegevuste ja mustandite jaoks. Ilma pikaajaliste lepinguteta. Alustage ülevaatusrežiimis.",
     comparisonTitle: "Pakettide võrdlus",
     customNote: "Maksmine on saadaval, kui arveldus on seadistatud.",
   },
@@ -268,16 +286,16 @@ export const dictionary: Dictionary = {
     subtitle: "Vastused peamistele küsimustele SEO-edendamise kohta",
   },
   cta: {
-    title: "Alustage veebilehe parandamist juba täna",
+    title: "Muutke veebilehe probleemid kasvutegevusteks",
     subtitle:
-      "RankBoost näitab, mida järgmisena parandada, ja valmistab tegevused teie ülevaatuseks.",
+      "Käivitage SEO autopiloot ülevaatusrežiimis — RankBoost valmistab järgmised sammud teie kinnituseks.",
     button: "Alusta tasuta",
     note: "Free paketil krediitkaart pole vajalik. Tühistamine igal ajal.",
   },
   blog: {
-    title: "Veebi kasvu blogi",
+    title: "Veebi kasv, SEO autopiloot ja AI-otsing",
     subtitle:
-      "Praktilised juhendid SEO põhitõdedest, AI-otsingu nähtavusest, sisukavast ja ülevaatamiseks valmis kasvutegevustest.",
+      "Praktilised juhendid väikeettevõtetele, kes soovivad parandada nähtavust Google'is ja AI-otsingus ilma SEO eksperdiks saamata.",
     readMore: "Loe",
     readTime: "min lugemist",
     min: "min",
@@ -290,7 +308,7 @@ export const dictionary: Dictionary = {
   contact: {
     title: "Võtke meiega ühendust",
     subtitle:
-      "Küsimus RankBoosti kohta? Rääkige meile oma veebilehest — vastame peagi.",
+      "Küsimus SEO autopiloodi kohta? Rääkige meile oma veebilehest — vastame peagi.",
     form: {
       name: "Nimi",
       namePlaceholder: "Teie nimi",
@@ -350,12 +368,12 @@ export const dictionary: Dictionary = {
   },
   footer: {
     description:
-      "RankBoost.eu — AI Growth Manager veebinähtavuse jaoks. Audit, kasvutegevused ja SEO, sisu ning sotsiaalmeedia mustandid — teie kinnitate kõik.",
+      "RankBoost.eu — SEO autopiloot ja AI Growth Manager väikeettevõtetele. Audit, kasvutegevused ja mustandid Google'i ja AI-otsingu jaoks.",
     navigation: "Navigatsioon",
     productTitle: "Toode",
     blogTitle: "Blogi",
     trustNote:
-      "Pikaajalisi lepinguid pole. Tühistamine igal ajal. Midagi ei avaldata automaatselt.",
+      "Alustage turvaliselt ülevaatusrežiimis. Automatiseerige rohkem, kui olete valmis. Ilma pikaajaliste lepinguteta. Tühistamine igal ajal.",
     legal: "Juriidiline info",
     privacy: "Privaatsus",
     terms: "Tingimused",

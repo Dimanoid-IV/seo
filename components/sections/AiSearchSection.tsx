@@ -6,6 +6,8 @@ type AiSearchSectionProps = {
 };
 
 export function AiSearchSection({ dict }: AiSearchSectionProps) {
+  const a = dict.aiSearch;
+
   return (
     <section className="marketing-section">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -15,13 +17,12 @@ export function AiSearchSection({ dict }: AiSearchSectionProps) {
               <Sparkles className="size-5 text-white" />
             </div>
             <div>
-              <p className="marketing-eyebrow">Google + AI search</p>
+              <p className="marketing-eyebrow">{a.eyebrow}</p>
               <h2 className="mt-2 text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
-                {dict.aiSearch.title}
+                {a.title}
               </h2>
-              <p className="mt-4 text-base leading-relaxed text-slate-600">
-                {dict.aiSearch.description}
-              </p>
+              <p className="mt-4 text-base leading-relaxed text-slate-600">{a.description}</p>
+              <p className="mt-4 text-sm leading-relaxed text-slate-500">{a.disclaimer}</p>
             </div>
           </div>
         </div>

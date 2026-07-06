@@ -8,6 +8,7 @@ import {
   Globe,
   Layout,
   Rocket,
+  Sparkles,
   type LucideIcon,
 } from "lucide-react";
 import type { Locale } from "@/i18n/config";
@@ -25,6 +26,7 @@ const iconMap: Record<string, LucideIcon> = {
   Globe,
   Layout,
   Rocket,
+  Sparkles,
 };
 
 type ServiceCardProps = {

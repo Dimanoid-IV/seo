@@ -4,31 +4,31 @@ export const dictionary: Dictionary = {
   meta: {
     siteName: "RankBoost.eu",
     siteDescription:
-      "AI Growth Manager for small businesses — website audits, growth opportunities, and review-ready SEO, content, and social actions.",
+      "SEO Autopilot and AI Growth Manager for small businesses — website audits, growth opportunities, and review-ready SEO, content, and social actions for Google and AI search.",
     home: {
-      title: "RankBoost — AI Growth Manager for Small Businesses",
+      title: "RankBoost — SEO Autopilot for Small Businesses",
       description:
-        "Find website growth opportunities, prepare SEO and content actions, and improve visibility in Google and AI search — with every action reviewed by you.",
+        "Find website growth opportunities, prepare SEO and content actions, and improve visibility in Google and AI search. Start in Review Mode and automate more when ready.",
     },
     services: {
-      title: "Platform capabilities | RankBoost.eu",
+      title: "SEO Autopilot capabilities | RankBoost.eu",
       description:
-        "What RankBoost does: website audits, growth opportunities, review-ready SEO, content, and social actions.",
+        "What your SEO Autopilot prepares: website audits, growth tasks, content drafts, social posts, GSC insights, and AI search readiness.",
     },
     pricing: {
-      title: "Plans for growth | RankBoost.eu",
+      title: "Start your SEO autopilot | RankBoost.eu",
       description:
-        "RankBoost SaaS plans: Free, Starter, Pro, and Agency. Start free and upgrade when you need more growth actions.",
+        "Start free, then upgrade for more growth actions, review workflows, and future automation controls. No long-term contracts.",
     },
     blog: {
-      title: "Growth Blog | RankBoost.eu",
+      title: "Website growth, SEO autopilot & AI search | RankBoost.eu",
       description:
-        "Practical articles on website growth, SEO basics, AI search readiness, and review-ready actions for small businesses.",
+        "Practical guides for small businesses that want to improve visibility in Google and AI search without becoming SEO experts.",
     },
     contact: {
       title: "Contact | RankBoost.eu",
       description:
-        "Questions about RankBoost? Tell us about your website and we will get back to you.",
+        "Have a question about your SEO autopilot? Tell us about your website and we will get back to you.",
     },
     privacy: {
       title: "Privacy Policy | RankBoost.eu",
@@ -51,14 +51,13 @@ export const dictionary: Dictionary = {
     cta: "Start free",
   },
   hero: {
-    badge: "AI Growth Manager",
-    title: "Your AI Growth Manager for better website visibility",
+    badge: "SEO Autopilot",
+    title: "SEO Autopilot for small businesses",
     subtitle:
-      "RankBoost audits your website, finds SEO and content opportunities, prepares growth actions, and helps you improve visibility in Google and AI search — with you in control.",
+      "RankBoost audits your website, finds growth opportunities, and prepares SEO, content, and social actions to improve visibility in Google and AI search. Start in Review Mode, then automate more when you are ready.",
     ctaPrimary: "Start free",
     ctaSecondary: "See how it works",
-    trustLine:
-      "No long-term contracts. Nothing is published automatically.",
+    trustLine: "Review first. Auto-publish later when you explicitly enable it.",
     dashboard: {
       overview: "Your website growth overview",
       status: "Monitoring your site",
@@ -76,10 +75,10 @@ export const dictionary: Dictionary = {
   },
   trust: {
     items: [
-      "Nothing is published automatically",
-      "You review every action",
+      "Start in Review Mode",
+      "Automate more when you enable rules",
       "Cancel anytime",
-      "Google and AI search",
+      "Google and AI search visibility",
     ],
   },
   problem: {
@@ -93,35 +92,35 @@ export const dictionary: Dictionary = {
     ],
   },
   solution: {
-    title: "RankBoost is your AI Growth Manager",
+    title: "RankBoost is your SEO Autopilot",
     subtitle:
-      "The platform finds opportunities, prepares plans and drafts — you decide what goes live.",
+      "The platform finds opportunities and prepares actions automatically — you decide what goes live in Review Mode.",
     items: [
       {
         title: "Find opportunities",
         description:
-          "Website audit, tasks, and growth ideas based on data and best practices.",
+          "Website audit, growth tasks, and SEO priorities based on your site signals.",
       },
       {
         title: "Prepare actions",
         description:
-          "Monthly plan, SEO tasks, and priorities — all in one place.",
+          "Monthly plan, SEO tasks, content ideas, and social drafts — prepared for you.",
       },
       {
-        title: "Create review-ready drafts",
+        title: "Review-ready drafts",
         description:
-          "Articles, posts, and emails prepared for review — not auto-published.",
+          "Articles, posts, and emails prepared in Review Mode — you approve before anything goes live.",
       },
       {
         title: "Track progress",
         description:
-          "Growth Score, activity, and your next step always visible.",
+          "Growth Score, activity log, and your next autopilot action always visible.",
       },
     ],
   },
   outputs: {
-    title: "What RankBoost can prepare",
-    subtitle: "Ready for your review — not published automatically.",
+    title: "What your SEO Autopilot can prepare",
+    subtitle: "Review-ready actions in Review Mode — you stay in control.",
     items: [
       "SEO tasks",
       "Monthly growth plan",
@@ -129,34 +128,52 @@ export const dictionary: Dictionary = {
       "Social post drafts",
       "Review emails",
       "WordPress drafts",
+      "AI search readiness checks",
     ],
-    trustNote: "Prepared for review — nothing is published automatically.",
+    trustNote: "Start with review-ready actions. Automate selected actions later when you enable rules.",
   },
   aiSearch: {
+    eyebrow: "Google + AI search",
     title: "Built for Google and AI search",
     description:
-      "RankBoost helps you create clearer, more useful pages that answer customer questions, improve search visibility, and make your business easier to understand for modern AI search experiences. No guaranteed ranking claims.",
+      "People no longer discover businesses only through Google. They also ask AI assistants such as ChatGPT, Gemini, Perplexity, and other answer engines. RankBoost helps you create clearer, more useful website content that answers customer questions and improves your chances of being understood by search and AI systems.",
+    disclaimer:
+      "RankBoost cannot guarantee rankings or AI mentions, but it helps your website become clearer, more structured, and easier for search systems to understand.",
   },
-  control: {
-    title: "You stay in control",
-    items: [
-      "Nothing is published automatically",
-      "Emails are not sent without your approval",
-      "WordPress content is created as drafts",
-      "You can review every recommendation first",
+  autopilotModes: {
+    title: "Choose how much your SEO autopilot can do",
+    subtitle: "Start safely in Review Mode. Add controlled automation when you are ready.",
+    reviewMode: {
+      badge: "Available now",
+      title: "Review Mode",
+      description:
+        "RankBoost finds opportunities and prepares actions, drafts, emails, and WordPress content for your review. You approve what goes live.",
+    },
+    autoPublishMode: {
+      badge: "Planned controlled mode",
+      title: "Auto-Publish Mode",
+      description:
+        "A future controlled mode for businesses that want RankBoost to publish selected actions automatically — only after you explicitly enable it, connect integrations, and set rules.",
+    },
+    safeguards: [
+      "Explicitly enabled",
+      "Rule-based",
+      "Can be paused",
+      "Activity log",
     ],
+    note: "Auto-Publish Mode is designed as an optional, controlled automation layer — not enabled by default. Start safely in Review Mode today.",
   },
   pricingPreview: {
-    title: "Plans for growth",
+    title: "Start your SEO autopilot",
     subtitle:
-      "Start free. Upgrade when you need more growth actions.",
+      "Start free, then upgrade when you need more growth actions, drafts, review workflows, and future automation controls.",
     trustNote:
-      "No long-term contracts. Cancel anytime. Nothing is published automatically.",
+      "No long-term contracts. Cancel anytime. Start safely in Review Mode.",
     plans: [
-      { name: "Free", description: "Try RankBoost and understand your website growth opportunities." },
-      { name: "Starter", description: "For small businesses that want regular SEO and content actions." },
-      { name: "Pro", description: "For growing businesses that need more drafts, insights, and review workflows." },
-      { name: "Agency", description: "For agencies or teams managing multiple websites." },
+      { name: "Free", description: "Try RankBoost and see your first growth opportunities." },
+      { name: "Starter", description: "Regular SEO and content autopilot actions for small businesses." },
+      { name: "Pro", description: "More drafts, AI search readiness, insights, and review workflows." },
+      { name: "Agency", description: "Multiple websites and team-ready growth workflows." },
     ],
   },
   whatWeDo: {
@@ -170,13 +187,13 @@ export const dictionary: Dictionary = {
     items: ["local businesses", "ecommerce stores"],
   },
   services: {
-    title: "Platform capabilities",
-    subtitle: "Growth actions RankBoost prepares for your review",
+    title: "SEO Autopilot capabilities",
+    subtitle: "Growth actions your autopilot prepares for review",
     viewAll: "All capabilities",
     learnMore: "Learn more",
-    pageTitle: "What RankBoost does",
+    pageTitle: "What the SEO Autopilot can prepare for you",
     pageSubtitle:
-      "An AI Growth Manager that audits your website, finds opportunities, and prepares review-ready SEO, content, and social actions.",
+      "Website audits, SEO tasks, content plans, drafts, GSC insights, and AI search readiness — start in Review Mode, automate more when you enable rules.",
     ctaConsultation: "Start free",
     whatsIncluded: "What's included",
   },
@@ -204,11 +221,11 @@ export const dictionary: Dictionary = {
   },
   pricing: {
     title: "Pricing",
-    subtitle: "SaaS plans for website growth — start free, upgrade when you need more",
+    subtitle: "SEO Autopilot plans — start free, upgrade when you need more growth actions",
     popular: "Popular",
-    pageTitle: "Plans for growth",
+    pageTitle: "Start your SEO autopilot",
     pageSubtitle:
-      "Start free. Upgrade when you need more growth actions. No long-term contracts. Cancel anytime.",
+      "Start free, then upgrade when you need more growth actions, drafts, and review workflows. No long-term contracts. Cancel anytime. Start safely in Review Mode.",
     comparisonTitle: "Plan comparison",
     customNote: "Paid checkout will be available when billing is configured.",
   },
@@ -273,16 +290,16 @@ export const dictionary: Dictionary = {
     subtitle: "Answers to the main questions about SEO promotion",
   },
   cta: {
-    title: "Start improving your website today",
+    title: "Turn website issues into growth actions",
     subtitle:
-      "RankBoost shows what to improve next and prepares actions for your review.",
+      "Start your SEO Autopilot in Review Mode — RankBoost prepares the next steps for your approval.",
     button: "Start free",
     note: "No credit card required on the Free plan. Cancel anytime.",
   },
   blog: {
-    title: "Website growth blog",
+    title: "Website growth, SEO autopilot, and AI search",
     subtitle:
-      "Practical guides on SEO basics, AI search visibility, content planning, and review-ready growth actions.",
+      "Practical guides for small businesses that want to improve visibility in Google and AI search without becoming SEO experts.",
     readMore: "Read",
     readTime: "min read",
     min: "min",
@@ -295,7 +312,7 @@ export const dictionary: Dictionary = {
   contact: {
     title: "Contact us",
     subtitle:
-      "Have a question about RankBoost? Tell us about your website and we'll get back to you.",
+      "Have a question about your SEO autopilot? Tell us about your website and we'll get back to you.",
     form: {
       name: "Name",
       namePlaceholder: "Your name",
@@ -355,12 +372,12 @@ export const dictionary: Dictionary = {
   },
   footer: {
     description:
-      "RankBoost.eu — AI Growth Manager for website visibility. Audits, growth actions, and review-ready drafts for SEO, content, and social — you approve everything.",
+      "RankBoost.eu — SEO Autopilot and AI Growth Manager for small businesses. Audits, growth actions, and review-ready drafts for Google and AI search.",
     navigation: "Navigation",
     productTitle: "Product",
     blogTitle: "Blog",
     trustNote:
-      "No long-term contracts. Cancel anytime. Nothing is published automatically.",
+      "Start safely in Review Mode. Automate more when you are ready. No long-term contracts. Cancel anytime.",
     legal: "Legal",
     privacy: "Privacy",
     terms: "Terms",
