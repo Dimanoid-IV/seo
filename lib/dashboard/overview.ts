@@ -165,8 +165,10 @@ function serializePlanLimit(
  * Loads dashboard overview for the authenticated user (website, audit, checks, activity, limits).
  */
 export async function getDashboardOverview(
-  currentUser: CurrentUser
+  currentUser: CurrentUser,
+  options?: { locale?: import("@/lib/i18n/saas/locales").SaasLocale }
 ): Promise<DashboardOverviewResponse> {
+  const locale = options?.locale ?? "en";
   const prisma = getPrisma();
 
   const dbUser = await prisma.user.findFirst({
@@ -246,6 +248,7 @@ export async function getDashboardOverview(
       subscriptionPlan: subscription
         ? serializeSubscription(subscription).plan
         : undefined,
+      locale,
     });
 
     return {
@@ -416,6 +419,7 @@ export async function getDashboardOverview(
     subscriptionPlan: subscription
       ? serializeSubscription(subscription).plan
       : undefined,
+    locale,
   });
 
   return {

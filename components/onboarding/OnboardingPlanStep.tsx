@@ -6,6 +6,7 @@ import { Loader2, Rocket } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { authFetch, parseApiErrorMessage } from "@/lib/auth/client-session";
+import { useSaasTranslations } from "@/lib/i18n/saas/SaasLocaleProvider";
 
 type OnboardingPlanStepProps = {
   disabled?: boolean;
@@ -18,6 +19,8 @@ export function OnboardingPlanStep({
   onSuccess,
   onError,
 }: OnboardingPlanStepProps) {
+  const { dict } = useSaasTranslations();
+  const o = dict.onboarding;
   const [loading, setLoading] = useState(false);
 
   async function handleGenerate() {
@@ -33,7 +36,7 @@ export function OnboardingPlanStep({
 
       if (!response.ok) {
         onError(
-          await parseApiErrorMessage(response, "Could not generate monthly plan")
+          await parseApiErrorMessage(response, o.errors.generatePlanFailed)
         );
         return;
       }
@@ -48,7 +51,7 @@ export function OnboardingPlanStep({
         onError(
           await parseApiErrorMessage(
             stepResponse,
-            "Plan created but setup progress could not be saved"
+            o.errors.planProgressSaveFailed
           )
         );
         return;
@@ -56,7 +59,7 @@ export function OnboardingPlanStep({
 
       await onSuccess();
     } catch {
-      onError("Network error while generating plan");
+      onError(o.errors.generatePlanNetworkError);
     } finally {
       setLoading(false);
     }
@@ -75,7 +78,7 @@ export function OnboardingPlanStep({
         ) : (
           <Rocket className="size-4" />
         )}
-        Generate plan
+        {o.generatePlan}
       </Button>
       <Link href="/app/autopilot">
         <Button
@@ -83,7 +86,7 @@ export function OnboardingPlanStep({
           variant="outline"
           className="border-white/10 bg-transparent text-slate-300"
         >
-          View Autopilot
+          {o.viewAutopilot}
         </Button>
       </Link>
     </div>

@@ -1,4 +1,7 @@
+"use client";
+
 import type { TimelineSummary } from "@/lib/timeline/types";
+import { useSaasTranslations } from "@/lib/i18n/saas/SaasLocaleProvider";
 import { cn } from "@/lib/utils";
 
 type TimelineSummaryCardProps = {
@@ -38,6 +41,8 @@ export function TimelineSummaryCard({
   unreadCount,
   className,
 }: TimelineSummaryCardProps) {
+  const { dict } = useSaasTranslations();
+  const t = dict.timeline;
   const scoreLabel =
     summary.scoreDelta != null && summary.scoreDelta !== 0
       ? `${summary.scoreDelta > 0 ? "+" : ""}${summary.scoreDelta}`
@@ -52,43 +57,42 @@ export function TimelineSummaryCard({
     >
       <div className="space-y-2">
         <p className="text-xs font-medium uppercase tracking-wider text-blue-400">
-          Пока вас не было
+          {t.whileAway}
         </p>
-        <h2 className="text-xl font-bold text-white sm:text-2xl">
-          Growth Timeline
-        </h2>
+        <h2 className="text-xl font-bold text-white sm:text-2xl">{t.title}</h2>
         <p className="max-w-3xl text-sm leading-relaxed text-slate-400">
           {summary.headline}
         </p>
         {unreadCount > 0 ? (
           <p className="text-xs text-blue-300">
-            {unreadCount} unread {unreadCount === 1 ? "event" : "events"}
+            {unreadCount}{" "}
+            {unreadCount === 1 ? t.unreadEvent : t.unreadEvents}
           </p>
         ) : null}
       </div>
 
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-5">
         <StatTile
-          label="New opportunities"
+          label={t.summary.newOpportunities}
           value={summary.opportunitiesCount}
           accent="blue"
         />
         <StatTile
-          label="New tasks"
+          label={t.summary.newTasks}
           value={summary.newTasksCount}
           accent="violet"
         />
         <StatTile
-          label="Completed tasks"
+          label={t.summary.completedTasks}
           value={summary.completedTasksCount}
           accent="emerald"
         />
         <StatTile
-          label="Warnings"
+          label={t.summary.warnings}
           value={summary.warningsCount}
           accent="amber"
         />
-        <StatTile label="Growth Score" value={scoreLabel} accent="emerald" />
+        <StatTile label={t.summary.growthScore} value={scoreLabel} accent="emerald" />
       </div>
     </section>
   );

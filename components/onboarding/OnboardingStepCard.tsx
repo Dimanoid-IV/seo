@@ -1,5 +1,8 @@
+"use client";
+
 import { Check, Circle, Lock, SkipForward } from "lucide-react";
 
+import { useSaasTranslations } from "@/lib/i18n/saas/SaasLocaleProvider";
 import { cn } from "@/lib/utils";
 import type { OnboardingStepViewModel } from "@/lib/onboarding/types";
 
@@ -22,6 +25,7 @@ function statusIcon(status: OnboardingStepViewModel["status"]) {
 }
 
 export function OnboardingStepCard({ step, children }: OnboardingStepCardProps) {
+  const { dict } = useSaasTranslations();
   const isActive = step.status === "CURRENT" || step.status === "OPTIONAL";
 
   return (
@@ -46,14 +50,16 @@ export function OnboardingStepCard({ step, children }: OnboardingStepCardProps) 
             </h3>
             {step.optional ? (
               <span className="rounded-full bg-white/[0.06] px-2.5 py-0.5 text-[10px] font-medium uppercase tracking-wide text-slate-400">
-                Optional
+                {dict.common.optional}
               </span>
             ) : null}
             {step.status === "DONE" ? (
-              <span className="text-xs font-medium text-emerald-300/90">Done</span>
+              <span className="text-xs font-medium text-emerald-300/90">
+                {dict.common.done}
+              </span>
             ) : null}
             {step.status === "SKIPPED" ? (
-              <span className="text-xs text-slate-400">Skipped</span>
+              <span className="text-xs text-slate-400">{dict.common.skipped}</span>
             ) : null}
           </div>
           <p className="mt-2 text-sm leading-relaxed text-slate-400">

@@ -14,6 +14,7 @@ import type {
   EmailApprovalViewModel,
   EmailApprovalsListResult,
 } from "@/lib/email-approvals/types";
+import { useSaasTranslations } from "@/lib/i18n/saas/SaasLocaleProvider";
 
 import { EmailApprovalCard } from "./EmailApprovalCard";
 import { EmailApprovalEditor } from "./EmailApprovalEditor";
@@ -27,7 +28,11 @@ type EmailApprovalsResponse = {
   data: EmailApprovalsListResult;
 };
 
+const FILTER_KEYS = ["all", "ready", "approved", "sent", "draft"] as const;
+
 export function EmailApprovalsPage() {
+  const { dict, locale } = useSaasTranslations();
+  const e = dict.emailApprovals;
   const { data: billing } = useBillingOverview();
   const emailLimit = isUsageLimitReached(billing, "email_approval");
   const [emails, setEmails] = useState<EmailApprovalViewModel[]>([]);
@@ -43,7 +48,6 @@ export function EmailApprovalsPage() {
     null
   );
   const [statusFilter, setStatusFilter] = useState("all");
-
 
   useEffect(() => {
     let cancelled = false;
@@ -63,7 +67,7 @@ export function EmailApprovalsPage() {
         if (!response.ok) {
           if (!cancelled) {
             setError(
-              await parseApiErrorMessage(response, "Failed to load email approvals")
+              await parseApiErrorMessage(response, e.loadFailed)
             );
             setLoading(false);
           }
@@ -79,7 +83,7 @@ export function EmailApprovalsPage() {
         }
       } catch {
         if (!cancelled) {
-          setError("Network error while loading email approvals");
+          setError(e.loadNetworkError);
           setLoading(false);
         }
       }
@@ -90,7 +94,7 @@ export function EmailApprovalsPage() {
     return () => {
       cancelled = true;
     };
-  }, [statusFilter]);
+  }, [statusFilter, locale, e.loadFailed, e.loadNetworkError]);
 
   const emptyVariant = useMemo(() => {
     if (!websiteId) {
@@ -116,7 +120,7 @@ export function EmailApprovalsPage() {
 
       if (!response.ok) {
         setError(
-          await parseApiErrorMessage(response, "Failed to generate email draft")
+          await parseApiErrorMessage(response, e.generateFailed)
         );
         return;
       }
@@ -124,9 +128,9 @@ export function EmailApprovalsPage() {
       const body = (await response.json()) as { data: EmailApprovalViewModel };
       setEmails((prev) => [body.data, ...prev]);
       setGenerateOpen(false);
-      setSuccess("Email draft created. Review and approve before sending.");
+      setSuccess(e.draftCreated);
     } catch {
-      setError("Network error while generating email draft");
+      setError(e.generateNetworkError);
     } finally {
       setActionLoading(false);
     }
@@ -148,7 +152,7 @@ export function EmailApprovalsPage() {
       });
 
       if (!response.ok) {
-        setError(await parseApiErrorMessage(response, "Failed to save email"));
+        setError(await parseApiErrorMessage(response, e.saveFailed));
         return;
       }
 
@@ -157,9 +161,9 @@ export function EmailApprovalsPage() {
         prev.map((item) => (item.id === body.data.id ? body.data : item))
       );
       setEditingEmail(body.data);
-      setSuccess("Email draft saved.");
+      setSuccess(e.draftSaved);
     } catch {
-      setError("Network error while saving email");
+      setError(e.saveNetworkError);
     } finally {
       setActionLoading(false);
       setActionEmailId(null);
@@ -178,7 +182,7 @@ export function EmailApprovalsPage() {
       );
 
       if (!response.ok) {
-        setError(await parseApiErrorMessage(response, "Failed to approve email"));
+        setError(await parseApiErrorMessage(response, e.approveFailed));
         return;
       }
 
@@ -189,9 +193,9 @@ export function EmailApprovalsPage() {
       if (editingEmail?.id === body.data.id) {
         setEditingEmail(body.data);
       }
-      setSuccess("Email approved. It was not sent automatically.");
+      setSuccess(e.approvedNotSent);
     } catch {
-      setError("Network error while approving email");
+      setError(e.approveNetworkError);
     } finally {
       setActionLoading(false);
       setActionEmailId(null);
@@ -209,7 +213,7 @@ export function EmailApprovalsPage() {
       });
 
       if (!response.ok) {
-        setError(await parseApiErrorMessage(response, "Failed to archive email"));
+        setError(await parseApiErrorMessage(response, e.archiveFailed));
         return;
       }
 
@@ -218,7 +222,7 @@ export function EmailApprovalsPage() {
         setEditingEmail(null);
       }
     } catch {
-      setError("Network error while archiving email");
+      setError(e.archiveNetworkError);
     } finally {
       setActionLoading(false);
       setActionEmailId(null);
@@ -242,10 +246,7 @@ export function EmailApprovalsPage() {
 
       if (!response.ok) {
         setError(
-          await parseApiErrorMessage(
-            response,
-            "Email sending is not configured yet."
-          )
+          await parseApiErrorMessage(response, e.sendFailed)
         );
         return;
       }
@@ -255,9 +256,9 @@ export function EmailApprovalsPage() {
         prev.map((item) => (item.id === body.data.id ? body.data : item))
       );
       setEditingEmail(body.data);
-      setSuccess("Email sent successfully.");
+      setSuccess(e.sentSuccess);
     } catch {
-      setError("Network error while sending email");
+      setError(e.sendNetworkError);
     } finally {
       setActionLoading(false);
       setActionEmailId(null);
@@ -265,14 +266,14 @@ export function EmailApprovalsPage() {
   }
 
   if (loading && emails.length === 0) {
-    return <PageLoadingState message="Loading email approvals…" />;
+    return <PageLoadingState message={e.loading} />;
   }
 
   return (
     <main className="app-content mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
       <PageHeader
-        title="Email Approvals"
-        subtitle="Review and approve emails before anything is sent."
+        title={e.title}
+        subtitle={e.subtitle}
         actions={
           websiteId ? (
             <FeatureGate blocked={emailLimit.blocked} reason={emailLimit.message}>
@@ -283,7 +284,7 @@ export function EmailApprovalsPage() {
                 onClick={() => setGenerateOpen(true)}
               >
                 <Plus className="size-4" />
-                Generate email
+                {e.generate}
               </Button>
             </FeatureGate>
           ) : undefined
@@ -294,18 +295,18 @@ export function EmailApprovalsPage() {
 
       {websiteId ? (
         <div className="mb-6 flex flex-wrap gap-2">
-          {["all", "ready", "approved", "sent", "draft"].map((status) => (
+          {FILTER_KEYS.map((status) => (
             <button
               key={status}
               type="button"
               onClick={() => setStatusFilter(status)}
-              className={`rounded-lg px-3 py-1.5 text-xs font-medium capitalize ${
+              className={`rounded-lg px-3 py-1.5 text-xs font-medium ${
                 statusFilter === status
                   ? "bg-blue-500/20 text-blue-200"
                   : "bg-white/5 text-slate-400 hover:bg-white/10"
               }`}
             >
-              {status}
+              {e.filters[status]}
             </button>
           ))}
         </div>
@@ -336,7 +337,7 @@ export function EmailApprovalsPage() {
                   onClick={() => setGenerateOpen(true)}
                 >
                   <Plus className="size-4" />
-                  Generate email
+                  {e.generate}
                 </Button>
               </FeatureGate>
             </div>

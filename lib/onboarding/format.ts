@@ -1,7 +1,8 @@
-import "server-only";
-
-import { getCurrentSubscription } from "@/lib/billing/get-subscription";
+import type { SaasLocale } from "@/lib/i18n/saas/locales";
+import { DEFAULT_SAAS_LOCALE } from "@/lib/i18n/saas/locales";
+import { getSaasDictionary } from "@/lib/i18n/saas";
 import { checkUsageLimit } from "@/lib/billing/usage";
+import { getCurrentSubscription } from "@/lib/billing/get-subscription";
 import { syncGrowthOpportunitiesForWebsite } from "@/lib/growth/sync-opportunities";
 
 import type {
@@ -52,49 +53,45 @@ export function resolveCurrentStep(facts: OnboardingFacts): OnboardingStepKey {
   return "COMPLETE";
 }
 
-function buildStepDefinitions(): Array<
-  Omit<OnboardingStepViewModel, "status">
-> {
+function buildStepDefinitions(
+  locale: SaasLocale = DEFAULT_SAAS_LOCALE
+): Array<Omit<OnboardingStepViewModel, "status">> {
+  const steps = getSaasDictionary(locale).onboarding.steps;
   return [
     {
       key: "ADD_WEBSITE",
-      title: "Add your website",
-      description:
-        "RankBoost needs your website URL to start finding growth opportunities.",
-      actionLabel: "Add website",
+      title: steps.addWebsite.title,
+      description: steps.addWebsite.description,
+      actionLabel: steps.addWebsite.action,
     },
     {
       key: "RUN_AUDIT",
-      title: "Run your first audit",
-      description:
-        "RankBoost will scan your website and turn findings into growth tasks.",
-      actionLabel: "Run audit",
+      title: steps.runAudit.title,
+      description: steps.runAudit.description,
+      actionLabel: steps.runAudit.action,
       apiAction: "run_audit",
     },
     {
       key: "CONNECT_GSC",
-      title: "Connect Google Search Console",
-      description:
-        "Unlock real search queries, pages, CTR opportunities, and traffic insights.",
+      title: steps.connectGsc.title,
+      description: steps.connectGsc.description,
       href: "/app/integrations",
-      actionLabel: "Connect Search Console",
+      actionLabel: steps.connectGsc.action,
       optional: true,
     },
     {
       key: "REVIEW_RESULTS",
-      title: "Review your first results",
-      description:
-        "RankBoost found the first actions that can improve your website visibility.",
+      title: steps.reviewResults.title,
+      description: steps.reviewResults.description,
       href: "/app/autopilot-control",
-      actionLabel: "Open Control Center",
+      actionLabel: steps.reviewResults.action,
       apiAction: "mark_viewed",
     },
     {
       key: "GENERATE_PLAN",
-      title: "Generate your first growth plan",
-      description:
-        "RankBoost will organize your SEO, content, and social actions for this month.",
-      actionLabel: "Generate plan",
+      title: steps.generatePlan.title,
+      description: steps.generatePlan.description,
+      actionLabel: steps.generatePlan.action,
       apiAction: "generate_plan",
     },
   ];
@@ -150,7 +147,9 @@ export async function formatOnboardingViewModel(input: {
   facts: OnboardingFacts;
   status: OnboardingViewModel["status"];
   currentStep: OnboardingStepKey;
+  locale?: SaasLocale;
 }): Promise<OnboardingViewModel> {
+  const locale = input.locale ?? DEFAULT_SAAS_LOCALE;
   const { facts, status } = input;
   const currentStep = input.currentStep;
   const progress = computeProgress(facts, currentStep);
@@ -215,7 +214,7 @@ export async function formatOnboardingViewModel(input: {
     }
   }
 
-  const steps = buildStepDefinitions().map((step) => ({
+  const steps = buildStepDefinitions(locale).map((step) => ({
     ...step,
     status: buildStepStatus(step.key, currentStep, facts),
   }));

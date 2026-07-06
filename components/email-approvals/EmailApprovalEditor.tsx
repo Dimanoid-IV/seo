@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { TrustNote } from "@/components/shared/TrustNote";
 import type { EmailApprovalViewModel } from "@/lib/email-approvals/types";
+import { useSaasTranslations } from "@/lib/i18n/saas/SaasLocaleProvider";
 
 type EmailApprovalEditorProps = {
   email: EmailApprovalViewModel;
@@ -35,6 +36,8 @@ export function EmailApprovalEditor({
   onSend,
   onClose,
 }: EmailApprovalEditorProps) {
+  const { dict } = useSaasTranslations();
+  const e = dict.emailApprovals;
   const [subject, setSubject] = useState(email.subject);
   const [body, setBody] = useState(email.body);
   const [recipientEmail, setRecipientEmail] = useState(
@@ -49,40 +52,40 @@ export function EmailApprovalEditor({
   return (
     <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/60 p-4 sm:items-center">
       <div className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-2xl border border-white/10 bg-[#0a0f1e] p-6 shadow-xl">
-        <h2 className="text-lg font-semibold text-white">Review email draft</h2>
+        <h2 className="text-lg font-semibold text-white">{e.reviewTitle}</h2>
         <TrustNote variant="email" className="mt-4" />
 
         <div className="mt-4 space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="email-subject">Subject</Label>
+            <Label htmlFor="email-subject">{e.subject}</Label>
             <Input
               id="email-subject"
               value={subject}
-              onChange={(e) => setSubject(e.target.value)}
+              onChange={(ev) => setSubject(ev.target.value)}
               className="border-white/10 bg-white/5"
               disabled={email.status === "sent"}
             />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="email-recipient">Recipient email</Label>
+            <Label htmlFor="email-recipient">{e.recipientEmail}</Label>
             <Input
               id="email-recipient"
               type="email"
               value={recipientEmail}
-              onChange={(e) => setRecipientEmail(e.target.value)}
-              placeholder="Optional until sending"
+              onChange={(ev) => setRecipientEmail(ev.target.value)}
+              placeholder={e.recipientPlaceholder}
               className="border-white/10 bg-white/5"
               disabled={email.status === "sent"}
             />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="email-body">Body</Label>
+            <Label htmlFor="email-body">{e.body}</Label>
             <Textarea
               id="email-body"
               value={body}
-              onChange={(e) => setBody(e.target.value)}
+              onChange={(ev) => setBody(ev.target.value)}
               rows={14}
               className="border-white/10 bg-white/5 font-mono text-sm"
               disabled={email.status === "sent"}
@@ -104,7 +107,7 @@ export function EmailApprovalEditor({
                   })
                 }
               >
-                {loading ? <Loader2 className="size-4 animate-spin" /> : "Save changes"}
+                {loading ? <Loader2 className="size-4 animate-spin" /> : e.saveChanges}
               </Button>
               <Button
                 type="button"
@@ -113,22 +116,20 @@ export function EmailApprovalEditor({
                 className="border-emerald-500/30 text-emerald-300"
                 onClick={onApprove}
               >
-                Approve
+                {e.approve}
               </Button>
               <Button
                 type="button"
                 variant="outline"
                 disabled={loading || !canSend}
                 title={
-                  !emailSendingConfigured
-                    ? "Email sending is not configured yet."
-                    : undefined
+                  !emailSendingConfigured ? e.sendNotConfigured : undefined
                 }
                 onClick={() =>
                   onSend(recipientEmail.trim() || undefined)
                 }
               >
-                Send email manually
+                {e.sendManually}
               </Button>
               <Button
                 type="button"
@@ -137,20 +138,17 @@ export function EmailApprovalEditor({
                 className="text-slate-400"
                 onClick={onArchive}
               >
-                Archive
+                {e.archive}
               </Button>
             </>
           ) : null}
           <Button type="button" variant="ghost" onClick={onClose}>
-            Close
+            {e.close}
           </Button>
         </div>
 
         {!emailSendingConfigured ? (
-          <p className="mt-4 text-xs text-slate-500">
-            Email sending is not configured yet. You can still copy the email text
-            manually.
-          </p>
+          <p className="mt-4 text-xs text-slate-500">{e.sendNotConfiguredHint}</p>
         ) : null}
       </div>
     </div>

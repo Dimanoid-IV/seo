@@ -14,6 +14,7 @@ import { authFetch, parseApiErrorMessage } from "@/lib/auth/client-session";
 import type { IntegrationOverviewItem } from "@/lib/integrations/types";
 import type { WordPressCreateConnectionResponse } from "@/lib/integrations/wordpress-types";
 import { formatRelativeTime } from "@/lib/dashboard/display";
+import { useSaasTranslations } from "@/lib/i18n/saas/SaasLocaleProvider";
 import { cn } from "@/lib/utils";
 
 type WordPressConnectorPanelProps = {
@@ -23,27 +24,14 @@ type WordPressConnectorPanelProps = {
   className?: string;
 };
 
-const SETUP_STEPS = [
-  "Установите плагин RankBoost Connector в WordPress.",
-  "Вставьте API Key и Shared Secret в настройках плагина.",
-  'Нажмите «Проверить соединение» в WordPress.',
-];
-
-function permissionLabel(key: string, value: boolean): string {
-  const labels: Record<string, string> = {
-    canCreateDrafts: "Создавать черновики",
-    canUpdateMeta: "Обновлять meta-теги",
-    canPublish: "Публиковать статьи",
-  };
-  return `${labels[key] ?? key}: ${value ? "да" : "нет"}`;
-}
-
 export function WordPressConnectorPanel({
   integration,
   websiteId,
   onConnectionUpdated,
   className,
 }: WordPressConnectorPanelProps) {
+  const { dict } = useSaasTranslations();
+  const wp = dict.integrations.wordpress;
   const [creating, setCreating] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [apiKey, setApiKey] = useState<string | null>(null);
@@ -51,11 +39,18 @@ export function WordPressConnectorPanel({
   const [infoMessage, setInfoMessage] = useState<string | null>(null);
   const [copiedField, setCopiedField] = useState<"key" | "secret" | null>(null);
 
-  const wp = integration.wordpress;
-  const connectionStatus = wp?.connectionStatus ?? null;
+  const wpConnection = integration.wordpress;
+  const connectionStatus = wpConnection?.connectionStatus ?? null;
   const isConnected =
     integration.connected || connectionStatus === "CONNECTED";
   const isPending = connectionStatus === "PENDING" && !isConnected;
+
+  function permissionLabel(key: string, value: boolean): string {
+    const labels = wp.permissions;
+    const label =
+      labels[key as keyof typeof labels] ?? key;
+    return `${label}: ${value ? wp.permissionYes : wp.permissionNo}`;
+  }
 
   async function handleCreateConnection() {
     if (!websiteId) {
@@ -82,7 +77,7 @@ export function WordPressConnectorPanel({
         setError(
           await parseApiErrorMessage(
             response,
-            "Не удалось создать ключ подключения"
+            wp.createKeyFailed
           )
         );
         return;
@@ -102,7 +97,7 @@ export function WordPressConnectorPanel({
 
       onConnectionUpdated?.();
     } catch {
-      setError("Сетевая ошибка при создании ключа WordPress");
+      setError(wp.createKeyNetworkError);
     } finally {
       setCreating(false);
     }
@@ -129,37 +124,39 @@ export function WordPressConnectorPanel({
         <div className="flex items-start gap-2 text-emerald-200">
           <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-emerald-400" />
           <div>
-            <p className="text-sm font-medium">WordPress подключён</p>
-            {wp?.siteUrl ? (
-              <p className="mt-1 text-xs text-slate-400">{wp.siteUrl}</p>
+            <p className="text-sm font-medium">{wp.connected}</p>
+            {wpConnection?.siteUrl ? (
+              <p className="mt-1 text-xs text-slate-400">{wpConnection.siteUrl}</p>
             ) : null}
           </div>
         </div>
 
+        <p className="text-xs text-cyan-100/90">{wp.draftOnlyMessage}</p>
+
         <dl className="grid gap-2 text-xs text-slate-400">
-          {wp?.pluginVersion ? (
+          {wpConnection?.pluginVersion ? (
             <div>
-              <dt className="text-slate-500">Версия плагина</dt>
-              <dd className="text-slate-300">{wp.pluginVersion}</dd>
+              <dt className="text-slate-500">{wp.pluginVersion}</dt>
+              <dd className="text-slate-300">{wpConnection.pluginVersion}</dd>
             </div>
           ) : null}
-          {wp?.lastPingAt ? (
+          {wpConnection?.lastPingAt ? (
             <div>
-              <dt className="text-slate-500">Последний ping</dt>
+              <dt className="text-slate-500">{wp.lastPing}</dt>
               <dd className="text-slate-300">
-                {formatRelativeTime(wp.lastPingAt)}
+                {formatRelativeTime(wpConnection.lastPingAt)}
               </dd>
             </div>
           ) : null}
         </dl>
 
-        {wp?.permissions ? (
+        {wpConnection?.permissions ? (
           <div>
             <p className="mb-2 text-xs font-medium text-slate-300">
-              Разрешения
+              {wp.permissionsTitle}
             </p>
             <ul className="space-y-1 text-xs text-slate-400">
-              {Object.entries(wp.permissions).map(([key, value]) => (
+              {Object.entries(wpConnection.permissions).map(([key, value]) => (
                 <li key={key}>{permissionLabel(key, value)}</li>
               ))}
             </ul>
@@ -180,21 +177,18 @@ export function WordPressConnectorPanel({
         <div className="flex items-start gap-2">
           <Plug className="mt-0.5 size-4 shrink-0 text-amber-400" />
           <div>
-            <p className="text-sm font-medium text-amber-100">
-              Ожидаем подключение плагина
-            </p>
-            <p className="mt-1 text-xs text-slate-400">
-              Ключ создан. Завершите настройку в WordPress — после ping статус
-              станет Connected.
-            </p>
-            {wp?.siteUrl ? (
-              <p className="mt-2 text-xs text-slate-500">{wp.siteUrl}</p>
+            <p className="text-sm font-medium text-amber-100">{wp.pendingTitle}</p>
+            <p className="mt-1 text-xs text-slate-400">{wp.pendingDescription}</p>
+            {wpConnection?.siteUrl ? (
+              <p className="mt-2 text-xs text-slate-500">{wpConnection.siteUrl}</p>
             ) : null}
           </div>
         </div>
 
+        <p className="text-xs text-cyan-100/90">{wp.draftOnlyMessage}</p>
+
         <ol className="list-decimal space-y-2 pl-5 text-sm text-slate-400">
-          {SETUP_STEPS.map((step) => (
+          {wp.setupSteps.map((step) => (
             <li key={step}>{step}</li>
           ))}
         </ol>
@@ -209,9 +203,8 @@ export function WordPressConnectorPanel({
         className
       )}
     >
-      <p className="text-sm text-slate-300">
-        Создайте API key для плагина RankBoost Connector на вашем WordPress-сайте.
-      </p>
+      <p className="text-sm text-slate-300">{wp.createKeyDescription}</p>
+      <p className="text-xs text-cyan-100/90">{wp.draftOnlyMessage}</p>
 
       <Button
         type="button"
@@ -222,17 +215,15 @@ export function WordPressConnectorPanel({
         {creating ? (
           <>
             <Loader2 className="size-4 animate-spin" />
-            Создаём ключ…
+            {wp.creatingKey}
           </>
         ) : (
-          "Создать ключ подключения"
+          wp.createKey
         )}
       </Button>
 
       {!websiteId ? (
-        <p className="text-xs text-amber-400/90">
-          Добавьте сайт, чтобы создать ключ WordPress.
-        </p>
+        <p className="text-xs text-amber-400/90">{wp.addWebsiteForKey}</p>
       ) : null}
 
       {error ? <p className="text-xs text-red-300">{error}</p> : null}
@@ -244,14 +235,12 @@ export function WordPressConnectorPanel({
         <div className="space-y-3 rounded-lg border border-amber-500/30 bg-amber-500/10 p-3">
           <div className="flex items-start gap-2 text-amber-100">
             <AlertTriangle className="mt-0.5 size-4 shrink-0 text-amber-400" />
-            <p className="text-xs">
-              Сохраните ключи сейчас. Позже они не будут показаны.
-            </p>
+            <p className="text-xs">{wp.saveKeysNow}</p>
           </div>
 
           {apiKey ? (
             <div className="space-y-1">
-              <p className="text-xs font-medium text-slate-300">API Key</p>
+              <p className="text-xs font-medium text-slate-300">{wp.apiKey}</p>
               <div className="flex items-center gap-2">
                 <code className="flex-1 overflow-x-auto rounded bg-black/30 px-3 py-2 text-xs text-cyan-200">
                   {apiKey}
@@ -260,20 +249,20 @@ export function WordPressConnectorPanel({
                   type="button"
                   onClick={() => void handleCopyValue(apiKey, "key")}
                   className="shrink-0 rounded-lg border border-white/10 p-2 text-slate-300 hover:bg-white/5"
-                  aria-label="Скопировать API Key"
+                  aria-label={wp.copyKeyAria}
                 >
                   <Copy className="size-4" />
                 </button>
               </div>
               {copiedField === "key" ? (
-                <p className="text-xs text-emerald-300">API Key скопирован</p>
+                <p className="text-xs text-emerald-300">{wp.keyCopied}</p>
               ) : null}
             </div>
           ) : null}
 
           {apiSecret ? (
             <div className="space-y-1">
-              <p className="text-xs font-medium text-slate-300">Shared Secret</p>
+              <p className="text-xs font-medium text-slate-300">{wp.sharedSecret}</p>
               <div className="flex items-center gap-2">
                 <code className="flex-1 overflow-x-auto rounded bg-black/30 px-3 py-2 text-xs text-cyan-200">
                   {apiSecret}
@@ -282,13 +271,13 @@ export function WordPressConnectorPanel({
                   type="button"
                   onClick={() => void handleCopyValue(apiSecret, "secret")}
                   className="shrink-0 rounded-lg border border-white/10 p-2 text-slate-300 hover:bg-white/5"
-                  aria-label="Скопировать Shared Secret"
+                  aria-label={wp.copySecretAria}
                 >
                   <Copy className="size-4" />
                 </button>
               </div>
               {copiedField === "secret" ? (
-                <p className="text-xs text-emerald-300">Shared Secret скопирован</p>
+                <p className="text-xs text-emerald-300">{wp.secretCopied}</p>
               ) : null}
             </div>
           ) : null}
@@ -296,9 +285,9 @@ export function WordPressConnectorPanel({
       ) : null}
 
       <div>
-        <p className="mb-2 text-sm font-medium text-white">Инструкция</p>
+        <p className="mb-2 text-sm font-medium text-white">{wp.instructions}</p>
         <ol className="list-decimal space-y-2 pl-5 text-sm text-slate-400">
-          {SETUP_STEPS.map((step) => (
+          {wp.setupSteps.map((step) => (
             <li key={step}>{step}</li>
           ))}
         </ol>

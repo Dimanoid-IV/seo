@@ -61,7 +61,9 @@ function queuePriority(
 export async function getAutopilotControlCenter(input: {
   currentUser: CurrentUser;
   websiteId?: string | null;
+  locale?: import("@/lib/i18n/saas/locales").SaasLocale;
 }): Promise<AutopilotControlCenterViewModel> {
+  const locale = input.locale ?? "en";
   const resolved = await resolveWebsiteForControlCenter(
     input.currentUser.id,
     input.currentUser.organizationId,
@@ -71,29 +73,35 @@ export async function getAutopilotControlCenter(input: {
   if (!resolved) {
     return {
       website: null,
-      status: resolveOverallStatus({
-        hasWebsite: false,
-        hasAudit: false,
-        hasUsefulData: false,
-        needsReviewCount: 0,
-        integrationIssuesCount: 0,
-        monthlyPlanApproved: false,
-      }),
+      status: resolveOverallStatus(
+        {
+          hasWebsite: false,
+          hasAudit: false,
+          hasUsefulData: false,
+          needsReviewCount: 0,
+          integrationIssuesCount: 0,
+          monthlyPlanApproved: false,
+        },
+        locale
+      ),
       metrics: emptyMetrics(),
       approvalQueue: [],
-      recommendedActions: buildRecommendedActions({
-        hasMonthlyPlan: false,
-        monthlyPlanApproved: false,
-        pendingEmailsCount: 0,
-        draftArticlesCount: 0,
-        waitingReviewArticlesCount: 0,
-        readySocialPostsCount: 0,
-        highPriorityTasksCount: 0,
-        gscConnected: false,
-        gscError: false,
-        hasAudit: false,
-        unreadTimelineEventsCount: 0,
-      }),
+      recommendedActions: buildRecommendedActions(
+        {
+          hasMonthlyPlan: false,
+          monthlyPlanApproved: false,
+          pendingEmailsCount: 0,
+          draftArticlesCount: 0,
+          waitingReviewArticlesCount: 0,
+          readySocialPostsCount: 0,
+          highPriorityTasksCount: 0,
+          gscConnected: false,
+          gscError: false,
+          hasAudit: false,
+          unreadTimelineEventsCount: 0,
+        },
+        locale
+      ),
       recentActivity: [],
       integrations: [],
     };
@@ -445,14 +453,17 @@ export async function getAutopilotControlCenter(input: {
     Boolean(monthlyPlan) ||
     pendingEmails.length > 0;
 
-  const status = resolveOverallStatus({
-    hasWebsite: true,
-    hasAudit: Boolean(latestAudit),
-    hasUsefulData,
-    needsReviewCount: countNeedsReview(approvalQueue),
-    integrationIssuesCount: gscError || wordpressError ? 1 : 0,
-    monthlyPlanApproved,
-  });
+  const status = resolveOverallStatus(
+    {
+      hasWebsite: true,
+      hasAudit: Boolean(latestAudit),
+      hasUsefulData,
+      needsReviewCount: countNeedsReview(approvalQueue),
+      integrationIssuesCount: gscError || wordpressError ? 1 : 0,
+      monthlyPlanApproved,
+    },
+    locale
+  );
 
   const metrics = {
     growthScore: latestSnapshot?.score ?? website.currentGrowthScore ?? undefined,
@@ -466,19 +477,22 @@ export async function getAutopilotControlCenter(input: {
     unreadTimelineEventsCount: unreadTimelineCount,
   };
 
-  const recommendedActions = buildRecommendedActions({
-    hasMonthlyPlan: Boolean(monthlyPlan),
-    monthlyPlanApproved,
-    pendingEmailsCount: pendingEmails.length,
-    draftArticlesCount: draftArticles.length,
-    waitingReviewArticlesCount: waitingReviewArticles.length,
-    readySocialPostsCount: readySocialPosts.length,
-    highPriorityTasksCount: highPriorityTasks.length,
-    gscConnected,
-    gscError,
-    hasAudit: Boolean(latestAudit),
-    unreadTimelineEventsCount: unreadTimelineCount,
-  });
+  const recommendedActions = buildRecommendedActions(
+    {
+      hasMonthlyPlan: Boolean(monthlyPlan),
+      monthlyPlanApproved,
+      pendingEmailsCount: pendingEmails.length,
+      draftArticlesCount: draftArticles.length,
+      waitingReviewArticlesCount: waitingReviewArticles.length,
+      readySocialPostsCount: readySocialPosts.length,
+      highPriorityTasksCount: highPriorityTasks.length,
+      gscConnected,
+      gscError,
+      hasAudit: Boolean(latestAudit),
+      unreadTimelineEventsCount: unreadTimelineCount,
+    },
+    locale
+  );
 
   const recentActivity: ControlCenterRecentActivity[] = timelineEvents
     .filter(
@@ -488,7 +502,7 @@ export async function getAutopilotControlCenter(input: {
     )
     .slice(0, 8)
     .map((event) => {
-      const formatted = formatTimelineEvent(event);
+      const formatted = formatTimelineEvent(event, locale);
       return {
         id: formatted.id,
         title: formatted.title,

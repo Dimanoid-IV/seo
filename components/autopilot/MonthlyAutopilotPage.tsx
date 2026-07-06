@@ -22,6 +22,8 @@ import { FocusAreaCard } from "./FocusAreaCard";
 import { RecommendedActionCard } from "./RecommendedActionCard";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { PageLoadingState } from "@/components/shared/PageLoadingState";
+import { useSaasTranslations } from "@/lib/i18n/saas/SaasLocaleProvider";
+import type { SaasLocale } from "@/lib/i18n/saas/locales";
 
 type AutopilotResponse = {
   data: MonthlyAutopilotGetResponse;
@@ -35,10 +37,11 @@ type GenerateResponse = {
   };
 };
 
-function formatMonthLabel(monthKey: string): string {
+function formatMonthLabel(monthKey: string, locale: SaasLocale): string {
   const [year, month] = monthKey.split("-");
   const parsed = new Date(Date.UTC(Number(year), Number(month) - 1, 1));
-  return new Intl.DateTimeFormat("en", {
+  const intlLocale = locale === "ru" ? "ru-RU" : locale === "et" ? "et-EE" : "en-US";
+  return new Intl.DateTimeFormat(intlLocale, {
     month: "long",
     year: "numeric",
   }).format(parsed);
@@ -52,6 +55,8 @@ function shiftMonth(monthKey: string, delta: number): string {
 }
 
 export function MonthlyAutopilotPage() {
+  const { dict, locale } = useSaasTranslations();
+  const a = dict.autopilot;
   const { data: billing } = useBillingOverview();
   const autopilotLimit = isUsageLimitReached(billing, "monthly_autopilot");
   const [month, setMonth] = useState(() => {
@@ -75,7 +80,7 @@ export function MonthlyAutopilotPage() {
 
       if (!response.ok) {
         setError(
-          await parseApiErrorMessage(response, "Failed to load monthly plan")
+          await parseApiErrorMessage(response, a.loadFailed)
         );
         return;
       }
@@ -83,11 +88,11 @@ export function MonthlyAutopilotPage() {
       const body = (await response.json()) as AutopilotResponse;
       setData(body.data);
     } catch {
-      setError("Network error while loading monthly plan");
+      setError(a.loadNetworkError);
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [a.loadFailed, a.loadNetworkError]);
 
   useEffect(() => {
     let cancelled = false;
@@ -104,7 +109,7 @@ export function MonthlyAutopilotPage() {
         if (!response.ok) {
           if (!cancelled) {
             setError(
-              await parseApiErrorMessage(response, "Failed to load monthly plan")
+              await parseApiErrorMessage(response, a.loadFailed)
             );
             setLoading(false);
           }
@@ -118,7 +123,7 @@ export function MonthlyAutopilotPage() {
         }
       } catch {
         if (!cancelled) {
-          setError("Network error while loading monthly plan");
+          setError(a.loadNetworkError);
           setLoading(false);
         }
       }
@@ -129,7 +134,7 @@ export function MonthlyAutopilotPage() {
     return () => {
       cancelled = true;
     };
-  }, [month]);
+  }, [month, locale, a.loadFailed, a.loadNetworkError]);
 
   const emptyVariant = useMemo(() => {
     if (!data?.websiteId) {
@@ -160,7 +165,7 @@ export function MonthlyAutopilotPage() {
 
       if (!response.ok) {
         setError(
-          await parseApiErrorMessage(response, "Failed to generate monthly plan")
+          await parseApiErrorMessage(response, a.generateFailed)
         );
         return;
       }
@@ -174,7 +179,7 @@ export function MonthlyAutopilotPage() {
         sourceSummary: prev?.sourceSummary ?? null,
       }));
     } catch {
-      setError("Network error while generating monthly plan");
+      setError(a.generateNetworkError);
     } finally {
       setGenerating(false);
     }
@@ -200,30 +205,30 @@ export function MonthlyAutopilotPage() {
 
       if (!response.ok) {
         setError(
-          await parseApiErrorMessage(response, "Failed to approve monthly plan")
+          await parseApiErrorMessage(response, a.approveFailed)
         );
         return;
       }
 
       await loadPlan(month);
     } catch {
-      setError("Network error while approving monthly plan");
+      setError(a.approveNetworkError);
     } finally {
       setGenerating(false);
     }
   }
 
-  const monthLabel = formatMonthLabel(month);
+  const monthLabel = formatMonthLabel(month, locale);
 
   if (loading && !data) {
-    return <PageLoadingState message="Loading monthly plan…" />;
+    return <PageLoadingState message={a.loadingMonthly} />;
   }
 
   return (
     <main className="app-content mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
       <PageHeader
-        title="Monthly Autopilot"
-        subtitle="Review RankBoost's monthly growth plan before anything is executed."
+        title={a.monthlyTitle}
+        subtitle={a.pageSubtitle}
         actions={
           data?.websiteId ? (
             <FeatureGate
@@ -309,7 +314,7 @@ export function MonthlyAutopilotPage() {
                 onClick={() => void handleApprove()}
                 className="border-emerald-500/30 text-emerald-300 hover:bg-emerald-500/10"
               >
-                Approve plan
+                {a.approvePlan}
               </Button>
             </div>
           ) : null}
@@ -319,7 +324,7 @@ export function MonthlyAutopilotPage() {
           {data.plan.focusAreas.length > 0 ? (
             <section>
               <h3 className="mb-4 text-lg font-semibold text-white">
-                Focus areas
+                {a.focusAreas}
               </h3>
               <div className="grid gap-4 lg:grid-cols-2">
                 {data.plan.focusAreas.map((area) => (
@@ -332,7 +337,7 @@ export function MonthlyAutopilotPage() {
           {data.plan.recommendedActions.length > 0 ? (
             <section>
               <h3 className="mb-4 text-lg font-semibold text-white">
-                Recommended actions
+                {a.recommendedActions}
               </h3>
               <div className="grid gap-3 md:grid-cols-2">
                 {data.plan.recommendedActions.map((action) => (

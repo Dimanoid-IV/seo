@@ -1,12 +1,18 @@
+"use client";
+
 import { AlertTriangle } from "lucide-react";
 
 import type { AutopilotRisk } from "@/lib/autopilot/types";
+import { useSaasTranslations } from "@/lib/i18n/saas/SaasLocaleProvider";
 
 type AutopilotRisksCardProps = {
   risks: AutopilotRisk[];
 };
 
 export function AutopilotRisksCard({ risks }: AutopilotRisksCardProps) {
+  const { dict } = useSaasTranslations();
+  const a = dict.autopilot;
+
   if (risks.length === 0) {
     return null;
   }
@@ -15,7 +21,7 @@ export function AutopilotRisksCard({ risks }: AutopilotRisksCardProps) {
     <section className="rounded-2xl border border-amber-500/20 bg-amber-500/5 p-6">
       <div className="flex items-center gap-2">
         <AlertTriangle className="size-5 text-amber-400" />
-        <h3 className="font-semibold text-white">Risks & warnings</h3>
+        <h3 className="font-semibold text-white">{a.risksTitle}</h3>
       </div>
       <ul className="mt-4 space-y-3">
         {risks.map((risk) => (

@@ -1,19 +1,18 @@
+"use client";
+
 import type { MonthlyAutopilotPlanViewModel } from "@/lib/autopilot/types";
+import { useSaasTranslations } from "@/lib/i18n/saas/SaasLocaleProvider";
 
 type AutopilotSummaryCardProps = {
   plan: MonthlyAutopilotPlanViewModel;
   monthLabel: string;
 };
 
-const STATUS_LABELS: Record<string, string> = {
-  draft: "Draft",
-  ready: "Ready for review",
-  approved: "Approved",
-  archived: "Archived",
-};
-
 export function AutopilotSummaryCard({ plan, monthLabel }: AutopilotSummaryCardProps) {
-  const statusLabel = STATUS_LABELS[plan.status] ?? plan.status;
+  const { dict } = useSaasTranslations();
+  const a = dict.autopilot;
+  const statusLabel =
+    a.statuses[plan.status as keyof typeof a.statuses] ?? plan.status;
 
   return (
     <section className="rounded-2xl border border-white/10 bg-gradient-to-br from-violet-500/10 to-blue-500/5 p-6">
@@ -32,7 +31,7 @@ export function AutopilotSummaryCard({ plan, monthLabel }: AutopilotSummaryCardP
         <p className="mt-4 text-sm leading-relaxed text-slate-300">{plan.summary}</p>
       ) : null}
       <p className="mt-4 text-xs text-slate-500">
-        Created {new Date(plan.createdAt).toLocaleDateString()} · Updated{" "}
+        {a.createdLabel} {new Date(plan.createdAt).toLocaleDateString()} · {a.updatedLabel}{" "}
         {new Date(plan.updatedAt).toLocaleDateString()}
       </p>
     </section>

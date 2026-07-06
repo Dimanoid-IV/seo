@@ -100,9 +100,11 @@ export async function getTimelineSummary(input: {
   userId: string;
   websiteId: string;
   since: Date | null;
+  locale?: import("@/lib/i18n/saas/locales").SaasLocale;
 }): Promise<TimelineSummary> {
   const { getPrisma } = await import("@/lib/db");
   const { formatTimelineEvent } = await import("./format");
+  const locale = input.locale ?? "en";
 
   const prisma = getPrisma();
   const since = input.since ?? new Date(0);
@@ -116,7 +118,7 @@ export async function getTimelineSummary(input: {
     orderBy: { createdAt: "desc" },
   });
 
-  const events = eventsRaw.map(formatTimelineEvent);
+  const events = eventsRaw.map((event) => formatTimelineEvent(event, locale));
 
   return buildTimelineSummary(events, input.since, events.length);
 }

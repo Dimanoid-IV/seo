@@ -11,6 +11,7 @@ import {
 } from "@/components/billing/useBillingOverview";
 import { authFetch, parseApiErrorMessage } from "@/lib/auth/client-session";
 import type { SocialPostViewModel } from "@/lib/social-posts/types";
+import { useSaasTranslations } from "@/lib/i18n/saas/SaasLocaleProvider";
 
 import {
   SocialPostCard,
@@ -44,6 +45,8 @@ function buildCopyText(post: SocialPostViewModel): string {
 }
 
 export function SocialPostsPage() {
+  const { dict, locale } = useSaasTranslations();
+  const s = dict.socialPosts;
   const { data: billing } = useBillingOverview();
   const socialLimit = isUsageLimitReached(billing, "social_post");
   const aiLimit = isUsageLimitReached(billing, "ai_generation");
@@ -70,7 +73,7 @@ export function SocialPostsPage() {
       const response = await authFetch("/api/social-posts?limit=30");
 
       if (!response.ok) {
-        setError(await parseApiErrorMessage(response, "Failed to load social posts"));
+        setError(await parseApiErrorMessage(response, s.loadFailed));
         return;
       }
 
@@ -78,11 +81,11 @@ export function SocialPostsPage() {
       setPosts(body.data.posts);
       setWebsiteId(body.data.websiteId);
     } catch {
-      setError("Network error while loading social posts");
+      setError(s.loadNetworkError);
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [s.loadFailed, s.loadNetworkError]);
 
   useEffect(() => {
     let cancelled = false;
@@ -94,7 +97,7 @@ export function SocialPostsPage() {
         if (!response.ok) {
           if (!cancelled) {
             setError(
-              await parseApiErrorMessage(response, "Failed to load social posts")
+              await parseApiErrorMessage(response, s.loadFailed)
             );
             setLoading(false);
           }
@@ -108,7 +111,7 @@ export function SocialPostsPage() {
         }
       } catch {
         if (!cancelled) {
-          setError("Network error while loading social posts");
+          setError(s.loadNetworkError);
           setLoading(false);
         }
       }
@@ -119,7 +122,7 @@ export function SocialPostsPage() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [locale, s.loadFailed, s.loadNetworkError]);
 
   async function handleCopy(post: SocialPostViewModel) {
     setActionPostId(post.id);
@@ -134,7 +137,7 @@ export function SocialPostsPage() {
       });
 
       if (!response.ok) {
-        setError(await parseApiErrorMessage(response, "Failed to mark post as copied"));
+        setError(await parseApiErrorMessage(response, s.copyFailed));
         return;
       }
 
@@ -142,11 +145,9 @@ export function SocialPostsPage() {
       setPosts((current) =>
         current.map((item) => (item.id === post.id ? body.data : item))
       );
-      setSuccess(
-        "Post copied. You can now paste it into your social media account."
-      );
+      setSuccess(s.copySuccess);
     } catch {
-      setError("Failed to copy post to clipboard");
+      setError(s.copyFailed);
     } finally {
       setActionPostId(null);
     }
@@ -162,20 +163,20 @@ export function SocialPostsPage() {
       });
 
       if (!response.ok) {
-        setError(await parseApiErrorMessage(response, "Failed to archive post"));
+        setError(await parseApiErrorMessage(response, s.archiveFailed));
         return;
       }
 
       setPosts((current) => current.filter((item) => item.id !== post.id));
     } catch {
-      setError("Network error while archiving post");
+      setError(s.archiveNetworkError);
     } finally {
       setActionPostId(null);
     }
   }
 
   if (loading) {
-    return <PageLoadingState message="Loading social posts…" />;
+    return <PageLoadingState message={s.loading} />;
   }
 
   if (error) {
@@ -190,10 +191,7 @@ export function SocialPostsPage() {
   if (!websiteId) {
     return (
       <main className="app-content mx-auto max-w-6xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
-        <PageHeader
-          title="Social Posts"
-          subtitle="Turn website growth opportunities into ready-to-review social media drafts."
-        />
+        <PageHeader title={s.title} subtitle={s.subtitle} />
         <SocialPostEmptyState variant="no-website" />
       </main>
     );
@@ -202,8 +200,8 @@ export function SocialPostsPage() {
   return (
     <main className="app-content mx-auto max-w-6xl space-y-8 px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
       <PageHeader
-        title="Social Posts"
-        subtitle="Turn website growth opportunities into ready-to-review social media drafts."
+        title={s.title}
+        subtitle={s.subtitle}
         actions={
           <>
             <FeatureGate blocked={generateBlocked} reason={generateReason}>
@@ -213,12 +211,12 @@ export function SocialPostsPage() {
                 onClick={() => setGenerateOpen(true)}
               >
                 <Sparkles className="size-4" />
-                Generate post
+                {s.generatePost}
               </Button>
             </FeatureGate>
             <Button type="button" variant="outline" onClick={() => setManualOpen(true)}>
               <Plus className="size-4" />
-              Create manually
+              {s.createManually}
             </Button>
           </>
         }
@@ -295,6 +293,8 @@ function ManualCreateDialog({
   onClose: () => void;
   onCreated: (post: SocialPostViewModel) => void;
 }) {
+  const { dict } = useSaasTranslations();
+  const s = dict.socialPosts;
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [platform, setPlatform] = useState("LINKEDIN");
@@ -313,14 +313,14 @@ function ManualCreateDialog({
       });
 
       if (!response.ok) {
-        setError(await parseApiErrorMessage(response, "Failed to create post"));
+        setError(await parseApiErrorMessage(response, s.createFailed));
         return;
       }
 
       const body = (await response.json()) as { data: SocialPostViewModel };
       onCreated(body.data);
     } catch {
-      setError("Network error while creating post");
+      setError(s.createNetworkError);
     } finally {
       setLoading(false);
     }
@@ -329,16 +329,16 @@ function ManualCreateDialog({
   return (
     <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/60 p-4 sm:items-center">
       <div className="max-h-[min(90vh,100dvh)] w-full max-w-lg overflow-y-auto rounded-2xl border border-white/10 bg-[#0a0f1e] p-6 shadow-xl">
-        <h3 className="text-lg font-semibold text-white">Create manually</h3>
+        <h3 className="text-lg font-semibold text-white">{s.manualTitle}</h3>
         <div className="mt-5 space-y-4">
           <input
-            placeholder="Title"
+            placeholder={s.postTitle}
             value={title}
             onChange={(event) => setTitle(event.target.value)}
             className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white"
           />
           <textarea
-            placeholder="Post content"
+            placeholder={s.postContent}
             value={content}
             onChange={(event) => setContent(event.target.value)}
             rows={6}
@@ -349,21 +349,20 @@ function ManualCreateDialog({
             onChange={(event) => setPlatform(event.target.value)}
             className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white"
           >
-            <option value="LINKEDIN">LinkedIn</option>
-            <option value="FACEBOOK">Facebook</option>
-            <option value="INSTAGRAM">Instagram</option>
-            <option value="X">X</option>
-            <option value="GOOGLE_BUSINESS_PROFILE">Google Business Profile</option>
-            <option value="GENERIC">Generic</option>
+            {Object.entries(s.platforms).map(([value, label]) => (
+              <option key={value} value={value}>
+                {label}
+              </option>
+            ))}
           </select>
         </div>
         {error ? <p className="mt-4 text-sm text-red-300">{error}</p> : null}
         <div className="mt-6 flex justify-end gap-2">
           <Button type="button" variant="ghost" onClick={onClose}>
-            Cancel
+            {s.cancel}
           </Button>
           <Button type="button" onClick={() => void handleCreate()} disabled={loading}>
-            {loading ? <Loader2 className="size-4 animate-spin" /> : "Create"}
+            {loading ? <Loader2 className="size-4 animate-spin" /> : s.create}
           </Button>
         </div>
       </div>

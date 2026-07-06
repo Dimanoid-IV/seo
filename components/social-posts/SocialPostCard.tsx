@@ -6,6 +6,7 @@ import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { authFetch, parseApiErrorMessage } from "@/lib/auth/client-session";
 import type { SocialPostViewModel } from "@/lib/social-posts/types";
+import { useSaasTranslations } from "@/lib/i18n/saas/SaasLocaleProvider";
 
 import { PlatformBadge, SocialPostQualityBadge } from "./PlatformBadge";
 
@@ -24,6 +25,9 @@ export function SocialPostCard({
   onArchive,
   actionLoading = false,
 }: SocialPostCardProps) {
+  const { dict } = useSaasTranslations();
+  const s = dict.socialPosts;
+
   return (
     <article className="glass-card flex flex-col gap-4 border border-white/5 p-4 sm:p-5">
       <div className="flex flex-wrap items-center gap-2">
@@ -54,7 +58,7 @@ export function SocialPostCard({
           onClick={() => onEdit(post)}
           disabled={actionLoading}
         >
-          Edit
+          {s.edit}
         </Button>
         <Button
           type="button"
@@ -62,7 +66,7 @@ export function SocialPostCard({
           onClick={() => void onCopy(post)}
           disabled={actionLoading}
         >
-          {actionLoading ? <Loader2 className="size-4 animate-spin" /> : "Copy"}
+          {actionLoading ? <Loader2 className="size-4 animate-spin" /> : s.copy}
         </Button>
         <Button
           type="button"
@@ -71,7 +75,7 @@ export function SocialPostCard({
           onClick={() => void onArchive(post)}
           disabled={actionLoading}
         >
-          Archive
+          {s.archive}
         </Button>
       </div>
     </article>
@@ -89,6 +93,8 @@ export function SocialPostGenerateDialog({
   onClose,
   onGenerated,
 }: SocialPostGenerateDialogProps) {
+  const { dict } = useSaasTranslations();
+  const s = dict.socialPosts;
   const [platform, setPlatform] = useState("LINKEDIN");
   const [source, setSource] = useState("TASK");
   const [loading, setLoading] = useState(false);
@@ -111,10 +117,7 @@ export function SocialPostGenerateDialog({
 
       if (!response.ok) {
         setError(
-          await parseApiErrorMessage(
-            response,
-            "We couldn't generate a social post right now. You can try again or create one manually."
-          )
+          await parseApiErrorMessage(response, s.generateFailed)
         );
         return;
       }
@@ -123,9 +126,7 @@ export function SocialPostGenerateDialog({
       onGenerated(body.data);
       onClose();
     } catch {
-      setError(
-        "We couldn't generate a social post right now. You can try again or create one manually."
-      );
+      setError(s.generateFailed);
     } finally {
       setLoading(false);
     }
@@ -134,41 +135,37 @@ export function SocialPostGenerateDialog({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
       <div className="w-full max-w-lg rounded-2xl border border-white/10 bg-[#0a0f1e] p-6 shadow-xl">
-        <h3 className="text-lg font-semibold text-white">Generate post</h3>
-        <p className="mt-1 text-sm text-slate-400">
-          RankBoost will use your latest growth data as context. Nothing is published automatically.
-        </p>
+        <h3 className="text-lg font-semibold text-white">{s.generateTitle}</h3>
+        <p className="mt-1 text-sm text-slate-400">{s.generateDescription}</p>
 
         <div className="mt-5 space-y-4">
           <label className="block space-y-2">
-            <span className="text-sm text-slate-300">Platform</span>
+            <span className="text-sm text-slate-300">{s.platform}</span>
             <select
               value={platform}
               onChange={(event) => setPlatform(event.target.value)}
               className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white"
             >
-              <option value="LINKEDIN">LinkedIn</option>
-              <option value="FACEBOOK">Facebook</option>
-              <option value="INSTAGRAM">Instagram</option>
-              <option value="X">X</option>
-              <option value="GOOGLE_BUSINESS_PROFILE">Google Business Profile</option>
-              <option value="GENERIC">Generic</option>
+              {Object.entries(s.platforms).map(([value, label]) => (
+                <option key={value} value={value}>
+                  {label}
+                </option>
+              ))}
             </select>
           </label>
 
           <label className="block space-y-2">
-            <span className="text-sm text-slate-300">Source</span>
+            <span className="text-sm text-slate-300">{s.source}</span>
             <select
               value={source}
               onChange={(event) => setSource(event.target.value)}
               className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white"
             >
-              <option value="TASK">Latest task</option>
-              <option value="ARTICLE">Latest article</option>
-              <option value="GSC_INSIGHT">Search Console insight</option>
-              <option value="TIMELINE_EVENT">Latest timeline event</option>
-              <option value="GROWTH_SCORE">Growth Score change</option>
-              <option value="CONTINUOUS_IMPROVEMENT">Latest opportunity</option>
+              {Object.entries(s.sources).map(([value, label]) => (
+                <option key={value} value={value}>
+                  {label}
+                </option>
+              ))}
             </select>
           </label>
         </div>
@@ -177,16 +174,16 @@ export function SocialPostGenerateDialog({
 
         <div className="mt-6 flex justify-end gap-2">
           <Button type="button" variant="ghost" onClick={onClose} disabled={loading}>
-            Cancel
+            {s.cancel}
           </Button>
           <Button type="button" onClick={() => void handleGenerate()} disabled={loading}>
             {loading ? (
               <>
                 <Loader2 className="size-4 animate-spin" />
-                Generating…
+                {s.generating}
               </>
             ) : (
-              "Generate"
+              s.generatePost
             )}
           </Button>
         </div>
@@ -202,6 +199,8 @@ type SocialPostEditorProps = {
 };
 
 export function SocialPostEditor({ post, onClose, onSaved }: SocialPostEditorProps) {
+  const { dict } = useSaasTranslations();
+  const s = dict.socialPosts;
   const [title, setTitle] = useState(post.title);
   const [content, setContent] = useState(post.content);
   const [cta, setCta] = useState(post.cta ?? "");
@@ -229,7 +228,7 @@ export function SocialPostEditor({ post, onClose, onSaved }: SocialPostEditorPro
       });
 
       if (!response.ok) {
-        setError(await parseApiErrorMessage(response, "Failed to save post"));
+        setError(await parseApiErrorMessage(response, s.saveFailed));
         return;
       }
 
@@ -237,7 +236,7 @@ export function SocialPostEditor({ post, onClose, onSaved }: SocialPostEditorPro
       onSaved(body.data);
       onClose();
     } catch {
-      setError("Network error while saving post");
+      setError(s.saveNetworkError);
     } finally {
       setLoading(false);
     }
@@ -246,11 +245,11 @@ export function SocialPostEditor({ post, onClose, onSaved }: SocialPostEditorPro
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
       <div className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-2xl border border-white/10 bg-[#0a0f1e] p-6 shadow-xl">
-        <h3 className="text-lg font-semibold text-white">Edit social post</h3>
+        <h3 className="text-lg font-semibold text-white">{s.editTitle}</h3>
 
         <div className="mt-5 space-y-4">
           <label className="block space-y-2">
-            <span className="text-sm text-slate-300">Title</span>
+            <span className="text-sm text-slate-300">{s.postTitle}</span>
             <input
               value={title}
               onChange={(event) => setTitle(event.target.value)}
@@ -258,7 +257,7 @@ export function SocialPostEditor({ post, onClose, onSaved }: SocialPostEditorPro
             />
           </label>
           <label className="block space-y-2">
-            <span className="text-sm text-slate-300">Content</span>
+            <span className="text-sm text-slate-300">{s.content}</span>
             <textarea
               value={content}
               onChange={(event) => setContent(event.target.value)}
@@ -267,7 +266,7 @@ export function SocialPostEditor({ post, onClose, onSaved }: SocialPostEditorPro
             />
           </label>
           <label className="block space-y-2">
-            <span className="text-sm text-slate-300">CTA</span>
+            <span className="text-sm text-slate-300">{s.cta}</span>
             <input
               value={cta}
               onChange={(event) => setCta(event.target.value)}
@@ -275,7 +274,7 @@ export function SocialPostEditor({ post, onClose, onSaved }: SocialPostEditorPro
             />
           </label>
           <label className="block space-y-2">
-            <span className="text-sm text-slate-300">Hashtags</span>
+            <span className="text-sm text-slate-300">{s.hashtags}</span>
             <input
               value={hashtags}
               onChange={(event) => setHashtags(event.target.value)}
@@ -288,10 +287,10 @@ export function SocialPostEditor({ post, onClose, onSaved }: SocialPostEditorPro
 
         <div className="mt-6 flex justify-end gap-2">
           <Button type="button" variant="ghost" onClick={onClose} disabled={loading}>
-            Cancel
+            {s.cancel}
           </Button>
           <Button type="button" onClick={() => void handleSave()} disabled={loading}>
-            {loading ? <Loader2 className="size-4 animate-spin" /> : "Save"}
+            {loading ? <Loader2 className="size-4 animate-spin" /> : s.save}
           </Button>
         </div>
       </div>

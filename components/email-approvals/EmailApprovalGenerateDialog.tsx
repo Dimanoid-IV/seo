@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Loader2, Sparkles } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import { useSaasTranslations } from "@/lib/i18n/saas/SaasLocaleProvider";
 
 type EmailApprovalGenerateDialogProps = {
   open: boolean;
@@ -13,12 +14,12 @@ type EmailApprovalGenerateDialogProps = {
 };
 
 const TYPE_OPTIONS = [
-  { value: "MONTHLY_PLAN_REVIEW", label: "Monthly plan review", source: "MONTHLY_AUTOPILOT" },
-  { value: "CONTENT_REVIEW", label: "Content review", source: "ARTICLE" },
-  { value: "SOCIAL_POST_REVIEW", label: "Social post review", source: "SOCIAL_POST" },
-  { value: "GROWTH_ALERT", label: "Growth alert", source: "SYSTEM" },
-  { value: "INTEGRATION_ALERT", label: "Integration alert", source: "INTEGRATION" },
-  { value: "GENERAL_REVIEW", label: "General review", source: "SYSTEM" },
+  { value: "MONTHLY_PLAN_REVIEW", labelKey: "MONTHLY_PLAN_REVIEW" as const, source: "MONTHLY_AUTOPILOT" },
+  { value: "CONTENT_REVIEW", labelKey: "CONTENT_REVIEW" as const, source: "ARTICLE" },
+  { value: "SOCIAL_POST_REVIEW", labelKey: "SOCIAL_POST_REVIEW" as const, source: "SOCIAL_POST" },
+  { value: "GROWTH_ALERT", labelKey: "GROWTH_ALERT" as const, source: "SYSTEM" },
+  { value: "INTEGRATION_ALERT", labelKey: "INTEGRATION_ALERT" as const, source: "INTEGRATION" },
+  { value: "GENERAL_REVIEW", labelKey: "GENERAL_REVIEW" as const, source: "SYSTEM" },
 ];
 
 export function EmailApprovalGenerateDialog({
@@ -27,6 +28,8 @@ export function EmailApprovalGenerateDialog({
   loading,
   onGenerate,
 }: EmailApprovalGenerateDialogProps) {
+  const { dict } = useSaasTranslations();
+  const e = dict.emailApprovals;
   const [type, setType] = useState("GENERAL_REVIEW");
 
   if (!open) {
@@ -38,13 +41,11 @@ export function EmailApprovalGenerateDialog({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
       <div className="w-full max-w-md rounded-2xl border border-white/10 bg-[#0a0f1e] p-6 shadow-xl">
-        <h3 className="text-lg font-semibold text-white">Generate review email</h3>
-        <p className="mt-1 text-sm text-slate-400">
-          RankBoost will prepare an email draft from real data. Nothing is sent automatically.
-        </p>
+        <h3 className="text-lg font-semibold text-white">{e.generateTitle}</h3>
+        <p className="mt-1 text-sm text-slate-400">{e.generateDescription}</p>
 
         <label className="mt-5 block space-y-2">
-          <span className="text-sm text-slate-300">Email type</span>
+          <span className="text-sm text-slate-300">{e.emailType}</span>
           <select
             value={type}
             onChange={(event) => setType(event.target.value)}
@@ -52,7 +53,7 @@ export function EmailApprovalGenerateDialog({
           >
             {TYPE_OPTIONS.map((option) => (
               <option key={option.value} value={option.value}>
-                {option.label}
+                {e.generateTypes[option.labelKey]}
               </option>
             ))}
           </select>
@@ -72,10 +73,10 @@ export function EmailApprovalGenerateDialog({
             ) : (
               <Sparkles className="size-4" />
             )}
-            Generate draft
+            {e.generateDraft}
           </Button>
           <Button type="button" variant="ghost" onClick={onClose}>
-            Cancel
+            {e.cancel}
           </Button>
         </div>
       </div>

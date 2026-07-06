@@ -1,3 +1,5 @@
+"use client";
+
 import {
   AlertTriangle,
   FileText,
@@ -7,6 +9,7 @@ import {
   TrendingUp,
 } from "lucide-react";
 
+import { useSaasTranslations } from "@/lib/i18n/saas/SaasLocaleProvider";
 import type { ControlCenterMetrics } from "@/lib/autopilot-control/types";
 
 type ControlMetricsGridProps = {
@@ -14,33 +17,36 @@ type ControlMetricsGridProps = {
 };
 
 const ITEMS = [
-  { key: "growthScore" as const, label: "Growth Score", icon: TrendingUp },
-  { key: "openTasksCount" as const, label: "Open tasks", icon: Target },
+  { key: "growthScore" as const, labelKey: "growthScore" as const, icon: TrendingUp },
+  { key: "openTasksCount" as const, labelKey: "openTasks" as const, icon: Target },
   {
     key: "highPriorityTasksCount" as const,
-    label: "High priority",
+    labelKey: "highPriority" as const,
     icon: AlertTriangle,
   },
-  { key: "pendingEmailsCount" as const, label: "Pending emails", icon: Mail },
-  { key: "draftArticlesCount" as const, label: "Draft articles", icon: FileText },
+  { key: "pendingEmailsCount" as const, labelKey: "pendingEmails" as const, icon: Mail },
+  { key: "draftArticlesCount" as const, labelKey: "draftArticles" as const, icon: FileText },
   {
     key: "readySocialPostsCount" as const,
-    label: "Ready social posts",
+    labelKey: "readySocialPosts" as const,
     icon: Share2,
   },
   {
     key: "integrationIssuesCount" as const,
-    label: "Integration issues",
+    labelKey: "integrationIssues" as const,
     icon: AlertTriangle,
   },
   {
     key: "unreadTimelineEventsCount" as const,
-    label: "Unread activity",
+    labelKey: "unreadActivity" as const,
     icon: Target,
   },
 ];
 
 export function ControlMetricsGrid({ metrics }: ControlMetricsGridProps) {
+  const { dict } = useSaasTranslations();
+  const m = dict.controlCenter.metrics;
+
   return (
     <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
       {ITEMS.map((item) => {
@@ -63,7 +69,7 @@ export function ControlMetricsGrid({ metrics }: ControlMetricsGridProps) {
           <div key={item.key} className="saas-card-metric !p-5">
             <div className="flex items-center gap-2.5 text-slate-400">
               <Icon className="size-4 shrink-0" />
-              <span className="text-xs font-medium">{item.label}</span>
+              <span className="text-xs font-medium">{m[item.labelKey]}</span>
             </div>
             <p className="mt-3 text-2xl font-semibold tracking-tight text-white">
               {value}

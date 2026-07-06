@@ -2,6 +2,7 @@ import { getServerEnv } from "@/lib/env";
 import { AppError, ErrorCode } from "@/lib/errors";
 import { requireUser } from "@/lib/auth/current-user";
 import { authErrorResponse, authJsonResponse } from "@/lib/auth/responses";
+import { getLocaleFromRequest } from "@/lib/i18n/saas/server-locale";
 import { getDashboardOverview } from "@/lib/dashboard/overview";
 
 function assertDatabaseConfigured(): void {
@@ -19,7 +20,8 @@ export async function GET(request: Request) {
     assertDatabaseConfigured();
 
     const currentUser = await requireUser(request);
-    const overview = await getDashboardOverview(currentUser);
+    const locale = getLocaleFromRequest(request);
+    const overview = await getDashboardOverview(currentUser, { locale });
 
     return authJsonResponse(overview);
   } catch (error) {

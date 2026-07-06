@@ -1,6 +1,7 @@
 "use client";
 
 import type { SocialPostViewModel } from "@/lib/social-posts/types";
+import { useSaasTranslations } from "@/lib/i18n/saas/SaasLocaleProvider";
 import { cn } from "@/lib/utils";
 
 type PlatformBadgeProps = {
@@ -9,15 +10,8 @@ type PlatformBadgeProps = {
 };
 
 export function PlatformBadge({ platform, className }: PlatformBadgeProps) {
-  const labels: Record<string, string> = {
-    LINKEDIN: "LinkedIn",
-    FACEBOOK: "Facebook",
-    INSTAGRAM: "Instagram",
-    X: "X",
-    GOOGLE_BUSINESS: "Google Business",
-    GENERIC: "Generic",
-    OTHER: "Other",
-  };
+  const { dict } = useSaasTranslations();
+  const platforms = dict.socialPosts.platforms;
 
   return (
     <span
@@ -26,7 +20,7 @@ export function PlatformBadge({ platform, className }: PlatformBadgeProps) {
         className
       )}
     >
-      {labels[platform] ?? platform}
+      {platforms[platform as keyof typeof platforms] ?? platform}
     </span>
   );
 }
@@ -36,6 +30,9 @@ type SocialPostQualityBadgeProps = {
 };
 
 export function SocialPostQualityBadge({ post }: SocialPostQualityBadgeProps) {
+  const { dict } = useSaasTranslations();
+  const s = dict.socialPosts;
+
   const hasErrors = post.qualityIssues?.some((issue) => issue.severity === "ERROR");
   const hasWarnings = post.qualityIssues?.some(
     (issue) => issue.severity === "WARNING"
@@ -44,7 +41,7 @@ export function SocialPostQualityBadge({ post }: SocialPostQualityBadgeProps) {
   if (post.status === "READY" && !hasErrors && !hasWarnings) {
     return (
       <span className="rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-1 text-xs font-medium text-emerald-300">
-        Ready for review
+        {s.readyForReview}
       </span>
     );
   }
@@ -52,7 +49,7 @@ export function SocialPostQualityBadge({ post }: SocialPostQualityBadgeProps) {
   if (hasErrors || hasWarnings || post.status === "DRAFT") {
     return (
       <span className="rounded-full border border-amber-500/30 bg-amber-500/10 px-2.5 py-1 text-xs font-medium text-amber-300">
-        Needs review
+        {dict.statuses.needsReview}
         {post.qualityScore != null ? ` · ${post.qualityScore}/100` : ""}
       </span>
     );

@@ -6,6 +6,7 @@ import { Gauge, Loader2 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { authFetch } from "@/lib/auth/client-session";
+import { useSaasTranslations } from "@/lib/i18n/saas/SaasLocaleProvider";
 import type { OnboardingViewModel } from "@/lib/onboarding/types";
 
 type OnboardingResultsStepProps = {
@@ -19,6 +20,8 @@ export function OnboardingResultsStep({
   disabled,
   onViewed,
 }: OnboardingResultsStepProps) {
+  const { dict } = useSaasTranslations();
+  const o = dict.onboarding;
   const [loading, setLoading] = useState(false);
 
   async function markViewed() {
@@ -36,30 +39,26 @@ export function OnboardingResultsStep({
   }
 
   if (!results?.growthScore && !results?.tasksCount) {
-    return (
-      <p className="text-sm text-slate-400">
-        Your first results will appear after the audit is complete.
-      </p>
-    );
+    return <p className="text-sm text-slate-400">{o.resultsPending}</p>;
   }
 
   return (
     <div className="space-y-4">
       <div className="grid gap-3 sm:grid-cols-3">
         <div className="rounded-xl border border-white/10 bg-[#0a0f1e]/60 p-3">
-          <p className="text-xs text-slate-400">Growth Score</p>
+          <p className="text-xs text-slate-400">{o.growthScore}</p>
           <p className="mt-1 text-2xl font-bold text-white">
             {results.growthScore ?? "—"}
           </p>
         </div>
         <div className="rounded-xl border border-white/10 bg-[#0a0f1e]/60 p-3">
-          <p className="text-xs text-slate-400">Open tasks</p>
+          <p className="text-xs text-slate-400">{o.openTasks}</p>
           <p className="mt-1 text-2xl font-bold text-white">
             {results.tasksCount ?? 0}
           </p>
         </div>
         <div className="rounded-xl border border-white/10 bg-[#0a0f1e]/60 p-3">
-          <p className="text-xs text-slate-400">Opportunities</p>
+          <p className="text-xs text-slate-400">{o.opportunities}</p>
           <p className="mt-1 text-2xl font-bold text-white">
             {results.opportunitiesCount ?? 0}
           </p>
@@ -73,7 +72,7 @@ export function OnboardingResultsStep({
             className="gap-2 border-white/10 bg-transparent text-slate-200"
           >
             <Gauge className="size-4" />
-            Open Control Center
+            {o.openControlCenter}
           </Button>
         </Link>
         <Button
@@ -82,7 +81,7 @@ export function OnboardingResultsStep({
           onClick={() => void markViewed()}
         >
           {loading ? <Loader2 className="size-4 animate-spin" /> : null}
-          Continue setup
+          {o.continueSetup}
         </Button>
       </div>
     </div>

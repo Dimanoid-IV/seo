@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 
 import { authFetch, parseApiErrorMessage } from "@/lib/auth/client-session";
+import { useSaasTranslations } from "@/lib/i18n/saas/SaasLocaleProvider";
 import type { OnboardingViewModel } from "@/lib/onboarding/types";
 
 type OnboardingState = {
@@ -13,6 +14,8 @@ type OnboardingState = {
 };
 
 export function useOnboarding(): OnboardingState {
+  const { dict, locale } = useSaasTranslations();
+  const o = dict.onboarding;
   const [data, setData] = useState<OnboardingViewModel | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -25,9 +28,7 @@ export function useOnboarding(): OnboardingState {
       const response = await authFetch("/api/onboarding");
 
       if (!response.ok) {
-        setError(
-          await parseApiErrorMessage(response, "Failed to load onboarding")
-        );
+        setError(await parseApiErrorMessage(response, o.loadFailed));
         setData(null);
         return null;
       }
@@ -36,13 +37,13 @@ export function useOnboarding(): OnboardingState {
       setData(body.data.onboarding);
       return body.data.onboarding;
     } catch {
-      setError("Network error while loading onboarding");
+      setError(o.loadNetworkError);
       setData(null);
       return null;
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [o.loadFailed, o.loadNetworkError]);
 
   useEffect(() => {
     let cancelled = false;
@@ -56,9 +57,7 @@ export function useOnboarding(): OnboardingState {
 
         if (!response.ok) {
           if (!cancelled) {
-            setError(
-              await parseApiErrorMessage(response, "Failed to load onboarding")
-            );
+            setError(await parseApiErrorMessage(response, o.loadFailed));
             setData(null);
             setLoading(false);
           }
@@ -75,7 +74,7 @@ export function useOnboarding(): OnboardingState {
         }
       } catch {
         if (!cancelled) {
-          setError("Network error while loading onboarding");
+          setError(o.loadNetworkError);
           setData(null);
           setLoading(false);
         }
@@ -87,7 +86,7 @@ export function useOnboarding(): OnboardingState {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [locale, o.loadFailed, o.loadNetworkError]);
 
   return { data, loading, error, reload };
 }

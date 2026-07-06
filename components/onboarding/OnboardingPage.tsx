@@ -16,6 +16,7 @@ import { OnboardingWebsiteStep } from "@/components/onboarding/OnboardingWebsite
 import { useOnboarding } from "@/components/onboarding/useOnboarding";
 import { Button } from "@/components/ui/button";
 import { authFetch, parseApiErrorMessage } from "@/lib/auth/client-session";
+import { useSaasTranslations } from "@/lib/i18n/saas/SaasLocaleProvider";
 import type { OnboardingStepViewModel, OnboardingViewModel } from "@/lib/onboarding/types";
 
 function renderStepContent(
@@ -87,6 +88,8 @@ function renderStepContent(
 }
 
 export function OnboardingPage() {
+  const { dict } = useSaasTranslations();
+  const o = dict.onboarding;
   const { data, loading, error, reload } = useOnboarding();
   const [actionError, setActionError] = useState<string | null>(null);
   const [skippingAll, setSkippingAll] = useState(false);
@@ -98,13 +101,13 @@ export function OnboardingPage() {
       const response = await authFetch("/api/onboarding/skip", { method: "POST" });
       if (!response.ok) {
         setActionError(
-          await parseApiErrorMessage(response, "Could not skip setup")
+          await parseApiErrorMessage(response, o.errors.skipSetupFailed)
         );
         return;
       }
       await reload();
     } catch {
-      setActionError("Network error while skipping setup");
+      setActionError(o.errors.skipSetupNetworkError);
     } finally {
       setSkippingAll(false);
     }
@@ -123,14 +126,14 @@ export function OnboardingPage() {
       <div className="app-content mx-auto min-w-0 max-w-3xl space-y-8 overflow-x-hidden p-4 sm:p-6 lg:p-10">
         <section className="saas-card-success text-center">
           <h2 className="text-xl font-semibold tracking-tight text-white sm:text-2xl">
-            Setup complete
+            {o.setupCompleteTitle}
           </h2>
           <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-slate-300">
-            Your RankBoost workspace is ready. Continue in the Control Center.
+            {o.setupCompletePageSubtitle}
           </p>
           <Link href="/app/autopilot-control" className="mt-7 inline-block">
             <Button type="button" className="min-h-11 rounded-xl px-6">
-              Open Control Center
+              {o.openControlCenter}
             </Button>
           </Link>
         </section>
@@ -152,13 +155,12 @@ export function OnboardingPage() {
             <Sparkles className="size-5 text-violet-300" />
           </div>
           <div>
-            <p className="saas-eyebrow text-violet-400/80">Guided setup</p>
+            <p className="saas-eyebrow text-violet-400/80">{o.eyebrow}</p>
             <h1 className="mt-2 text-2xl font-bold tracking-tight text-white sm:text-[1.875rem]">
-              Set up RankBoost
+              {o.pageTitle}
             </h1>
             <p className="mt-3 max-w-2xl text-sm leading-relaxed text-slate-400">
-              RankBoost is guiding you step by step — add your website, run your
-              first audit, and prepare your first growth plan.
+              {o.pageSubtitle}
             </p>
           </div>
         </div>
@@ -208,7 +210,7 @@ export function OnboardingPage() {
                 className="text-slate-400 hover:text-slate-200"
               >
                 {skippingAll ? <Loader2 className="size-4 animate-spin" /> : null}
-                Skip setup for now
+                {o.skipSetupForNow}
               </Button>
               <Link href="/app">
                 <Button
@@ -216,7 +218,7 @@ export function OnboardingPage() {
                   variant="outline"
                   className="gap-2 border-white/10 bg-transparent text-slate-300"
                 >
-                  Go to dashboard
+                  {o.goToDashboard}
                   <ArrowRight className="size-4" />
                 </Button>
               </Link>
@@ -226,36 +228,37 @@ export function OnboardingPage() {
           <aside className="space-y-5">
             <section className="saas-card-muted">
               <h2 className="text-sm font-semibold text-white">
-                What RankBoost will do next
+                {o.sidebarNextTitle}
               </h2>
               <ul className="mt-4 space-y-3 text-sm leading-relaxed text-slate-400">
-                <li>Turn audit findings into prioritized tasks</li>
-                <li>Surface Search Console opportunities when connected</li>
-                <li>Prepare a monthly SEO, content, and social plan</li>
-                <li>Keep everything in your Control Center</li>
+                {o.sidebarNextItems.map((item) => (
+                  <li key={item}>{item}</li>
+                ))}
               </ul>
             </section>
 
             {data.results ? (
               <section className="saas-card-muted">
-                <h2 className="text-sm font-semibold text-white">Your results</h2>
+                <h2 className="text-sm font-semibold text-white">
+                  {o.sidebarResultsTitle}
+                </h2>
                 {data.results.growthScore != null ? (
                   <div className="mt-3 grid gap-2 text-sm">
                     <p className="text-slate-300">
-                      Growth Score:{" "}
+                      {o.growthScoreLabel}{" "}
                       <span className="font-medium text-white">
                         {data.results.growthScore}
                       </span>
                     </p>
                     <p className="text-slate-300">
-                      Open tasks:{" "}
+                      {o.openTasksLabel}{" "}
                       <span className="font-medium text-white">
                         {data.results.tasksCount ?? 0}
                       </span>
                     </p>
                     {data.results.monthlyPlanStatus ? (
                       <p className="text-slate-300">
-                        Monthly plan:{" "}
+                        {o.monthlyPlanLabel}{" "}
                         <span className="font-medium capitalize text-white">
                           {data.results.monthlyPlanStatus}
                         </span>
@@ -263,9 +266,7 @@ export function OnboardingPage() {
                     ) : null}
                   </div>
                 ) : (
-                  <p className="mt-2 text-sm text-slate-400">
-                    Your first results will appear after the audit is complete.
-                  </p>
+                  <p className="mt-2 text-sm text-slate-400">{o.resultsPending}</p>
                 )}
               </section>
             ) : null}

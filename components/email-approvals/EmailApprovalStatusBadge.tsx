@@ -1,10 +1,6 @@
-const STATUS_LABELS: Record<string, string> = {
-  draft: "Draft",
-  ready: "Ready",
-  approved: "Approved",
-  sent: "Sent",
-  archived: "Archived",
-};
+"use client";
+
+import { useSaasTranslations } from "@/lib/i18n/saas/SaasLocaleProvider";
 
 const STATUS_STYLES: Record<string, string> = {
   draft: "border-slate-400/30 bg-slate-500/10 text-slate-300",
@@ -19,7 +15,9 @@ type EmailApprovalStatusBadgeProps = {
 };
 
 export function EmailApprovalStatusBadge({ status }: EmailApprovalStatusBadgeProps) {
-  const label = STATUS_LABELS[status] ?? status;
+  const { dict } = useSaasTranslations();
+  const labels = dict.emailApprovals.statuses;
+  const label = labels[status as keyof typeof labels] ?? status;
   const style = STATUS_STYLES[status] ?? STATUS_STYLES.draft;
 
   return (
@@ -31,19 +29,14 @@ export function EmailApprovalStatusBadge({ status }: EmailApprovalStatusBadgePro
   );
 }
 
-const TYPE_LABELS: Record<string, string> = {
-  monthly_plan_review: "Monthly plan",
-  content_review: "Content",
-  social_post_review: "Social posts",
-  growth_alert: "Growth alert",
-  integration_alert: "Integration",
-  general_review: "General review",
-};
-
 export function EmailApprovalTypeBadge({ type }: { type: string }) {
+  const { dict } = useSaasTranslations();
+  const labels = dict.emailApprovals.types;
+  const normalized = type.toLowerCase() as keyof typeof labels;
+
   return (
     <span className="rounded-md bg-white/10 px-2 py-0.5 text-xs font-medium text-slate-300">
-      {TYPE_LABELS[type] ?? type}
+      {labels[normalized] ?? type}
     </span>
   );
 }

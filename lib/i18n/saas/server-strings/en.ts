@@ -1,0 +1,162 @@
+import type { SaasServerStrings } from "./types";
+
+export const serverStringsEn: SaasServerStrings = {
+  dashboard: {
+    growthScore: {
+      notEnough: "Not enough data yet",
+      lookingGood: "Looking good",
+      roomToGrow: "Room to grow",
+      needsAttention: "Needs attention",
+    },
+    hero: {
+      getStarted: "Get started",
+      getStartedDesc: "Add your website to start finding growth opportunities.",
+      finishSetup: "Finish setup",
+      finishSetupDesc: "Finish setup so RankBoost can prepare your first growth plan.",
+      runFirstAudit: "Run your first audit",
+      runFirstAuditDesc:
+        "Run an audit so RankBoost can understand your website and prepare actions.",
+      actionsReady: "Actions ready for you",
+      actionsReadyDesc:
+        "RankBoost found new opportunities and prepared actions for your review.",
+      planActive: "Growth plan active",
+      planActiveDesc:
+        "Your growth plan is active. RankBoost is monitoring for new opportunities.",
+    },
+    nextAction: {
+      reviewPlanTitle: "Review your monthly growth plan",
+      reviewPlanDesc:
+        "RankBoost prepared a plan with SEO, content, and social actions for this month.",
+      runAuditTitle: "Run your first audit",
+      runAuditDesc:
+        "RankBoost needs to scan your website before it can prepare actions.",
+      connectGscTitle: "Connect Google Search Console",
+      connectGscDesc: "Unlock real search queries and traffic opportunities.",
+      reviewEmailTitle: "Review prepared email",
+      reviewEmailDesc:
+        "An approval email is ready. It will not be sent until you manually send it.",
+    },
+    actionLabels: {
+      openGrowthPlan: "Open growth plan",
+      reviewEmail: "Review email",
+      viewDrafts: "View drafts",
+      viewPosts: "View posts",
+      connectGsc: "Connect GSC",
+      runAudit: "Run audit",
+      viewTasks: "View tasks",
+      openTimeline: "Open timeline",
+      open: "Open",
+    },
+    findings: {
+      seoTasksWaiting: (count) =>
+        `Your website has ${count} SEO task${count === 1 ? "" : "s"} waiting.`,
+      planReady: "A monthly growth plan is ready for review.",
+      gscNotConnected: "Google Search Console is not connected yet.",
+      socialDraftsReady: (count) =>
+        `${count} social post draft${count === 1 ? " is" : "s are"} ready.`,
+      emailDraftsWaiting: (count) =>
+        `${count} email draft${count === 1 ? " is" : "s are"} waiting for review.`,
+      opportunitiesFound: (count) =>
+        `RankBoost found ${count} growth opportunit${count === 1 ? "y" : "ies"}.`,
+    },
+    secondary: {
+      doLater: "Do this later",
+      openSetup: "Open setup",
+    },
+    billingNoteFree:
+      "You're on the Free plan. Upgrade when you need more growth actions.",
+  },
+  controlCenter: {
+    status: {
+      setupNeeded: "Setup needed",
+      setupNeededDesc: "Add a website to use Control Center.",
+      setupNeededNoData:
+        "Connect data sources or run an audit so RankBoost can prepare growth actions.",
+      limitedData: "Limited data",
+      limitedDataDesc:
+        "Run an audit or connect Google Search Console so RankBoost can prepare growth actions.",
+      needsReview: "Needs review",
+      needsReviewDesc:
+        "RankBoost prepared several growth actions that need your review.",
+      ready: "Ready",
+      readyDesc:
+        "Your current growth plan is approved. RankBoost is monitoring for new opportunities.",
+      monitoring: "Monitoring",
+      monitoringDesc:
+        "No urgent approvals right now. RankBoost is monitoring your website.",
+    },
+    recommended: {
+      generatePlanTitle: "Generate this month's growth plan",
+      generatePlanDesc:
+        "Organize SEO, content, and social priorities for the current month.",
+      prepareEmailTitle: "Prepare review email",
+      prepareEmailDesc: "Create an email draft from this month's growth plan.",
+      reviewEmailTitle: "Review prepared email",
+      reviewEmailDesc: (count) =>
+        `${count} email draft${count === 1 ? "" : "s"} waiting for your review.`,
+      reviewArticlesTitle: "Review article drafts",
+      reviewArticlesDesc: (count) =>
+        `${count} article draft${count === 1 ? "" : "s"} need attention.`,
+      copySocialTitle: "Copy ready social posts",
+      copySocialDesc: (count) =>
+        `${count} post draft${count === 1 ? "" : "s"} ready to copy or edit.`,
+      connectGscTitle: "Connect Google Search Console",
+      connectGscDesc: "Unlock search query opportunities and traffic insights.",
+      fixTasksTitle: "Fix high-priority SEO tasks",
+      fixTasksDesc: (count) =>
+        `${count} high-priority task${count === 1 ? "" : "s"} are open.`,
+      runAuditTitle: "Run a website audit",
+      runAuditDesc: "Refresh technical SEO findings and Growth Score.",
+      reviewTimelineTitle: "Review recent growth activity",
+      reviewTimelineDesc: (count) =>
+        `${count} unread timeline event${count === 1 ? "" : "s"}.`,
+    },
+  },
+  timeline: {
+    sources: {
+      AUDIT_ENGINE: "Audit Engine",
+      RULE_ENGINE: "Rule Engine",
+      GROWTH_SCORE: "Growth Score",
+      TASKS: "Tasks",
+      CONTENT_PLAN: "Content Plan",
+      REPORTS: "Reports",
+      GSC: "Search Console",
+      WORDPRESS: "WordPress",
+      HERMES: "Hermes AI",
+      AI_QUALITY_PIPELINE: "AI Quality",
+      CONTINUOUS_IMPROVEMENT: "Growth Engine",
+      SYSTEM: "System",
+    },
+    actions: {
+      openArticle: "Open article",
+      openReport: "Open report",
+      openIntegration: "Open integration",
+      viewInsight: "View insight",
+      openDashboard: "Open dashboard",
+      openSocialPosts: "Open social posts",
+      openAutopilot: "Open growth plan",
+      openEmailApprovals: "Open review emails",
+      openContentPlan: "Open content plan",
+    },
+  },
+  onboardingForms: {
+    websiteUrlRequired: "Enter your website URL to continue.",
+    addWebsiteFailed: "Could not add website",
+    addWebsiteNetworkError: "Network error while adding website",
+    websitePlaceholder: "https://yourwebsite.com",
+    auditFailed: "Could not run audit",
+    auditNetworkError: "Network error while running audit",
+    skipGscFailed: "Could not skip this step",
+    markViewedFailed: "Could not mark results as viewed",
+    generatePlanFailed: "Could not generate plan",
+    generatePlanNetworkError: "Network error while generating plan",
+    optional: "Optional",
+    done: "Done",
+    skipped: "Skipped",
+    current: "Current step",
+    locked: "Locked",
+    progressLabel: (completed, total) => `${completed} of ${total} steps complete`,
+    completeSetup: "Complete setup",
+    continueSetup: "Continue setup",
+  },
+};

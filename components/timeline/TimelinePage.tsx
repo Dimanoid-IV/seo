@@ -5,6 +5,7 @@ import { Loader2 } from "lucide-react";
 
 import { authFetch, parseApiErrorMessage } from "@/lib/auth/client-session";
 import type { TimelineListResult } from "@/lib/timeline/types";
+import { useSaasTranslations } from "@/lib/i18n/saas/SaasLocaleProvider";
 
 import { TimelineEmptyState } from "./TimelineEmptyState";
 import { TimelineEventCard } from "./TimelineEventCard";
@@ -36,6 +37,8 @@ const EMPTY_TIMELINE: TimelineListResult = {
 };
 
 export function TimelinePage() {
+  const { dict, locale } = useSaasTranslations();
+  const t = dict.timeline;
   const [timeline, setTimeline] = useState<TimelineListResult>(EMPTY_TIMELINE);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -52,7 +55,7 @@ export function TimelinePage() {
 
       if (!response.ok) {
         setError(
-          await parseApiErrorMessage(response, "Failed to load timeline")
+          await parseApiErrorMessage(response, t.loadFailed)
         );
         return;
       }
@@ -60,13 +63,13 @@ export function TimelinePage() {
       const body = (await response.json()) as TimelineResponse;
       setTimeline(body.data);
     } catch {
-      setError("Network error while loading timeline");
+      setError(t.loadNetworkError);
     } finally {
       if (!options?.silent) {
         setLoading(false);
       }
     }
-  }, []);
+  }, [t.loadFailed, t.loadNetworkError]);
 
   useEffect(() => {
     let cancelled = false;
@@ -81,7 +84,7 @@ export function TimelinePage() {
         if (!response.ok) {
           if (!cancelled) {
             setError(
-              await parseApiErrorMessage(response, "Failed to load timeline")
+              await parseApiErrorMessage(response, t.loadFailed)
             );
             setLoading(false);
           }
@@ -95,7 +98,7 @@ export function TimelinePage() {
         }
       } catch {
         if (!cancelled) {
-          setError("Network error while loading timeline");
+          setError(t.loadNetworkError);
           setLoading(false);
         }
       }
@@ -106,7 +109,7 @@ export function TimelinePage() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [locale, t.loadFailed, t.loadNetworkError]);
 
   const gscHintVisible = useMemo(
     () =>
@@ -132,21 +135,21 @@ export function TimelinePage() {
 
       if (!response.ok) {
         setError(
-          await parseApiErrorMessage(response, "Failed to mark events as read")
+          await parseApiErrorMessage(response, t.markReadFailed)
         );
         return;
       }
 
       await loadTimeline({ silent: true });
     } catch {
-      setError("Network error while updating read state");
+      setError(t.markReadNetworkError);
     } finally {
       setMarkingRead(false);
     }
   }
 
   if (loading) {
-    return <PageLoadingState message="Loading growth timeline…" />;
+    return <PageLoadingState message={t.loading} />;
   }
 
   if (error) {
@@ -161,10 +164,7 @@ export function TimelinePage() {
   if (!timeline.websiteId) {
     return (
       <main className="app-content mx-auto max-w-5xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
-        <PageHeader
-          title="Growth Timeline"
-          subtitle="See what RankBoost found while monitoring your website."
-        />
+        <PageHeader title={t.title} subtitle={t.subtitle} />
         <TimelineEmptyState variant="no-website" />
       </main>
     );
@@ -172,10 +172,7 @@ export function TimelinePage() {
 
   return (
     <main className="app-content mx-auto max-w-5xl space-y-8 px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
-      <PageHeader
-        title="Growth Timeline"
-        subtitle="See what RankBoost found while monitoring your website."
-      />
+      <PageHeader title={t.title} subtitle={t.subtitle} />
       <TimelineSummaryCard
         summary={timeline.summary}
         unreadCount={timeline.unreadCount}
@@ -183,10 +180,8 @@ export function TimelinePage() {
 
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h3 className="text-lg font-semibold text-white">Activity Timeline</h3>
-          <p className="text-sm text-slate-500">
-            What RankBoost found while monitoring your website
-          </p>
+          <h3 className="text-lg font-semibold text-white">{t.activityTitle}</h3>
+          <p className="text-sm text-slate-500">{t.activitySubtitle}</p>
         </div>
         {timeline.unreadCount > 0 ? (
           <button
@@ -196,14 +191,14 @@ export function TimelinePage() {
             className="inline-flex items-center gap-2 rounded-lg border border-white/15 bg-white/5 px-3 py-2 text-sm text-slate-200 hover:bg-white/10 disabled:opacity-60"
           >
             {markingRead ? <Loader2 className="size-4 animate-spin" /> : null}
-            Mark all as read
+            {t.markAllRead}
           </button>
         ) : null}
       </div>
 
       {gscHintVisible ? (
         <p className="rounded-lg border border-white/10 bg-white/[0.02] px-4 py-3 text-sm text-slate-400">
-          Connect Google Search Console to unlock search opportunity events.
+          {t.gscHint}
         </p>
       ) : null}
 

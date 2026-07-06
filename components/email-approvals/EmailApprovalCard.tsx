@@ -1,6 +1,7 @@
 "use client";
 
 import type { EmailApprovalViewModel } from "@/lib/email-approvals/types";
+import { useSaasTranslations } from "@/lib/i18n/saas/SaasLocaleProvider";
 
 import {
   EmailApprovalStatusBadge,
@@ -22,6 +23,8 @@ export function EmailApprovalCard({
   onApprove,
   onArchive,
 }: EmailApprovalCardProps) {
+  const { dict } = useSaasTranslations();
+  const e = dict.emailApprovals;
   const preview =
     email.body.length > 220 ? `${email.body.slice(0, 220)}…` : email.body;
   const isBusy = actionEmailId === email.id;
@@ -42,7 +45,9 @@ export function EmailApprovalCard({
       </div>
 
       {email.recipientEmail ? (
-        <p className="mt-2 text-xs text-slate-500">To: {email.recipientEmail}</p>
+        <p className="mt-2 text-xs text-slate-500">
+          {e.toLabel} {email.recipientEmail}
+        </p>
       ) : null}
 
       <pre className="mt-3 whitespace-pre-wrap font-sans text-sm text-slate-400">
@@ -56,7 +61,7 @@ export function EmailApprovalCard({
           onClick={() => onEdit(email)}
           className="rounded-lg border border-white/10 px-3 py-1.5 text-xs font-medium text-slate-200 hover:bg-white/5 disabled:opacity-50"
         >
-          Edit
+          {e.edit}
         </button>
         {email.status !== "approved" && email.status !== "sent" ? (
           <button
@@ -65,7 +70,7 @@ export function EmailApprovalCard({
             onClick={() => onApprove(email)}
             className="rounded-lg border border-emerald-500/30 px-3 py-1.5 text-xs font-medium text-emerald-300 hover:bg-emerald-500/10 disabled:opacity-50"
           >
-            Approve
+            {e.approve}
           </button>
         ) : null}
         {email.status !== "sent" && email.status !== "archived" ? (
@@ -75,7 +80,7 @@ export function EmailApprovalCard({
             onClick={() => onArchive(email)}
             className="rounded-lg border border-white/10 px-3 py-1.5 text-xs font-medium text-slate-400 hover:bg-white/5 disabled:opacity-50"
           >
-            Archive
+            {e.archive}
           </button>
         ) : null}
       </div>

@@ -1,3 +1,7 @@
+import type { SaasLocale } from "@/lib/i18n/saas/locales";
+import { DEFAULT_SAAS_LOCALE } from "@/lib/i18n/saas/locales";
+import { getServerStrings } from "@/lib/i18n/saas/server-strings";
+
 import type {
   ApprovalQueueItem,
   ControlCenterMetrics,
@@ -27,17 +31,18 @@ function nextId(prefix: string): string {
 }
 
 export function buildRecommendedActions(
-  input: BuildRecommendedActionsInput
+  input: BuildRecommendedActionsInput,
+  locale: SaasLocale = DEFAULT_SAAS_LOCALE
 ): ControlCenterRecommendedAction[] {
   actionId = 0;
+  const r = getServerStrings(locale).controlCenter.recommended;
   const actions: ControlCenterRecommendedAction[] = [];
 
   if (!input.hasMonthlyPlan) {
     actions.push({
       id: nextId("plan"),
-      title: "Generate this month's growth plan",
-      description:
-        "Organize SEO, content, and social priorities for the current month.",
+      title: r.generatePlanTitle,
+      description: r.generatePlanDesc,
       priority: "HIGH",
       type: "GENERATE_MONTHLY_PLAN",
       apiAction: "generate_monthly_plan",
@@ -47,8 +52,8 @@ export function buildRecommendedActions(
   if (input.hasMonthlyPlan && input.pendingEmailsCount === 0) {
     actions.push({
       id: nextId("email-gen"),
-      title: "Prepare review email",
-      description: "Create an email draft from this month's autopilot plan.",
+      title: r.prepareEmailTitle,
+      description: r.prepareEmailDesc,
       priority: "MEDIUM",
       type: "GENERATE_EMAIL_APPROVAL",
       apiAction: "generate_email_approval",
@@ -58,8 +63,8 @@ export function buildRecommendedActions(
   if (input.pendingEmailsCount > 0) {
     actions.push({
       id: nextId("email"),
-      title: "Review prepared email",
-      description: `${input.pendingEmailsCount} email draft(s) waiting for your review.`,
+      title: r.reviewEmailTitle,
+      description: r.reviewEmailDesc(input.pendingEmailsCount),
       priority: "HIGH",
       type: "REVIEW_EMAIL",
       href: "/app/email-approvals",
@@ -69,8 +74,10 @@ export function buildRecommendedActions(
   if (input.waitingReviewArticlesCount > 0 || input.draftArticlesCount > 0) {
     actions.push({
       id: nextId("article"),
-      title: "Review article drafts",
-      description: `${input.waitingReviewArticlesCount + input.draftArticlesCount} article draft(s) need attention.`,
+      title: r.reviewArticlesTitle,
+      description: r.reviewArticlesDesc(
+        input.waitingReviewArticlesCount + input.draftArticlesCount
+      ),
       priority: "HIGH",
       type: "REVIEW_ARTICLE",
       href: "/app/content-plan",
@@ -80,8 +87,8 @@ export function buildRecommendedActions(
   if (input.readySocialPostsCount > 0) {
     actions.push({
       id: nextId("social"),
-      title: "Copy ready social posts",
-      description: `${input.readySocialPostsCount} post draft(s) ready to copy or edit.`,
+      title: r.copySocialTitle,
+      description: r.copySocialDesc(input.readySocialPostsCount),
       priority: "MEDIUM",
       type: "COPY_SOCIAL_POST",
       href: "/app/social-posts",
@@ -91,8 +98,8 @@ export function buildRecommendedActions(
   if (!input.gscConnected || input.gscError) {
     actions.push({
       id: nextId("gsc"),
-      title: "Connect Google Search Console",
-      description: "Unlock search query opportunities and traffic insights.",
+      title: r.connectGscTitle,
+      description: r.connectGscDesc,
       priority: input.gscError ? "HIGH" : "MEDIUM",
       type: "CONNECT_INTEGRATION",
       href: "/app/integrations",
@@ -102,8 +109,8 @@ export function buildRecommendedActions(
   if (input.highPriorityTasksCount > 0) {
     actions.push({
       id: nextId("task"),
-      title: "Fix high-priority SEO tasks",
-      description: `${input.highPriorityTasksCount} high-priority task(s) are open.`,
+      title: r.fixTasksTitle,
+      description: r.fixTasksDesc(input.highPriorityTasksCount),
       priority: "HIGH",
       type: "OPEN_TASK",
       href: "/app",
@@ -113,8 +120,8 @@ export function buildRecommendedActions(
   if (!input.hasAudit) {
     actions.push({
       id: nextId("audit"),
-      title: "Run a website audit",
-      description: "Refresh technical SEO findings and Growth Score.",
+      title: r.runAuditTitle,
+      description: r.runAuditDesc,
       priority: "MEDIUM",
       type: "RUN_AUDIT",
       href: "/app",
@@ -124,8 +131,8 @@ export function buildRecommendedActions(
   if (input.unreadTimelineEventsCount > 0) {
     actions.push({
       id: nextId("timeline"),
-      title: "Review recent growth activity",
-      description: `${input.unreadTimelineEventsCount} unread timeline event(s).`,
+      title: r.reviewTimelineTitle,
+      description: r.reviewTimelineDesc(input.unreadTimelineEventsCount),
       priority: "LOW",
       type: "VIEW_TIMELINE",
       href: "/app/timeline",
@@ -138,66 +145,63 @@ export function buildRecommendedActions(
     .slice(0, 7);
 }
 
-export function resolveOverallStatus(input: {
-  hasWebsite: boolean;
-  hasAudit: boolean;
-  hasUsefulData: boolean;
-  needsReviewCount: number;
-  integrationIssuesCount: number;
-  monthlyPlanApproved: boolean;
-}): ControlCenterStatus {
+export function resolveOverallStatus(
+  input: {
+    hasWebsite: boolean;
+    hasAudit: boolean;
+    hasUsefulData: boolean;
+    needsReviewCount: number;
+    integrationIssuesCount: number;
+    monthlyPlanApproved: boolean;
+  },
+  locale: SaasLocale = DEFAULT_SAAS_LOCALE
+): ControlCenterStatus {
+  const s = getServerStrings(locale).controlCenter.status;
+
   if (!input.hasWebsite) {
     return {
       overall: "NEEDS_SETUP",
-      label: "Setup needed",
-      description: "Add a website to use Autopilot Control Center.",
+      label: s.setupNeeded,
+      description: s.setupNeededDesc,
     };
   }
 
   if (!input.hasAudit && !input.hasUsefulData) {
     return {
       overall: "NEEDS_SETUP",
-      label: "Setup needed",
-      description:
-        "Connect data sources or run an audit so RankBoost can prepare growth actions.",
+      label: s.setupNeeded,
+      description: s.setupNeededNoData,
     };
   }
 
   if (!input.hasUsefulData) {
     return {
       overall: "NO_DATA",
-      label: "Limited data",
-      description:
-        "Run an audit or connect Google Search Console so RankBoost can prepare growth actions.",
+      label: s.limitedData,
+      description: s.limitedDataDesc,
     };
   }
 
-  if (
-    input.needsReviewCount > 0 ||
-    input.integrationIssuesCount > 0
-  ) {
+  if (input.needsReviewCount > 0 || input.integrationIssuesCount > 0) {
     return {
       overall: "NEEDS_REVIEW",
-      label: "Needs review",
-      description:
-        "RankBoost prepared several growth actions that need your review.",
+      label: s.needsReview,
+      description: s.needsReviewDesc,
     };
   }
 
   if (input.monthlyPlanApproved) {
     return {
       overall: "READY",
-      label: "Ready",
-      description:
-        "Your current growth plan is approved. RankBoost is monitoring for new opportunities.",
+      label: s.ready,
+      description: s.readyDesc,
     };
   }
 
   return {
     overall: "READY",
-    label: "Monitoring",
-    description:
-      "No urgent approvals right now. RankBoost is monitoring your website.",
+    label: s.monitoring,
+    description: s.monitoringDesc,
   };
 }
 

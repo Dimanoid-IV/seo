@@ -6,8 +6,11 @@ import { ArrowRight, Sparkles, X } from "lucide-react";
 
 import { useOnboarding } from "@/components/onboarding/useOnboarding";
 import { Button } from "@/components/ui/button";
+import { useSaasTranslations } from "@/lib/i18n/saas/SaasLocaleProvider";
 
 export function OnboardingBanner() {
+  const { dict } = useSaasTranslations();
+  const o = dict.onboarding;
   const { data, loading } = useOnboarding();
   const [dismissed, setDismissed] = useState(false);
 
@@ -27,17 +30,19 @@ export function OnboardingBanner() {
             <Sparkles className="size-4 text-violet-300" />
           </div>
           <div>
-            <p className="font-medium text-white">Finish setting up RankBoost</p>
+            <p className="font-medium text-white">{o.bannerTitle}</p>
             <p className="mt-1 text-sm text-slate-400">
-              {data.progress.percentage}% complete · run your first audit and growth
-              plan to unlock the full workspace.
+              {o.bannerProgressDescription.replace(
+                "{percent}",
+                String(data.progress.percentage)
+              )}
             </p>
           </div>
         </div>
         <div className="flex items-center gap-2">
           <Link href="/app/onboarding">
             <Button type="button" size="sm" className="gap-2">
-              Continue setup
+              {o.bannerCta}
               <ArrowRight className="size-4" />
             </Button>
           </Link>
@@ -47,7 +52,7 @@ export function OnboardingBanner() {
             variant="ghost"
             className="size-8 text-slate-400 hover:text-slate-200"
             onClick={() => setDismissed(true)}
-            aria-label="Dismiss setup banner"
+            aria-label={o.dismissBannerAria}
           >
             <X className="size-4" />
           </Button>

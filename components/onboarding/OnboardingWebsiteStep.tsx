@@ -5,6 +5,7 @@ import { Loader2 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { authFetch, parseApiErrorMessage } from "@/lib/auth/client-session";
+import { useSaasTranslations } from "@/lib/i18n/saas/SaasLocaleProvider";
 
 type OnboardingWebsiteStepProps = {
   disabled?: boolean;
@@ -17,12 +18,14 @@ export function OnboardingWebsiteStep({
   onSuccess,
   onError,
 }: OnboardingWebsiteStepProps) {
+  const { dict } = useSaasTranslations();
+  const o = dict.onboarding;
   const [url, setUrl] = useState("");
   const [loading, setLoading] = useState(false);
 
   async function handleSubmit() {
     if (!url.trim()) {
-      onError("Enter your website URL to continue.");
+      onError(o.errors.websiteUrlRequired);
       return;
     }
 
@@ -37,13 +40,13 @@ export function OnboardingWebsiteStep({
       });
 
       if (!response.ok) {
-        onError(await parseApiErrorMessage(response, "Could not add website"));
+        onError(await parseApiErrorMessage(response, o.errors.addWebsiteFailed));
         return;
       }
 
       await onSuccess();
     } catch {
-      onError("Network error while adding website");
+      onError(o.errors.addWebsiteNetworkError);
     } finally {
       setLoading(false);
     }
@@ -55,7 +58,7 @@ export function OnboardingWebsiteStep({
         type="url"
         value={url}
         onChange={(event) => setUrl(event.target.value)}
-        placeholder="https://yourwebsite.com"
+        placeholder={o.websitePlaceholder}
         disabled={disabled || loading}
         className="min-w-0 w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2.5 text-sm text-white outline-none focus:border-violet-500/50"
       />
@@ -65,7 +68,7 @@ export function OnboardingWebsiteStep({
         onClick={() => void handleSubmit()}
       >
         {loading ? <Loader2 className="size-4 animate-spin" /> : null}
-        Add website
+        {o.addWebsite}
       </Button>
     </div>
   );

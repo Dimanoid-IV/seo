@@ -60,4 +60,5 @@ export type TimelineQuery = {
   cursor?: string | null;
   type?: TimelineEventType;
   source?: TimelineEventSource;
+  locale?: import("@/lib/i18n/saas/locales").SaasLocale;
 };

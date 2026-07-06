@@ -1,6 +1,9 @@
+"use client";
+
 import { Loader2, RefreshCw, Sparkles } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import { useSaasTranslations } from "@/lib/i18n/saas/SaasLocaleProvider";
 
 type AutopilotGenerateButtonProps = {
   loading: boolean;
@@ -17,6 +20,9 @@ export function AutopilotGenerateButton({
   blocked = false,
   onGenerate,
 }: AutopilotGenerateButtonProps) {
+  const { dict } = useSaasTranslations();
+  const a = dict.autopilot;
+
   return (
     <div className="flex flex-wrap gap-2">
       <Button
@@ -30,7 +36,7 @@ export function AutopilotGenerateButton({
         ) : (
           <Sparkles className="size-4" />
         )}
-        {hasPlan ? "Refresh plan" : "Generate plan"}
+        {hasPlan ? a.refreshPlan : a.generate}
       </Button>
       {hasPlan && canRegenerate ? (
         <Button
@@ -41,7 +47,7 @@ export function AutopilotGenerateButton({
           className="gap-2 border-white/10 bg-transparent text-slate-200 hover:bg-white/5"
         >
           <RefreshCw className="size-4" />
-          Regenerate
+          {a.regenerate}
         </Button>
       ) : null}
     </div>

@@ -5,6 +5,7 @@ import { Loader2 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { authFetch } from "@/lib/auth/client-session";
+import { useSaasTranslations } from "@/lib/i18n/saas/SaasLocaleProvider";
 
 type OnboardingGscStepProps = {
   disabled?: boolean;
@@ -19,6 +20,9 @@ export function OnboardingGscStep({
   onError,
   skipping = false,
 }: OnboardingGscStepProps) {
+  const { dict } = useSaasTranslations();
+  const o = dict.onboarding;
+
   async function handleSkip() {
     onError("");
     try {
@@ -29,31 +33,29 @@ export function OnboardingGscStep({
       });
       await onSkip();
     } catch {
-      onError("Could not skip this step");
+      onError(o.errors.skipStepFailed);
     }
   }
 
   return (
     <div className="space-y-3">
-      <p className="text-sm text-slate-400">
-        You can skip this step now and connect Search Console later from Integrations.
-      </p>
+      <p className="text-sm text-slate-400">{o.gscSkipHint}</p>
       <div className="flex flex-wrap gap-2">
-      <Link href="/app/integrations">
-        <Button type="button" disabled={disabled}>
-          Connect Search Console
+        <Link href="/app/integrations">
+          <Button type="button" disabled={disabled}>
+            {o.connectGsc}
+          </Button>
+        </Link>
+        <Button
+          type="button"
+          variant="outline"
+          disabled={disabled || skipping}
+          onClick={() => void handleSkip()}
+          className="border-white/10 bg-transparent text-slate-300"
+        >
+          {skipping ? <Loader2 className="size-4 animate-spin" /> : null}
+          {o.skipGsc}
         </Button>
-      </Link>
-      <Button
-        type="button"
-        variant="outline"
-        disabled={disabled || skipping}
-        onClick={() => void handleSkip()}
-        className="border-white/10 bg-transparent text-slate-300"
-      >
-        {skipping ? <Loader2 className="size-4 animate-spin" /> : null}
-        Skip for now
-      </Button>
       </div>
     </div>
   );

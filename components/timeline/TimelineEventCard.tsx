@@ -1,6 +1,9 @@
+"use client";
+
 import Link from "next/link";
 
 import type { TimelineEventViewModel } from "@/lib/timeline/types";
+import { useSaasTranslations } from "@/lib/i18n/saas/SaasLocaleProvider";
 import { cn } from "@/lib/utils";
 
 import { TimelineEventIcon } from "./TimelineEventIcon";
@@ -19,6 +22,8 @@ const SEVERITY_STYLES: Record<string, string> = {
 };
 
 export function TimelineEventCard({ event, className }: TimelineEventCardProps) {
+  const { dict } = useSaasTranslations();
+
   return (
     <article
       className={cn(
@@ -40,7 +45,7 @@ export function TimelineEventCard({ event, className }: TimelineEventCardProps) 
             <span className="text-xs text-slate-500">{event.relativeTime}</span>
             {!event.isRead ? (
               <span className="rounded-full bg-blue-500/20 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-blue-300">
-                New
+                {dict.timeline.new}
               </span>
             ) : null}
           </div>

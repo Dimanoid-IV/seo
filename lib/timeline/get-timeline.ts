@@ -133,6 +133,7 @@ export async function getTimelineForWebsite(
   query: TimelineQuery = {}
 ): Promise<TimelineListResult> {
   const prisma = getPrisma();
+  const locale = query.locale ?? "en";
   const limit = Math.min(Math.max(query.limit ?? DEFAULT_LIMIT, 1), MAX_LIMIT);
   const cursorDate = decodeCursor(query.cursor);
 
@@ -162,7 +163,7 @@ export async function getTimelineForWebsite(
 
   const hasMore = eventsRaw.length > limit;
   const page = hasMore ? eventsRaw.slice(0, limit) : eventsRaw;
-  const events = page.map(formatTimelineEvent);
+  const events = page.map((event) => formatTimelineEvent(event, locale));
   const nextCursor = hasMore
     ? page[page.length - 1]?.createdAt.toISOString() ?? null
     : null;
@@ -191,7 +192,7 @@ export async function getTimelineForWebsite(
       : undefined;
 
   const summary = buildTimelineSummary(
-    sinceEventsRaw.map(formatTimelineEvent),
+    sinceEventsRaw.map((event) => formatTimelineEvent(event, locale)),
     lastSeenAt,
     sinceEventsRaw.length,
     scoreDeltaFromDetails

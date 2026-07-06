@@ -5,6 +5,7 @@ import { Loader2, Search } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { authFetch, parseApiErrorMessage } from "@/lib/auth/client-session";
+import { useSaasTranslations } from "@/lib/i18n/saas/SaasLocaleProvider";
 
 type OnboardingAuditStepProps = {
   websiteId?: string;
@@ -19,11 +20,13 @@ export function OnboardingAuditStep({
   onSuccess,
   onError,
 }: OnboardingAuditStepProps) {
+  const { dict } = useSaasTranslations();
+  const o = dict.onboarding;
   const [loading, setLoading] = useState(false);
 
   async function handleRunAudit() {
     if (!websiteId) {
-      onError("Add your website first.");
+      onError(o.errors.websiteRequiredFirst);
       return;
     }
 
@@ -37,7 +40,7 @@ export function OnboardingAuditStep({
       );
 
       if (!response.ok) {
-        onError(await parseApiErrorMessage(response, "Could not run audit"));
+        onError(await parseApiErrorMessage(response, o.errors.runAuditFailed));
         return;
       }
 
@@ -49,7 +52,7 @@ export function OnboardingAuditStep({
 
       await onSuccess();
     } catch {
-      onError("Network error while running audit");
+      onError(o.errors.runAuditNetworkError);
     } finally {
       setLoading(false);
     }
@@ -67,7 +70,7 @@ export function OnboardingAuditStep({
       ) : (
         <Search className="size-4" />
       )}
-      Run audit
+      {o.runAudit}
     </Button>
   );
 }

@@ -27,7 +27,7 @@ type ControlCenterResponse = {
 };
 
 export function AutopilotControlPage() {
-  const { dict } = useSaasTranslations();
+  const { dict, locale } = useSaasTranslations();
   const c = dict.controlCenter;
   const [data, setData] = useState<AutopilotControlCenterViewModel | null>(null);
   const [loading, setLoading] = useState(true);
@@ -98,7 +98,7 @@ export function AutopilotControlPage() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [locale, c.loadFailed, c.loadNetworkError]);
 
   async function handleGenerateMonthlyPlan() {
     setActionLoading(true);

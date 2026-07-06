@@ -8,6 +8,7 @@ import type {
 
 import { getPrisma } from "@/lib/db";
 import { AppError, ErrorCode } from "@/lib/errors";
+import type { SaasLocale } from "@/lib/i18n/saas/locales";
 
 import {
   deriveOnboardingStatus,
@@ -101,7 +102,10 @@ async function syncOnboardingFromFacts(userId: string) {
   return { facts, stateUpdated: false };
 }
 
-export async function getOnboardingState(userId: string): Promise<OnboardingViewModel> {
+export async function getOnboardingState(
+  userId: string,
+  locale?: SaasLocale
+): Promise<OnboardingViewModel> {
   await syncOnboardingFromFacts(userId);
 
   const prisma = getPrisma();
@@ -126,11 +130,15 @@ export async function getOnboardingState(userId: string): Promise<OnboardingView
     facts,
     status,
     currentStep,
+    locale,
   });
 }
 
-export async function getOnboardingSummary(userId: string): Promise<OnboardingSummary> {
-  const viewModel = await getOnboardingState(userId);
+export async function getOnboardingSummary(
+  userId: string,
+  locale?: SaasLocale
+): Promise<OnboardingSummary> {
+  const viewModel = await getOnboardingState(userId, locale);
   return toOnboardingSummary(viewModel);
 }
 

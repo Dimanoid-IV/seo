@@ -1,4 +1,7 @@
+"use client";
+
 import { cn } from "@/lib/utils";
+import { useSaasTranslations } from "@/lib/i18n/saas/SaasLocaleProvider";
 
 type OnboardingProgressProps = {
   completed: number;
@@ -11,15 +14,21 @@ export function OnboardingProgress({
   total,
   percentage,
 }: OnboardingProgressProps) {
+  const { dict } = useSaasTranslations();
+  const o = dict.onboarding;
   const currentStep = Math.min(completed + 1, total);
 
   return (
     <div className="saas-card-muted">
       <div className="flex flex-wrap items-center justify-between gap-2 text-sm">
         <span className="font-medium text-white">
-          Step {currentStep} of {total}
+          {o.stepOfTotal
+            .replace("{current}", String(currentStep))
+            .replace("{total}", String(total))}
         </span>
-        <span className="text-slate-400">{percentage}% complete</span>
+        <span className="text-slate-400">
+          {o.percentComplete.replace("{percent}", String(percentage))}
+        </span>
       </div>
       <div className="mt-4 h-2.5 overflow-hidden rounded-full bg-white/[0.06]">
         <div

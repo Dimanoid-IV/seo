@@ -2,6 +2,7 @@ import { requireUser } from "@/lib/auth/current-user";
 import { authErrorResponse, authJsonResponse } from "@/lib/auth/responses";
 import { getServerEnv } from "@/lib/env";
 import { AppError, ErrorCode } from "@/lib/errors";
+import { getLocaleFromRequest } from "@/lib/i18n/saas/server-locale";
 import { getTimelineForUser } from "@/lib/timeline/get-timeline";
 
 function assertDatabaseConfigured(): void {
@@ -34,9 +35,12 @@ export async function GET(request: Request) {
     const type = url.searchParams.get("type");
     const source = url.searchParams.get("source");
 
+    const locale = getLocaleFromRequest(request);
+
     const timeline = await getTimelineForUser(currentUser, {
       limit,
       cursor,
+      locale,
       ...(type ? { type: type as never } : {}),
       ...(source ? { source: source as never } : {}),
     });

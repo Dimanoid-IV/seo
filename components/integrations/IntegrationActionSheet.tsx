@@ -26,6 +26,8 @@ import type { GscSyncResponse } from "@/lib/integrations/gsc-types";
 import { generateGscInsights } from "@/lib/integrations/gsc-insights";
 import { authFetch, parseApiErrorMessage } from "@/lib/auth/client-session";
 import { formatRelativeTime } from "@/lib/dashboard/display";
+import { useSaasTranslations } from "@/lib/i18n/saas/SaasLocaleProvider";
+import type { SaasLocale } from "@/lib/i18n/saas/locales";
 import { cn } from "@/lib/utils";
 import { ArrowRight, Database, Shield, Sparkles, Zap } from "lucide-react";
 import { useState } from "react";
@@ -104,6 +106,17 @@ export function IntegrationActionSheet({
   );
 }
 
+function formatConnectedAt(iso: string, locale: SaasLocale): string {
+  const intlLocale = locale === "ru" ? "ru-RU" : locale === "et" ? "et-EE" : "en-US";
+  return new Date(iso).toLocaleString(intlLocale, {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+}
+
 function IntegrationActionSheetContent({
   integration,
   websiteId,
@@ -115,6 +128,8 @@ function IntegrationActionSheetContent({
   userEmail?: string | null;
   onIntegrationUpdated?: () => void;
 }) {
+  const { dict, locale } = useSaasTranslations();
+  const i = dict.integrations;
   const details = INTEGRATION_PROVIDER_DETAILS[integration.provider];
   const risk = details ? RISK_LEVEL_LABELS[details.riskLevel] : null;
   const isComingSoon = integration.comingSoon || !integration.available;
@@ -144,7 +159,7 @@ function IntegrationActionSheetContent({
         setSyncError(
           await parseApiErrorMessage(
             response,
-            "Не удалось обновить данные Search Console"
+            i.gscSyncFailed
           )
         );
         return;
@@ -153,7 +168,7 @@ function IntegrationActionSheetContent({
       await (response.json() as Promise<GscSyncResponse>);
       onIntegrationUpdated?.();
     } catch {
-      setSyncError("Сетевая ошибка при обновлении данных Search Console");
+      setSyncError(i.gscSyncNetworkError);
     } finally {
       setSyncing(false);
     }
@@ -186,24 +201,16 @@ function IntegrationActionSheetContent({
           </SheetDescription>
           {isConnected && integration.connectedAt ? (
             <p className="text-xs text-emerald-400/90">
-              Подключено{" "}
-              {new Date(integration.connectedAt).toLocaleString("ru-RU", {
-                day: "numeric",
-                month: "long",
-                year: "numeric",
-                hour: "2-digit",
-                minute: "2-digit",
-              })}
+              {i.connectedSince}{" "}
+              {formatConnectedAt(integration.connectedAt, locale)}
             </p>
           ) : null}
           {isGsc && isConnected && !gscPropertySelected ? (
-            <p className="text-xs text-amber-400/90">
-              Google подключён, но сайт Search Console ещё не выбран.
-            </p>
+            <p className="text-xs text-amber-400/90">{i.gscSiteNotSelected}</p>
           ) : null}
           {isGsc && isConnected && integration.selectedProperty ? (
             <p className="text-xs text-cyan-300/90">
-              Search Console site: {integration.selectedProperty}
+              {i.searchConsoleSite} {integration.selectedProperty}
             </p>
           ) : null}
         </SheetHeader>
@@ -214,12 +221,12 @@ function IntegrationActionSheetContent({
           {details ? (
             <>
               <DetailSection
-                title="Какие данные использует RankBoost"
+                title={i.dataUsage}
                 icon={Database}
                 items={details.dataUsed}
               />
               <DetailSection
-                title="Что сможет делать RankBoost"
+                title={i.whatRankBoostCanDo}
                 icon={Zap}
                 items={details.actions}
               />
@@ -227,7 +234,7 @@ function IntegrationActionSheetContent({
               {risk ? (
                 <div className="flex items-center gap-2">
                   <Shield className="size-4 text-slate-500" aria-hidden />
-                  <span className="text-sm text-slate-400">Уровень риска:</span>
+                  <span className="text-sm text-slate-400">{i.riskLevel}</span>
                   <span
                     className={cn(
                       "rounded-full border px-2.5 py-0.5 text-xs font-medium",
@@ -242,14 +249,13 @@ function IntegrationActionSheetContent({
               {!isComingSoon ? (
                 <>
                   <p className="rounded-lg border border-cyan-500/20 bg-cyan-500/5 px-4 py-3 text-sm text-cyan-100/90">
-                    Вы всегда контролируете, что RankBoost может делать
-                    автоматически.
+                    {i.youControl}
                   </p>
 
                   <section className="space-y-2">
                     <h3 className="flex items-center gap-2 text-sm font-semibold text-white">
                       <ArrowRight className="size-4 text-slate-500" />
-                      Путь подключения
+                      {i.connectionPath}
                     </h3>
                     <ol className="space-y-2 text-sm text-slate-400">
                       {details.connectionPath.map((step, index) => (
@@ -271,7 +277,7 @@ function IntegrationActionSheetContent({
             <div className="rounded-xl border border-violet-500/20 bg-violet-500/5 p-4">
               <div className="mb-4 flex items-center gap-2 text-violet-300">
                 <Sparkles className="size-4" />
-                <span className="text-sm font-medium">Скоро в RankBoost</span>
+                <span className="text-sm font-medium">{i.comingInRankBoost}</span>
               </div>
               <IntegrationComingSoonForm
                 key={integration.provider}
@@ -294,7 +300,7 @@ function IntegrationActionSheetContent({
             <section className="space-y-3 rounded-xl border border-white/10 bg-white/[0.02] p-4">
               <div className="flex items-center justify-between gap-3">
                 <h3 className="text-sm font-semibold text-white">
-                  Метрики за 28 дней
+                  {i.metrics28Days}
                 </h3>
                 {integration.lastFetchedAt ? (
                   <span className="text-xs text-slate-500">
@@ -315,16 +321,13 @@ function IntegrationActionSheetContent({
                   />
                 </>
               ) : (
-                <p className="text-sm text-slate-400">
-                  Данные ещё не загружены. Нажмите «Обновить данные», чтобы
-                  получить клики и показы из Google.
-                </p>
+                <p className="text-sm text-slate-400">{i.noMetricsYet}</p>
               )}
 
               <GscSyncButton
                 onSync={handleSyncGsc}
                 loading={syncing}
-                label="Обновить данные"
+                label={i.refreshData}
               />
               {syncError ? (
                 <p className="text-xs text-red-300">{syncError}</p>
@@ -352,10 +355,10 @@ function IntegrationActionSheetContent({
                     variant="outline"
                     className="w-full border border-white/15 bg-white/5 text-slate-300"
                   >
-                    Управлять подключением
+                    {i.manageConnection}
                   </Button>
                   <p className="text-center text-xs text-slate-500">
-                    Disconnect появится позже.
+                    {i.disconnectLater}
                   </p>
                 </>
               ) : (
@@ -366,16 +369,15 @@ function IntegrationActionSheetContent({
                     disabled={!canConnectGsc}
                     className="w-full bg-gradient-to-r from-blue-600 to-violet-600 text-white hover:from-blue-500 hover:to-violet-500"
                   >
-                    Connect Google
+                    {i.connectGoogle}
                   </Button>
                   {!websiteId ? (
                     <p className="text-center text-xs text-amber-400/90">
-                      Добавьте сайт, чтобы начать подключение.
+                      {i.addWebsiteToConnect}
                     </p>
                   ) : (
                     <p className="text-center text-xs text-slate-500">
-                      Вы будете перенаправлены на Google для подтверждения
-                      доступа только на чтение.
+                      {i.googleRedirect}
                     </p>
                   )}
                 </>
@@ -385,7 +387,7 @@ function IntegrationActionSheetContent({
                 <Button
                   type="button"
                   disabled
-                  title="OAuth и API подключение появятся в следующем релизе"
+                  title={i.oauthApiSoonTitle}
                   className={cn(
                     "w-full",
                     isConnected
@@ -395,12 +397,11 @@ function IntegrationActionSheetContent({
                   variant={isConnected ? "outline" : "default"}
                 >
                   {isConnected
-                    ? "Управлять подключением"
-                    : "Продолжить подключение"}
+                    ? i.manageConnection
+                    : i.continueConnect}
                 </Button>
                 <p className="text-center text-xs text-slate-500">
-                  Подключение через OAuth/API появится в следующем релизе —
-                  сейчас только предпросмотр возможностей.
+                  {i.previewOnly}
                 </p>
               </>
             )}
