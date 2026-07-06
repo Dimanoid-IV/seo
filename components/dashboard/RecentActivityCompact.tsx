@@ -4,6 +4,7 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
 import { SaasCard, SaasSectionHeader } from "@/components/shared/SaasCard";
+import { useSaasTranslations } from "@/lib/i18n/saas/SaasLocaleProvider";
 
 type ActivityItem = {
   id: string;
@@ -17,24 +18,25 @@ type RecentActivityCompactProps = {
 };
 
 export function RecentActivityCompact({ items }: RecentActivityCompactProps) {
+  const { dict } = useSaasTranslations();
+  const a = dict.dashboard.activity;
+
   return (
     <SaasCard variant="muted">
       <SaasSectionHeader
-        title="Recent activity"
+        title={a.title}
         action={
           <Link
             href="/app/timeline"
             className="inline-flex items-center gap-1 text-xs font-medium text-blue-300 transition hover:text-blue-200"
           >
-            Open timeline
+            {a.openTimeline}
             <ArrowRight className="size-3" />
           </Link>
         }
       />
       {items.length === 0 ? (
-        <p className="text-sm leading-relaxed text-slate-400">
-          Important updates will appear here after audits, plans, or drafts.
-        </p>
+        <p className="text-sm leading-relaxed text-slate-400">{a.empty}</p>
       ) : (
         <ul className="divide-y divide-white/[0.05]">
           {items.map((item) => (

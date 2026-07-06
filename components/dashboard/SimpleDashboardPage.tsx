@@ -15,10 +15,12 @@ import { EmptyState } from "@/components/dashboard/EmptyState";
 import { PageErrorState } from "@/components/shared/PageErrorState";
 import { PageLoadingState } from "@/components/shared/PageLoadingState";
 import { TrustNote } from "@/components/shared/TrustNote";
+import { useSaasTranslations } from "@/lib/i18n/saas/SaasLocaleProvider";
 import { authFetch, parseApiErrorMessage } from "@/lib/auth/client-session";
-import { AI_DRAFT_SAFETY_COPY, PAGE_ERROR_FALLBACK } from "@/lib/copy/trust";
 
 export function SimpleDashboardPage() {
+  const { dict } = useSaasTranslations();
+  const d = dict.dashboard;
   const { overview, simple, loading, error, refetch } = useDashboardOverview();
   const [actionLoading, setActionLoading] = useState(false);
   const [actionError, setActionError] = useState<string | null>(null);
@@ -44,16 +46,13 @@ export function SimpleDashboardPage() {
         });
         if (!response.ok) {
           setActionError(
-            await parseApiErrorMessage(
-              response,
-              "Could not generate the monthly plan right now."
-            )
+            await parseApiErrorMessage(response, d.generatePlanFailed)
           );
           return;
         }
         await refetch({ silent: true });
       } catch {
-        setActionError("Network error while generating the plan.");
+        setActionError(d.generatePlanNetworkError);
       } finally {
         setActionLoading(false);
       }
@@ -74,14 +73,12 @@ export function SimpleDashboardPage() {
           { method: "POST" }
         );
         if (!response.ok) {
-          setActionError(
-            await parseApiErrorMessage(response, "Could not run the audit.")
-          );
+          setActionError(await parseApiErrorMessage(response, d.auditFailed));
           return;
         }
         await refetch({ silent: true });
       } catch {
-        setActionError("Network error while running the audit.");
+        setActionError(d.auditNetworkError);
       } finally {
         setActionLoading(false);
       }
@@ -89,14 +86,15 @@ export function SimpleDashboardPage() {
   }
 
   if (loading) {
-    return <PageLoadingState message="Loading your growth overview…" />;
+    return <PageLoadingState message={d.loading} />;
   }
 
   if (error || !simple) {
     return (
       <PageErrorState
-        message={error ?? PAGE_ERROR_FALLBACK}
+        message={error ?? dict.trust.pageErrorFallback}
         onRetry={() => void refetch()}
+        retryLabel={dict.common.tryAgain}
       />
     );
   }
@@ -108,21 +106,21 @@ export function SimpleDashboardPage() {
         <div className="mt-6">
           <EmptyState
             icon={Globe}
-            title="Add your website to start finding growth opportunities"
-            description="RankBoost needs your website URL before it can scan, plan, and prepare actions."
+            title={d.addWebsiteTitle}
+            description={d.addWebsiteDescription}
             action={
               <div className="flex flex-wrap justify-center gap-3">
                 <Link
                   href="/app/onboarding"
                   className="inline-flex items-center rounded-lg bg-blue-500 px-4 py-2 text-sm font-medium text-white hover:bg-blue-600"
                 >
-                  Add website
+                  {d.addWebsite}
                 </Link>
                 <Link
                   href="/app/onboarding"
                   className="inline-flex items-center rounded-lg border border-white/10 px-4 py-2 text-sm text-slate-300 hover:bg-white/5"
                 >
-                  Open setup
+                  {d.openSetup}
                 </Link>
               </div>
             }
@@ -139,13 +137,15 @@ export function SimpleDashboardPage() {
 
   const opportunitiesDisplay =
     simple.metrics.opportunitiesCount > 0
-      ? `${simple.metrics.opportunitiesCount} found`
-      : "None yet";
+      ? `${simple.metrics.opportunitiesCount} ${d.found}`
+      : d.noneYet;
 
   const reviewDisplay =
     simple.metrics.needsReviewCount > 0
-      ? `${simple.metrics.needsReviewCount} item${simple.metrics.needsReviewCount === 1 ? "" : "s"}`
-      : "All clear";
+      ? `${simple.metrics.needsReviewCount} ${
+          simple.metrics.needsReviewCount === 1 ? d.item : d.items
+        }`
+      : d.allClear;
 
   const nextAction = simple.nextBestAction;
   const nextHref =
@@ -183,21 +183,21 @@ export function SimpleDashboardPage() {
 
         <section className="grid gap-5 sm:grid-cols-3">
           <DashboardMetricCard
-            title="Growth Score"
+            title={d.growthScore}
             value={growthScoreDisplay}
             subtitle={simple.metrics.growthScoreLabel}
             accent="emerald"
           />
           <DashboardMetricCard
-            title="Opportunities"
+            title={d.opportunities}
             value={opportunitiesDisplay}
-            subtitle="Tasks and growth ideas RankBoost found"
+            subtitle={d.opportunitiesSubtitle}
             accent="cyan"
           />
           <DashboardMetricCard
-            title="Needs review"
+            title={d.needsReview}
             value={reviewDisplay}
-            subtitle="Plans, drafts, and emails waiting for you"
+            subtitle={d.needsReviewSubtitle}
             accent="amber"
           />
         </section>
@@ -209,13 +209,13 @@ export function SimpleDashboardPage() {
           <RecentActivityCompact items={simple.recentActivity} />
         </div>
 
-        <TrustNote variant="ai">{AI_DRAFT_SAFETY_COPY}</TrustNote>
+        <TrustNote variant="ai" />
 
         {simple.billingNote ? (
           <p className="text-center text-xs text-slate-500">
-            {simple.billingNote}{" "}
+            {d.billingNote}{" "}
             <Link href="/app/billing" className="text-blue-300 hover:text-blue-200">
-              View plans
+              {dict.common.viewPlans}
             </Link>
           </p>
         ) : null}

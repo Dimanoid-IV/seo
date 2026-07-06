@@ -11,7 +11,7 @@ import { IntegrationGrid } from "@/components/integrations/IntegrationGrid";
 import { PageErrorState } from "@/components/shared/PageErrorState";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { PageLoadingState } from "@/components/shared/PageLoadingState";
-import { PAGE_ERROR_FALLBACK } from "@/lib/copy/trust";
+import { useSaasTranslations } from "@/lib/i18n/saas/SaasLocaleProvider";
 import { authFetch } from "@/lib/auth/client-session";
 import type {
   IntegrationOverviewItem,
@@ -19,7 +19,10 @@ import type {
 } from "@/lib/integrations/types";
 import { cn } from "@/lib/utils";
 
-async function fetchIntegrationsOverview(): Promise<{
+async function fetchIntegrationsOverview(
+  loadFailed: string,
+  loadNetworkError: string
+): Promise<{
   data: IntegrationsOverviewData | null;
   error: string | null;
 }> {
@@ -27,22 +30,15 @@ async function fetchIntegrationsOverview(): Promise<{
     const response = await authFetch("/api/integrations/overview");
 
     if (!response.ok) {
-      return { data: null, error: "Не удалось загрузить интеграции" };
+      return { data: null, error: loadFailed };
     }
 
     const body = (await response.json()) as { data: IntegrationsOverviewData };
     return { data: body.data, error: null };
   } catch {
-    return { data: null, error: "Сетевая ошибка при загрузке интеграций" };
+    return { data: null, error: loadNetworkError };
   }
 }
-
-const BENEFITS = [
-  "Unlock real Google Search Console data and search opportunities",
-  "Create WordPress drafts for your review (you decide when to publish)",
-  "Prepare monthly growth summaries and review emails",
-  "Power Autopilot plans with live website and search data",
-];
 
 function clearOauthQueryParams(): void {
   const url = new URL(window.location.href);
@@ -55,6 +51,8 @@ function clearOauthQueryParams(): void {
 }
 
 export function IntegrationsPage() {
+  const { dict } = useSaasTranslations();
+  const i = dict.integrations;
   const { user } = useAuthSession();
   const searchParams = useSearchParams();
   const [data, setData] = useState<IntegrationsOverviewData | null>(null);
@@ -73,14 +71,13 @@ export function IntegrationsPage() {
     if (connectedParam === "gsc") {
       return {
         type: "success" as const,
-        message: "Google Search Console connected successfully.",
+        message: i.gscConnected,
       };
     }
     if (oauthErrorParam === "gsc_connection_failed") {
       return {
         type: "error" as const,
-        message:
-          "Google Search Console is not ready to connect yet. You can continue using RankBoost without it.",
+        message: i.gscConnectionFailed,
       };
     }
     return null;
@@ -99,7 +96,7 @@ export function IntegrationsPage() {
   }
 
   async function refetchIntegrations() {
-    const result = await fetchIntegrationsOverview();
+    const result = await fetchIntegrationsOverview(i.loadFailed, i.loadNetworkError);
     setData(result.data);
     setError(result.error);
 
@@ -117,7 +114,7 @@ export function IntegrationsPage() {
     let cancelled = false;
 
     async function load() {
-      const result = await fetchIntegrationsOverview();
+      const result = await fetchIntegrationsOverview(i.loadFailed, i.loadNetworkError);
       if (cancelled) {
         return;
       }
@@ -141,7 +138,7 @@ export function IntegrationsPage() {
     gscSuccessHandledRef.current = true;
     setBannerDismissed(false);
 
-    void fetchIntegrationsOverview().then((result) => {
+    void fetchIntegrationsOverview(i.loadFailed, i.loadNetworkError).then((result) => {
       setData(result.data);
       const gsc = result.data?.integrations.find(
         (item) => item.provider === "google_search_console"
@@ -154,13 +151,13 @@ export function IntegrationsPage() {
   }, [connectedParam]);
 
   if (loading) {
-    return <PageLoadingState message="Loading integrations…" />;
+    return <PageLoadingState message={i.loading} />;
   }
 
   if (error || !data) {
     return (
       <PageErrorState
-        message={error ?? PAGE_ERROR_FALLBACK}
+        message={error ?? dict.trust.pageErrorFallback}
         onRetry={() => void refetchIntegrations()}
       />
     );
@@ -168,16 +165,11 @@ export function IntegrationsPage() {
 
   return (
     <main className="app-content mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-10 lg:px-8">
-      <PageHeader
-        title="Integrations"
-        subtitle="Connect data sources and publishing tools to unlock better growth actions."
-      />
+      <PageHeader title={i.title} subtitle={i.subtitle} />
       {data.website ? (
         <p className="-mt-4 mb-6 break-all text-xs text-slate-500">{data.website.url}</p>
       ) : (
-        <p className="-mt-4 mb-6 text-sm text-amber-300/90">
-          Add a website to connect integrations to a specific project.
-        </p>
+        <p className="-mt-4 mb-6 text-sm text-amber-300/90">{i.emptyDescription}</p>
       )}
 
       {banner ? (
@@ -199,7 +191,7 @@ export function IntegrationsPage() {
             type="button"
             onClick={handleDismissBanner}
             className="text-slate-400 hover:text-white"
-            aria-label="Закрыть"
+            aria-label={i.close}
           >
             ×
           </button>
@@ -214,17 +206,15 @@ export function IntegrationsPage() {
       ) : (
         <EmptyState
           icon={Globe}
-          title="Integrations are loading"
-          description="The integration catalog will appear here once configuration is available."
+          title={i.emptyTitle}
+          description={i.emptyDescription}
         />
       )}
 
       <section className="saas-card-muted mt-12">
-        <h2 className="text-base font-semibold text-white">
-          Why connect integrations?
-        </h2>
+        <h2 className="text-base font-semibold text-white">{i.benefitsTitle}</h2>
         <ul className="mt-4 space-y-2 text-sm text-slate-400">
-          {BENEFITS.map((benefit) => (
+          {i.benefits.map((benefit) => (
             <li key={benefit} className="flex items-start gap-2">
               <span className="mt-1.5 size-1.5 shrink-0 rounded-full bg-cyan-400" />
               <span>{benefit}</span>

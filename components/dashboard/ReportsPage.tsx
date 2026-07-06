@@ -16,13 +16,16 @@ import { ReportSummaryCard } from "@/components/dashboard/ReportSummaryCard";
 import { PageErrorState } from "@/components/shared/PageErrorState";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { PageLoadingState } from "@/components/shared/PageLoadingState";
-import { PAGE_ERROR_FALLBACK } from "@/lib/copy/trust";
+import { useSaasTranslations } from "@/lib/i18n/saas/SaasLocaleProvider";
 import { authFetch } from "@/lib/auth/client-session";
 import { formatRelativeTime } from "@/lib/dashboard/display";
 import type { DashboardOverviewGrowthHistoryEntry } from "@/lib/dashboard/overview";
 import type { ReportsOverviewData } from "@/lib/reports/types";
 
-async function fetchReportsOverview(): Promise<{
+async function fetchReportsOverview(
+  loadFailed: string,
+  loadNetworkError: string
+): Promise<{
   data: ReportsOverviewData | null;
   error: string | null;
 }> {
@@ -30,39 +33,41 @@ async function fetchReportsOverview(): Promise<{
     const response = await authFetch("/api/reports/overview");
 
     if (!response.ok) {
-      return { data: null, error: "Не удалось загрузить отчёты" };
+      return { data: null, error: loadFailed };
     }
 
     const body = (await response.json()) as { data: ReportsOverviewData };
     return { data: body.data, error: null };
   } catch {
-    return { data: null, error: "Сетевая ошибка при загрузке отчётов" };
+    return { data: null, error: loadNetworkError };
   }
 }
 
-const REPORT_TYPE_LABELS: Record<string, string> = {
-  monthly: "Месячный",
-  audit: "Аудит",
-  mid_month: "Середина месяца",
-};
-
-const REPORT_STATUS_LABELS: Record<string, string> = {
-  draft: "Черновик",
-  ready: "Готов",
-  sent: "Отправлен",
-  failed: "Ошибка",
-};
-
 export function ReportsPage() {
+  const { dict } = useSaasTranslations();
+  const r = dict.reports;
   const [data, setData] = useState<ReportsOverviewData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  const reportTypeLabels: Record<string, string> = {
+    monthly: r.types.monthly,
+    audit: r.types.audit,
+    mid_month: r.types.midMonth,
+  };
+
+  const reportStatusLabels: Record<string, string> = {
+    draft: r.statuses.draft,
+    ready: r.statuses.ready,
+    sent: r.statuses.sent,
+    failed: r.statuses.failed,
+  };
 
   useEffect(() => {
     let cancelled = false;
 
     async function loadReports() {
-      const result = await fetchReportsOverview();
+      const result = await fetchReportsOverview(r.loadFailed, r.loadNetworkError);
       if (cancelled) {
         return;
       }
@@ -76,18 +81,18 @@ export function ReportsPage() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [r.loadFailed, r.loadNetworkError]);
 
   if (loading) {
-    return <PageLoadingState message="Loading reports…" />;
+    return <PageLoadingState message={dict.common.loading} />;
   }
 
   if (error || !data) {
     return (
       <PageErrorState
-        message={error ?? PAGE_ERROR_FALLBACK}
+        message={error ?? dict.trust.pageErrorFallback}
         onRetry={() => {
-          void fetchReportsOverview().then((result) => {
+          void fetchReportsOverview(r.loadFailed, r.loadNetworkError).then((result) => {
             setData(result.data);
             setError(result.error);
           });
@@ -99,10 +104,7 @@ export function ReportsPage() {
   if (!data.website) {
     return (
       <main className="app-content mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
-        <PageHeader
-          title="Reports"
-          subtitle="Track website growth and share progress with clear summaries."
-        />
+        <PageHeader title={r.title} subtitle={r.subtitle} />
         <EmptyState
           icon={Globe}
           title="Add a website to start tracking growth opportunities"
@@ -119,15 +121,12 @@ export function ReportsPage() {
 
   return (
     <main className="app-content mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
-      <PageHeader
-        title="Reports"
-        subtitle="Track website growth and share progress with clear summaries."
-      />
+      <PageHeader title={r.title} subtitle={r.subtitle} />
       <p className="-mt-4 mb-8 text-xs text-slate-500">{data.website.url}</p>
 
       <div className="space-y-10">
         <section className="space-y-4">
-          <h2 className="text-lg font-semibold text-white">Последний аудит</h2>
+          <h2 className="text-lg font-semibold text-white">{r.latestAudit}</h2>
           {data.latestAudit ? (
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               <ReportSummaryCard
@@ -135,54 +134,54 @@ export function ReportsPage() {
                 value={data.latestAudit.growthScore ?? "—"}
                 subtitle={
                   data.latestAudit.completedAt
-                    ? `Завершён ${formatRelativeTime(data.latestAudit.completedAt)}`
+                    ? `${r.completedAt} ${formatRelativeTime(data.latestAudit.completedAt)}`
                     : undefined
                 }
-                hint={`Тип: ${data.latestAudit.type}`}
+                hint={`${r.auditType}: ${data.latestAudit.type}`}
                 icon={Search}
                 accent="emerald"
               />
               <ReportSummaryCard
-                title="Текущий score сайта"
+                title={r.currentScore}
                 value={growthScore}
-                subtitle="На основе последних проверок"
+                subtitle={r.scoreBasedOn}
                 accent="blue"
               />
               <ReportSummaryCard
-                title="Статус аудита"
+                title={r.auditStatus}
                 value={data.latestAudit.status}
-                subtitle="Последняя завершённая проверка"
+                subtitle={r.lastCompleted}
                 accent="violet"
               />
             </div>
           ) : (
             <EmptyState
               icon={Search}
-              title="Аудит ещё не проводился"
-              description="Запустите проверку на dashboard — отчёт появится здесь."
+              title={r.noAuditTitle}
+              description={r.noAuditDescription}
             />
           )}
         </section>
 
         <section className="space-y-4">
-          <h2 className="text-lg font-semibold text-white">Прогресс</h2>
+          <h2 className="text-lg font-semibold text-white">{r.progress}</h2>
           <GrowthHistoryCard history={historyForChart} />
         </section>
 
         <section className="space-y-4">
-          <h2 className="text-lg font-semibold text-white">Задачи</h2>
+          <h2 className="text-lg font-semibold text-white">{r.tasks}</h2>
           <div className="grid gap-4 sm:grid-cols-2">
             <ReportSummaryCard
-              title="Выполнено в этом месяце"
+              title={r.completedThisMonth}
               value={data.taskStats.completedThisMonth}
-              subtitle="Задачи, отмеченные как готовые"
+              subtitle={r.completedSubtitle}
               icon={CheckCircle2}
               accent="emerald"
             />
             <ReportSummaryCard
-              title="Активные задачи"
+              title={r.activeTasks}
               value={data.taskStats.activeCount}
-              subtitle="Открытые и в работе"
+              subtitle={r.activeSubtitle}
               icon={ClipboardList}
               accent="amber"
             />
@@ -190,12 +189,12 @@ export function ReportsPage() {
         </section>
 
         <section className="space-y-4">
-          <h2 className="text-lg font-semibold text-white">Последние события</h2>
+          <h2 className="text-lg font-semibold text-white">{r.recentEvents}</h2>
           <ReportActivityList activities={data.lastActivities} />
         </section>
 
         <section className="space-y-4">
-          <h2 className="text-lg font-semibold text-white">Сохранённые отчёты</h2>
+          <h2 className="text-lg font-semibold text-white">{r.savedReports}</h2>
           {data.reports.length > 0 ? (
             <div className="grid gap-3 lg:grid-cols-2">
               {data.reports.map((report) => (
@@ -205,10 +204,10 @@ export function ReportsPage() {
                 >
                   <div className="flex flex-wrap items-center gap-2">
                     <span className="rounded-md bg-white/5 px-2 py-0.5 text-xs text-slate-300">
-                      {REPORT_TYPE_LABELS[report.type] ?? report.type}
+                      {reportTypeLabels[report.type] ?? report.type}
                     </span>
                     <span className="rounded-md border border-white/10 px-2 py-0.5 text-xs text-slate-400">
-                      {REPORT_STATUS_LABELS[report.status] ?? report.status}
+                      {reportStatusLabels[report.status] ?? report.status}
                     </span>
                   </div>
                   <h3 className="font-semibold text-white">{report.title}</h3>
@@ -224,8 +223,8 @@ export function ReportsPage() {
           ) : (
             <EmptyState
               icon={BarChart3}
-              title="Сохранённых отчётов пока нет"
-              description="Готовые отчёты появятся здесь после генерации месячного плана."
+              title={r.noSavedTitle}
+              description={r.noSavedDescription}
             />
           )}
         </section>

@@ -9,6 +9,7 @@ import { AuthError } from "@/components/auth/AuthError";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useSaasTranslations } from "@/lib/i18n/saas/SaasLocaleProvider";
 import {
   parseApiErrorMessage,
   storeAccessToken,
@@ -16,6 +17,8 @@ import {
 
 export function LoginForm() {
   const router = useRouter();
+  const { dict } = useSaasTranslations();
+  const { auth } = dict;
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -35,17 +38,14 @@ export function LoginForm() {
       });
 
       if (!response.ok) {
-        const message = await parseApiErrorMessage(
-          response,
-          "Не удалось войти. Проверьте email и пароль."
-        );
+        const message = await parseApiErrorMessage(response, auth.loginFailed);
         setError(message);
         return;
       }
 
       const data = (await response.json()) as { accessToken?: string };
       if (!data.accessToken) {
-        setError("Сервер не вернул access token");
+        setError(auth.noAccessToken);
         return;
       }
 
@@ -53,7 +53,7 @@ export function LoginForm() {
       router.push("/app");
       router.refresh();
     } catch {
-      setError("Сетевая ошибка. Попробуйте ещё раз.");
+      setError(auth.networkError);
     } finally {
       setLoading(false);
     }
@@ -64,7 +64,7 @@ export function LoginForm() {
       {error ? <AuthError message={error} /> : null}
 
       <div className="space-y-2">
-        <Label htmlFor="login-email">Email</Label>
+        <Label htmlFor="login-email">{auth.email}</Label>
         <Input
           id="login-email"
           type="email"
@@ -78,7 +78,7 @@ export function LoginForm() {
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="login-password">Пароль</Label>
+        <Label htmlFor="login-password">{auth.password}</Label>
         <Input
           id="login-password"
           type="password"
@@ -99,10 +99,10 @@ export function LoginForm() {
         {loading ? (
           <>
             <Loader2 className="size-4 animate-spin" />
-            Входим…
+            {auth.loggingIn}
           </>
         ) : (
-          "Войти"
+          auth.login
         )}
       </Button>
 
@@ -113,13 +113,13 @@ export function LoginForm() {
         disabled
         aria-disabled
       >
-        Продолжить с Google — скоро
+        {auth.googleSoon}
       </Button>
 
       <p className="text-center text-sm text-slate-500">
-        Нет аккаунта?{" "}
+        {auth.noAccount}{" "}
         <Link href="/register" className="text-blue-400 hover:text-cyan-400">
-          Зарегистрироваться
+          {auth.register}
         </Link>
       </p>
     </form>

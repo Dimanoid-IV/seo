@@ -1,6 +1,9 @@
+"use client";
+
 import { Check } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import { useSaasTranslations } from "@/lib/i18n/saas/SaasLocaleProvider";
 import type { BillingPlanViewModel } from "@/lib/billing/types";
 import { cn } from "@/lib/utils";
 
@@ -33,6 +36,8 @@ export function PlanCard({
   onUpgrade,
   stripeConfigured,
 }: PlanCardProps) {
+  const { dict } = useSaasTranslations();
+  const { billing, trust } = dict;
   const planKeyUpper = plan.key.toUpperCase();
 
   return (
@@ -53,19 +58,25 @@ export function PlanCard({
         </div>
         {plan.isCurrent ? (
           <span className="rounded-full bg-violet-500/15 px-3 py-1 text-xs font-medium text-violet-200 ring-1 ring-violet-500/20">
-            Current
+            {billing.currentPlanBadge}
           </span>
         ) : null}
       </div>
 
       <ul className="mt-6 flex-1 space-y-2.5">
-        <li className="text-sm text-slate-300">{plan.websites} website(s)</li>
-        <li className="text-sm text-slate-300">{plan.monthlyAudits} audits / month</li>
         <li className="text-sm text-slate-300">
-          {plan.monthlyAiGenerations} AI generations / month
+          {plan.websites} {billing.websites.toLowerCase()}
         </li>
         <li className="text-sm text-slate-300">
-          {plan.monthlyArticles} articles · {plan.monthlySocialPosts} social posts
+          {plan.monthlyAudits} {billing.audits.toLowerCase()} / {billing.perMonth}
+        </li>
+        <li className="text-sm text-slate-300">
+          {plan.monthlyAiGenerations} {billing.aiGenerations.toLowerCase()} /{" "}
+          {billing.perMonth}
+        </li>
+        <li className="text-sm text-slate-300">
+          {plan.monthlyArticles} {billing.articles.toLowerCase()} ·{" "}
+          {plan.monthlySocialPosts} {billing.socialPosts.toLowerCase()}
         </li>
         <FeatureRow label="WordPress drafts" enabled={plan.features.wordpress} />
         <FeatureRow label="Control Center" enabled={plan.features.controlCenter} />
@@ -76,7 +87,7 @@ export function PlanCard({
       <div className="mt-6 pt-2">
         {plan.isCurrent ? (
           <Button type="button" disabled className="min-h-11 w-full rounded-xl">
-            Current plan
+            {billing.currentPlanBadge}
           </Button>
         ) : plan.upgradeable ? (
           <Button
@@ -85,12 +96,12 @@ export function PlanCard({
             disabled={checkoutLoading || !stripeConfigured}
             onClick={() => onUpgrade(planKeyUpper)}
           >
-            {stripeConfigured ? "Upgrade plan" : "Upgrades unavailable"}
+            {stripeConfigured ? billing.upgradePlan : trust.stripeNotConfigured}
           </Button>
         ) : null}
         {!stripeConfigured && plan.upgradeable && !plan.isCurrent ? (
           <p className="mt-2 text-center text-xs leading-relaxed text-slate-500">
-            Upgrades are not available yet. Your current plan stays active.
+            {trust.stripeNotConfigured}
           </p>
         ) : null}
       </div>

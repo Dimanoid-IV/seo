@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 
+import { useSaasTranslations } from "@/lib/i18n/saas/SaasLocaleProvider";
 import { authFetch, parseApiErrorMessage } from "@/lib/auth/client-session";
 import type {
   AutopilotControlCenterViewModel,
@@ -26,6 +27,8 @@ type ControlCenterResponse = {
 };
 
 export function AutopilotControlPage() {
+  const { dict } = useSaasTranslations();
+  const c = dict.controlCenter;
   const [data, setData] = useState<AutopilotControlCenterViewModel | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -43,7 +46,7 @@ export function AutopilotControlPage() {
         setError(
           await parseApiErrorMessage(
             response,
-            "Failed to load Autopilot Control Center"
+            await parseApiErrorMessage(response, c.loadFailed)
           )
         );
         return null;
@@ -53,7 +56,7 @@ export function AutopilotControlPage() {
       setData(body.data.controlCenter);
       return body.data.controlCenter;
     } catch {
-      setError("Network error while loading control center");
+      setError(c.loadNetworkError);
       return null;
     }
   }
@@ -70,7 +73,7 @@ export function AutopilotControlPage() {
             setError(
               await parseApiErrorMessage(
                 response,
-                "Failed to load Autopilot Control Center"
+                await parseApiErrorMessage(response, c.loadFailed)
               )
             );
             setLoading(false);
@@ -84,7 +87,7 @@ export function AutopilotControlPage() {
         }
       } catch {
         if (!cancelled) {
-          setError("Network error while loading control center");
+          setError(c.loadNetworkError);
           setLoading(false);
         }
       }
@@ -111,15 +114,15 @@ export function AutopilotControlPage() {
 
       if (!response.ok) {
         setError(
-          await parseApiErrorMessage(response, "Failed to generate monthly plan")
+          await parseApiErrorMessage(response, c.actionFailed)
         );
         return;
       }
 
       await loadControlCenter();
-      setSuccess("Monthly plan prepared for review. Open Autopilot to review details.");
+      setSuccess(c.generateSuccess);
     } catch {
-      setError("Network error while generating monthly plan");
+      setError(c.actionNetworkError);
     } finally {
       setActionLoading(false);
     }
@@ -141,7 +144,7 @@ export function AutopilotControlPage() {
 
         if (!response.ok) {
           setError(
-            await parseApiErrorMessage(response, "Failed to generate monthly plan")
+            await parseApiErrorMessage(response, c.actionFailed)
           );
           return;
         }
@@ -159,7 +162,7 @@ export function AutopilotControlPage() {
 
         if (!response.ok) {
           setError(
-            await parseApiErrorMessage(response, "Failed to generate email draft")
+            await parseApiErrorMessage(response, c.actionFailed)
           );
           return;
         }
@@ -169,7 +172,7 @@ export function AutopilotControlPage() {
 
       await loadControlCenter();
     } catch {
-      setError("Network error while running action");
+      setError(c.actionNetworkError);
     } finally {
       setActionLoading(false);
       setLoadingActionId(null);
@@ -177,16 +180,13 @@ export function AutopilotControlPage() {
   }
 
   if (loading && !data) {
-    return <PageLoadingState message="Loading Control Center…" />;
+    return <PageLoadingState message={c.loading} />;
   }
 
   if (!data?.website) {
     return (
       <main className="app-content mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-10 lg:px-8">
-        <PageHeader
-          title="Autopilot Control Center"
-          subtitle="Review what RankBoost prepared and decide what happens next."
-        />
+        <PageHeader title={c.title} subtitle={c.subtitle} />
         <ControlEmptyState variant="no-website" />
       </main>
     );
@@ -196,10 +196,7 @@ export function AutopilotControlPage() {
 
   return (
     <main className="app-content mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-10 lg:px-8">
-      <PageHeader
-        title="Autopilot Control Center"
-        subtitle="Review what RankBoost prepared and decide what happens next."
-      />
+      <PageHeader title={c.title} subtitle={c.subtitle} />
       <p className="-mt-4 mb-6 break-all text-xs text-slate-500">
         {data.website.name ?? data.website.domain}
       </p>

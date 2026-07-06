@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 
-import { AuthCard } from "@/components/auth/AuthCard";
-import { LoginForm } from "@/components/auth/LoginForm";
+import { LoginPageContent } from "@/components/auth/LoginPageContent";
 
 export const metadata: Metadata = {
   title: "Log in — RankBoost",
@@ -11,21 +9,5 @@ export const metadata: Metadata = {
 };
 
 export default function LoginPage() {
-  return (
-    <main className="flex min-h-screen items-center justify-center bg-gradient-to-b from-slate-50 to-slate-100 px-4 py-12">
-      <div className="w-full max-w-md space-y-4">
-        <AuthCard
-          title="Log in to RankBoost"
-          subtitle="Your AI Growth Manager workspace"
-        >
-          <LoginForm />
-        </AuthCard>
-        <p className="text-center text-sm text-slate-500">
-          <Link href="/" className="text-blue-600 hover:text-blue-700">
-            ← Back to homepage
-          </Link>
-        </p>
-      </div>
-    </main>
-  );
+  return <LoginPageContent />;
 }

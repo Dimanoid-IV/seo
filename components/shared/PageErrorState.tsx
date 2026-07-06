@@ -1,9 +1,11 @@
+"use client";
+
 import Link from "next/link";
 import { AlertCircle } from "lucide-react";
 
 import { EmptyState } from "@/components/dashboard/EmptyState";
 import { Button } from "@/components/ui/button";
-import { PAGE_ERROR_FALLBACK } from "@/lib/copy/trust";
+import { useSaasTranslations } from "@/lib/i18n/saas/SaasLocaleProvider";
 import { cn } from "@/lib/utils";
 
 type PageErrorStateProps = {
@@ -14,11 +16,13 @@ type PageErrorStateProps = {
 };
 
 export function PageErrorState({
-  message = PAGE_ERROR_FALLBACK,
+  message,
   onRetry,
-  retryLabel = "Try again",
+  retryLabel,
   className,
 }: PageErrorStateProps) {
+  const { dict } = useSaasTranslations();
+
   return (
     <main
       className={cn(
@@ -28,13 +32,13 @@ export function PageErrorState({
     >
       <EmptyState
         icon={AlertCircle}
-        title="Something went wrong"
-        description={message}
+        title={dict.common.somethingWrong}
+        description={message ?? dict.trust.pageErrorFallback}
         action={
           <div className="flex flex-wrap justify-center gap-2">
             {onRetry ? (
               <Button type="button" size="sm" onClick={onRetry}>
-                {retryLabel}
+                {retryLabel ?? dict.common.tryAgain}
               </Button>
             ) : null}
             <Button
@@ -45,7 +49,7 @@ export function PageErrorState({
               size="sm"
               className="border-white/10 bg-transparent text-slate-300"
             >
-              Open dashboard
+              {dict.common.openDashboard}
             </Button>
           </div>
         }

@@ -11,8 +11,8 @@ import { PageErrorState } from "@/components/shared/PageErrorState";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { PageLoadingState } from "@/components/shared/PageLoadingState";
 import { TrustNote } from "@/components/shared/TrustNote";
+import { useSaasTranslations } from "@/lib/i18n/saas/SaasLocaleProvider";
 import { authFetch, parseApiErrorMessage } from "@/lib/auth/client-session";
-import { STRIPE_NOT_CONFIGURED_COPY } from "@/lib/copy/trust";
 
 type CheckoutResponse = {
   data: { checkoutUrl: string };
@@ -23,6 +23,8 @@ type PortalResponse = {
 };
 
 export function BillingPage() {
+  const { dict } = useSaasTranslations();
+  const { billing, trust } = dict;
   const { data, loading, error, reload } = useBillingOverview();
   const [checkoutLoading, setCheckoutLoading] = useState(false);
   const [portalLoading, setPortalLoading] = useState(false);
@@ -51,7 +53,7 @@ export function BillingPage() {
 
       if (!response.ok) {
         setActionError(
-          await parseApiErrorMessage(response, "Could not start checkout")
+          await parseApiErrorMessage(response, billing.checkoutFailed)
         );
         return;
       }
@@ -59,7 +61,7 @@ export function BillingPage() {
       const body = (await response.json()) as CheckoutResponse;
       window.location.href = body.data.checkoutUrl;
     } catch {
-      setActionError("Network error while starting checkout");
+      setActionError(billing.checkoutNetworkError);
     } finally {
       setCheckoutLoading(false);
     }
@@ -77,7 +79,7 @@ export function BillingPage() {
 
       if (!response.ok) {
         setActionError(
-          await parseApiErrorMessage(response, "Could not open billing portal")
+          await parseApiErrorMessage(response, billing.portalFailed)
         );
         return;
       }
@@ -85,20 +87,20 @@ export function BillingPage() {
       const body = (await response.json()) as PortalResponse;
       window.location.href = body.data.portalUrl;
     } catch {
-      setActionError("Network error while opening billing portal");
+      setActionError(billing.portalNetworkError);
     } finally {
       setPortalLoading(false);
     }
   }
 
   if (loading) {
-    return <PageLoadingState message="Loading billing details…" />;
+    return <PageLoadingState message={billing.loading} />;
   }
 
   if (!data) {
     return (
       <PageErrorState
-        message={error ?? "We couldn't load billing details right now."}
+        message={error ?? billing.loadFailed}
         onRetry={() => void reload()}
       />
     );
@@ -106,10 +108,7 @@ export function BillingPage() {
 
   return (
     <div className="app-content mx-auto min-w-0 max-w-6xl saas-page-stack overflow-x-hidden p-4 sm:p-6 lg:p-10">
-      <PageHeader
-        title="Billing & Plan"
-        subtitle="Manage your RankBoost subscription. Upgrade when you need more growth actions."
-      />
+      <PageHeader title={billing.title} subtitle={billing.subtitle} />
 
       {actionError ? (
         <p className="rounded-xl border border-red-500/30 bg-red-500/10 p-3 text-sm text-red-200">
@@ -124,7 +123,7 @@ export function BillingPage() {
       ) : null}
 
       {data.subscription.stripeConfigured ? null : (
-        <TrustNote variant="info">{STRIPE_NOT_CONFIGURED_COPY}</TrustNote>
+        <TrustNote variant="info">{trust.stripeNotConfigured}</TrustNote>
       )}
 
       <CurrentPlanCard
@@ -140,7 +139,7 @@ export function BillingPage() {
 
       <section className="space-y-5">
         <h2 className="text-lg font-semibold tracking-tight text-white">
-          Available plans
+          {billing.availablePlans}
         </h2>
         <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
           {data.plans.map((plan) => (

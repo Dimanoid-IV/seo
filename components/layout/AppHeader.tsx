@@ -3,10 +3,12 @@
 import Link from "next/link";
 import { useState } from "react";
 
+import { LanguageSwitcher } from "@/components/i18n/LanguageSwitcher";
 import { PlanBadge, type PlanBadgeVariant } from "@/components/dashboard/PlanBadge";
 import { useAuthSession } from "@/components/auth/AuthSessionProvider";
 import { useDashboardOverview } from "@/components/dashboard/DashboardOverviewProvider";
 import { Button } from "@/components/ui/button";
+import { useSaasTranslations } from "@/lib/i18n/saas/SaasLocaleProvider";
 import { Globe, Loader2, LogOut, Sparkles, User } from "lucide-react";
 
 function subscriptionToBadge(plan: string | undefined): PlanBadgeVariant {
@@ -24,6 +26,7 @@ function formatWebsiteLabel(url: string): string {
 }
 
 export function AppHeader() {
+  const { dict } = useSaasTranslations();
   const { user, organization, subscription, loading, logout } = useAuthSession();
   const { overview, loading: overviewLoading } = useDashboardOverview();
   const [loggingOut, setLoggingOut] = useState(false);
@@ -68,7 +71,7 @@ export function AppHeader() {
               {loading ? (
                 <>
                   <Loader2 className="size-3 animate-spin" />
-                  Загрузка профиля…
+                  {dict.header.loadingProfile}
                 </>
               ) : user ? (
                 <>
@@ -88,6 +91,7 @@ export function AppHeader() {
         </div>
 
         <div className="flex shrink-0 items-center gap-2">
+          <LanguageSwitcher className="hidden sm:inline-flex" />
           <Button
             type="button"
             variant="outline"
@@ -101,7 +105,7 @@ export function AppHeader() {
             ) : (
               <LogOut className="size-4" />
             )}
-            Выйти
+            {dict.header.logout}
           </Button>
           <Button
             render={<Link href="/app/billing" />}
@@ -110,7 +114,7 @@ export function AppHeader() {
             size="sm"
             className="rounded-xl bg-gradient-to-r from-blue-500 to-violet-600 px-4 text-white shadow-[0_4px_16px_-6px_rgba(59,130,246,0.4)] hover:from-blue-600 hover:to-violet-700"
           >
-            Upgrade plan
+            {dict.header.upgradePlan}
           </Button>
         </div>
       </div>

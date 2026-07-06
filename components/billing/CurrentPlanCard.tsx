@@ -1,8 +1,10 @@
+"use client";
+
 import { CreditCard } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import { useSaasTranslations } from "@/lib/i18n/saas/SaasLocaleProvider";
 import type { BillingSubscriptionViewModel } from "@/lib/billing/types";
-import { STRIPE_NOT_CONFIGURED_COPY } from "@/lib/copy/trust";
 
 type CurrentPlanCardProps = {
   subscription: BillingSubscriptionViewModel;
@@ -11,12 +13,12 @@ type CurrentPlanCardProps = {
   canManageBilling: boolean;
 };
 
-function formatDate(value?: string): string | null {
+function formatDate(value: string | undefined, locale: string): string | null {
   if (!value) {
     return null;
   }
 
-  return new Intl.DateTimeFormat("en", {
+  return new Intl.DateTimeFormat(locale, {
     dateStyle: "medium",
   }).format(new Date(value));
 }
@@ -27,8 +29,10 @@ export function CurrentPlanCard({
   managing,
   canManageBilling,
 }: CurrentPlanCardProps) {
-  const renewal = formatDate(subscription.currentPeriodEnd);
-  const trialEnd = formatDate(subscription.trialEndsAt);
+  const { dict, locale } = useSaasTranslations();
+  const { billing, trust } = dict;
+  const renewal = formatDate(subscription.currentPeriodEnd, locale);
+  const trialEnd = formatDate(subscription.trialEndsAt, locale);
 
   return (
     <section className="saas-card-hero border border-violet-500/15 bg-gradient-to-br from-violet-500/[0.1] to-blue-500/[0.04]">
@@ -36,13 +40,13 @@ export function CurrentPlanCard({
         <div>
           <div className="flex items-center gap-2.5 text-violet-200">
             <CreditCard className="size-4" />
-            <span className="saas-eyebrow text-violet-300/80">Current plan</span>
+            <span className="saas-eyebrow text-violet-300/80">{billing.currentPlan}</span>
           </div>
           <h2 className="mt-3 text-2xl font-bold tracking-tight text-white sm:text-3xl">
             {subscription.planLabel}
           </h2>
           <p className="mt-2 text-sm capitalize text-slate-400">
-            Status: {subscription.status.replace(/_/g, " ")}
+            {subscription.status.replace(/_/g, " ")}
           </p>
         </div>
 
@@ -54,22 +58,25 @@ export function CurrentPlanCard({
             onClick={onManageBilling}
             className="min-h-10 rounded-xl border-white/[0.08] bg-white/[0.03] text-slate-200 hover:bg-white/[0.06]"
           >
-            {managing ? "Opening portal…" : "Manage billing"}
+            {managing ? `${billing.manageBilling}…` : billing.manageBilling}
           </Button>
         ) : null}
       </div>
 
       <div className="mt-6 space-y-1.5 border-t border-white/[0.06] pt-5 text-sm leading-relaxed text-slate-300">
-        {trialEnd ? <p>Trial ends: {trialEnd}</p> : null}
+        {trialEnd ? (
+          <p>
+            {billing.trialEnds}: {trialEnd}
+          </p>
+        ) : null}
         {renewal ? (
           <p>
-            {subscription.cancelAtPeriodEnd
-              ? `Access until: ${renewal} (canceled)`
-              : `Renews: ${renewal}`}
+            {billing.renewsOn}: {renewal}
+            {subscription.cancelAtPeriodEnd ? " (canceled)" : ""}
           </p>
         ) : null}
         {!subscription.stripeConfigured ? (
-          <p className="text-amber-200/90">{STRIPE_NOT_CONFIGURED_COPY}</p>
+          <p className="text-amber-200/90">{trust.stripeNotConfigured}</p>
         ) : null}
       </div>
     </section>

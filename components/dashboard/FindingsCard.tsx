@@ -4,6 +4,7 @@ import Link from "next/link";
 import { ChevronRight } from "lucide-react";
 
 import { SaasCard, SaasSectionHeader } from "@/components/shared/SaasCard";
+import { useSaasTranslations } from "@/lib/i18n/saas/SaasLocaleProvider";
 
 type Finding = {
   title: string;
@@ -16,20 +17,20 @@ type FindingsCardProps = {
 };
 
 export function FindingsCard({ findings }: FindingsCardProps) {
+  const { dict } = useSaasTranslations();
+  const { findings: copy } = dict.dashboard;
+
   if (findings.length === 0) {
     return (
       <SaasCard>
-        <SaasSectionHeader
-          title="What RankBoost found"
-          subtitle="Your first growth activity will appear after an audit or integration sync."
-        />
+        <SaasSectionHeader title={copy.title} subtitle={copy.empty} />
       </SaasCard>
     );
   }
 
   return (
     <SaasCard>
-      <SaasSectionHeader title="What RankBoost found" />
+      <SaasSectionHeader title={copy.title} />
       <ul className="space-y-1">
         {findings.map((item, index) => (
           <li
@@ -51,7 +52,7 @@ export function FindingsCard({ findings }: FindingsCardProps) {
                   href={item.href}
                   className="mt-2 inline-flex items-center gap-0.5 text-xs font-medium text-blue-300 transition hover:text-blue-200"
                 >
-                  View details
+                  {copy.viewDetails}
                   <ChevronRight className="size-3" />
                 </Link>
               ) : null}

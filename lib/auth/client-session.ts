@@ -42,7 +42,8 @@ export function clearAccessToken(): void {
   }
 }
 
-import { friendlyApiErrorMessage } from "@/lib/copy/user-errors";
+import { getClientLocale } from "@/lib/i18n/saas/locale-state";
+import { friendlyApiErrorMessageForLocale } from "@/lib/copy/user-errors";
 
 type ApiErrorBody = {
   error?: {
@@ -63,8 +64,18 @@ export async function parseApiErrorMessage(
     const body = (await response.json()) as ApiErrorBody;
     const code = body.error?.code;
     const rawMessage = body.error?.message;
-    const message = friendlyApiErrorMessage(code, rawMessage, fallback);
+    const message = friendlyApiErrorMessageForLocale(
+      getClientLocale(),
+      code,
+      rawMessage,
+      fallback
+    );
     const upgradeUrl = body.error?.details?.upgradeUrl;
+    const billingHint = getClientLocale() === "ru"
+      ? " Откройте раздел Оплата, чтобы узнать больше."
+      : getClientLocale() === "et"
+        ? " Avage Arveldus, et rohkem teada saada."
+        : " Open Billing to learn more.";
 
     if (
       upgradeUrl &&
@@ -73,7 +84,7 @@ export async function parseApiErrorMessage(
         code === "BILLING_REQUIRED" ||
         body.error?.details?.billingError)
     ) {
-      return `${message} Open Billing to learn more.`;
+      return `${message}${billingHint}`;
     }
 
     return message;

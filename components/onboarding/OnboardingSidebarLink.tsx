@@ -2,33 +2,28 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Compass } from "lucide-react";
+import { Sparkles } from "lucide-react";
 
-import { useOnboarding } from "@/components/onboarding/useOnboarding";
+import { useSaasTranslations } from "@/lib/i18n/saas/SaasLocaleProvider";
 import { cn } from "@/lib/utils";
 
 export function OnboardingSidebarLink() {
   const pathname = usePathname();
-  const { data, loading } = useOnboarding();
-
-  if (loading || !data?.shouldShowSetup || data.status === "COMPLETED") {
-    return null;
-  }
-
+  const { dict } = useSaasTranslations();
   const active = pathname.startsWith("/app/onboarding");
 
   return (
     <Link
       href="/app/onboarding"
       className={cn(
-        "flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors",
+        "mb-2 flex items-center gap-3 rounded-xl border px-3.5 py-3 text-sm font-medium transition-all",
         active
-          ? "bg-primary/15 text-primary-foreground"
-          : "text-slate-400 hover:bg-white/5 hover:text-slate-200"
+          ? "border-blue-500/30 bg-blue-500/10 text-blue-200"
+          : "border-white/[0.06] bg-white/[0.02] text-slate-400 hover:border-white/10 hover:text-slate-200"
       )}
     >
-      <Compass className="size-5 shrink-0" />
-      <span>Setup</span>
+      <Sparkles className="size-4 shrink-0" />
+      {dict.nav.setup}
     </Link>
   );
 }

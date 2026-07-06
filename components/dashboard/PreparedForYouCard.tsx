@@ -4,6 +4,7 @@ import Link from "next/link";
 import { ArrowRight, ShieldCheck } from "lucide-react";
 
 import { SaasCard, SaasSectionHeader } from "@/components/shared/SaasCard";
+import { useSaasTranslations } from "@/lib/i18n/saas/SaasLocaleProvider";
 
 type PreparedForYouCardProps = {
   monthlyPlanStatus?: string;
@@ -31,18 +32,21 @@ export function PreparedForYouCard({
   socialPostsCount,
   emailApprovalsCount,
 }: PreparedForYouCardProps) {
+  const { dict } = useSaasTranslations();
+  const p = dict.dashboard.prepared;
+
   const rows = [
-    { label: "Monthly plan", value: formatPlanStatus(monthlyPlanStatus) },
-    { label: "Article drafts", value: String(articleDraftsCount) },
-    { label: "Social posts", value: String(socialPostsCount) },
-    { label: "Emails", value: String(emailApprovalsCount) },
+    { label: p.monthlyPlan, value: formatPlanStatus(monthlyPlanStatus) },
+    { label: p.articleDrafts, value: String(articleDraftsCount) },
+    { label: p.socialPosts, value: String(socialPostsCount) },
+    { label: p.reviewEmails, value: String(emailApprovalsCount) },
   ];
 
   return (
     <SaasCard variant="muted">
       <SaasSectionHeader
-        title="Prepared for you"
-        subtitle="Prepared for review — nothing is published automatically."
+        title={p.title}
+        subtitle={dict.trust.aiDraftSafety}
       />
       <dl className="space-y-3">
         {rows.map((row) => (

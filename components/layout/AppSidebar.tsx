@@ -27,7 +27,9 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
+import { LanguageSwitcher } from "@/components/i18n/LanguageSwitcher";
 import { OnboardingSidebarLink } from "@/components/onboarding/OnboardingSidebarLink";
+import { useSaasTranslations } from "@/lib/i18n/saas/SaasLocaleProvider";
 
 type NavItem = {
   href: string;
@@ -41,79 +43,6 @@ type NavGroup = {
   items: NavItem[];
 };
 
-const navGroups: NavGroup[] = [
-  {
-    title: "Main",
-    items: [
-      { href: "/app", label: "Dashboard", icon: LayoutDashboard, enabled: true },
-      {
-        href: "/app/autopilot-control",
-        label: "Control Center",
-        icon: Gauge,
-        enabled: true,
-      },
-      { href: "/app/tasks", label: "Tasks", icon: ListTodo, enabled: false },
-    ],
-  },
-  {
-    title: "Growth",
-    items: [
-      {
-        href: "/app/content-plan",
-        label: "Content Plan",
-        icon: FileText,
-        enabled: true,
-      },
-      {
-        href: "/app/social-posts",
-        label: "Social Posts",
-        icon: Share2,
-        enabled: true,
-      },
-      { href: "/app/reports", label: "Reports", icon: BarChart3, enabled: true },
-    ],
-  },
-  {
-    title: "Automation",
-    items: [
-      { href: "/app/timeline", label: "Timeline", icon: History, enabled: true },
-      {
-        href: "/app/autopilot",
-        label: "Growth Plan",
-        icon: Rocket,
-        enabled: true,
-      },
-      {
-        href: "/app/email-approvals",
-        label: "Review Emails",
-        icon: Mail,
-        enabled: true,
-      },
-    ],
-  },
-  {
-    title: "Settings",
-    items: [
-      {
-        href: "/app/integrations",
-        label: "Integrations",
-        icon: Plug,
-        enabled: true,
-      },
-      { href: "/app/billing", label: "Billing", icon: CreditCard, enabled: true },
-      { href: "/app/settings", label: "Settings", icon: Settings, enabled: false },
-    ],
-  },
-];
-
-const flatNavItems = navGroups.flatMap((group) => group.items);
-const mobilePrimary = [
-  flatNavItems.find((i) => i.href === "/app")!,
-  flatNavItems.find((i) => i.href === "/app/autopilot-control")!,
-  flatNavItems.find((i) => i.href === "/app/content-plan")!,
-  flatNavItems.find((i) => i.href === "/app/social-posts")!,
-];
-
 function isActive(pathname: string, href: string): boolean {
   if (href === "/app") return pathname === "/app";
   return pathname.startsWith(href);
@@ -124,11 +53,13 @@ function NavLink({
   pathname,
   compact,
   onNavigate,
+  comingSoonLabel,
 }: {
   item: NavItem;
   pathname: string;
   compact?: boolean;
   onNavigate?: () => void;
+  comingSoonLabel: string;
 }) {
   const active = isActive(pathname, item.href);
   const Icon = item.icon;
@@ -144,7 +75,7 @@ function NavLink({
 
   if (!item.enabled) {
     return (
-      <span className={className} title="Coming soon">
+      <span className={className} title={comingSoonLabel}>
         <Icon className={cn("size-5 shrink-0", compact && "size-5")} />
         <span className={cn(compact && "leading-tight")}>{item.label}</span>
       </span>
@@ -161,6 +92,81 @@ function NavLink({
 
 export function AppSidebar() {
   const pathname = usePathname();
+  const { dict } = useSaasTranslations();
+  const { nav } = dict;
+
+  const navGroups: NavGroup[] = [
+    {
+      title: nav.groups.main,
+      items: [
+        { href: "/app", label: nav.dashboard, icon: LayoutDashboard, enabled: true },
+        {
+          href: "/app/autopilot-control",
+          label: nav.controlCenter,
+          icon: Gauge,
+          enabled: true,
+        },
+        { href: "/app/tasks", label: nav.tasks, icon: ListTodo, enabled: false },
+      ],
+    },
+    {
+      title: nav.groups.growth,
+      items: [
+        {
+          href: "/app/content-plan",
+          label: nav.contentPlan,
+          icon: FileText,
+          enabled: true,
+        },
+        {
+          href: "/app/social-posts",
+          label: nav.socialPosts,
+          icon: Share2,
+          enabled: true,
+        },
+        { href: "/app/reports", label: nav.reports, icon: BarChart3, enabled: true },
+      ],
+    },
+    {
+      title: nav.groups.automation,
+      items: [
+        { href: "/app/timeline", label: nav.timeline, icon: History, enabled: true },
+        {
+          href: "/app/autopilot",
+          label: nav.growthPlan,
+          icon: Rocket,
+          enabled: true,
+        },
+        {
+          href: "/app/email-approvals",
+          label: nav.reviewEmails,
+          icon: Mail,
+          enabled: true,
+        },
+      ],
+    },
+    {
+      title: nav.groups.settings,
+      items: [
+        {
+          href: "/app/integrations",
+          label: nav.integrations,
+          icon: Plug,
+          enabled: true,
+        },
+        { href: "/app/billing", label: nav.billing, icon: CreditCard, enabled: true },
+        { href: "/app/settings", label: nav.settings, icon: Settings, enabled: false },
+      ],
+    },
+  ];
+
+  const flatNavItems = navGroups.flatMap((group) => group.items);
+  const mobilePrimary = [
+    flatNavItems.find((i) => i.href === "/app")!,
+    flatNavItems.find((i) => i.href === "/app/autopilot-control")!,
+    flatNavItems.find((i) => i.href === "/app/content-plan")!,
+    flatNavItems.find((i) => i.href === "/app/social-posts")!,
+  ];
   const mobileMore = flatNavItems.filter(
     (item) => !mobilePrimary.some((primary) => primary.href === item.href)
   );
@@ -175,7 +181,7 @@ export function AppSidebar() {
             </div>
             <div>
               <p className="text-sm font-bold tracking-tight text-white">RankBoost</p>
-              <p className="text-[11px] text-slate-500">Growth Manager</p>
+              <p className="text-[11px] text-slate-500">{nav.brandSubtitle}</p>
             </div>
           </div>
 
@@ -188,34 +194,37 @@ export function AppSidebar() {
                 </p>
                 <div className="space-y-1.5">
                   {group.items.map((item) => (
-                    <NavLink key={item.href} item={item} pathname={pathname} />
+                    <NavLink
+                      key={item.href}
+                      item={item}
+                      pathname={pathname}
+                      comingSoonLabel={nav.comingSoon}
+                    />
                   ))}
                 </div>
               </div>
             ))}
           </nav>
 
-          <div className="border-t border-white/[0.06] px-5 py-5">
-            <p className="text-xs leading-relaxed text-slate-500">
-              Nothing publishes automatically
-            </p>
+          <div className="space-y-3 border-t border-white/[0.06] px-5 py-5">
+            <LanguageSwitcher className="w-full justify-between" />
+            <p className="text-xs leading-relaxed text-slate-500">{nav.trustFooter}</p>
           </div>
         </div>
       </aside>
 
       <nav
         className="app-bottom-nav fixed inset-x-0 bottom-0 z-50 flex items-stretch justify-around border-t border-white/[0.06] bg-[#0a0f1e]/95 px-2 pb-[env(safe-area-inset-bottom)] backdrop-blur-xl lg:hidden"
-        aria-label="Main navigation"
+        aria-label={nav.menu}
       >
         {mobilePrimary.map((item) => {
           const active = isActive(pathname, item.href);
           const Icon = item.icon;
+          const shortLabel = item.label.split(" ")[0];
           const content = (
             <>
               <Icon className="size-5" />
-              <span className="text-[10px] leading-tight">
-                {item.label.split(" ")[0]}
-              </span>
+              <span className="text-[10px] leading-tight">{shortLabel}</span>
             </>
           );
 
@@ -227,7 +236,7 @@ export function AppSidebar() {
 
           if (!item.enabled) {
             return (
-              <span key={item.href} className={itemClass} title="Coming soon">
+              <span key={item.href} className={itemClass} title={nav.comingSoon}>
                 {content}
               </span>
             );
@@ -250,15 +259,23 @@ export function AppSidebar() {
             }
           >
             <Menu className="size-5" />
-            <span className="leading-tight">More</span>
+            <span className="leading-tight">{nav.more}</span>
           </SheetTrigger>
           <SheetContent side="bottom" className="max-h-[85vh] overflow-y-auto rounded-t-2xl border-white/10 bg-[#0a0f1e]">
             <SheetHeader>
-              <SheetTitle className="text-white">Menu</SheetTitle>
+              <SheetTitle className="text-white">{nav.menu}</SheetTitle>
             </SheetHeader>
+            <div className="mb-4 px-2">
+              <LanguageSwitcher className="w-full justify-between" />
+            </div>
             <div className="grid gap-1 px-2 pb-6">
               {mobileMore.map((item) => (
-                <NavLink key={item.href} item={item} pathname={pathname} />
+                <NavLink
+                  key={item.href}
+                  item={item}
+                  pathname={pathname}
+                  comingSoonLabel={nav.comingSoon}
+                />
               ))}
             </div>
           </SheetContent>

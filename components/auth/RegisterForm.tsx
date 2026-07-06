@@ -9,6 +9,7 @@ import { AuthError } from "@/components/auth/AuthError";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useSaasTranslations } from "@/lib/i18n/saas/SaasLocaleProvider";
 import {
   parseApiErrorMessage,
   storeAccessToken,
@@ -22,6 +23,8 @@ export function RegisterForm({
   initialPreviewToken?: string;
 }) {
   const router = useRouter();
+  const { dict, locale } = useSaasTranslations();
+  const { auth } = dict;
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -32,13 +35,16 @@ export function RegisterForm({
   const [fieldErrors, setFieldErrors] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
 
+  const termsHref = `/${locale === "en" ? "en" : locale}/terms`;
+  const privacyHref = `/${locale === "en" ? "en" : locale}/privacy`;
+
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setError("");
     setFieldErrors([]);
 
     if (!acceptTerms) {
-      setFieldErrors(["Необходимо принять условия использования"]);
+      setFieldErrors([auth.termsRequired]);
       return;
     }
 
@@ -56,22 +62,19 @@ export function RegisterForm({
           websiteUrl: websiteUrl.trim() || undefined,
           previewToken,
           acceptTerms: true,
-          locale: "ru",
+          locale,
         }),
       });
 
       if (!response.ok) {
-        const message = await parseApiErrorMessage(
-          response,
-          "Не удалось зарегистрироваться"
-        );
+        const message = await parseApiErrorMessage(response, auth.registerFailed);
         setError(message);
         return;
       }
 
       const data = (await response.json()) as { accessToken?: string };
       if (!data.accessToken) {
-        setError("Сервер не вернул access token");
+        setError(auth.noAccessToken);
         return;
       }
 
@@ -79,7 +82,7 @@ export function RegisterForm({
       router.push("/app");
       router.refresh();
     } catch {
-      setError("Сетевая ошибка. Попробуйте ещё раз.");
+      setError(auth.networkError);
     } finally {
       setLoading(false);
     }
@@ -98,7 +101,7 @@ export function RegisterForm({
       ) : null}
 
       <div className="space-y-2">
-        <Label htmlFor="register-name">Имя</Label>
+        <Label htmlFor="register-name">{auth.name}</Label>
         <Input
           id="register-name"
           type="text"
@@ -107,13 +110,12 @@ export function RegisterForm({
           minLength={2}
           value={name}
           onChange={(event) => setName(event.target.value)}
-          placeholder="Анна"
           disabled={loading}
         />
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="register-email">Email</Label>
+        <Label htmlFor="register-email">{auth.email}</Label>
         <Input
           id="register-email"
           type="email"
@@ -127,7 +129,7 @@ export function RegisterForm({
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="register-password">Пароль</Label>
+        <Label htmlFor="register-password">{auth.password}</Label>
         <Input
           id="register-password"
           type="password"
@@ -136,14 +138,15 @@ export function RegisterForm({
           minLength={8}
           value={password}
           onChange={(event) => setPassword(event.target.value)}
-          placeholder="Минимум 8 символов"
+          placeholder={auth.passwordMinHint}
           disabled={loading}
         />
       </div>
 
       <div className="space-y-2">
         <Label htmlFor="register-website">
-          URL сайта <span className="text-slate-500">(необязательно)</span>
+          {auth.websiteOptional}{" "}
+          <span className="text-slate-500">{auth.websiteOptionalHint}</span>
         </Label>
         <Input
           id="register-website"
@@ -165,13 +168,13 @@ export function RegisterForm({
           className="mt-1 size-4 rounded border-white/20 bg-white/5 accent-blue-500"
         />
         <span>
-          Я принимаю{" "}
-          <Link href="/ru/terms" className="text-blue-400 hover:text-cyan-400">
-            условия использования
+          {auth.acceptTerms}{" "}
+          <Link href={termsHref} className="text-blue-400 hover:text-cyan-400">
+            {auth.termsLink}
           </Link>{" "}
-          и{" "}
-          <Link href="/ru/privacy" className="text-blue-400 hover:text-cyan-400">
-            политику конфиденциальности
+          {locale === "ru" ? "и" : locale === "et" ? "ja" : "and"}{" "}
+          <Link href={privacyHref} className="text-blue-400 hover:text-cyan-400">
+            {auth.privacyLink}
           </Link>
         </span>
       </label>
@@ -184,10 +187,10 @@ export function RegisterForm({
         {loading ? (
           <>
             <Loader2 className="size-4 animate-spin" />
-            Создаём аккаунт…
+            {auth.registering}
           </>
         ) : (
-          "Создать аккаунт"
+          auth.register
         )}
       </Button>
 
@@ -198,13 +201,13 @@ export function RegisterForm({
         disabled
         aria-disabled
       >
-        Продолжить с Google — скоро
+        {auth.googleSoon}
       </Button>
 
       <p className="text-center text-sm text-slate-500">
-        Уже есть аккаунт?{" "}
+        {auth.hasAccount}{" "}
         <Link href="/login" className="text-blue-400 hover:text-cyan-400">
-          Войти
+          {auth.login}
         </Link>
       </p>
     </form>

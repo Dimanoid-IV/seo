@@ -12,6 +12,7 @@ import {
 import { authFetch } from "@/lib/auth/client-session";
 import type { DashboardOverviewData } from "@/lib/dashboard/overview";
 import type { SimpleDashboardViewModel } from "@/lib/dashboard/simple-overview";
+import { useSaasTranslations } from "@/lib/i18n/saas/SaasLocaleProvider";
 
 type RefetchOptions = {
   silent?: boolean;
@@ -50,7 +51,7 @@ async function fetchOverview(): Promise<{
       return {
         overview: null,
         simple: null,
-        error: "Could not load your dashboard right now.",
+        error: "loadFailed",
       };
     }
 
@@ -67,7 +68,7 @@ async function fetchOverview(): Promise<{
     return {
       overview: null,
       simple: null,
-      error: "Network error while loading the dashboard.",
+      error: "loadNetworkError",
     };
   }
 }
@@ -77,25 +78,32 @@ export function DashboardOverviewProvider({
 }: {
   children: React.ReactNode;
 }) {
+  const { dict, locale } = useSaasTranslations();
   const [overview, setOverview] = useState<DashboardOverviewData | null>(null);
   const [simple, setSimple] = useState<SimpleDashboardViewModel | null>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [errorKey, setErrorKey] = useState<string | null>(null);
+
+  const error = errorKey
+    ? errorKey === "loadNetworkError"
+      ? dict.dashboard.loadNetworkError
+      : dict.dashboard.loadFailed
+    : null;
 
   const refetch = useCallback(async (options?: RefetchOptions) => {
     if (!options?.silent) {
       setLoading(true);
-      setError(null);
+      setErrorKey(null);
     }
 
     const result = await fetchOverview();
     setOverview(result.overview);
     setSimple(result.simple);
     if (!options?.silent) {
-      setError(result.error);
+      setErrorKey(result.error);
       setLoading(false);
     } else if (result.error) {
-      setError(result.error);
+      setErrorKey(result.error);
     }
   }, []);
 
@@ -109,7 +117,7 @@ export function DashboardOverviewProvider({
       }
       setOverview(result.overview);
       setSimple(result.simple);
-      setError(result.error);
+      setErrorKey(result.error);
       setLoading(false);
     }
 
@@ -118,7 +126,7 @@ export function DashboardOverviewProvider({
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [locale]);
 
   const value = useMemo(
     () => ({
