@@ -1,6 +1,6 @@
 # Production QA — RankBoost.eu SaaS
 
-> **Prompt 11.5** — SaaS localization completion.  
+> **Prompt 11.6** — Critical UI consistency fixes.  
 > **Last updated:** 2026-07-06
 
 **Related:** `docs/engineering/REPO-MAP.md` · `.env.example` · `lib/env.ts`
@@ -943,6 +943,47 @@ Hooks refetch server data when locale changes: dashboard overview, onboarding, c
 |------|-------|
 | Deployment ID | `dpl_Kbjoy7Aqj8M4SuLEeheVbkuZQvZc` |
 | Deployment URL | https://seo-28vhxy8qq-dimanoid-ivs-projects.vercel.app |
+| Production domain | https://www.rankboost.eu |
+
+---
+
+## 8.8. Critical UI consistency fixes (prompt 11.6)
+
+**Date:** 2026-07-06  
+**Commit:** `0872a9c` — `fix: resolve public UI consistency issues`
+
+### Dashboard layout
+
+- Unified dashboard content width to `max-w-6xl` (was `max-w-3xl`, felt shifted vs other app pages).
+- Moved onboarding banner inside dashboard main wrapper for aligned grid/spacing.
+
+### Public page color consistency
+
+- Light marketing style extended to `/pricing`, `/contact`, `/services` via `marketing-page` wrappers.
+- Header uses light style on homepage-aligned routes (`lib/marketing-paths.ts`).
+- Auth pages (`/login`, `/register`) use light `marketing-card` forms.
+
+### Pricing correction
+
+- SaaS plan tiers (Free/Starter/Pro/Agency) with updated descriptions in en/ru/et.
+- Removed duplicate pricing hero; legacy SEO agency pricing copy updated in marketing dictionaries.
+
+### Contact form
+
+- Simplified to: Name, Email, Website URL, Message.
+- Removed budget, service package, plan, and phone selectors from UI.
+
+### Remaining public content issues
+
+- Blog articles and `/audit` preview page retain legacy SEO agency content (low priority).
+- Marketing footer remains dark (intentional contrast on light pages).
+
+### Production deploy (11.6)
+
+| Item | Value |
+|------|-------|
+| Deployment ID | `dpl_8VdjTwEAtNcqRf8HHox2tL6195KZ` |
+| Deployment URL | https://seo-8z8tjnypr-dimanoid-ivs-projects.vercel.app |
 | Production domain | https://www.rankboost.eu |
 
 ---

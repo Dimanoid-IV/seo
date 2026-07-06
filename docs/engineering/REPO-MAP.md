@@ -799,6 +799,19 @@ Audit / GSC sync / Article generate / Task complete / Dashboard load
 | Failed AI jobs | ✅ `FAILED` + `HERMES_UNAVAILABLE`, no broken drafts |
 | Redeploy after Hermes secrets | ⏸ pending deployment/credentials |
 
+### 4.3.40. Critical UI consistency (prompt 11.6)
+
+| Item | Status |
+|------|--------|
+| Dashboard layout (`max-w-6xl`, banner alignment) | ✅ |
+| Light marketing pages (pricing/contact/services/auth) | ✅ |
+| SaaS pricing copy (Free/Starter/Pro/Agency) | ✅ |
+| Contact form simplified | ✅ |
+| Legacy SEO pricing removed from priority public pages | ✅ |
+| Blog/audit legacy content | ⏸ deferred |
+| Commit | `0872a9c` — `fix: resolve public UI consistency issues` |
+| Production deploy | ✅ `dpl_8VdjTwEAtNcqRf8HHox2tL6195KZ` (2026-07-06) |
+
 ### 4.3.39. SaaS localization completion (prompt 11.5)
 
 | Item | Status |
