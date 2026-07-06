@@ -1097,7 +1097,8 @@ Switched from dark footer to **light slate footer** aligned with marketing pages
 ## 8.12. SEO Autopilot & AI search positioning (Production Prompt 11.8 — autopilot copy)
 
 **Date:** 2026-07-07  
-**Commit:** `fb5c42c` — `feat: strengthen autopilot and AI search positioning`
+**Commit:** `fb5c42c` — `feat: strengthen autopilot and AI search positioning`  
+**Follow-up:** `0504328` — pricing page metadata wired to marketing dict
 
 ### Positioning summary
 
@@ -1143,8 +1144,8 @@ JSON-LD (`lib/json-ld.ts`) continues to use `SoftwareApplication` with descripti
 
 | Item | Value |
 |------|-------|
-| Deployment ID | `dpl_FPDMcigyhiZFUxawEXDG6kStfrcV` |
-| Deployment URL | https://seo-3dakaxp2v-dimanoid-ivs-projects.vercel.app |
+| Deployment ID | `dpl_ArP5Af2pXGX6MLPyeDF7cERinwwF` |
+| Deployment URL | https://seo-1ynqu5hs3-dimanoid-ivs-projects.vercel.app |
 | Production domain | https://www.rankboost.eu |
 
 ---

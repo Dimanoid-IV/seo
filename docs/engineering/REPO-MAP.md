@@ -814,7 +814,7 @@ Audit / GSC sync / Article generate / Task complete / Dashboard load
 | SaaS trust strings → Review Mode | ✅ nav footer, billing, generate copy |
 | Blog article bodies (historical) | ⏸ legacy agency copy |
 | Commit | `fb5c42c` — `feat: strengthen autopilot and AI search positioning` |
-| Production deploy | ✅ `dpl_FPDMcigyhiZFUxawEXDG6kStfrcV` (2026-07-07) |
+| Production deploy | ✅ `dpl_ArP5Af2pXGX6MLPyeDF7cERinwwF` (2026-07-07) |
 
 ### 4.3.43. Dashboard layout & loading hotfix
 
