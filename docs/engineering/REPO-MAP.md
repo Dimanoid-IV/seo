@@ -807,7 +807,7 @@ Audit / GSC sync / Article generate / Task complete / Dashboard load
 | Friendly blocked-state copy | ✅ billing, Hermes, GSC, plan limits |
 | Dashboard mobile CTA | ✅ full-width primary button |
 | Control Center mobile | ✅ max 3 recommended actions |
-| Production deploy | ⏸ after commit |
+| Production deploy | ✅ `dpl_7UvAuzsQ5DW27WhRBZihBve18TCV` (2026-07-06) |
 
 ### 4.4. Admin
 
