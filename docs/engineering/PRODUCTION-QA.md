@@ -1094,6 +1094,61 @@ Switched from dark footer to **light slate footer** aligned with marketing pages
 
 ---
 
+## 8.12. SEO Autopilot & AI search positioning (Production Prompt 11.8 — autopilot copy)
+
+**Date:** 2026-07-07  
+**Commit:** `fb5c42c` — `feat: strengthen autopilot and AI search positioning`
+
+### Positioning summary
+
+RankBoost public marketing now presents the product as **SEO Autopilot and AI Growth Manager for small businesses**, with clear **Review Mode** (current default) vs **Auto-Publish Mode** (planned controlled future mode).
+
+### Pages & components updated
+
+| Area | Changes |
+|------|---------|
+| Homepage (en/ru/et) | Hero, trust line, Autopilot Modes section, AI Search section |
+| `components/sections/AutopilotModesSection.tsx` | New Review Mode / Auto-Publish Mode cards + safeguards |
+| `components/sections/AiSearchSection.tsx` | Eyebrow, disclaimer (no ranking/AI mention guarantees) |
+| Pricing / services / blog / contact / footer | Autopilot + AI search copy in marketing dictionaries |
+| `/audit` | Metadata + `publicAudit` SaaS strings (preview trust note) |
+| Open Graph image | SEO Autopilot headline |
+| `lib/seo.ts` | Keywords → SEO Autopilot, Review Mode, AI search |
+| `data/services.ts` | AI search readiness + future auto-publish controls capabilities |
+| SaaS nav/billing trust strings | Review Mode wording (replaces absolute “never publishes”) |
+| Removed | Unused `ControlSection.tsx` (replaced by AutopilotModesSection) |
+
+### Review Mode vs Auto-Publish Mode
+
+- **Review Mode:** RankBoost prepares actions and drafts; user approves what goes live (current product behavior).
+- **Auto-Publish Mode:** Described as optional, rule-based, pauseable, **planned controlled mode** — not enabled by default; no fake UI toggle added.
+
+### SEO metadata (homepage examples)
+
+| Locale | Title |
+|--------|-------|
+| en | RankBoost — SEO Autopilot for Small Businesses |
+| ru | RankBoost — SEO-автопилот для малого бизнеса |
+| et | RankBoost — SEO autopiloot väikeettevõtetele |
+
+JSON-LD (`lib/json-ld.ts`) continues to use `SoftwareApplication` with description from localized `meta.home.description`.
+
+### Intentionally unchanged
+
+- Blog article **bodies** in `data/blog/posts/**` (historical SEO agency articles).
+- No automatic publishing, approval bypass, migrations, or Stripe/GSC/Hermes credentials.
+- SaaS dashboard business logic unchanged.
+
+### Production deploy (11.8 autopilot)
+
+| Item | Value |
+|------|-------|
+| Deployment ID | `dpl_FPDMcigyhiZFUxawEXDG6kStfrcV` |
+| Deployment URL | https://seo-3dakaxp2v-dimanoid-ivs-projects.vercel.app |
+| Production domain | https://www.rankboost.eu |
+
+---
+
 ## 9. Known limitations (beta)
 
 - No automatic publishing, email sending, or approvals.

@@ -800,6 +800,22 @@ Audit / GSC sync / Article generate / Task complete / Dashboard load
 | Failed AI jobs | ✅ `FAILED` + `HERMES_UNAVAILABLE`, no broken drafts |
 | Redeploy after Hermes secrets | ⏸ pending deployment/credentials |
 
+### 4.3.44. SEO Autopilot & AI search positioning (prompt 11.8 — autopilot copy)
+
+| Item | Status |
+|------|--------|
+| Homepage hero → SEO Autopilot (en/ru/et) | ✅ |
+| Autopilot Modes section (Review / Auto-Publish planned) | ✅ `AutopilotModesSection.tsx` |
+| AI Search visibility section + no-guarantee disclaimer | ✅ `AiSearchSection.tsx` |
+| Marketing metadata (home/pricing/services/blog/contact) | ✅ `i18n/dictionaries/*` |
+| `/audit` preview copy + metadata | ✅ `publicAudit`, `app/audit/page.tsx` |
+| Open Graph + SEO keywords | ✅ |
+| Services capabilities (AI search, auto-publish controls planned) | ✅ `data/services.ts` |
+| SaaS trust strings → Review Mode | ✅ nav footer, billing, generate copy |
+| Blog article bodies (historical) | ⏸ legacy agency copy |
+| Commit | `fb5c42c` — `feat: strengthen autopilot and AI search positioning` |
+| Production deploy | ✅ `dpl_FPDMcigyhiZFUxawEXDG6kStfrcV` (2026-07-07) |
+
 ### 4.3.43. Dashboard layout & loading hotfix
 
 | Item | Status |
