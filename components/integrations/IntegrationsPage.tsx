@@ -44,6 +44,16 @@ const BENEFITS = [
   "Power Autopilot plans with live website and search data",
 ];
 
+function clearOauthQueryParams(): void {
+  const url = new URL(window.location.href);
+  if (!url.searchParams.has("connected") && !url.searchParams.has("error")) {
+    return;
+  }
+  url.searchParams.delete("connected");
+  url.searchParams.delete("error");
+  window.history.replaceState({}, "", url.pathname + url.search);
+}
+
 export function IntegrationsPage() {
   const { user } = useAuthSession();
   const searchParams = useSearchParams();
@@ -54,7 +64,7 @@ export function IntegrationsPage() {
   const [selectedIntegration, setSelectedIntegration] =
     useState<IntegrationOverviewItem | null>(null);
   const [bannerDismissed, setBannerDismissed] = useState(false);
-  const oauthHandledRef = useRef(false);
+  const gscSuccessHandledRef = useRef(false);
 
   const connectedParam = searchParams.get("connected");
   const oauthErrorParam = searchParams.get("error");
@@ -77,6 +87,11 @@ export function IntegrationsPage() {
   }, [connectedParam, oauthErrorParam]);
 
   const banner = bannerDismissed ? null : oauthBanner;
+
+  function handleDismissBanner() {
+    setBannerDismissed(true);
+    clearOauthQueryParams();
+  }
 
   function handleIntegrationAction(integration: IntegrationOverviewItem) {
     setSelectedIntegration(integration);
@@ -119,26 +134,12 @@ export function IntegrationsPage() {
   }, []);
 
   useEffect(() => {
-    if (!connectedParam && !oauthErrorParam) {
-      oauthHandledRef.current = false;
+    if (connectedParam !== "gsc" || gscSuccessHandledRef.current) {
       return;
     }
 
-    if (oauthHandledRef.current) {
-      return;
-    }
-
-    oauthHandledRef.current = true;
+    gscSuccessHandledRef.current = true;
     setBannerDismissed(false);
-
-    const url = new URL(window.location.href);
-    url.searchParams.delete("connected");
-    url.searchParams.delete("error");
-    window.history.replaceState({}, "", url.pathname + url.search);
-
-    if (connectedParam !== "gsc") {
-      return;
-    }
 
     void fetchIntegrationsOverview().then((result) => {
       setData(result.data);
@@ -150,7 +151,7 @@ export function IntegrationsPage() {
         setSheetOpen(true);
       }
     });
-  }, [connectedParam, oauthErrorParam]);
+  }, [connectedParam]);
 
   if (loading) {
     return <PageLoadingState message="Loading integrations…" />;
@@ -196,7 +197,7 @@ export function IntegrationsPage() {
           <p className="flex-1">{banner.message}</p>
           <button
             type="button"
-            onClick={() => setBannerDismissed(true)}
+            onClick={handleDismissBanner}
             className="text-slate-400 hover:text-white"
             aria-label="Закрыть"
           >
