@@ -799,6 +799,21 @@ Audit / GSC sync / Article generate / Task complete / Dashboard load
 | Failed AI jobs | ✅ `FAILED` + `HERMES_UNAVAILABLE`, no broken drafts |
 | Redeploy after Hermes secrets | ⏸ pending deployment/credentials |
 
+### 4.3.39. SaaS localization completion (prompt 11.5)
+
+| Item | Status |
+|------|--------|
+| Server formatters locale-aware | ✅ `lib/i18n/saas/server-strings/` + cookie `rankboost_locale` |
+| Dashboard dynamic strings | ✅ `simple-overview-i18n.ts` |
+| Onboarding forms | ✅ client dict + API step titles |
+| Control Center recommendations | ✅ `recommended-actions.ts` + locale API |
+| Content Plan / Social / Email / Timeline / Autopilot UI | ✅ client dictionaries |
+| Integrations deep UI + WordPress draft copy | ✅ `IntegrationActionSheet`, `WordPressConnectorPanel` |
+| Shared status badges | ✅ `lib/i18n/saas/statuses.ts` |
+| Historical DB event text | ⏸ English in stored title/summary (display-time labels only) |
+| Commit | `d4d18de` — `fix: complete SaaS localization coverage` |
+| Production deploy | ✅ `dpl_Kbjoy7Aqj8M4SuLEeheVbkuZQvZc` (2026-07-06) |
+
 ### 4.3.38. SaaS language system (prompt 11.4)
 
 | Item | Status |
@@ -997,8 +1012,10 @@ Marketing paths **никогда** не должны проходить чере
 ### 6.3. i18n
 
 - Marketing: `app/[locale]/` + `i18n/dictionaries/*.ts`
-- Dashboard: `/app` без locale prefix; строки — append `dashboard.*` keys или `i18n/dashboard/`
-- **Не переименовывать** существующие dictionary keys
+- SaaS dashboard: `/app` without locale prefix; client strings in `lib/i18n/saas/dictionaries/{en,ru,et}.ts`
+- SaaS server dynamic strings: `lib/i18n/saas/server-strings/` (read cookie `rankboost_locale` in API routes)
+- Shared SaaS statuses: `lib/i18n/saas/statuses.ts`
+- **Do not rename** existing dictionary keys
 
 ### 6.4. Pricing dual-source (будущее)
 

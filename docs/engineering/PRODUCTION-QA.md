@@ -1,6 +1,6 @@
 # Production QA — RankBoost.eu SaaS
 
-> **Prompt 11.4** — SaaS language system & copy consistency.  
+> **Prompt 11.5** — SaaS localization completion.  
 > **Last updated:** 2026-07-06
 
 **Related:** `docs/engineering/REPO-MAP.md` · `.env.example` · `lib/env.ts`
@@ -884,6 +884,65 @@ Key messages on homepage:
 |------|-------|
 | Deployment ID | `dpl_8cLAcAsFaMVH9cTQFN7YxaHzAKPh` |
 | Deployment URL | https://seo-ah2ofe65j-dimanoid-ivs-projects.vercel.app |
+| Production domain | https://www.rankboost.eu |
+
+---
+
+## 8.7. SaaS localization completion (prompt 11.5)
+
+**Date:** 2026-07-06  
+**Commit:** `d4d18de` — `fix: complete SaaS localization coverage`
+
+### Server formatter approach
+
+Dynamic dashboard, onboarding, control center, and timeline labels read locale from cookie `rankboost_locale` via `lib/i18n/saas/server-locale.ts` and localized string tables in `lib/i18n/saas/server-strings/` (en/ru/et).
+
+API routes passing locale into formatters:
+
+- `/api/dashboard/overview`
+- `/api/autopilot-control`
+- `/api/onboarding`
+- `/api/timeline`
+
+Client pages use `useSaasTranslations()` from `lib/i18n/saas/SaasLocaleProvider.tsx`. Shared status badges use `lib/i18n/saas/statuses.ts`.
+
+Hooks refetch server data when locale changes: dashboard overview, onboarding, control center, timeline.
+
+### Translated pages (priority SaaS routes)
+
+| Route | Coverage |
+|-------|----------|
+| `/app` | Dynamic next actions, Growth Score labels, findings, prepared-for-you statuses |
+| `/app/onboarding` | Step titles (API) + form labels, buttons, errors, sidebar |
+| `/app/autopilot-control` | Dynamic recommendations, metrics, status hero |
+| `/app/content-plan` | Section headers, statuses, empty states, errors |
+| `/app/social-posts` | Page body, dialogs, badges, empty states |
+| `/app/email-approvals` | Page body, generate dialog, trust copy, statuses |
+| `/app/timeline` | Filters, event source labels, empty states |
+| `/app/autopilot` | Plan UI labels, focus areas, risks, next steps |
+| `/app/integrations` | Action sheet + WordPress connector deep UI |
+
+### Remaining limitations
+
+- **Historical timeline events** stored in DB retain original English title/summary text — event *type* and *source* labels are translated at display time only.
+- **Stored monthly autopilot plan content** (focus areas, risks, steps) may remain in the language used at generation time — UI chrome around plans is translated.
+- **Marketing blog/services pages** still use legacy SEO agency positioning (lower priority).
+- **Reports / Growth History** cards may still show mixed-language legacy copy in edge sections.
+
+### QA matrix (manual)
+
+| Locale | Desktop 1440px | Mobile 375px |
+|--------|----------------|--------------|
+| English | ✅ priority routes coherent | ✅ switcher + nav |
+| Russian | ✅ no random EN mixing | ✅ long strings wrap |
+| Estonian | ✅ no random EN mixing | ✅ persistence after refresh |
+
+### Production deploy (11.5)
+
+| Item | Value |
+|------|-------|
+| Deployment ID | `dpl_Kbjoy7Aqj8M4SuLEeheVbkuZQvZc` |
+| Deployment URL | https://seo-28vhxy8qq-dimanoid-ivs-projects.vercel.app |
 | Production domain | https://www.rankboost.eu |
 
 ---
