@@ -89,6 +89,7 @@ export type SaasDictionary = {
     noAccessToken: string;
     networkError: string;
     termsRequired: string;
+    loadingDashboard: string;
   };
   dashboard: {
     loading: string;

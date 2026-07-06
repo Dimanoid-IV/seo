@@ -15,6 +15,7 @@ import {
   authFetch,
   clearAccessToken,
 } from "@/lib/auth/client-session";
+import { useSaasTranslations } from "@/lib/i18n/saas/SaasLocaleProvider";
 
 export type SessionUser = {
   id: string;
@@ -69,6 +70,7 @@ export function AuthSessionProvider({
   children: React.ReactNode;
 }) {
   const router = useRouter();
+  const { dict } = useSaasTranslations();
   const [user, setUser] = useState<SessionUser | null>(null);
   const [organization, setOrganization] =
     useState<SessionOrganization | null>(null);
@@ -142,7 +144,7 @@ export function AuthSessionProvider({
     return (
       <div className="flex min-h-screen flex-col items-center justify-center gap-3 bg-[#050816]">
         <Loader2 className="size-8 animate-spin text-blue-400" />
-        <p className="text-sm text-slate-400">Загружаем кабинет…</p>
+        <p className="text-sm text-slate-400">{dict.auth.loadingDashboard}</p>
       </div>
     );
   }

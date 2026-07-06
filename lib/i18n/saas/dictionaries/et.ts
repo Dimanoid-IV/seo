@@ -106,6 +106,7 @@ export const saasDictionary: SaasDictionary = {
     noAccessToken: "Server ei tagastanud access tokenit.",
     networkError: "Võrguviga. Proovige uuesti.",
     termsRequired: "Peate nõustuma kasutustingimustega.",
+    loadingDashboard: "Laadime töölauda…",
   },
   dashboard: {
     loading: "Kasvülevaate laadimine…",

@@ -14,12 +14,14 @@ export function PageLoadingState({
   return (
     <main
       className={cn(
-        "app-content mx-auto flex max-w-7xl flex-col items-center justify-center px-4 py-24 sm:px-6 lg:px-8",
+        "app-content mx-auto w-full max-w-6xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8",
         className
       )}
     >
-      <Loader2 className="size-8 animate-spin text-blue-400" />
-      <p className="mt-3 text-sm text-slate-400">{message}</p>
+      <div className="flex items-center gap-3 text-slate-400">
+        <Loader2 className="size-6 shrink-0 animate-spin text-blue-400" />
+        <p className="text-sm">{message}</p>
+      </div>
     </main>
   );
 }

@@ -106,6 +106,7 @@ export const saasDictionary: SaasDictionary = {
     noAccessToken: "Сервер не вернул access token.",
     networkError: "Сетевая ошибка. Попробуйте ещё раз.",
     termsRequired: "Необходимо принять условия использования.",
+    loadingDashboard: "Загружаем кабинет…",
   },
   dashboard: {
     loading: "Загружаем обзор роста…",
