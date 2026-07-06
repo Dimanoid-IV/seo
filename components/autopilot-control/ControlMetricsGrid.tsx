@@ -42,7 +42,7 @@ const ITEMS = [
 
 export function ControlMetricsGrid({ metrics }: ControlMetricsGridProps) {
   return (
-    <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
       {ITEMS.map((item) => {
         const Icon = item.icon;
         let value: string;
@@ -60,15 +60,14 @@ export function ControlMetricsGrid({ metrics }: ControlMetricsGridProps) {
         }
 
         return (
-          <div
-            key={item.key}
-            className="rounded-xl border border-white/10 bg-white/[0.03] p-4"
-          >
-            <div className="flex items-center gap-2 text-slate-400">
-              <Icon className="size-4" />
+          <div key={item.key} className="saas-card-metric !p-5">
+            <div className="flex items-center gap-2.5 text-slate-400">
+              <Icon className="size-4 shrink-0" />
               <span className="text-xs font-medium">{item.label}</span>
             </div>
-            <p className="mt-2 text-2xl font-semibold text-white">{value}</p>
+            <p className="mt-3 text-2xl font-semibold tracking-tight text-white">
+              {value}
+            </p>
           </div>
         );
       })}

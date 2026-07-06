@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
+import { SaasCard, SaasSectionHeader } from "@/components/shared/SaasCard";
+
 type ActivityItem = {
   id: string;
   title: string;
@@ -16,32 +18,34 @@ type RecentActivityCompactProps = {
 
 export function RecentActivityCompact({ items }: RecentActivityCompactProps) {
   return (
-    <section className="glass-card p-6">
-      <div className="flex items-center justify-between gap-2">
-        <h3 className="text-base font-semibold text-white">Recent activity</h3>
-        <Link
-          href="/app/timeline"
-          className="inline-flex items-center gap-1 text-xs text-blue-300 hover:text-blue-200"
-        >
-          Open timeline
-          <ArrowRight className="size-3" />
-        </Link>
-      </div>
+    <SaasCard variant="muted">
+      <SaasSectionHeader
+        title="Recent activity"
+        action={
+          <Link
+            href="/app/timeline"
+            className="inline-flex items-center gap-1 text-xs font-medium text-blue-300 transition hover:text-blue-200"
+          >
+            Open timeline
+            <ArrowRight className="size-3" />
+          </Link>
+        }
+      />
       {items.length === 0 ? (
-        <p className="mt-4 text-sm text-slate-400">
+        <p className="text-sm leading-relaxed text-slate-400">
           Important updates will appear here after audits, plans, or drafts.
         </p>
       ) : (
-        <ul className="mt-4 divide-y divide-white/5">
+        <ul className="divide-y divide-white/[0.05]">
           {items.map((item) => (
-            <li key={item.id} className="py-3 first:pt-0 last:pb-0">
+            <li key={item.id}>
               <Link
                 href={item.href ?? "/app/timeline"}
-                className="block hover:opacity-90"
+                className="block rounded-lg px-1 py-3.5 transition hover:bg-white/[0.02]"
               >
                 <p className="text-sm font-medium text-slate-200">{item.title}</p>
                 {item.summary ? (
-                  <p className="mt-1 line-clamp-2 text-xs text-slate-500">
+                  <p className="mt-1 line-clamp-2 text-xs leading-relaxed text-slate-500">
                     {item.summary}
                   </p>
                 ) : null}
@@ -50,6 +54,6 @@ export function RecentActivityCompact({ items }: RecentActivityCompactProps) {
           ))}
         </ul>
       )}
-    </section>
+    </SaasCard>
   );
 }

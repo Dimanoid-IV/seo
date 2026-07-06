@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Loader2 } from "lucide-react";
+import { ArrowRight, Loader2 } from "lucide-react";
 
 type NextBestActionCardProps = {
   title: string;
@@ -25,16 +25,18 @@ export function NextBestActionCard({
   secondaryHref,
 }: NextBestActionCardProps) {
   const primaryClass =
-    "inline-flex min-h-11 w-full items-center justify-center rounded-lg bg-blue-500 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-blue-600 disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto";
+    "inline-flex min-h-12 w-full items-center justify-center rounded-xl bg-gradient-to-r from-blue-500 to-violet-600 px-5 py-3 text-sm font-medium text-white shadow-[0_8px_24px_-8px_rgba(59,130,246,0.45)] transition hover:from-blue-600 hover:to-violet-700 disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto";
 
   return (
-    <section className="glass-card border border-blue-500/20 bg-blue-500/5 p-6">
-      <p className="text-xs font-medium uppercase tracking-wide text-blue-300/80">
-        Your next step
+    <section className="saas-card-primary">
+      <p className="saas-eyebrow text-blue-300/70">What should I do now?</p>
+      <h3 className="mt-3 text-xl font-semibold tracking-tight text-white">
+        {title}
+      </h3>
+      <p className="mt-3 max-w-2xl text-sm leading-relaxed text-slate-300">
+        {description}
       </p>
-      <h3 className="mt-2 text-lg font-semibold text-white">{title}</h3>
-      <p className="mt-2 text-sm leading-relaxed text-slate-300">{description}</p>
-      <div className="mt-5 flex flex-wrap items-center gap-3">
+      <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
         {href ? (
           <Link href={href} className={primaryClass}>
             {label}
@@ -59,9 +61,10 @@ export function NextBestActionCard({
         {secondaryLabel && secondaryHref ? (
           <Link
             href={secondaryHref}
-            className="text-sm text-slate-400 hover:text-slate-200"
+            className="inline-flex min-h-12 items-center justify-center gap-1 text-sm font-medium text-slate-400 transition hover:text-slate-200 sm:px-2"
           >
             {secondaryLabel}
+            <ArrowRight className="size-3.5" />
           </Link>
         ) : null}
       </div>

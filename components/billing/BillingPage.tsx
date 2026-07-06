@@ -105,7 +105,7 @@ export function BillingPage() {
   }
 
   return (
-    <div className="app-content mx-auto min-w-0 max-w-6xl space-y-6 overflow-x-hidden p-4 lg:p-8">
+    <div className="app-content mx-auto min-w-0 max-w-6xl saas-page-stack overflow-x-hidden p-4 sm:p-6 lg:p-10">
       <PageHeader
         title="Billing & Plan"
         subtitle="Manage your RankBoost subscription. Upgrade when you need more growth actions."
@@ -138,9 +138,11 @@ export function BillingPage() {
 
       <UsageLimitsCard usage={data.usage} />
 
-      <section className="space-y-4">
-        <h2 className="text-lg font-semibold text-white">Available plans</h2>
-        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <section className="space-y-5">
+        <h2 className="text-lg font-semibold tracking-tight text-white">
+          Available plans
+        </h2>
+        <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
           {data.plans.map((plan) => (
             <PlanCard
               key={plan.key}

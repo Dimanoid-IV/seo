@@ -134,11 +134,11 @@ function NavLink({
   const Icon = item.icon;
 
   const className = cn(
-    "flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors",
-    compact && "flex-col gap-1 px-2 py-2 text-[10px]",
+    "flex items-center gap-3 rounded-xl px-3.5 py-3 text-sm font-medium transition-all duration-200",
+    compact && "flex-col gap-1 px-2 py-2.5 text-[10px]",
     active
-      ? "bg-primary/15 text-primary-foreground"
-      : "text-slate-400 hover:bg-white/5 hover:text-slate-200",
+      ? "bg-white/[0.08] text-white ring-1 ring-white/10 shadow-[0_4px_16px_-8px_rgba(59,130,246,0.35)]"
+      : "text-slate-400 hover:bg-white/[0.04] hover:text-slate-200",
     !item.enabled && "pointer-events-none opacity-40"
   );
 
@@ -168,25 +168,25 @@ export function AppSidebar() {
   return (
     <>
       <aside className="app-sidebar hidden lg:flex lg:w-64 lg:flex-col lg:fixed lg:inset-y-0 lg:left-0 lg:z-30">
-        <div className="flex h-full flex-col border-r border-white/10 bg-[#0a0f1e]/95 backdrop-blur-xl">
-          <div className="flex items-center gap-2 border-b border-white/10 px-5 py-5">
-            <div className="flex size-9 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-violet-600">
+        <div className="flex h-full flex-col border-r border-white/[0.06] bg-[#0a0f1e]/90 backdrop-blur-xl">
+          <div className="flex items-center gap-3 border-b border-white/[0.06] px-6 py-6">
+            <div className="flex size-10 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-500 to-violet-600 shadow-[0_8px_24px_-8px_rgba(59,130,246,0.45)]">
               <Sparkles className="size-4 text-white" />
             </div>
             <div>
-              <p className="text-sm font-bold text-white">RankBoost</p>
-              <p className="text-[10px] text-slate-500">Growth Manager</p>
+              <p className="text-sm font-bold tracking-tight text-white">RankBoost</p>
+              <p className="text-[11px] text-slate-500">Growth Manager</p>
             </div>
           </div>
 
-          <nav className="flex-1 space-y-6 overflow-y-auto p-3">
+          <nav className="flex-1 space-y-8 overflow-y-auto px-4 py-5">
             <OnboardingSidebarLink />
             {navGroups.map((group) => (
               <div key={group.title}>
-                <p className="mb-2 px-3 text-[10px] font-semibold uppercase tracking-wider text-slate-600">
+                <p className="mb-3 px-3.5 text-[10px] font-semibold uppercase tracking-[0.16em] text-slate-600">
                   {group.title}
                 </p>
-                <div className="space-y-1">
+                <div className="space-y-1.5">
                   {group.items.map((item) => (
                     <NavLink key={item.href} item={item} pathname={pathname} />
                   ))}
@@ -195,14 +195,16 @@ export function AppSidebar() {
             ))}
           </nav>
 
-          <div className="border-t border-white/10 p-4">
-            <p className="text-xs text-slate-500">Nothing publishes automatically</p>
+          <div className="border-t border-white/[0.06] px-5 py-5">
+            <p className="text-xs leading-relaxed text-slate-500">
+              Nothing publishes automatically
+            </p>
           </div>
         </div>
       </aside>
 
       <nav
-        className="app-bottom-nav fixed inset-x-0 bottom-0 z-50 flex items-stretch justify-around border-t border-white/10 bg-[#0a0f1e]/95 px-1 pb-[env(safe-area-inset-bottom)] backdrop-blur-xl lg:hidden"
+        className="app-bottom-nav fixed inset-x-0 bottom-0 z-50 flex items-stretch justify-around border-t border-white/[0.06] bg-[#0a0f1e]/95 px-2 pb-[env(safe-area-inset-bottom)] backdrop-blur-xl lg:hidden"
         aria-label="Main navigation"
       >
         {mobilePrimary.map((item) => {
@@ -218,8 +220,8 @@ export function AppSidebar() {
           );
 
           const itemClass = cn(
-            "flex flex-1 flex-col items-center justify-center gap-0.5 py-2 text-[10px] font-medium transition-colors",
-            active ? "text-blue-400" : "text-slate-500",
+            "flex flex-1 flex-col items-center justify-center gap-1 py-2.5 text-[10px] font-medium transition-colors",
+            active ? "text-blue-300" : "text-slate-500",
             !item.enabled && "opacity-40"
           );
 

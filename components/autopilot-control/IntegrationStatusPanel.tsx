@@ -1,8 +1,10 @@
 import Link from "next/link";
-import { ArrowRight, CheckCircle2, Plug } from "lucide-react";
+import { ArrowRight, CheckCircle2 } from "lucide-react";
 
+import { SaasCard, SaasSectionHeader } from "@/components/shared/SaasCard";
 import { Button } from "@/components/ui/button";
 import type { ControlCenterIntegration } from "@/lib/autopilot-control/types";
+import { cn } from "@/lib/utils";
 
 type IntegrationStatusPanelProps = {
   integrations: ControlCenterIntegration[];
@@ -24,27 +26,30 @@ export function IntegrationStatusPanel({
   integrations,
 }: IntegrationStatusPanelProps) {
   return (
-    <section className="rounded-2xl border border-white/10 bg-white/[0.02] p-5">
-      <div className="flex items-center gap-2">
-        <Plug className="size-4 text-blue-400" />
-        <h3 className="font-semibold text-white">Integrations</h3>
-      </div>
+    <SaasCard variant="muted">
+      <SaasSectionHeader
+        title="Integrations"
+        subtitle="Connect when you are ready — RankBoost works without them."
+      />
 
-      <ul className="mt-4 space-y-3">
+      <ul className="space-y-3">
         {integrations.map((integration) => (
           <li
             key={integration.key}
-            className="flex items-start justify-between gap-3 rounded-lg border border-white/5 bg-black/20 px-4 py-3"
+            className="flex items-start justify-between gap-3 rounded-xl border border-white/[0.06] bg-white/[0.02] px-4 py-4"
           >
-            <div>
+            <div className="min-w-0">
               <p className="font-medium text-white">{integration.name}</p>
               <p
-                className={`text-xs font-medium ${STATUS_STYLES[integration.status] ?? "text-slate-400"}`}
+                className={cn(
+                  "mt-1 text-xs font-medium",
+                  STATUS_STYLES[integration.status] ?? "text-slate-400"
+                )}
               >
                 {STATUS_LABELS[integration.status] ?? integration.status}
               </p>
               {integration.description ? (
-                <p className="mt-1 text-xs text-slate-500">
+                <p className="mt-1.5 text-xs leading-relaxed text-slate-500">
                   {integration.description}
                 </p>
               ) : null}
@@ -61,11 +66,11 @@ export function IntegrationStatusPanel({
         nativeButton={false}
         variant="outline"
         size="sm"
-        className="mt-4 gap-1 border-white/10 bg-transparent text-slate-200"
+        className="mt-5 gap-1 rounded-xl border-white/[0.08] bg-white/[0.03] text-slate-200"
       >
-        Open integrations
+        Manage integrations
         <ArrowRight className="size-3.5" />
       </Button>
-    </section>
+    </SaasCard>
   );
 }

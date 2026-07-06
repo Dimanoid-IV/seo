@@ -155,8 +155,8 @@ export function SimpleDashboardPage() {
       : undefined);
 
   return (
-    <main className="app-content mx-auto max-w-3xl px-4 py-6 sm:px-6 sm:py-8 lg:max-w-4xl lg:px-8">
-      <div className="space-y-6">
+    <main className="app-content mx-auto max-w-3xl px-4 py-8 sm:px-6 sm:py-10 lg:max-w-4xl lg:px-8">
+      <div className="saas-page-stack">
         <DashboardHero
           status={simple.status}
           websiteDomain={simple.website.domain ?? simple.website.name}
@@ -181,7 +181,7 @@ export function SimpleDashboardPage() {
           </div>
         ) : null}
 
-        <section className="grid gap-4 sm:grid-cols-3">
+        <section className="grid gap-5 sm:grid-cols-3">
           <DashboardMetricCard
             title="Growth Score"
             value={growthScoreDisplay}
@@ -204,7 +204,7 @@ export function SimpleDashboardPage() {
 
         <FindingsCard findings={simple.findings} />
 
-        <div className="grid gap-6 lg:grid-cols-2">
+        <div className="grid gap-6 lg:grid-cols-2 lg:gap-8">
           <PreparedForYouCard {...simple.preparedForYou} />
           <RecentActivityCompact items={simple.recentActivity} />
         </div>

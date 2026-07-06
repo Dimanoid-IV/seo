@@ -87,12 +87,11 @@ export function IntegrationCard({
   return (
     <article
       className={cn(
-        "group relative flex h-full flex-col overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03] p-5 shadow-lg backdrop-blur-sm transition-all duration-300 hover:border-white/20 hover:bg-white/[0.05]",
-        visual.glow,
+        "group relative flex h-full flex-col overflow-hidden rounded-2xl border border-white/[0.08] bg-gradient-to-br from-white/[0.04] to-transparent p-6 shadow-[0_4px_24px_-8px_rgba(0,0,0,0.35)] transition-all duration-300 hover:border-white/[0.12] hover:bg-white/[0.05] sm:p-7",
         className
       )}
     >
-      <div className="pointer-events-none absolute -right-8 -top-8 size-32 rounded-full bg-gradient-to-br opacity-20 blur-2xl transition-opacity group-hover:opacity-30" />
+      <div className="pointer-events-none absolute -right-10 -top-10 size-32 rounded-full bg-gradient-to-br from-blue-500/10 to-violet-500/10 opacity-60 blur-2xl transition-opacity group-hover:opacity-80" />
 
       <div className="relative flex items-start justify-between gap-3">
         <div
@@ -162,13 +161,13 @@ export function IntegrationCard({
         type="button"
         onClick={() => onActionClick?.(integration)}
         className={cn(
-          "relative mt-5 inline-flex w-full items-center justify-center rounded-lg px-4 py-2.5 text-sm font-medium transition hover:opacity-90",
+          "relative mt-6 inline-flex min-h-11 w-full items-center justify-center rounded-xl px-4 py-2.5 text-sm font-medium transition",
           action.variant === "primary" &&
-            "bg-gradient-to-r from-blue-600 to-violet-600 text-white hover:from-blue-500 hover:to-violet-500",
+            "bg-gradient-to-r from-blue-600 to-violet-600 text-white shadow-[0_6px_20px_-6px_rgba(59,130,246,0.4)] hover:from-blue-500 hover:to-violet-500",
           action.variant === "secondary" &&
-            "border border-white/15 bg-white/5 text-slate-200 hover:bg-white/10",
+            "border border-white/[0.1] bg-white/[0.04] text-slate-200 hover:bg-white/[0.07]",
           action.variant === "muted" &&
-            "border border-white/10 bg-white/[0.02] text-slate-300 hover:bg-white/5"
+            "border border-white/[0.06] bg-white/[0.02] text-slate-400"
         )}
       >
         {action.label}

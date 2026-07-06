@@ -167,7 +167,7 @@ export function IntegrationsPage() {
   }
 
   return (
-    <main className="app-content mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
+    <main className="app-content mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-10 lg:px-8">
       <PageHeader
         title="Integrations"
         subtitle="Connect data sources and publishing tools to unlock better growth actions."
@@ -183,10 +183,10 @@ export function IntegrationsPage() {
       {banner ? (
         <div
           className={cn(
-            "mb-6 flex items-start gap-3 rounded-xl border px-4 py-3 text-sm",
+            "mb-8 flex items-start gap-3 rounded-2xl border px-5 py-4 text-sm",
             banner.type === "success"
-              ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-100"
-              : "border-red-500/30 bg-red-500/10 text-red-100"
+              ? "border-emerald-500/20 bg-emerald-500/[0.06] text-emerald-100"
+              : "border-blue-500/15 bg-blue-500/[0.05] text-slate-200"
           )}
         >
           {banner.type === "success" ? (
@@ -219,7 +219,7 @@ export function IntegrationsPage() {
         />
       )}
 
-      <section className="glass-card mt-10 overflow-hidden border border-white/5 p-6 sm:p-8">
+      <section className="saas-card-muted mt-12">
         <h2 className="text-base font-semibold text-white">
           Why connect integrations?
         </h2>

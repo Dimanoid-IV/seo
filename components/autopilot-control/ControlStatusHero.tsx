@@ -3,6 +3,7 @@ import { ArrowRight, Plug, Sparkles } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import type { ControlCenterStatus } from "@/lib/autopilot-control/types";
+import { cn } from "@/lib/utils";
 
 type ControlStatusHeroProps = {
   status: ControlCenterStatus;
@@ -12,10 +13,11 @@ type ControlStatusHeroProps = {
 };
 
 const STATUS_STYLES: Record<string, string> = {
-  NEEDS_REVIEW: "border-amber-500/30 bg-gradient-to-br from-amber-500/10 to-orange-500/5",
-  READY: "border-emerald-500/30 bg-gradient-to-br from-emerald-500/10 to-teal-500/5",
-  NEEDS_SETUP: "border-blue-500/30 bg-gradient-to-br from-blue-500/10 to-violet-500/5",
-  NO_DATA: "border-slate-500/30 bg-gradient-to-br from-slate-500/10 to-slate-600/5",
+  NEEDS_REVIEW:
+    "border-amber-500/15 from-amber-500/[0.1] to-orange-500/[0.04]",
+  READY: "border-emerald-500/15 from-emerald-500/[0.1] to-teal-500/[0.04]",
+  NEEDS_SETUP: "border-blue-500/15 from-blue-500/[0.1] to-violet-500/[0.04]",
+  NO_DATA: "border-white/[0.08] from-white/[0.05] to-slate-500/[0.03]",
 };
 
 export function ControlStatusHero({
@@ -24,33 +26,32 @@ export function ControlStatusHero({
   onGeneratePlan,
   generating,
 }: ControlStatusHeroProps) {
-  const style =
-    STATUS_STYLES[status.overall] ?? STATUS_STYLES.NEEDS_SETUP;
+  const style = STATUS_STYLES[status.overall] ?? STATUS_STYLES.NEEDS_SETUP;
 
   return (
-    <section className={`rounded-2xl border p-6 ${style}`}>
-      <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-        <div>
-          <div className="flex items-center gap-2">
+    <section
+      className={cn("saas-card-hero border bg-gradient-to-br", style)}
+    >
+      <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
+        <div className="min-w-0">
+          <div className="flex items-center gap-2.5">
             <Sparkles className="size-5 text-violet-400" />
-            <span className="text-xs font-semibold uppercase tracking-wide text-violet-300">
-              {status.label}
-            </span>
+            <span className="saas-eyebrow text-violet-300/80">{status.label}</span>
           </div>
-          <h2 className="mt-2 text-xl font-semibold text-white sm:text-2xl">
+          <h2 className="mt-3 text-xl font-semibold tracking-tight text-white sm:text-2xl">
             {status.description}
           </h2>
         </div>
 
         {hasWebsite ? (
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap">
             {onGeneratePlan ? (
               <Button
                 type="button"
                 size="sm"
                 disabled={generating}
                 onClick={onGeneratePlan}
-                className="gap-1"
+                className="min-h-10 rounded-xl"
               >
                 Generate monthly plan
               </Button>
@@ -60,7 +61,7 @@ export function ControlStatusHero({
               nativeButton={false}
               variant="outline"
               size="sm"
-              className="gap-1 border-white/10 bg-transparent text-slate-200"
+              className="min-h-10 gap-1 rounded-xl border-white/[0.08] bg-white/[0.03] text-slate-200"
             >
               Open Timeline
               <ArrowRight className="size-3.5" />
@@ -70,7 +71,7 @@ export function ControlStatusHero({
               nativeButton={false}
               variant="outline"
               size="sm"
-              className="gap-1 border-white/10 bg-transparent text-slate-200"
+              className="min-h-10 gap-1 rounded-xl border-white/[0.08] bg-white/[0.03] text-slate-200"
             >
               <Plug className="size-3.5" />
               Integrations

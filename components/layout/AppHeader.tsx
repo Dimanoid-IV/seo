@@ -50,8 +50,8 @@ export function AppHeader() {
   }
 
   return (
-    <header className="sticky top-0 z-20 border-b border-white/10 bg-[#050816]/80 backdrop-blur-xl">
-      <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-3 sm:px-6 lg:px-8">
+    <header className="sticky top-0 z-20 border-b border-white/[0.06] bg-[#050816]/75 backdrop-blur-xl">
+      <div className="flex flex-wrap items-center justify-between gap-4 px-4 py-4 sm:px-6 lg:px-8">
         <div className="flex min-w-0 items-center gap-3">
           <div className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-white/5 lg:hidden">
             <Sparkles className="size-4 text-blue-400" />
@@ -108,7 +108,7 @@ export function AppHeader() {
             nativeButton={false}
             type="button"
             size="sm"
-            className="bg-gradient-to-r from-blue-500 to-violet-600 text-white hover:from-blue-600 hover:to-violet-700"
+            className="rounded-xl bg-gradient-to-r from-blue-500 to-violet-600 px-4 text-white shadow-[0_4px_16px_-6px_rgba(59,130,246,0.4)] hover:from-blue-600 hover:to-violet-700"
           >
             Upgrade plan
           </Button>

@@ -182,7 +182,7 @@ export function AutopilotControlPage() {
 
   if (!data?.website) {
     return (
-      <main className="app-content mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+      <main className="app-content mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-10 lg:px-8">
         <PageHeader
           title="Autopilot Control Center"
           subtitle="Review what RankBoost prepared and decide what happens next."
@@ -195,7 +195,7 @@ export function AutopilotControlPage() {
   const showGeneratePlan = !data.monthlyPlan;
 
   return (
-    <main className="app-content mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+    <main className="app-content mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-10 lg:px-8">
       <PageHeader
         title="Autopilot Control Center"
         subtitle="Review what RankBoost prepared and decide what happens next."
@@ -216,7 +216,7 @@ export function AutopilotControlPage() {
         </div>
       ) : null}
 
-      <div className="space-y-6">
+      <div className="saas-page-stack">
         <ControlStatusHero
           status={data.status}
           hasWebsite
@@ -226,8 +226,8 @@ export function AutopilotControlPage() {
 
         <ControlMetricsGrid metrics={data.metrics} />
 
-        <div className="grid gap-6 lg:grid-cols-2">
-          <div className="space-y-6">
+        <div className="grid gap-8 lg:grid-cols-2">
+          <div className="space-y-8">
             <MonthlyPlanPanel
               plan={data.monthlyPlan}
               onGenerate={showGeneratePlan ? handleGenerateMonthlyPlan : undefined}
@@ -236,7 +236,7 @@ export function AutopilotControlPage() {
             <ApprovalQueue items={data.approvalQueue} />
           </div>
 
-          <div className="space-y-6">
+          <div className="space-y-8">
             <RecommendedActionsPanel
               actions={data.recommendedActions}
               onApiAction={handleApiAction}

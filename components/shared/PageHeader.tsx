@@ -18,26 +18,24 @@ export function PageHeader({
   return (
     <header
       className={cn(
-        "mb-8 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between",
+        "mb-10 flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between",
         className
       )}
     >
       <div className="min-w-0">
         {eyebrow ? (
-          <p className="text-xs font-medium uppercase tracking-wider text-violet-400">
-            {eyebrow}
-          </p>
+          <p className="saas-eyebrow text-violet-400/90">{eyebrow}</p>
         ) : null}
         <h1
           className={cn(
-            "text-2xl font-bold text-white sm:text-3xl",
-            eyebrow && "mt-1"
+            "text-2xl font-bold tracking-tight text-white sm:text-[1.875rem]",
+            eyebrow && "mt-2"
           )}
         >
           {title}
         </h1>
         {subtitle ? (
-          <p className="mt-2 max-w-2xl text-sm leading-relaxed text-slate-400">
+          <p className="mt-3 max-w-2xl text-sm leading-relaxed text-slate-400 sm:text-[0.9375rem]">
             {subtitle}
           </p>
         ) : null}

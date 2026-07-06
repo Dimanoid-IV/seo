@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Loader2, Rocket, Sparkles } from "lucide-react";
 
+import { SaasCard, SaasSectionHeader } from "@/components/shared/SaasCard";
 import { Button } from "@/components/ui/button";
 import type { ControlCenterMonthlyPlan } from "@/lib/autopilot-control/types";
 
@@ -16,39 +17,41 @@ export function MonthlyPlanPanel({
   generating,
 }: MonthlyPlanPanelProps) {
   return (
-    <section className="rounded-2xl border border-white/10 bg-white/[0.02] p-5">
-      <div className="flex items-center gap-2">
-        <Rocket className="size-4 text-violet-400" />
-        <h3 className="font-semibold text-white">Monthly plan</h3>
-      </div>
+    <SaasCard variant="muted">
+      <SaasSectionHeader
+        title="Monthly plan"
+        subtitle="Draft growth plan for your review."
+      />
 
       {plan ? (
-        <div className="mt-4 space-y-3">
+        <div className="space-y-4">
           <div className="flex flex-wrap items-center gap-2">
-            <span className="rounded-full border border-violet-400/30 bg-violet-500/10 px-2.5 py-0.5 text-[10px] font-semibold uppercase text-violet-200">
+            <span className="rounded-full border border-violet-400/20 bg-violet-500/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-wide text-violet-200">
               {plan.status}
             </span>
             <span className="text-xs text-slate-500">{plan.month}</span>
           </div>
           <h4 className="font-medium text-white">{plan.title}</h4>
           {plan.summary ? (
-            <p className="text-sm text-slate-400 line-clamp-3">{plan.summary}</p>
+            <p className="line-clamp-3 text-sm leading-relaxed text-slate-400">
+              {plan.summary}
+            </p>
           ) : null}
           <Button
             render={<Link href={plan.href} />}
             nativeButton={false}
             variant="outline"
             size="sm"
-            className="border-white/10 bg-transparent text-slate-200"
+            className="rounded-xl border-white/[0.08] bg-white/[0.03] text-slate-200"
           >
-            Open Autopilot
+            Review plan
           </Button>
         </div>
       ) : (
-        <div className="mt-4 space-y-4">
-          <p className="text-sm text-slate-400">
-            No monthly plan yet. Generate a monthly plan to organize this
-            month&apos;s SEO, content, and social actions.
+        <div className="rounded-xl border border-dashed border-white/[0.08] bg-white/[0.02] px-5 py-8 text-center">
+          <Sparkles className="mx-auto size-6 text-violet-400/80" />
+          <p className="mt-3 text-sm text-slate-400">
+            No monthly plan yet. Generate one when you are ready.
           </p>
           {onGenerate ? (
             <Button
@@ -56,18 +59,20 @@ export function MonthlyPlanPanel({
               size="sm"
               disabled={generating}
               onClick={onGenerate}
-              className="gap-2"
+              className="mt-5 min-h-10 rounded-xl"
             >
               {generating ? (
                 <Loader2 className="size-4 animate-spin" />
               ) : (
-                <Sparkles className="size-4" />
+                <>
+                  <Rocket className="mr-1.5 size-4" />
+                  Generate monthly plan
+                </>
               )}
-              Generate monthly plan
             </Button>
           ) : null}
         </div>
       )}
-    </section>
+    </SaasCard>
   );
 }

@@ -16,11 +16,11 @@ type TrustNoteProps = {
 };
 
 const VARIANT_STYLES: Record<TrustNoteVariant, string> = {
-  billing: "border-emerald-500/20 bg-emerald-500/5 text-emerald-100/90",
-  ai: "border-violet-500/20 bg-violet-500/5 text-violet-100/90",
-  email: "border-blue-500/20 bg-blue-500/5 text-blue-100/90",
-  wordpress: "border-cyan-500/20 bg-cyan-500/5 text-cyan-100/90",
-  info: "border-white/10 bg-white/[0.03] text-slate-300",
+  billing: "border-emerald-500/15 bg-emerald-500/[0.04] text-emerald-100/90",
+  ai: "border-violet-500/15 bg-violet-500/[0.04] text-violet-100/90",
+  email: "border-blue-500/15 bg-blue-500/[0.04] text-blue-100/90",
+  wordpress: "border-cyan-500/15 bg-cyan-500/[0.04] text-cyan-100/90",
+  info: "border-white/[0.08] bg-white/[0.025] text-slate-300",
 };
 
 function defaultContent(variant: TrustNoteVariant): React.ReactNode {
@@ -29,7 +29,7 @@ function defaultContent(variant: TrustNoteVariant): React.ReactNode {
       return (
         <>
           <p className="font-medium">{BILLING_CANCEL_ANYTIME_COPY}</p>
-          <p className="mt-1 opacity-90">{BILLING_DATA_AVAILABILITY_COPY}</p>
+          <p className="mt-1.5 opacity-90">{BILLING_DATA_AVAILABILITY_COPY}</p>
         </>
       );
     case "ai":
@@ -51,7 +51,7 @@ export function TrustNote({
   return (
     <div
       className={cn(
-        "rounded-xl border p-4 text-sm",
+        "rounded-2xl border px-5 py-4 text-sm leading-relaxed",
         VARIANT_STYLES[variant],
         className
       )}

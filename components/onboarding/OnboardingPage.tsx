@@ -120,14 +120,18 @@ export function OnboardingPage() {
 
   if (data?.status === "COMPLETED") {
     return (
-      <div className="app-content mx-auto min-w-0 max-w-3xl space-y-6 overflow-x-hidden p-4 lg:p-8">
-        <section className="rounded-2xl border border-emerald-500/30 bg-emerald-500/10 p-6 text-center">
-          <h2 className="text-xl font-semibold text-white">Setup complete</h2>
-          <p className="mt-2 text-sm text-slate-300">
+      <div className="app-content mx-auto min-w-0 max-w-3xl space-y-8 overflow-x-hidden p-4 sm:p-6 lg:p-10">
+        <section className="saas-card-success text-center">
+          <h2 className="text-xl font-semibold tracking-tight text-white sm:text-2xl">
+            Setup complete
+          </h2>
+          <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-slate-300">
             Your RankBoost workspace is ready. Continue in the Control Center.
           </p>
-          <Link href="/app/autopilot-control" className="mt-5 inline-block">
-            <Button type="button">Open Control Center</Button>
+          <Link href="/app/autopilot-control" className="mt-7 inline-block">
+            <Button type="button" className="min-h-11 rounded-xl px-6">
+              Open Control Center
+            </Button>
           </Link>
         </section>
       </div>
@@ -141,20 +145,20 @@ export function OnboardingPage() {
       data.progress.total > 0);
 
   return (
-    <div className="app-content mx-auto min-w-0 max-w-6xl space-y-6 overflow-x-hidden p-4 lg:p-8">
-      <header className="rounded-2xl border border-violet-500/20 bg-gradient-to-br from-violet-500/10 to-blue-500/5 p-6">
-        <div className="flex items-start gap-3">
-          <div className="flex size-10 items-center justify-center rounded-xl bg-violet-500/20">
+    <div className="app-content mx-auto min-w-0 max-w-6xl space-y-8 overflow-x-hidden p-4 sm:p-6 lg:p-10">
+      <header className="saas-card-hero border border-violet-500/15 bg-gradient-to-br from-violet-500/[0.1] to-blue-500/[0.05]">
+        <div className="flex items-start gap-4">
+          <div className="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-violet-500/20 ring-1 ring-violet-500/20">
             <Sparkles className="size-5 text-violet-300" />
           </div>
           <div>
-            <h1 className="text-2xl font-bold text-white">Set up RankBoost</h1>
-            <p className="mt-1 text-sm text-slate-400">
-              Get your first website audit, Growth Score, and monthly growth plan.
-            </p>
-            <p className="mt-3 max-w-2xl text-sm text-violet-100/90">
-              Let&apos;s set up your first growth workspace. Add your website, run
-              your first audit, and let RankBoost prepare your first growth plan.
+            <p className="saas-eyebrow text-violet-400/80">Guided setup</p>
+            <h1 className="mt-2 text-2xl font-bold tracking-tight text-white sm:text-[1.875rem]">
+              Set up RankBoost
+            </h1>
+            <p className="mt-3 max-w-2xl text-sm leading-relaxed text-slate-400">
+              RankBoost is guiding you step by step — add your website, run your
+              first audit, and prepare your first growth plan.
             </p>
           </div>
         </div>
@@ -172,8 +176,8 @@ export function OnboardingPage() {
       ) : null}
 
       {data ? (
-        <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
-          <div className="space-y-4">
+        <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_340px]">
+          <div className="space-y-5">
             <OnboardingProgress {...data.progress} />
 
             {data.steps.map((step) => (
@@ -219,12 +223,12 @@ export function OnboardingPage() {
             </div>
           </div>
 
-          <aside className="space-y-4">
-            <section className="rounded-2xl border border-white/10 bg-white/[0.03] p-5">
+          <aside className="space-y-5">
+            <section className="saas-card-muted">
               <h2 className="text-sm font-semibold text-white">
                 What RankBoost will do next
               </h2>
-              <ul className="mt-3 space-y-2 text-sm text-slate-400">
+              <ul className="mt-4 space-y-3 text-sm leading-relaxed text-slate-400">
                 <li>Turn audit findings into prioritized tasks</li>
                 <li>Surface Search Console opportunities when connected</li>
                 <li>Prepare a monthly SEO, content, and social plan</li>
@@ -233,7 +237,7 @@ export function OnboardingPage() {
             </section>
 
             {data.results ? (
-              <section className="rounded-2xl border border-white/10 bg-white/[0.03] p-5">
+              <section className="saas-card-muted">
                 <h2 className="text-sm font-semibold text-white">Your results</h2>
                 {data.results.growthScore != null ? (
                   <div className="mt-3 grid gap-2 text-sm">

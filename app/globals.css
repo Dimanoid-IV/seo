@@ -102,7 +102,35 @@
     @apply border border-white/10 bg-white/5 backdrop-blur-xl;
   }
   .glass-card {
-    @apply rounded-2xl border border-white/10 bg-gradient-to-br from-white/[0.08] to-white/[0.02] backdrop-blur-xl;
+    @apply rounded-2xl border border-white/[0.08] bg-gradient-to-br from-white/[0.07] to-white/[0.02] shadow-[0_8px_32px_-12px_rgba(0,0,0,0.45)] backdrop-blur-xl;
+  }
+
+  /* Premium SaaS card hierarchy */
+  .saas-card {
+    @apply rounded-2xl border border-white/[0.08] bg-gradient-to-br from-white/[0.06] to-white/[0.015] p-6 shadow-[0_8px_32px_-12px_rgba(0,0,0,0.4)] backdrop-blur-sm sm:p-7;
+  }
+  .saas-card-hero {
+    @apply rounded-3xl border border-white/[0.1] bg-gradient-to-br from-white/[0.08] to-white/[0.02] p-7 shadow-[0_16px_48px_-20px_rgba(0,0,0,0.55)] backdrop-blur-md sm:p-8;
+  }
+  .saas-card-primary {
+    @apply rounded-2xl border border-blue-500/20 bg-gradient-to-br from-blue-500/[0.1] to-violet-500/[0.04] p-7 shadow-[0_12px_40px_-16px_rgba(59,130,246,0.18)] sm:p-8;
+  }
+  .saas-card-metric {
+    @apply rounded-2xl border border-white/[0.07] bg-gradient-to-br from-white/[0.05] to-transparent p-6 shadow-[0_4px_24px_-8px_rgba(0,0,0,0.35)] sm:p-7;
+  }
+  .saas-card-muted {
+    @apply rounded-2xl border border-white/[0.06] bg-white/[0.02] p-6 sm:p-7;
+  }
+  .saas-card-success {
+    @apply rounded-2xl border border-emerald-500/20 bg-gradient-to-br from-emerald-500/[0.08] to-blue-500/[0.03] p-7 sm:p-8;
+  }
+
+  .saas-page-stack {
+    @apply space-y-8;
+  }
+
+  .saas-eyebrow {
+    @apply text-[11px] font-medium uppercase tracking-[0.14em] text-slate-500;
   }
   .gradient-text {
     @apply bg-gradient-to-r from-blue-400 via-cyan-400 to-violet-400 bg-clip-text text-transparent;
@@ -124,8 +152,29 @@
   }
 
   /* SaaS app shell — isolated from marketing layout */
+  .app-shell {
+    @apply relative bg-[#050816];
+  }
+
+  .app-shell::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    background:
+      radial-gradient(ellipse 70% 45% at 50% -15%, rgba(59, 130, 246, 0.1), transparent 55%),
+      radial-gradient(ellipse 50% 35% at 100% 80%, rgba(139, 92, 246, 0.07), transparent 50%),
+      radial-gradient(ellipse 40% 30% at 0% 60%, rgba(6, 182, 212, 0.05), transparent 45%);
+  }
+
+  .app-shell > * {
+    position: relative;
+    z-index: 1;
+  }
+
   .app-content {
-    @apply min-w-0 overflow-x-hidden pb-20 lg:pb-8;
+    @apply min-w-0 overflow-x-hidden pb-24 lg:pb-10;
   }
 
   .app-main {

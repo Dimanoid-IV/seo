@@ -31,19 +31,17 @@ export function CurrentPlanCard({
   const trialEnd = formatDate(subscription.trialEndsAt);
 
   return (
-    <section className="rounded-2xl border border-violet-500/20 bg-violet-500/5 p-5">
-      <div className="flex flex-wrap items-start justify-between gap-4">
+    <section className="saas-card-hero border border-violet-500/15 bg-gradient-to-br from-violet-500/[0.1] to-blue-500/[0.04]">
+      <div className="flex flex-wrap items-start justify-between gap-5">
         <div>
-          <div className="flex items-center gap-2 text-violet-200">
+          <div className="flex items-center gap-2.5 text-violet-200">
             <CreditCard className="size-4" />
-            <span className="text-sm font-medium uppercase tracking-wide">
-              Current plan
-            </span>
+            <span className="saas-eyebrow text-violet-300/80">Current plan</span>
           </div>
-          <h2 className="mt-2 text-2xl font-bold text-white">
+          <h2 className="mt-3 text-2xl font-bold tracking-tight text-white sm:text-3xl">
             {subscription.planLabel}
           </h2>
-          <p className="mt-1 text-sm capitalize text-slate-400">
+          <p className="mt-2 text-sm capitalize text-slate-400">
             Status: {subscription.status.replace(/_/g, " ")}
           </p>
         </div>
@@ -54,14 +52,14 @@ export function CurrentPlanCard({
             variant="outline"
             disabled={managing || !subscription.stripeConfigured}
             onClick={onManageBilling}
-            className="border-white/15 bg-white/5 text-slate-200 hover:bg-white/10"
+            className="min-h-10 rounded-xl border-white/[0.08] bg-white/[0.03] text-slate-200 hover:bg-white/[0.06]"
           >
             {managing ? "Opening portal…" : "Manage billing"}
           </Button>
         ) : null}
       </div>
 
-      <div className="mt-4 space-y-1 text-sm text-slate-300">
+      <div className="mt-6 space-y-1.5 border-t border-white/[0.06] pt-5 text-sm leading-relaxed text-slate-300">
         {trialEnd ? <p>Trial ends: {trialEnd}</p> : null}
         {renewal ? (
           <p>
@@ -71,7 +69,7 @@ export function CurrentPlanCard({
           </p>
         ) : null}
         {!subscription.stripeConfigured ? (
-          <p className="text-amber-300">{STRIPE_NOT_CONFIGURED_COPY}</p>
+          <p className="text-amber-200/90">{STRIPE_NOT_CONFIGURED_COPY}</p>
         ) : null}
       </div>
     </section>
