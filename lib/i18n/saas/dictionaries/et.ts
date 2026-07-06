@@ -780,14 +780,14 @@ export const saasDictionary: SaasDictionary = {
     pageSubtitle:
       "Alustage tasuta. Uuendage paketti, kui vajate rohkem kasvutoiminguid. Pikaajalisi lepinguid pole. Tühistage igal ajal.",
     trustNote:
-      "Makse pole veel seadistatud — looge tasuta konto, et RankBoosti avastada.",
+      "Ilma pikaajaliste lepinguteta. Tühistamine igal ajal. Midagi ei avaldata automaatselt. Looge tasuta konto, et RankBoosti avastada.",
     startFree: "Alusta tasuta",
     createAccount: "Loo konto",
     plans: [
-      { name: "Free", description: "Alustage ja avastage RankBoost" },
-      { name: "Starter", description: "Üks veebisait ja stabiilne kasv" },
-      { name: "Pro", description: "Rohkem genereerimisi ja toiminguid" },
-      { name: "Agency", description: "Meeskonnad ja mitu projekti" },
+      { name: "Free", description: "Proovige RankBoosti ja mõistke oma veebilehe kasvuvõimalusi." },
+      { name: "Starter", description: "Väikeettevõtetele, kes soovivad regulaarseid SEO ja sisu tegevusi." },
+      { name: "Pro", description: "Kasvavatele ettevõtetele: rohkem mustandeid, ülevaateid ja töövooge." },
+      { name: "Agency", description: "Agentuuridele ja meeskondadele, kes haldavad mitut veebilehte." },
     ],
     noCheckoutNote: "Tasulised uuendused tulevad, kui makse on seadistatud.",
   },

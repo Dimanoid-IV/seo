@@ -74,6 +74,7 @@ export function LoginForm() {
           onChange={(event) => setEmail(event.target.value)}
           placeholder="you@company.com"
           disabled={loading}
+          className="border-slate-200 bg-white text-slate-900"
         />
       </div>
 
@@ -88,12 +89,13 @@ export function LoginForm() {
           onChange={(event) => setPassword(event.target.value)}
           placeholder="••••••••"
           disabled={loading}
+          className="border-slate-200 bg-white text-slate-900"
         />
       </div>
 
       <Button
         type="submit"
-        className="w-full bg-gradient-to-r from-blue-500 to-violet-600 text-white hover:from-blue-600 hover:to-violet-700"
+        className="w-full rounded-xl bg-gradient-to-r from-blue-600 to-violet-600 text-white hover:from-blue-500 hover:to-violet-500"
         disabled={loading}
       >
         {loading ? (
@@ -109,7 +111,7 @@ export function LoginForm() {
       <Button
         type="button"
         variant="outline"
-        className="w-full border-white/10 bg-white/5 text-slate-400"
+        className="w-full rounded-xl border-slate-200 bg-slate-50 text-slate-500"
         disabled
         aria-disabled
       >
@@ -118,7 +120,7 @@ export function LoginForm() {
 
       <p className="text-center text-sm text-slate-500">
         {auth.noAccount}{" "}
-        <Link href="/register" className="text-blue-400 hover:text-cyan-400">
+        <Link href="/register" className="text-blue-600 hover:text-blue-700">
           {auth.register}
         </Link>
       </p>

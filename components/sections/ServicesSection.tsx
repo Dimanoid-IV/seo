@@ -8,18 +8,25 @@ type ServicesSectionProps = {
   locale: Locale;
   dict: Dictionary;
   detailed?: boolean;
+  theme?: "dark" | "marketing";
+  showHeading?: boolean;
 };
 
 export function ServicesSection({
   locale,
   dict,
   detailed = false,
+  theme = "dark",
+  showHeading = true,
 }: ServicesSectionProps) {
+  const isMarketing = theme === "marketing";
+
   return (
-    <section className="py-20 lg:py-28">
+    <section className={isMarketing ? "marketing-section" : "py-20 lg:py-28"}>
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        {detailed && (
+        {detailed && showHeading && (
           <SectionHeading
+            theme={theme}
             title={dict.services.pageTitle}
             subtitle={dict.services.pageSubtitle}
           />
@@ -33,6 +40,7 @@ export function ServicesSection({
               ctaLabel={dict.services.ctaConsultation}
               whatsIncluded={dict.services.whatsIncluded}
               detailed={detailed}
+              theme={theme}
             />
           ))}
         </div>

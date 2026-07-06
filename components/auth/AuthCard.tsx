@@ -22,24 +22,24 @@ export function AuthCard({
     <div className={cn("w-full max-w-md", className)}>
       <div className="mb-8 flex flex-col items-center text-center">
         <Link
-          href="/ru"
-          className="mb-6 flex items-center gap-2 text-slate-400 transition-colors hover:text-white"
+          href="/en"
+          className="mb-6 flex items-center gap-2 text-slate-600 transition-colors hover:text-slate-900"
         >
           <div className="flex size-10 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-violet-600">
             <Sparkles className="size-5 text-white" />
           </div>
-          <span className="text-lg font-bold text-white">RankBoost</span>
+          <span className="text-lg font-bold text-slate-900">RankBoost</span>
         </Link>
-        <h1 className="text-2xl font-bold text-white">{title}</h1>
+        <h1 className="text-2xl font-bold text-slate-900">{title}</h1>
         {subtitle ? (
-          <p className="mt-2 text-sm text-slate-400">{subtitle}</p>
+          <p className="mt-2 text-sm text-slate-500">{subtitle}</p>
         ) : null}
       </div>
 
-      <div className="glass-card p-6 sm:p-8">{children}</div>
+      <div className="marketing-card p-6 sm:p-8">{children}</div>
 
       {footer ? (
-        <div className="mt-6 text-center text-sm text-slate-400">{footer}</div>
+        <div className="mt-6 text-center text-sm text-slate-500">{footer}</div>
       ) : null}
     </div>
   );

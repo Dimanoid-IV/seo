@@ -39,20 +39,20 @@ export default async function PricingPage({ params }: PageProps) {
 
   return (
     <>
-      <div className="marketing-page border-b border-slate-200/80 bg-gradient-to-b from-blue-50/80 to-white py-16">
-        <div className="mx-auto max-w-7xl px-4 text-center sm:px-6 lg:px-8">
-          <h1 className="text-4xl font-bold text-slate-900 md:text-5xl">
-            {pricing.pageTitle}
-          </h1>
-          <p className="mx-auto mt-4 max-w-2xl text-lg text-slate-600">
-            {pricing.pageSubtitle}
-          </p>
+      <div className="marketing-page min-h-screen">
+        <div className="border-b border-slate-200/80 bg-gradient-to-b from-blue-50/80 to-white py-16">
+          <div className="mx-auto max-w-7xl px-4 text-center sm:px-6 lg:px-8">
+            <h1 className="text-4xl font-bold text-slate-900 md:text-5xl">
+              {pricing.pageTitle}
+            </h1>
+            <p className="mx-auto mt-4 max-w-2xl text-lg text-slate-600">
+              {pricing.pageSubtitle}
+            </p>
+          </div>
         </div>
+        <SaasPricingSection locale={saasLocale} hideHeading />
+        <CTASection locale={loc} dict={dict} source="pricing" theme="marketing" />
       </div>
-      <div className="marketing-page">
-        <SaasPricingSection locale={saasLocale} />
-      </div>
-      <CTASection locale={loc} dict={dict} source="pricing" theme="marketing" />
     </>
   );
 }

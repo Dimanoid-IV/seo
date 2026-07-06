@@ -8,11 +8,13 @@ import type { SaasLocale } from "@/lib/i18n/saas/locales";
 type SaasPricingSectionProps = {
   locale: SaasLocale;
   theme?: "marketing" | "dark";
+  hideHeading?: boolean;
 };
 
 export function SaasPricingSection({
   locale,
   theme = "marketing",
+  hideHeading = false,
 }: SaasPricingSectionProps) {
   const pricing = getSaasDictionary(locale).pricing;
   const isMarketing = theme === "marketing";
@@ -20,11 +22,13 @@ export function SaasPricingSection({
   return (
     <section className={isMarketing ? "marketing-section" : "py-20 lg:py-28"}>
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <SectionHeading
-          theme={isMarketing ? "marketing" : "dark"}
-          title={pricing.pageTitle}
-          subtitle={pricing.pageSubtitle}
-        />
+        {!hideHeading ? (
+          <SectionHeading
+            theme={isMarketing ? "marketing" : "dark"}
+            title={pricing.pageTitle}
+            subtitle={pricing.pageSubtitle}
+          />
+        ) : null}
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
           {pricing.plans.map((plan, index) => (
             <div

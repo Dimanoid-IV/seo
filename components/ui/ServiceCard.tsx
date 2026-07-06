@@ -34,6 +34,7 @@ type ServiceCardProps = {
   ctaLabel: string;
   whatsIncluded?: string;
   detailed?: boolean;
+  theme?: "dark" | "marketing";
 };
 
 export function ServiceCard({
@@ -42,27 +43,47 @@ export function ServiceCard({
   ctaLabel,
   whatsIncluded,
   detailed = false,
+  theme = "dark",
 }: ServiceCardProps) {
   const Icon = iconMap[service.icon] ?? Search;
+  const isMarketing = theme === "marketing";
 
   return (
     <div
       className={cn(
-        "group glass-card flex flex-col p-6 transition-all duration-300 hover:border-blue-500/30 hover:glow-sm",
+        "group flex flex-col p-6 transition-all duration-300",
+        isMarketing
+          ? "marketing-card hover:border-blue-300 hover:shadow-[0_12px_40px_-16px_rgba(59,130,246,0.2)]"
+          : "glass-card hover:border-blue-500/30 hover:glow-sm",
         detailed && "h-full"
       )}
     >
       <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500/20 to-violet-500/20 ring-1 ring-blue-500/20">
-        <Icon className="h-6 w-6 text-blue-400" />
+        <Icon className={cn("h-6 w-6", isMarketing ? "text-blue-600" : "text-blue-400")} />
       </div>
-      <h3 className="mb-2 text-xl font-semibold text-white">
+      <h3
+        className={cn(
+          "mb-2 text-xl font-semibold",
+          isMarketing ? "text-slate-900" : "text-white"
+        )}
+      >
         {service.title[locale]}
       </h3>
-      <p className="mb-4 text-sm leading-relaxed text-slate-400">
+      <p
+        className={cn(
+          "mb-4 text-sm leading-relaxed",
+          isMarketing ? "text-slate-600" : "text-slate-400"
+        )}
+      >
         {service.description[locale]}
       </p>
       {detailed && whatsIncluded && (
-        <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-slate-500">
+        <p
+          className={cn(
+            "mb-3 text-xs font-semibold uppercase tracking-wider",
+            isMarketing ? "text-slate-500" : "text-slate-500"
+          )}
+        >
           {whatsIncluded}
         </p>
       )}
@@ -70,7 +91,10 @@ export function ServiceCard({
         {service.features[locale].map((feature) => (
           <li
             key={feature}
-            className="flex items-start gap-2 text-sm text-slate-400"
+            className={cn(
+              "flex items-start gap-2 text-sm",
+              isMarketing ? "text-slate-600" : "text-slate-400"
+            )}
           >
             <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-cyan-400" />
             {feature}
@@ -79,9 +103,9 @@ export function ServiceCard({
       </ul>
       <ButtonLink
         locale={locale}
-        href={getContactPath({ service: service.id, source: "services" })}
+        href={getContactPath({ source: "services" })}
         className={cn(
-          "mt-auto w-full bg-gradient-to-r from-blue-600/80 to-violet-600/80 hover:from-blue-600 hover:to-violet-600",
+          "mt-auto w-full rounded-xl bg-gradient-to-r from-blue-600 to-violet-600 hover:from-blue-500 hover:to-violet-500",
           !detailed && "w-auto self-start px-4"
         )}
         size={detailed ? "default" : "sm"}

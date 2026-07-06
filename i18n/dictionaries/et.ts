@@ -11,14 +11,14 @@ export const dictionary: Dictionary = {
         "Leidke veebilehe kasvuvõimalused, valmistage SEO ja sisu tegevused ning parandage nähtavust Google'is ja AI-otsingus — iga samm teie kontrolli all.",
     },
     services: {
-      title: "SEO-teenused | RankBoost.eu",
+      title: "Platvormi võimalused | RankBoost.eu",
       description:
-        "Tehniline SEO, kohalik SEO, SEO audit, sisuline edendamine ja tugi Eestis ja Euroopas.",
+        "Mida RankBoost teeb: veebilehe audit, kasvuvõimalused, SEO, sisu ja sotsiaalmeedia — kõik teie kinnitusega.",
     },
     pricing: {
-      title: "SEO hinnakiri | RankBoost.eu",
+      title: "Paketid kasvuks | RankBoost.eu",
       description:
-        "Läbipaistvad SEO-hinnad: ühekordsest auditist kuni tervikliku toeni. Paketid kohalikele ettevõtetele ja e-poodidele.",
+        "RankBoost SaaS paketid: Free, Starter, Pro ja Agency. Alustage tasuta ja uuendage, kui vajate rohkem tegevusi.",
     },
     blog: {
       title: "SEO blogi | RankBoost.eu",
@@ -28,7 +28,7 @@ export const dictionary: Dictionary = {
     contact: {
       title: "Kontakt | RankBoost.eu",
       description:
-        "Võtke ühendust RankBoost.eu-ga tasuta SEO konsultatsiooni saamiseks. Veebisaitide edendamine Eestis ja Euroopas.",
+        "Küsimused RankBoosti kohta? Rääkige meile oma veebilehest — vastame peagi.",
     },
     privacy: {
       title: "Privaatsuspoliitika | RankBoost.eu",
@@ -144,12 +144,12 @@ export const dictionary: Dictionary = {
     title: "Paketid kasvuks",
     subtitle: "Alustage tasuta. Uuendage, kui vajate rohkem tegevusi.",
     trustNote:
-      "Ilma pikaajaliste lepinguteta. Tühistamine igal ajal. Olemasolevad andmed jäävad kättesaadavaks.",
+      "Ilma pikaajaliste lepinguteta. Tühistamine igal ajal. Midagi ei avaldata automaatselt.",
     plans: [
-      { name: "Free", description: "Alustage ja tutvuge RankBoostiga" },
-      { name: "Starter", description: "Üks sait ja stabiilne kasv" },
-      { name: "Pro", description: "Rohkem genereerimisi ja tegevusi" },
-      { name: "Agency", description: "Meeskonnad ja mitu projekti" },
+      { name: "Free", description: "Proovige RankBoosti ja mõistke oma veebilehe kasvuvõimalusi." },
+      { name: "Starter", description: "Väikeettevõtetele, kes soovivad regulaarseid SEO ja sisu tegevusi." },
+      { name: "Pro", description: "Kasvavatele ettevõtetele: rohkem mustandeid, ülevaateid ja töövooge." },
+      { name: "Agency", description: "Agentuuridele ja meeskondadele, kes haldavad mitut veebilehte." },
     ],
   },
   whatWeDo: {
@@ -163,14 +163,14 @@ export const dictionary: Dictionary = {
     items: ["kohalikud ettevõtted", "e-poed"],
   },
   services: {
-    title: "SEO-teenused",
-    subtitle: "Terviklik edendamine orgaanilise liikluse ja leadide kasvuks",
-    viewAll: "Kõik teenused",
+    title: "Platvormi võimalused",
+    subtitle: "Kasvutegevused, mida RankBoost valmistab teie kinnituseks ette",
+    viewAll: "Kõik võimalused",
     learnMore: "Loe lähemalt",
-    pageTitle: "SEO-teenused",
+    pageTitle: "Mida RankBoost teeb",
     pageSubtitle:
-      "Täielik SEO-teenuste valik Eestis ja Euroopas — auditist kuni tervikliku toeni.",
-    ctaConsultation: "Küsi konsultatsiooni",
+      "AI Growth Manager: auditeerib veebilehte, leiab võimalusi ja valmistab SEO, sisu ja sotsiaalmeedia mustandid — teie kinnitate iga sammu.",
+    ctaConsultation: "Võta ühendust",
     whatsIncluded: "Mis sisaldub",
   },
   process: {
@@ -197,13 +197,13 @@ export const dictionary: Dictionary = {
   },
   pricing: {
     title: "Hinnakiri",
-    subtitle: "Läbipaistvad igakuised paketid ilma peidetud tasudeta",
+    subtitle: "SaaS paketid veebilehe kasvuks — alustage tasuta, uuendage vajadusel",
     popular: "Populaarne",
-    pageTitle: "SEO-teenuste hinnakiri",
+    pageTitle: "Paketid kasvuks",
     pageSubtitle:
-      "Valige pakett oma ettevõttele — kohalikust edendamisest kuni tervikliku SEO partnerluseni.",
+      "Alustage tasuta. Uuendage, kui vajate rohkem kasvutegevusi. Ilma pikaajaliste lepinguteta.",
     comparisonTitle: "Pakettide võrdlus",
-    customNote: "Kõik hinnad on ilma KM-ta. Minimaalne periood — 3 kuud.",
+    customNote: "Maksmine on saadaval, kui arveldus on seadistatud.",
   },
   pricingFaq: {
     title: "KKK pakettide kohta",
@@ -286,27 +286,28 @@ export const dictionary: Dictionary = {
   },
   contact: {
     title: "Võtke meiega ühendust",
-    subtitle: "Rääkige meile oma projektist — pakume optimaalset SEO-strateegiat",
+    subtitle:
+      "Küsimus RankBoosti kohta? Rääkige meile oma veebilehest — vastame peagi.",
     form: {
       name: "Nimi",
       namePlaceholder: "Teie nimi",
       email: "Email",
       emailPlaceholder: "email@example.com",
-      phone: "Telefon / Telegram / WhatsApp",
-      phonePlaceholder: "+372 ... või @username",
-      website: "Veebileht",
-      websitePlaceholder: "https://teiesait.ee",
+      phone: "Telefon",
+      phonePlaceholder: "",
+      website: "Veebilehe URL",
+      websitePlaceholder: "https://teiesait.com",
       budget: "Eelarve",
-      budgetPlaceholder: "Valige eelarve",
+      budgetPlaceholder: "",
       service: "Teenus",
-      servicePlaceholder: "Valige teenus",
+      servicePlaceholder: "",
       plan: "Pakett",
-      planPlaceholder: "Valige pakett",
+      planPlaceholder: "",
       message: "Sõnum",
-      messagePlaceholder: "Rääkige oma projektist ja eesmärkidest...",
-      websiteOrMessageHint: "Märkige veebileht või kirjeldage ülesannet sõnumis — üks väli on kohustuslik.",
-      websiteOrMessageError: "Märkige veebileht või kirjutage sõnum.",
-      submit: "Saada päring",
+      messagePlaceholder: "Kuidas saame RankBoostiga aidata?",
+      websiteOrMessageHint: "Sisestage veebilehe URL või lühike sõnum — vähemalt üks on nõutav.",
+      websiteOrMessageError: "Palun sisestage veebilehe URL või kirjutage sõnum.",
+      submit: "Saada sõnum",
       submitting: "Saatmine...",
       success: "Aitäh! Päring on saadetud. Võtame teiega peagi ühendust.",
       error:
@@ -346,7 +347,7 @@ export const dictionary: Dictionary = {
   },
   footer: {
     description:
-      "RankBoost.eu — SEO-agentuur väike- ja keskmise suurusega ettevõtetele Eestis ja Euroopas. Edendame veebilehti Google'is eesti, vene ja inglise keeles.",
+      "RankBoost.eu — AI Growth Manager veebinähtavuse jaoks. Audit, kasvutegevused ja SEO, sisu ning sotsiaalmeedia mustandid — teie kinnitate kõik.",
     navigation: "Navigatsioon",
     servicesTitle: "Teenused",
     blogTitle: "Blogi",

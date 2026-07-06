@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { Globe } from "lucide-react";
 
+import { OnboardingBanner } from "@/components/onboarding/OnboardingBanner";
 import { DashboardHero } from "@/components/dashboard/DashboardHero";
 import { DashboardMetricCard } from "@/components/dashboard/DashboardMetricCard";
 import { FindingsCard } from "@/components/dashboard/FindingsCard";
@@ -17,6 +18,9 @@ import { PageLoadingState } from "@/components/shared/PageLoadingState";
 import { TrustNote } from "@/components/shared/TrustNote";
 import { useSaasTranslations } from "@/lib/i18n/saas/SaasLocaleProvider";
 import { authFetch, parseApiErrorMessage } from "@/lib/auth/client-session";
+
+const DASHBOARD_MAIN =
+  "app-content mx-auto w-full max-w-6xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8";
 
 export function SimpleDashboardPage() {
   const { dict } = useSaasTranslations();
@@ -101,7 +105,8 @@ export function SimpleDashboardPage() {
 
   if (!simple.website) {
     return (
-      <main className="app-content mx-auto max-w-3xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
+      <main className={DASHBOARD_MAIN}>
+        <OnboardingBanner />
         <DashboardHero status={simple.status} />
         <div className="mt-6">
           <EmptyState
@@ -155,8 +160,9 @@ export function SimpleDashboardPage() {
       : undefined);
 
   return (
-    <main className="app-content mx-auto max-w-3xl px-4 py-8 sm:px-6 sm:py-10 lg:max-w-4xl lg:px-8">
+    <main className={DASHBOARD_MAIN}>
       <div className="saas-page-stack">
+        <OnboardingBanner />
         <DashboardHero
           status={simple.status}
           websiteDomain={simple.website.domain ?? simple.website.name}

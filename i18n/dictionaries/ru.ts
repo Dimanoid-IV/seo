@@ -243,14 +243,14 @@ export const dictionary: Dictionary = {
         "Находите возможности роста сайта, готовьте SEO и контент-действия и улучшайте видимость в Google и AI-поиске — с вашим контролем на каждом шаге.",
     },
     services: {
-      title: "SEO-услуги | RankBoost.eu",
+      title: "Возможности платформы | RankBoost.eu",
       description:
-        "Техническое SEO, Local SEO, SEO-аудит, контентное продвижение и сопровождение для бизнеса в Эстонии и Европе.",
+        "Что делает RankBoost: аудит сайта, возможности роста, SEO, контент и соцсети — всё на ваше одобрение.",
     },
     pricing: {
-      title: "Тарифы на SEO | RankBoost.eu",
+      title: "Тарифы для роста | RankBoost.eu",
       description:
-        "Прозрачные тарифы на SEO-услуги: от разового аудита до комплексного сопровождения. Пакеты для локального бизнеса и интернет-магазинов.",
+        "SaaS-тарифы RankBoost: Free, Starter, Pro и Agency. Начните бесплатно и переходите на платный план, когда понадобится больше действий.",
     },
     blog: {
       title: "SEO-блог | RankBoost.eu",
@@ -260,7 +260,7 @@ export const dictionary: Dictionary = {
     contact: {
       title: "Контакты | RankBoost.eu",
       description:
-        "Свяжитесь с RankBoost.eu для бесплатной SEO-консультации. Продвижение сайтов в Эстонии и Европе.",
+        "Вопросы о RankBoost? Расскажите о вашем сайте — мы ответим в ближайшее время.",
     },
     privacy: {
       title: "Политика конфиденциальности | RankBoost.eu",
@@ -381,12 +381,12 @@ export const dictionary: Dictionary = {
     subtitle:
       "Начните бесплатно. Перейдите на платный план, когда понадобится больше действий.",
     trustNote:
-      "Без долгосрочных контрактов. Отмена в любой момент. Существующие данные остаются доступны.",
+      "Без долгосрочных контрактов. Отмена в любой момент. Ничего не публикуется автоматически.",
     plans: [
-      { name: "Free", description: "Начать и протестировать RankBoost" },
-      { name: "Starter", description: "Для одного сайта и регулярного роста" },
-      { name: "Pro", description: "Больше генераций и действий" },
-      { name: "Agency", description: "Для команд и нескольких проектов" },
+      { name: "Free", description: "Попробуйте RankBoost и оцените возможности роста вашего сайта." },
+      { name: "Starter", description: "Для малого бизнеса с регулярными SEO и контент-действиями." },
+      { name: "Pro", description: "Для растущего бизнеса: больше черновиков, инсайтов и рабочих процессов." },
+      { name: "Agency", description: "Для агентств и команд с несколькими сайтами." },
     ],
   },
   whatWeDo: {
@@ -400,14 +400,14 @@ export const dictionary: Dictionary = {
     items: ["локальный бизнес", "интернет-магазины"],
   },
   services: {
-    title: "SEO-услуги",
-    subtitle: "Комплексное продвижение для роста органического трафика и лидов",
-    viewAll: "Все услуги",
+    title: "Возможности платформы",
+    subtitle: "Действия для роста, которые RankBoost готовит на ваше одобрение",
+    viewAll: "Все возможности",
     learnMore: "Подробнее",
-    pageTitle: "SEO-услуги",
+    pageTitle: "Что делает RankBoost",
     pageSubtitle:
-      "Полный спектр SEO-услуг для бизнеса в Эстонии и Европе — от аудита до комплексного сопровождения.",
-    ctaConsultation: "Получить консультацию",
+      "AI Growth Manager: аудит сайта, поиск возможностей и подготовка SEO, контента и соцсетей — вы одобряете каждый шаг.",
+    ctaConsultation: "Связаться с нами",
     whatsIncluded: "Что входит",
   },
   process: {
@@ -434,13 +434,13 @@ export const dictionary: Dictionary = {
   },
   pricing: {
     title: "Тарифы",
-    subtitle: "Прозрачные ежемесячные планы без скрытых платежей",
+    subtitle: "SaaS-планы для роста сайта — начните бесплатно, переходите при необходимости",
     popular: "Популярный",
-    pageTitle: "Тарифы на SEO-услуги",
+    pageTitle: "Планы для роста",
     pageSubtitle:
-      "Выберите план под ваш бизнес — от локального продвижения до комплексного SEO-партнёрства.",
+      "Начните бесплатно. Перейдите на платный план, когда понадобится больше действий. Без долгосрочных контрактов.",
     comparisonTitle: "Сравнение тарифов",
-    customNote: "Все цены указаны без НДС. Минимальный срок — 3 месяца.",
+    customNote: "Оплата появится, когда биллинг будет настроен.",
   },
   pricingFaq: {
     title: "FAQ по тарифам",
@@ -523,27 +523,28 @@ export const dictionary: Dictionary = {
   },
   contact: {
     title: "Свяжитесь с нами",
-    subtitle: "Расскажите о вашем проекте — мы предложим оптимальную SEO-стратегию",
+    subtitle:
+      "Есть вопрос о RankBoost? Расскажите о вашем сайте — мы ответим в ближайшее время.",
     form: {
       name: "Имя",
       namePlaceholder: "Ваше имя",
       email: "Email",
       emailPlaceholder: "email@example.com",
-      phone: "Телефон / Telegram / WhatsApp",
-      phonePlaceholder: "+372 ... или @username",
-      website: "Сайт",
-      websitePlaceholder: "https://yoursite.ee",
+      phone: "Телефон",
+      phonePlaceholder: "",
+      website: "URL сайта",
+      websitePlaceholder: "https://yoursite.com",
       budget: "Бюджет",
-      budgetPlaceholder: "Выберите бюджет",
+      budgetPlaceholder: "",
       service: "Услуга",
-      servicePlaceholder: "Выберите услугу",
+      servicePlaceholder: "",
       plan: "Тариф",
-      planPlaceholder: "Выберите тариф",
+      planPlaceholder: "",
       message: "Сообщение",
-      messagePlaceholder: "Расскажите о вашем проекте и целях...",
-      websiteOrMessageHint: "Укажите сайт или опишите задачу в сообщении — одно из полей обязательно.",
-      websiteOrMessageError: "Укажите сайт или напишите сообщение.",
-      submit: "Отправить заявку",
+      messagePlaceholder: "Чем мы можем помочь с RankBoost?",
+      websiteOrMessageHint: "Укажите URL сайта или короткое сообщение — нужно хотя бы одно поле.",
+      websiteOrMessageError: "Укажите URL сайта или напишите сообщение.",
+      submit: "Отправить сообщение",
       submitting: "Отправка...",
       success: "Спасибо! Заявка отправлена. Мы свяжемся с вами в ближайшее время.",
       error:
@@ -583,7 +584,7 @@ export const dictionary: Dictionary = {
   },
   footer: {
     description:
-      "RankBoost.eu — SEO-агентство для малого и среднего бизнеса в Эстонии и Европе. Продвигаем сайты в Google на русском, эстонском и английском.",
+      "RankBoost.eu — AI Growth Manager для видимости сайта. Аудит, действия для роста и черновики SEO, контента и соцсетей — вы одобряете каждый шаг.",
     navigation: "Навигация",
     servicesTitle: "Услуги",
     blogTitle: "Блог",

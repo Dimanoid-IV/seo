@@ -780,14 +780,14 @@ export const saasDictionary: SaasDictionary = {
     pageSubtitle:
       "Start free. Upgrade when you need more growth actions. No long-term contracts. Cancel anytime.",
     trustNote:
-      "Checkout is not configured yet — create a free account to explore RankBoost.",
+      "No long-term contracts. Cancel anytime. Nothing is published automatically. Create a free account to explore RankBoost.",
     startFree: "Start free",
     createAccount: "Create account",
     plans: [
-      { name: "Free", description: "Start and explore RankBoost" },
-      { name: "Starter", description: "One website and steady growth" },
-      { name: "Pro", description: "More generations and growth actions" },
-      { name: "Agency", description: "Teams and multiple projects" },
+      { name: "Free", description: "Try RankBoost and understand your website growth opportunities." },
+      { name: "Starter", description: "For small businesses that want regular SEO and content actions." },
+      { name: "Pro", description: "For growing businesses that need more drafts, insights, and review workflows." },
+      { name: "Agency", description: "For agencies or teams managing multiple websites." },
     ],
     noCheckoutNote: "Paid upgrades will be available when billing is configured.",
   },

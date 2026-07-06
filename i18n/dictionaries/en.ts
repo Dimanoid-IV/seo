@@ -11,14 +11,14 @@ export const dictionary: Dictionary = {
         "Find website growth opportunities, prepare SEO and content actions, and improve visibility in Google and AI search — with every action reviewed by you.",
     },
     services: {
-      title: "SEO Services | RankBoost.eu",
+      title: "Platform capabilities | RankBoost.eu",
       description:
-        "Technical SEO, Local SEO, SEO audit, content promotion, and support for businesses in Estonia and Europe.",
+        "What RankBoost does: website audits, growth opportunities, review-ready SEO, content, and social actions.",
     },
     pricing: {
-      title: "SEO Pricing | RankBoost.eu",
+      title: "Plans for growth | RankBoost.eu",
       description:
-        "Transparent SEO pricing: from one-time audit to full support. Packages for local businesses and e-commerce.",
+        "RankBoost SaaS plans: Free, Starter, Pro, and Agency. Start free and upgrade when you need more growth actions.",
     },
     blog: {
       title: "SEO Blog | RankBoost.eu",
@@ -28,7 +28,7 @@ export const dictionary: Dictionary = {
     contact: {
       title: "Contact | RankBoost.eu",
       description:
-        "Contact RankBoost.eu for a free SEO consultation. Website promotion in Estonia and Europe.",
+        "Questions about RankBoost? Tell us about your website and we will get back to you.",
     },
     privacy: {
       title: "Privacy Policy | RankBoost.eu",
@@ -149,12 +149,12 @@ export const dictionary: Dictionary = {
     subtitle:
       "Start free. Upgrade when you need more growth actions.",
     trustNote:
-      "No long-term contracts. Cancel anytime. Existing data stays available.",
+      "No long-term contracts. Cancel anytime. Nothing is published automatically.",
     plans: [
-      { name: "Free", description: "Start and explore RankBoost" },
-      { name: "Starter", description: "One website and steady growth" },
-      { name: "Pro", description: "More generations and actions" },
-      { name: "Agency", description: "Teams and multiple projects" },
+      { name: "Free", description: "Try RankBoost and understand your website growth opportunities." },
+      { name: "Starter", description: "For small businesses that want regular SEO and content actions." },
+      { name: "Pro", description: "For growing businesses that need more drafts, insights, and review workflows." },
+      { name: "Agency", description: "For agencies or teams managing multiple websites." },
     ],
   },
   whatWeDo: {
@@ -168,14 +168,14 @@ export const dictionary: Dictionary = {
     items: ["local businesses", "ecommerce stores"],
   },
   services: {
-    title: "SEO Services",
-    subtitle: "Full promotion for organic traffic and lead growth",
-    viewAll: "All services",
+    title: "Platform capabilities",
+    subtitle: "Growth actions RankBoost prepares for your review",
+    viewAll: "All capabilities",
     learnMore: "Learn more",
-    pageTitle: "SEO Services",
+    pageTitle: "What RankBoost does",
     pageSubtitle:
-      "Full range of SEO services in Estonia and Europe — from audit to comprehensive support.",
-    ctaConsultation: "Get a Consultation",
+      "An AI Growth Manager that audits your website, finds opportunities, and prepares review-ready SEO, content, and social actions.",
+    ctaConsultation: "Contact us",
     whatsIncluded: "What's included",
   },
   process: {
@@ -202,13 +202,13 @@ export const dictionary: Dictionary = {
   },
   pricing: {
     title: "Pricing",
-    subtitle: "Transparent monthly plans with no hidden fees",
+    subtitle: "SaaS plans for website growth — start free, upgrade when you need more",
     popular: "Popular",
-    pageTitle: "SEO Service Pricing",
+    pageTitle: "Plans for growth",
     pageSubtitle:
-      "Choose the plan for your business — from local promotion to full SEO partnership.",
+      "Start free. Upgrade when you need more growth actions. No long-term contracts. Cancel anytime.",
     comparisonTitle: "Plan comparison",
-    customNote: "All prices exclude VAT. Minimum period — 3 months.",
+    customNote: "Paid checkout will be available when billing is configured.",
   },
   pricingFaq: {
     title: "Pricing FAQ",
@@ -291,31 +291,32 @@ export const dictionary: Dictionary = {
   },
   contact: {
     title: "Contact us",
-    subtitle: "Tell us about your project — we'll propose the optimal SEO strategy",
+    subtitle:
+      "Have a question about RankBoost? Tell us about your website and we'll get back to you.",
     form: {
       name: "Name",
       namePlaceholder: "Your name",
       email: "Email",
       emailPlaceholder: "email@example.com",
-      phone: "Phone / Telegram / WhatsApp",
-      phonePlaceholder: "+372 ... or @username",
-      website: "Website",
-      websitePlaceholder: "https://yoursite.ee",
+      phone: "Phone",
+      phonePlaceholder: "",
+      website: "Website URL",
+      websitePlaceholder: "https://yoursite.com",
       budget: "Budget",
-      budgetPlaceholder: "Select budget",
+      budgetPlaceholder: "",
       service: "Service",
-      servicePlaceholder: "Select a service",
+      servicePlaceholder: "",
       plan: "Plan",
-      planPlaceholder: "Select a plan",
+      planPlaceholder: "",
       message: "Message",
-      messagePlaceholder: "Tell us about your project and goals...",
-      websiteOrMessageHint: "Provide a website or describe your task in the message — one field is required.",
-      websiteOrMessageError: "Please provide a website or write a message.",
-      submit: "Send inquiry",
+      messagePlaceholder: "How can we help you with RankBoost?",
+      websiteOrMessageHint: "Provide your website URL or a short message — at least one is required.",
+      websiteOrMessageError: "Please provide a website URL or write a message.",
+      submit: "Send message",
       submitting: "Sending...",
-      success: "Thank you! Your request has been sent. We will contact you soon.",
+      success: "Thank you! Your message has been sent. We will get back to you soon.",
       error:
-        "Failed to send the request. Please try again or email us directly at info@rankboost.eu.",
+        "Failed to send the message. Please try again or email us directly at info@rankboost.eu.",
     },
     info: {
       title: "Contact information",
@@ -351,7 +352,7 @@ export const dictionary: Dictionary = {
   },
   footer: {
     description:
-      "RankBoost.eu — SEO agency for small and medium businesses in Estonia and Europe. We promote websites on Google in Russian, Estonian, and English.",
+      "RankBoost.eu — AI Growth Manager for website visibility. Audits, growth actions, and review-ready drafts for SEO, content, and social — you approve everything.",
     navigation: "Navigation",
     servicesTitle: "Services",
     blogTitle: "Blog",

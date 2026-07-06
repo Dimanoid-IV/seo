@@ -45,20 +45,20 @@ export default async function ServicesPage({ params }: PageProps) {
   );
 
   return (
-    <>
+    <div className="marketing-page min-h-screen">
       <JsonLdScript data={servicesJsonLd} />
-      <div className="border-b border-white/5 bg-gradient-to-b from-blue-600/10 to-transparent py-16">
+      <div className="border-b border-slate-200/80 bg-gradient-to-b from-blue-50/80 to-white py-16">
         <div className="mx-auto max-w-7xl px-4 text-center sm:px-6 lg:px-8">
-          <h1 className="text-4xl font-bold text-white md:text-5xl">
+          <h1 className="text-4xl font-bold text-slate-900 md:text-5xl">
             {dict.services.pageTitle}
           </h1>
-          <p className="mx-auto mt-4 max-w-2xl text-lg text-slate-400">
+          <p className="mx-auto mt-4 max-w-2xl text-lg text-slate-600">
             {dict.services.pageSubtitle}
           </p>
         </div>
       </div>
-      <ServicesSection locale={loc} dict={dict} detailed />
-      <CTASection locale={loc} dict={dict} source="services" />
-    </>
+      <ServicesSection locale={loc} dict={dict} detailed theme="marketing" showHeading={false} />
+      <CTASection locale={loc} dict={dict} source="services" theme="marketing" />
+    </div>
   );
 }

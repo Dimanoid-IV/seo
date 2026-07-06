@@ -10,6 +10,7 @@ import { LocaleLink } from "@/components/ui/LocaleLink";
 import { buttonVariants } from "@/components/ui/button";
 import { LanguageSwitcher } from "@/components/layout/LanguageSwitcher";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { isLightMarketingPath } from "@/lib/marketing-paths";
 import { cn } from "@/lib/utils";
 
 type HeaderProps = {
@@ -25,20 +26,16 @@ const navItems = [
   { key: "contact" as const, href: "/contact" },
 ];
 
-function isHomePath(pathname: string): boolean {
-  return /^\/(ru|et|en)\/?$/.test(pathname);
-}
-
 export function Header({ locale, dict }: HeaderProps) {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
-  const isHome = isHomePath(pathname ?? "");
+  const isLight = isLightMarketingPath(pathname ?? "");
 
   return (
     <header
       className={cn(
         "sticky top-0 z-50 backdrop-blur-xl",
-        isHome
+        isLight
           ? "border-b border-slate-200/80 bg-white/85"
           : "border-b border-white/5 bg-[#050816]/80"
       )}
@@ -49,7 +46,7 @@ export function Header({ locale, dict }: HeaderProps) {
           href="/"
           className={cn(
             "flex items-center gap-2.5 font-bold",
-            isHome ? "text-slate-900" : "text-white"
+            isLight ? "text-slate-900" : "text-white"
           )}
         >
           <div className="flex size-9 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-violet-600 shadow-[0_4px_14px_-4px_rgba(59,130,246,0.45)]">
@@ -68,7 +65,7 @@ export function Header({ locale, dict }: HeaderProps) {
               href={item.href}
               className={cn(
                 "rounded-lg px-3 py-2 text-sm transition-colors",
-                isHome
+                isLight
                   ? "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
                   : "text-slate-300 hover:bg-white/5 hover:text-white"
               )}
@@ -84,7 +81,7 @@ export function Header({ locale, dict }: HeaderProps) {
             href="/login"
             className={cn(
               "rounded-lg px-3 py-2 text-sm transition-colors",
-              isHome
+              isLight
                 ? "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
                 : "text-slate-300 hover:bg-white/5 hover:text-white"
             )}
@@ -108,7 +105,7 @@ export function Header({ locale, dict }: HeaderProps) {
             <SheetTrigger
               className={cn(
                 "inline-flex size-9 items-center justify-center rounded-lg",
-                isHome
+                isLight
                   ? "text-slate-700 hover:bg-slate-100"
                   : "text-white hover:bg-white/10"
               )}

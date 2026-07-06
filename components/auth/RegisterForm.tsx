@@ -93,7 +93,7 @@ export function RegisterForm({
       {error ? <AuthError message={error} /> : null}
 
       {fieldErrors.length > 0 ? (
-        <ul className="space-y-1 text-sm text-red-300">
+        <ul className="space-y-1 text-sm text-red-600">
           {fieldErrors.map((item) => (
             <li key={item}>• {item}</li>
           ))}
@@ -111,6 +111,7 @@ export function RegisterForm({
           value={name}
           onChange={(event) => setName(event.target.value)}
           disabled={loading}
+          className="border-slate-200 bg-white text-slate-900"
         />
       </div>
 
@@ -125,6 +126,7 @@ export function RegisterForm({
           onChange={(event) => setEmail(event.target.value)}
           placeholder="you@company.com"
           disabled={loading}
+          className="border-slate-200 bg-white text-slate-900"
         />
       </div>
 
@@ -140,6 +142,7 @@ export function RegisterForm({
           onChange={(event) => setPassword(event.target.value)}
           placeholder={auth.passwordMinHint}
           disabled={loading}
+          className="border-slate-200 bg-white text-slate-900"
         />
       </div>
 
@@ -156,6 +159,7 @@ export function RegisterForm({
           onChange={(event) => setWebsiteUrl(event.target.value)}
           placeholder="https://example.com"
           disabled={loading}
+          className="border-slate-200 bg-white text-slate-900"
         />
       </div>
 
@@ -165,15 +169,15 @@ export function RegisterForm({
           checked={acceptTerms}
           onChange={(event) => setAcceptTerms(event.target.checked)}
           disabled={loading}
-          className="mt-1 size-4 rounded border-white/20 bg-white/5 accent-blue-500"
+          className="mt-1 size-4 rounded border-slate-300 accent-blue-600"
         />
         <span>
           {auth.acceptTerms}{" "}
-          <Link href={termsHref} className="text-blue-400 hover:text-cyan-400">
+          <Link href={termsHref} className="text-blue-600 hover:text-blue-700">
             {auth.termsLink}
           </Link>{" "}
           {locale === "ru" ? "и" : locale === "et" ? "ja" : "and"}{" "}
-          <Link href={privacyHref} className="text-blue-400 hover:text-cyan-400">
+          <Link href={privacyHref} className="text-blue-600 hover:text-blue-700">
             {auth.privacyLink}
           </Link>
         </span>
@@ -197,7 +201,7 @@ export function RegisterForm({
       <Button
         type="button"
         variant="outline"
-        className="w-full border-white/10 bg-white/5 text-slate-400"
+        className="w-full rounded-xl border-slate-200 bg-slate-50 text-slate-500"
         disabled
         aria-disabled
       >
@@ -206,7 +210,7 @@ export function RegisterForm({
 
       <p className="text-center text-sm text-slate-500">
         {auth.hasAccount}{" "}
-        <Link href="/login" className="text-blue-400 hover:text-cyan-400">
+        <Link href="/login" className="text-blue-600 hover:text-blue-700">
           {auth.login}
         </Link>
       </p>
