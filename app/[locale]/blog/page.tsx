@@ -35,34 +35,34 @@ export default async function BlogPage({ params }: PageProps) {
   const posts = getBlogPosts(locale as Locale);
 
   return (
-    <>
-      <div className="border-b border-white/5 bg-gradient-to-b from-cyan-600/10 to-transparent py-16">
+    <div className="marketing-page min-h-screen">
+      <div className="border-b border-slate-200/80 bg-gradient-to-b from-blue-50/80 to-white py-16">
         <div className="mx-auto max-w-7xl px-4 text-center sm:px-6 lg:px-8">
-          <h1 className="text-4xl font-bold text-white md:text-5xl">
+          <h1 className="text-4xl font-bold text-slate-900 md:text-5xl">
             {dict.blog.title}
           </h1>
-          <p className="mx-auto mt-4 max-w-2xl text-lg text-slate-400">
+          <p className="mx-auto mt-4 max-w-2xl text-lg text-slate-600">
             {dict.blog.subtitle}
           </p>
           <div className="mt-6 flex flex-wrap items-center justify-center gap-4 text-sm">
             <LocaleLink
               locale={locale as Locale}
               href="/services"
-              className="text-blue-400 hover:text-cyan-400"
+              className="text-blue-600 hover:text-blue-700"
             >
               {dict.nav.services} →
             </LocaleLink>
             <LocaleLink
               locale={locale as Locale}
               href="/pricing"
-              className="text-blue-400 hover:text-cyan-400"
+              className="text-blue-600 hover:text-blue-700"
             >
               {dict.nav.pricing} →
             </LocaleLink>
           </div>
         </div>
       </div>
-      <section className="py-20">
+      <section className="marketing-section">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           {posts.length > 0 ? (
             <BlogList
@@ -71,13 +71,14 @@ export default async function BlogPage({ params }: PageProps) {
               readMore={dict.blog.readMore}
               minLabel={dict.blog.min}
               allLabel={dict.blog.allCategories}
+              theme="marketing"
             />
           ) : (
-            <p className="text-center text-slate-400">{dict.blog.noArticles}</p>
+            <p className="text-center text-slate-600">{dict.blog.noArticles}</p>
           )}
         </div>
       </section>
-      <CTASection locale={locale as Locale} dict={dict} />
-    </>
+      <CTASection locale={locale as Locale} dict={dict} theme="marketing" />
+    </div>
   );
 }

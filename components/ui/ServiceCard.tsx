@@ -14,7 +14,6 @@ import type { Locale } from "@/i18n/config";
 import type { Service } from "@/data/services";
 import { ButtonLink } from "@/components/ui/ButtonLink";
 import { cn } from "@/lib/utils";
-import { getContactPath } from "@/lib/contact-links";
 
 const iconMap: Record<string, LucideIcon> = {
   Settings,
@@ -103,7 +102,7 @@ export function ServiceCard({
       </ul>
       <ButtonLink
         locale={locale}
-        href={getContactPath({ source: "services" })}
+        href="/register"
         className={cn(
           "mt-auto w-full rounded-xl bg-gradient-to-r from-blue-600 to-violet-600 hover:from-blue-500 hover:to-violet-500",
           !detailed && "w-auto self-start px-4"

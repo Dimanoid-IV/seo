@@ -97,12 +97,13 @@ export default async function BlogPostPage({ params }: PageProps) {
   const langLabels: Record<Locale, string> = { ru: "RU", et: "ET", en: "EN" };
 
   return (
-    <>
+    <div className="marketing-page min-h-screen">
       <BlogJsonLd post={post} locale={locale} />
       <article className="py-12 lg:py-20">
         <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
           <Breadcrumbs
             locale={locale}
+            theme="marketing"
             items={[
               { label: dict.common.breadcrumbHome, href: "/" },
               { label: dict.nav.blog, href: "/blog" },
@@ -113,7 +114,7 @@ export default async function BlogPostPage({ params }: PageProps) {
           <div className="mb-4 flex flex-wrap items-center gap-3">
             <Badge
               variant="outline"
-              className="border-blue-500/30 bg-blue-500/10 text-blue-300"
+              className="border-blue-200 bg-blue-50 text-blue-700"
             >
               {post.category}
             </Badge>
@@ -125,7 +126,7 @@ export default async function BlogPostPage({ params }: PageProps) {
                   <Link
                     key={l}
                     href={getLocalizedPath(l, `/blog/${translations[l]}`)}
-                    className="rounded px-1.5 py-0.5 text-blue-400 hover:bg-white/5 hover:text-cyan-400"
+                    className="rounded px-1.5 py-0.5 text-blue-600 hover:bg-blue-50 hover:text-blue-700"
                   >
                     {langLabels[l]}
                   </Link>
@@ -133,11 +134,11 @@ export default async function BlogPostPage({ params }: PageProps) {
             </div>
           </div>
 
-          <h1 className="text-3xl font-bold leading-tight text-white md:text-4xl lg:text-5xl">
+          <h1 className="text-3xl font-bold leading-tight text-slate-900 md:text-4xl lg:text-5xl">
             {post.title}
           </h1>
 
-          <p className="mt-4 text-lg text-slate-400">{post.excerpt}</p>
+          <p className="mt-4 text-lg text-slate-600">{post.excerpt}</p>
 
           <div className="mt-6 flex flex-wrap items-center gap-4 text-sm text-slate-500">
             <span className="flex items-center gap-1.5">
@@ -154,9 +155,9 @@ export default async function BlogPostPage({ params }: PageProps) {
             </span>
           </div>
 
-          <div className="my-8 h-px bg-gradient-to-r from-transparent via-blue-500/30 to-transparent" />
+          <div className="my-8 h-px bg-gradient-to-r from-transparent via-blue-200 to-transparent" />
 
-          <BlogContent sections={post.content} />
+          <BlogContent sections={post.content} theme="marketing" />
 
           <BlogArticleFAQ
             title={faqBlockTitle(locale)}
@@ -168,32 +169,32 @@ export default async function BlogPostPage({ params }: PageProps) {
               <Badge
                 key={tag}
                 variant="secondary"
-                className="bg-white/5 text-slate-400"
+                className="bg-slate-100 text-slate-600"
               >
                 {tag}
               </Badge>
             ))}
           </div>
 
-          <div className="mt-8 flex flex-wrap gap-4 border-t border-white/10 pt-8">
+          <div className="mt-8 flex flex-wrap gap-4 border-t border-slate-200 pt-8">
             <LocaleLink
               locale={locale}
               href="/services"
-              className="text-sm text-blue-400 hover:text-cyan-400"
+              className="text-sm text-blue-600 hover:text-blue-700"
             >
               {dict.nav.services} →
             </LocaleLink>
             <LocaleLink
               locale={locale}
               href="/pricing"
-              className="text-sm text-blue-400 hover:text-cyan-400"
+              className="text-sm text-blue-600 hover:text-blue-700"
             >
               {dict.nav.pricing} →
             </LocaleLink>
             <LocaleLink
               locale={locale}
               href="/blog"
-              className="text-sm text-slate-400 hover:text-white"
+              className="text-sm text-slate-600 hover:text-slate-900"
             >
               {dict.blog.backToBlog}
             </LocaleLink>
@@ -205,10 +206,11 @@ export default async function BlogPostPage({ params }: PageProps) {
             title={dict.blog.related}
             readMore={dict.blog.readMore}
             minLabel={dict.blog.min}
+            theme="marketing"
           />
         </div>
       </article>
-      <CTASection locale={locale} dict={dict} source="blog" />
-    </>
+      <CTASection locale={locale} dict={dict} source="blog" theme="marketing" />
+    </div>
   );
 }

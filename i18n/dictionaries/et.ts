@@ -4,7 +4,7 @@ export const dictionary: Dictionary = {
   meta: {
     siteName: "RankBoost.eu",
     siteDescription:
-      "Veebisaitide SEO-edendamine Eestis ja Euroopas. Tehniline SEO, kohalik SEO, audit ja sisuturundus väikeettevõtetele.",
+      "AI Growth Manager väikeettevõtetele — veebilehe audit, kasvuvõimalused ja ülevaatamiseks valmis SEO, sisu ja sotsiaalmeedia tegevused.",
     home: {
       title: "RankBoost — AI Growth Manager väikeettevõtetele",
       description:
@@ -21,9 +21,9 @@ export const dictionary: Dictionary = {
         "RankBoost SaaS paketid: Free, Starter, Pro ja Agency. Alustage tasuta ja uuendage, kui vajate rohkem tegevusi.",
     },
     blog: {
-      title: "SEO blogi | RankBoost.eu",
+      title: "Veebi kasvu blogi | RankBoost.eu",
       description:
-        "Ekspertartiklid SEO, kohaliku SEO, tehnilise optimeerimise ja sisustrateegia kohta Eestis.",
+        "Praktilised artiklid veebilehe kasvust, SEO põhitõdedest, AI-otsingust ja ülevaatamiseks valmis tegevustest.",
     },
     contact: {
       title: "Kontakt | RankBoost.eu",
@@ -41,7 +41,7 @@ export const dictionary: Dictionary = {
   },
   nav: {
     home: "Avaleht",
-    services: "Teenused",
+    services: "Toode",
     pricing: "Paketid",
     blog: "Blogi",
     contact: "Kontakt",
@@ -170,7 +170,7 @@ export const dictionary: Dictionary = {
     pageTitle: "Mida RankBoost teeb",
     pageSubtitle:
       "AI Growth Manager: auditeerib veebilehte, leiab võimalusi ja valmistab SEO, sisu ja sotsiaalmeedia mustandid — teie kinnitate iga sammu.",
-    ctaConsultation: "Võta ühendust",
+    ctaConsultation: "Alusta tasuta",
     whatsIncluded: "Mis sisaldub",
   },
   process: {
@@ -273,8 +273,9 @@ export const dictionary: Dictionary = {
     note: "Free paketil krediitkaart pole vajalik. Tühistamine igal ajal.",
   },
   blog: {
-    title: "SEO blogi",
-    subtitle: "Ekspertartiklid Google'is edendamise kohta Eestis",
+    title: "Veebi kasvu blogi",
+    subtitle:
+      "Praktilised juhendid SEO põhitõdedest, AI-otsingu nähtavusest, sisukavast ja ülevaatamiseks valmis kasvutegevustest.",
     readMore: "Loe",
     readTime: "min lugemist",
     min: "min",
@@ -349,13 +350,15 @@ export const dictionary: Dictionary = {
     description:
       "RankBoost.eu — AI Growth Manager veebinähtavuse jaoks. Audit, kasvutegevused ja SEO, sisu ning sotsiaalmeedia mustandid — teie kinnitate kõik.",
     navigation: "Navigatsioon",
-    servicesTitle: "Teenused",
+    productTitle: "Toode",
     blogTitle: "Blogi",
+    trustNote:
+      "Pikaajalisi lepinguid pole. Tühistamine igal ajal. Midagi ei avaldata automaatselt.",
     legal: "Juriidiline info",
     privacy: "Privaatsus",
     terms: "Tingimused",
     disclaimer:
-      "SEO tulemused sõltuvad veebilehe seisust, konkurentsist ja järjepidevast tööst.",
+      "Kasvu tulemused sõltuvad veebilehe seisust, konkurentsist ja soovitatud tegevuste regulaarsest ülevaatamisest.",
     copyright: "© {year} RankBoost.eu. Kõik õigused kaitstud.",
   },
   privacy: {

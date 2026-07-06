@@ -253,3 +253,47 @@
 .prose-blog th {
   @apply bg-white/5 font-semibold text-white;
 }
+
+/* Light marketing blog articles */
+.marketing-page .prose-blog h2 {
+  @apply text-slate-900;
+}
+.marketing-page .prose-blog h3 {
+  @apply text-slate-800;
+}
+.marketing-page .prose-blog p,
+.marketing-page .prose-blog ul,
+.marketing-page .prose-blog ol,
+.marketing-page .prose-blog li {
+  @apply text-slate-600;
+}
+.marketing-page .prose-blog strong {
+  @apply text-slate-900;
+}
+.marketing-page .prose-blog a {
+  @apply text-blue-600 hover:text-blue-700;
+}
+.marketing-page .prose-blog hr {
+  @apply border-slate-200;
+}
+.marketing-page .prose-blog code {
+  @apply bg-slate-100 text-blue-700;
+}
+.marketing-page .prose-blog pre {
+  @apply border-slate-200 bg-slate-50;
+}
+.marketing-page .prose-blog th,
+.marketing-page .prose-blog td {
+  @apply border-slate-200;
+}
+.marketing-page .prose-blog th {
+  @apply bg-slate-50 text-slate-900;
+}
+
+.marketing-page .rounded-xl.border.border-white\/10 {
+  @apply border-slate-200 bg-slate-50;
+}
+
+.marketing-page .rounded-2xl.border.border-blue-500\/30 {
+  @apply border-blue-200 bg-gradient-to-br from-blue-50 to-violet-50;
+}

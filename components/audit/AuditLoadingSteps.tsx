@@ -3,7 +3,7 @@
 import { CheckCircle2, Circle, Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
 
-import { AUDIT_LOADING_STEPS } from "@/lib/audit/client-messages";
+import { useSaasTranslations } from "@/lib/i18n/saas/SaasLocaleProvider";
 import { cn } from "@/lib/utils";
 
 type AuditLoadingStepsProps = {
@@ -11,6 +11,8 @@ type AuditLoadingStepsProps = {
 };
 
 export function AuditLoadingSteps({ active }: AuditLoadingStepsProps) {
+  const { dict } = useSaasTranslations();
+  const steps = dict.publicAudit.loadingSteps;
   const [activeIndex, setActiveIndex] = useState(0);
 
   useEffect(() => {
@@ -20,12 +22,12 @@ export function AuditLoadingSteps({ active }: AuditLoadingStepsProps) {
 
     const interval = window.setInterval(() => {
       setActiveIndex((current) =>
-        current < AUDIT_LOADING_STEPS.length - 1 ? current + 1 : current
+        current < steps.length - 1 ? current + 1 : current
       );
     }, 2200);
 
     return () => window.clearInterval(interval);
-  }, [active]);
+  }, [active, steps.length]);
 
   if (!active) {
     return null;
@@ -33,34 +35,34 @@ export function AuditLoadingSteps({ active }: AuditLoadingStepsProps) {
 
   return (
     <div
-      className="glass-card mx-auto max-w-lg p-6"
+      className="marketing-card mx-auto max-w-lg p-6"
       role="status"
       aria-live="polite"
-      aria-label="Проверка сайта"
+      aria-label={dict.publicAudit.loadingAria}
     >
       <ul className="space-y-4">
-        {AUDIT_LOADING_STEPS.map((step, index) => {
+        {steps.map((step, index) => {
           const isComplete = index < activeIndex;
           const isCurrent = index === activeIndex;
 
           return (
             <li key={step} className="flex items-center gap-3">
               {isComplete ? (
-                <CheckCircle2 className="size-5 shrink-0 text-emerald-400" aria-hidden />
+                <CheckCircle2 className="size-5 shrink-0 text-emerald-600" aria-hidden />
               ) : isCurrent ? (
                 <Loader2
-                  className="size-5 shrink-0 animate-spin text-blue-400"
+                  className="size-5 shrink-0 animate-spin text-blue-600"
                   aria-hidden
                 />
               ) : (
-                <Circle className="size-5 shrink-0 text-slate-600" aria-hidden />
+                <Circle className="size-5 shrink-0 text-slate-300" aria-hidden />
               )}
               <span
                 className={cn(
                   "text-sm",
-                  isComplete && "text-slate-400",
-                  isCurrent && "font-medium text-white",
-                  !isComplete && !isCurrent && "text-slate-500"
+                  isComplete && "text-slate-500",
+                  isCurrent && "font-medium text-slate-900",
+                  !isComplete && !isCurrent && "text-slate-400"
                 )}
               >
                 {step}

@@ -643,6 +643,57 @@ export type SaasDictionary = {
     plans: Array<{ name: string; description: string }>;
     noCheckoutNote: string;
   };
+  publicAudit: {
+    pageTitle: string;
+    pageSubtitle: string;
+    loginRegister: string;
+    urlLabel: string;
+    urlPlaceholder: string;
+    runPreview: string;
+    running: string;
+    trustNote: string;
+    checkAnother: string;
+    createAccountCta: string;
+    fullPlanTitle: string;
+    fullPlanDesc: string;
+    fullPlanDescWithToken: string;
+    issuesTitle: string;
+    issuesSubtitle: (count: number) => string;
+    noIssues: string;
+    scorePreviewLabel: string;
+    scoreTitle: string;
+    scoreDescription: string;
+    statResponseTime: string;
+    statWordCount: string;
+    statH1Count: string;
+    statFixEstimate: string;
+    checkedUrl: string;
+    whatToDo: string;
+    scoreImpact: (points: number) => string;
+    approxFixTime: (time: string) => string;
+    loadingSteps: string[];
+    loadingAria: string;
+    scoreLabels: {
+      poor: string;
+      needs_work: string;
+      good: string;
+      strong: string;
+    };
+    severityLabels: Record<string, string>;
+    errors: {
+      invalidUrl: string;
+      blockedHost: string;
+      timeout: string;
+      tooLarge: string;
+      unsupportedContent: string;
+      unreachable: string;
+      serverError: string;
+      generic: string;
+      emptyUrl: string;
+      unexpectedResponse: string;
+      networkError: string;
+    };
+  };
   statuses: {
     draft: string;
     ready: string;

@@ -1,28 +1,9 @@
-import type { ScoreLabel } from "@/lib/audit/preview-response";
+import type { SaasLocale } from "@/lib/i18n/saas/locales";
+import { getSaasDictionary } from "@/lib/i18n/saas";
 
-export const AUDIT_SCORE_LABELS: Record<ScoreLabel, string> = {
-  poor: "Нужны срочные улучшения",
-  needs_work: "Есть хороший потенциал роста",
-  good: "Сайт в неплохом состоянии",
-  strong: "Сильная база для роста",
-};
+import type { ScoreLabel } from "./preview-response";
 
-export const AUDIT_LOADING_STEPS = [
-  "Проверяем доступность сайта…",
-  "Анализируем структуру страницы…",
-  "Ищем главные препятствия для роста…",
-  "Считаем Growth Score preview…",
-] as const;
-
-export const AUDIT_SEVERITY_LABELS: Record<string, string> = {
-  CRITICAL: "Критично",
-  HIGH: "Высокий приоритет",
-  MEDIUM: "Средний приоритет",
-  LOW: "Низкий приоритет",
-  INFO: "Информация",
-};
-
-type ApiErrorPayload = {
+export type ApiErrorPayload = {
   error?: {
     code?: string;
     message?: string;
@@ -32,29 +13,31 @@ type ApiErrorPayload = {
   };
 };
 
-/** Maps preview API errors to user-friendly Russian messages. */
+/** Maps preview API errors to user-friendly localized messages. */
 export function getAuditPreviewErrorMessage(
   status: number,
-  body: ApiErrorPayload
+  body: ApiErrorPayload,
+  locale: SaasLocale = "en"
 ): string {
+  const errors = getSaasDictionary(locale).publicAudit.errors;
   const code = body.error?.code;
   const scannerError = body.error?.details?.scannerError;
   const serverMessage = body.error?.message;
 
   if (scannerError === "INVALID_URL") {
-    return "Укажите корректный адрес сайта, например example.com или https://example.com";
+    return errors.invalidUrl;
   }
   if (scannerError === "SSRF_BLOCKED" || scannerError === "BLOCKED_HOST") {
-    return "Этот адрес нельзя проверить по соображениям безопасности";
+    return errors.blockedHost;
   }
   if (scannerError === "TIMEOUT" || status === 408) {
-    return "Сайт отвечает слишком долго. Попробуйте позже или проверьте другой URL";
+    return errors.timeout;
   }
   if (scannerError === "TOO_LARGE" || status === 413) {
-    return "Страница слишком большая для бесплатной проверки";
+    return errors.tooLarge;
   }
   if (scannerError === "UNSUPPORTED_CONTENT_TYPE" || status === 415) {
-    return "По этому адресу нет HTML-страницы. Укажите URL главной страницы сайта";
+    return errors.unsupportedContent;
   }
   if (
     scannerError === "WEBSITE_UNREACHABLE" ||
@@ -62,26 +45,54 @@ export function getAuditPreviewErrorMessage(
     scannerError === "SSL_FAILURE" ||
     status === 422
   ) {
-    return "Не удалось открыть сайт. Проверьте адрес и убедитесь, что сайт доступен";
+    return errors.unreachable;
   }
   if (code === "VALIDATION_ERROR" && serverMessage) {
     return serverMessage;
   }
   if (status >= 500) {
-    return "Сервис временно недоступен. Попробуйте через несколько минут";
+    return errors.serverError;
   }
 
-  return serverMessage ?? "Не удалось выполнить проверку. Попробуйте ещё раз";
+  return serverMessage ?? errors.generic;
 }
 
-export function formatFixMinutes(minutes: number): string {
+export function formatFixMinutes(minutes: number, locale: SaasLocale = "en"): string {
+  if (locale === "ru") {
+    if (minutes < 60) {
+      return `~${minutes} мин`;
+    }
+    const hours = Math.floor(minutes / 60);
+    const rest = minutes % 60;
+    if (rest === 0) {
+      return `~${hours} ч`;
+    }
+    return `~${hours} ч ${rest} мин`;
+  }
+
+  if (locale === "et") {
+    if (minutes < 60) {
+      return `~${minutes} min`;
+    }
+    const hours = Math.floor(minutes / 60);
+    const rest = minutes % 60;
+    if (rest === 0) {
+      return `~${hours} h`;
+    }
+    return `~${hours} h ${rest} min`;
+  }
+
   if (minutes < 60) {
-    return `~${minutes} мин`;
+    return `~${minutes} min`;
   }
   const hours = Math.floor(minutes / 60);
   const rest = minutes % 60;
   if (rest === 0) {
-    return `~${hours} ч`;
+    return `~${hours} h`;
   }
-  return `~${hours} ч ${rest} мин`;
+  return `~${hours} h ${rest} min`;
+}
+
+export function getAuditScoreLabel(label: ScoreLabel, locale: SaasLocale): string {
+  return getSaasDictionary(locale).publicAudit.scoreLabels[label];
 }

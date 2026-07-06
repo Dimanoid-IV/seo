@@ -205,8 +205,9 @@ export type Dictionary = {
   footer: {
     description: string;
     navigation: string;
-    servicesTitle: string;
+    productTitle: string;
     blogTitle: string;
+    trustNote: string;
     legal: string;
     privacy: string;
     terms: string;
@@ -236,7 +237,7 @@ export const dictionary: Dictionary = {
   meta: {
     siteName: "RankBoost.eu",
     siteDescription:
-      "SEO-продвижение сайтов в Эстонии и Европе. Техническое SEO, Local SEO, аудит и контентное продвижение для малого и среднего бизнеса.",
+      "AI Growth Manager для малого бизнеса — аудит сайта, возможности роста и готовые к проверке SEO, контент и соцсети.",
     home: {
       title: "RankBoost — AI Growth Manager для малого бизнеса",
       description:
@@ -253,9 +254,9 @@ export const dictionary: Dictionary = {
         "SaaS-тарифы RankBoost: Free, Starter, Pro и Agency. Начните бесплатно и переходите на платный план, когда понадобится больше действий.",
     },
     blog: {
-      title: "SEO-блог | RankBoost.eu",
+      title: "Блог о росте сайта | RankBoost.eu",
       description:
-        "Экспертные статьи о SEO, Local SEO, технической оптимизации и контентной стратегии для бизнеса в Эстонии.",
+        "Практические статьи о росте сайта, основах SEO, AI-поиске и готовых к проверке действиях для малого бизнеса.",
     },
     contact: {
       title: "Контакты | RankBoost.eu",
@@ -273,7 +274,7 @@ export const dictionary: Dictionary = {
   },
   nav: {
     home: "Главная",
-    services: "Услуги",
+    services: "Продукт",
     pricing: "Тарифы",
     blog: "Блог",
     contact: "Контакты",
@@ -407,7 +408,7 @@ export const dictionary: Dictionary = {
     pageTitle: "Что делает RankBoost",
     pageSubtitle:
       "AI Growth Manager: аудит сайта, поиск возможностей и подготовка SEO, контента и соцсетей — вы одобряете каждый шаг.",
-    ctaConsultation: "Связаться с нами",
+    ctaConsultation: "Начать бесплатно",
     whatsIncluded: "Что входит",
   },
   process: {
@@ -510,8 +511,9 @@ export const dictionary: Dictionary = {
     note: "Без кредитной карты на Free-плане. Отмена в любой момент.",
   },
   blog: {
-    title: "SEO-блог",
-    subtitle: "Экспертные статьи о продвижении в Google для бизнеса в Эстонии",
+    title: "Блог о росте сайта",
+    subtitle:
+      "Практические материалы об основах SEO, AI-поиске, контент-планировании и готовых к проверке действиях для роста.",
     readMore: "Читать",
     readTime: "мин чтения",
     min: "мин",
@@ -586,13 +588,15 @@ export const dictionary: Dictionary = {
     description:
       "RankBoost.eu — AI Growth Manager для видимости сайта. Аудит, действия для роста и черновики SEO, контента и соцсетей — вы одобряете каждый шаг.",
     navigation: "Навигация",
-    servicesTitle: "Услуги",
+    productTitle: "Продукт",
     blogTitle: "Блог",
+    trustNote:
+      "Без долгосрочных контрактов. Отмена в любой момент. Ничего не публикуется автоматически.",
     legal: "Правовая информация",
     privacy: "Конфиденциальность",
     terms: "Условия",
     disclaimer:
-      "SEO-результаты зависят от состояния сайта, конкуренции и регулярности работы.",
+      "Результаты роста зависят от состояния сайта, конкуренции и регулярной проверки рекомендованных действий.",
     copyright: "© {year} RankBoost.eu. Все права защищены.",
   },
   privacy: {

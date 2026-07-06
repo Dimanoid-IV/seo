@@ -1,10 +1,10 @@
+"use client";
+
 import { Clock, TrendingDown } from "lucide-react";
 
-import {
-  AUDIT_SEVERITY_LABELS,
-  formatFixMinutes,
-} from "@/lib/audit/client-messages";
+import { formatFixMinutes } from "@/lib/audit/client-messages";
 import type { AuditPreviewIssue } from "@/lib/audit/preview-response";
+import { useSaasTranslations } from "@/lib/i18n/saas/SaasLocaleProvider";
 import { cn } from "@/lib/utils";
 
 type AuditIssueCardProps = {
@@ -12,52 +12,54 @@ type AuditIssueCardProps = {
 };
 
 const severityStyles: Record<string, string> = {
-  CRITICAL: "border-red-500/30 bg-red-500/5",
-  HIGH: "border-orange-500/30 bg-orange-500/5",
-  MEDIUM: "border-amber-500/30 bg-amber-500/5",
-  LOW: "border-blue-500/20 bg-blue-500/5",
-  INFO: "border-slate-500/20 bg-white/[0.02]",
+  CRITICAL: "border-red-200 bg-red-50/80",
+  HIGH: "border-orange-200 bg-orange-50/80",
+  MEDIUM: "border-amber-200 bg-amber-50/80",
+  LOW: "border-blue-200 bg-blue-50/50",
+  INFO: "border-slate-200 bg-slate-50/80",
 };
 
 export function AuditIssueCard({ issue }: AuditIssueCardProps) {
+  const { dict, locale } = useSaasTranslations();
+  const a = dict.publicAudit;
   const severityLabel =
-    AUDIT_SEVERITY_LABELS[issue.severity] ?? issue.severity;
+    a.severityLabels[issue.severity] ?? issue.severity;
 
   return (
     <article
       className={cn(
-        "glass-card flex flex-col gap-4 border p-5",
+        "marketing-card flex flex-col gap-4 border p-5",
         severityStyles[issue.severity] ?? severityStyles.INFO
       )}
     >
       <div className="flex flex-wrap items-start justify-between gap-3">
-        <h3 className="text-base font-semibold leading-snug text-white">
+        <h3 className="text-base font-semibold leading-snug text-slate-900">
           {issue.title}
         </h3>
-        <span className="rounded-full border border-white/10 bg-white/5 px-2.5 py-0.5 text-xs font-medium text-slate-300">
+        <span className="rounded-full border border-slate-200 bg-white px-2.5 py-0.5 text-xs font-medium text-slate-600">
           {severityLabel}
         </span>
       </div>
 
-      <p className="text-sm leading-relaxed text-slate-400">{issue.whyItMatters}</p>
+      <p className="text-sm leading-relaxed text-slate-600">{issue.whyItMatters}</p>
 
-      <div className="rounded-lg border border-white/5 bg-white/[0.03] px-4 py-3">
+      <div className="rounded-lg border border-slate-200 bg-white px-4 py-3">
         <p className="text-xs font-medium uppercase tracking-wide text-slate-500">
-          Что сделать
+          {a.whatToDo}
         </p>
-        <p className="mt-1.5 text-sm leading-relaxed text-slate-200">
+        <p className="mt-1.5 text-sm leading-relaxed text-slate-800">
           {issue.recommendation}
         </p>
       </div>
 
-      <div className="flex flex-wrap gap-4 text-xs text-slate-400">
+      <div className="flex flex-wrap gap-4 text-xs text-slate-500">
         <span className="inline-flex items-center gap-1.5">
-          <TrendingDown className="size-3.5 text-amber-400" aria-hidden />
-          Влияние на score: −{issue.scoreImpact}
+          <TrendingDown className="size-3.5 text-amber-600" aria-hidden />
+          {a.scoreImpact(issue.scoreImpact)}
         </span>
         <span className="inline-flex items-center gap-1.5">
-          <Clock className="size-3.5 text-cyan-400" aria-hidden />
-          Примерно {formatFixMinutes(issue.estimatedFixMinutes)}
+          <Clock className="size-3.5 text-cyan-600" aria-hidden />
+          {a.approxFixTime(formatFixMinutes(issue.estimatedFixMinutes, locale))}
         </span>
       </div>
     </article>

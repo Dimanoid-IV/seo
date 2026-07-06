@@ -1,6 +1,9 @@
+"use client";
+
 import { GrowthScoreGauge } from "@/components/dashboard/GrowthScoreGauge";
-import { AUDIT_SCORE_LABELS } from "@/lib/audit/client-messages";
+import { getAuditScoreLabel } from "@/lib/audit/client-messages";
 import type { ScoreLabel } from "@/lib/audit/preview-response";
+import { useSaasTranslations } from "@/lib/i18n/saas/SaasLocaleProvider";
 import { cn } from "@/lib/utils";
 
 type AuditScoreSummaryProps = {
@@ -10,10 +13,10 @@ type AuditScoreSummaryProps = {
 };
 
 const labelAccent: Record<ScoreLabel, string> = {
-  poor: "text-red-300",
-  needs_work: "text-amber-300",
-  good: "text-cyan-300",
-  strong: "text-emerald-300",
+  poor: "text-red-600",
+  needs_work: "text-amber-600",
+  good: "text-cyan-600",
+  strong: "text-emerald-600",
 };
 
 export function AuditScoreSummary({
@@ -21,29 +24,27 @@ export function AuditScoreSummary({
   label,
   className,
 }: AuditScoreSummaryProps) {
+  const { dict, locale } = useSaasTranslations();
+  const a = dict.publicAudit;
+
   return (
     <div
       className={cn(
-        "glass-card flex flex-col items-center gap-4 border border-white/10 p-6 sm:flex-row sm:items-center sm:justify-between sm:gap-8",
+        "marketing-card flex flex-col items-center gap-4 p-6 sm:flex-row sm:items-center sm:justify-between sm:gap-8",
         className
       )}
     >
-      <GrowthScoreGauge
-        score={rawScore}
-        label="Growth Score preview"
-        size="lg"
-      />
+      <GrowthScoreGauge score={rawScore} label={a.scorePreviewLabel} size="lg" />
 
       <div className="max-w-md text-center sm:text-left">
         <p className="text-xs font-medium uppercase tracking-wide text-slate-500">
-          Оценка сайта
+          {a.scoreTitle}
         </p>
         <p className={cn("mt-2 text-xl font-semibold", labelAccent[label])}>
-          {AUDIT_SCORE_LABELS[label]}
+          {getAuditScoreLabel(label, locale)}
         </p>
-        <p className="mt-2 text-sm leading-relaxed text-slate-400">
-          Это предварительная оценка по 20 техническим и контентным проверкам.
-          Полный план роста доступен после регистрации.
+        <p className="mt-2 text-sm leading-relaxed text-slate-600">
+          {a.scoreDescription}
         </p>
       </div>
     </div>

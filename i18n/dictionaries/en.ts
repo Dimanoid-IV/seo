@@ -4,7 +4,7 @@ export const dictionary: Dictionary = {
   meta: {
     siteName: "RankBoost.eu",
     siteDescription:
-      "SEO promotion for websites in Estonia and Europe. Technical SEO, Local SEO, audit, and content marketing for small and medium businesses.",
+      "AI Growth Manager for small businesses — website audits, growth opportunities, and review-ready SEO, content, and social actions.",
     home: {
       title: "RankBoost — AI Growth Manager for Small Businesses",
       description:
@@ -21,9 +21,9 @@ export const dictionary: Dictionary = {
         "RankBoost SaaS plans: Free, Starter, Pro, and Agency. Start free and upgrade when you need more growth actions.",
     },
     blog: {
-      title: "SEO Blog | RankBoost.eu",
+      title: "Growth Blog | RankBoost.eu",
       description:
-        "Expert articles on SEO, Local SEO, technical optimization, and content strategy for businesses in Estonia.",
+        "Practical articles on website growth, SEO basics, AI search readiness, and review-ready actions for small businesses.",
     },
     contact: {
       title: "Contact | RankBoost.eu",
@@ -41,7 +41,7 @@ export const dictionary: Dictionary = {
   },
   nav: {
     home: "Home",
-    services: "Services",
+    services: "Product",
     pricing: "Pricing",
     blog: "Blog",
     contact: "Contact",
@@ -175,7 +175,7 @@ export const dictionary: Dictionary = {
     pageTitle: "What RankBoost does",
     pageSubtitle:
       "An AI Growth Manager that audits your website, finds opportunities, and prepares review-ready SEO, content, and social actions.",
-    ctaConsultation: "Contact us",
+    ctaConsultation: "Start free",
     whatsIncluded: "What's included",
   },
   process: {
@@ -278,8 +278,9 @@ export const dictionary: Dictionary = {
     note: "No credit card required on the Free plan. Cancel anytime.",
   },
   blog: {
-    title: "SEO Blog",
-    subtitle: "Expert articles on Google promotion for businesses in Estonia",
+    title: "Website growth blog",
+    subtitle:
+      "Practical guides on SEO basics, AI search visibility, content planning, and review-ready growth actions.",
     readMore: "Read",
     readTime: "min read",
     min: "min",
@@ -354,13 +355,15 @@ export const dictionary: Dictionary = {
     description:
       "RankBoost.eu — AI Growth Manager for website visibility. Audits, growth actions, and review-ready drafts for SEO, content, and social — you approve everything.",
     navigation: "Navigation",
-    servicesTitle: "Services",
+    productTitle: "Product",
     blogTitle: "Blog",
+    trustNote:
+      "No long-term contracts. Cancel anytime. Nothing is published automatically.",
     legal: "Legal",
     privacy: "Privacy",
     terms: "Terms",
     disclaimer:
-      "SEO results depend on website condition, competition and consistent work.",
+      "Growth results depend on website condition, competition, and consistent review of recommended actions.",
     copyright: "© {year} RankBoost.eu. All rights reserved.",
   },
   privacy: {

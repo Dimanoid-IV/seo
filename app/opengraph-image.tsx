@@ -1,7 +1,7 @@
 import { ImageResponse } from "next/og";
 
 export const runtime = "edge";
-export const alt = "RankBoost.eu — SEO services in Estonia and Europe";
+export const alt = "RankBoost.eu — AI Growth Manager for small businesses";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -17,7 +17,7 @@ export default function OpenGraphImage() {
           alignItems: "flex-start",
           justifyContent: "center",
           padding: "80px",
-          background: "linear-gradient(135deg, #050816 0%, #1e1b4b 50%, #0c4a6e 100%)",
+          background: "linear-gradient(135deg, #f8fafc 0%, #eff6ff 50%, #f5f3ff 100%)",
         }}
       >
         <div
@@ -43,15 +43,15 @@ export default function OpenGraphImage() {
           >
             ↑
           </div>
-          <span style={{ fontSize: "48px", fontWeight: 700, color: "white" }}>
-            Rank<span style={{ color: "#60a5fa" }}>Boost</span>.eu
+          <span style={{ fontSize: "48px", fontWeight: 700, color: "#0f172a" }}>
+            Rank<span style={{ color: "#2563eb" }}>Boost</span>.eu
           </span>
         </div>
-        <p style={{ fontSize: "36px", color: "#94a3b8", maxWidth: "900px", lineHeight: 1.4 }}>
-          SEO services in Estonia &amp; Europe
+        <p style={{ fontSize: "36px", color: "#334155", maxWidth: "900px", lineHeight: 1.4 }}>
+          AI Growth Manager for small businesses
         </p>
         <p style={{ fontSize: "24px", color: "#64748b", marginTop: "16px" }}>
-          Technical SEO · Local SEO · Content · Multilingual
+          Website audits · Growth actions · Review-ready drafts
         </p>
       </div>
     ),

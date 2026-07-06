@@ -12,9 +12,18 @@ type BlogListProps = {
   readMore: string;
   minLabel: string;
   allLabel: string;
+  theme?: "dark" | "marketing";
 };
 
-export function BlogList({ posts, locale, readMore, minLabel, allLabel }: BlogListProps) {
+export function BlogList({
+  posts,
+  locale,
+  readMore,
+  minLabel,
+  allLabel,
+  theme = "dark",
+}: BlogListProps) {
+  const isMarketing = theme === "marketing";
   const categories = useMemo(() => {
     const cats = [...new Set(posts.map((p) => p.category))].sort();
     return [allLabel, ...cats];
@@ -37,7 +46,9 @@ export function BlogList({ posts, locale, readMore, minLabel, allLabel }: BlogLi
               "rounded-full px-4 py-1.5 text-sm font-medium transition-all",
               active === cat
                 ? "bg-gradient-to-r from-blue-600 to-violet-600 text-white"
-                : "border border-white/10 bg-white/5 text-slate-400 hover:border-white/20 hover:text-white"
+                : isMarketing
+                  ? "border border-slate-200 bg-white text-slate-600 hover:border-blue-200 hover:text-slate-900"
+                  : "border border-white/10 bg-white/5 text-slate-400 hover:border-white/20 hover:text-white"
             )}
           >
             {cat}
@@ -52,11 +63,14 @@ export function BlogList({ posts, locale, readMore, minLabel, allLabel }: BlogLi
             locale={locale}
             readMore={readMore}
             minLabel={minLabel}
+            theme={theme}
           />
         ))}
       </div>
       {filtered.length === 0 && (
-        <p className="text-center text-slate-400">No articles in this category.</p>
+        <p className={cn("text-center", isMarketing ? "text-slate-600" : "text-slate-400")}>
+          No articles in this category.
+        </p>
       )}
     </>
   );
