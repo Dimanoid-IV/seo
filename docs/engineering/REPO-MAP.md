@@ -799,6 +799,16 @@ Audit / GSC sync / Article generate / Task complete / Dashboard load
 | Failed AI jobs | ✅ `FAILED` + `HERMES_UNAVAILABLE`, no broken drafts |
 | Redeploy after Hermes secrets | ⏸ pending deployment/credentials |
 
+### 4.3.38. SaaS language system (prompt 11.4)
+
+| Item | Status |
+|------|--------|
+| Client i18n en/ru/et | ✅ `lib/i18n/saas/` |
+| Language switcher | ✅ sidebar + header + auth |
+| Persistence | ✅ localStorage + cookie |
+| Pricing SaaS alignment | ✅ `/pricing` |
+| Commit | `b758d19` — `feat: add SaaS language system` |
+
 ### 4.3.37. Marketing landing polish (prompt 11.3)
 
 | Item | Status |
@@ -1130,4 +1140,5 @@ curl -s -o /dev/null -w "%{http_code}" -X POST http://localhost:3000/api/contact
 | 2026-07-06 | 11.1 | Real browser beta QA — GSC banner fix, Playwright pass at 375px |
 | 2026-07-06 | 11.2 | Premium airy design polish — SaasCard system, no theme switcher |
 | 2026-07-06 | 11.3 | Marketing landing polish — AI Growth Manager positioning, light homepage |
+| 2026-07-06 | 11.4 | SaaS language system — en/ru/et, switcher, pricing SaaS alignment |
 | 2026-07-02 | 10.7 | Production integrations QA — www URLs, Resend alias, blocked secrets documented — промпт 10.7 |

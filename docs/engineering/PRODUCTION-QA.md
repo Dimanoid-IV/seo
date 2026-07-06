@@ -1,6 +1,6 @@
 # Production QA — RankBoost.eu SaaS
 
-> **Prompt 11.3** — Premium marketing landing page polish.  
+> **Prompt 11.4** — SaaS language system & copy consistency.  
 > **Last updated:** 2026-07-06
 
 **Related:** `docs/engineering/REPO-MAP.md` · `.env.example` · `lib/env.ts`
@@ -837,6 +837,54 @@ Key messages on homepage:
 - Blog/services pages retain older SEO agency positioning
 - Auth form copy still largely Russian
 - Theme system deferred
+
+---
+
+## 8.6. SaaS language system (prompt 11.4)
+
+**Date:** 2026-07-06  
+**Commit:** `b758d19` — `feat: add SaaS language system`
+
+### Locales
+
+| Item | Value |
+|------|-------|
+| Supported | `en`, `ru`, `et` |
+| SaaS default | `en` (browser-detected if unset) |
+| Marketing route default | `ru` (unchanged — `/` → `/ru`) |
+| Persistence | `localStorage` + cookie `rankboost_locale` |
+| Switcher | App sidebar footer, mobile menu sheet, app header (desktop), login/register |
+
+### Translated priority pages
+
+- `/app` dashboard chrome + cards
+- `/app/billing` + plan cards
+- `/app/integrations` page header, errors, benefits
+- `/app/autopilot-control` header + errors
+- `/app/reports` full UI labels
+- `/login`, `/register` forms + shells
+- `/pricing` — SaaS plan preview (legacy agency plans removed)
+- Sidebar + mobile nav
+
+### Friendly errors
+
+`lib/copy/user-errors.ts` — locale-aware via `friendlyApiErrorMessageForLocale()`.
+
+### Remaining translation gaps
+
+- Server API view-models (`lib/dashboard/simple-overview.ts`, `lib/onboarding/format.ts`, autopilot-control formatters) still return English dynamic strings
+- Integration action sheet / WordPress panel deep copy (partially RU in places)
+- Content Plan page section bodies
+- Onboarding step forms (partially English)
+- Blog/services marketing pages still SEO agency positioning
+
+### Production deploy (11.4)
+
+| Item | Value |
+|------|-------|
+| Deployment ID | `dpl_8cLAcAsFaMVH9cTQFN7YxaHzAKPh` |
+| Deployment URL | https://seo-ah2ofe65j-dimanoid-ivs-projects.vercel.app |
+| Production domain | https://www.rankboost.eu |
 
 ---
 
