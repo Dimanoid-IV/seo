@@ -799,6 +799,17 @@ Audit / GSC sync / Article generate / Task complete / Dashboard load
 | Failed AI jobs | ✅ `FAILED` + `HERMES_UNAVAILABLE`, no broken drafts |
 | Redeploy after Hermes secrets | ⏸ pending deployment/credentials |
 
+### 4.3.37. Marketing landing polish (prompt 11.3)
+
+| Item | Status |
+|------|--------|
+| Homepage AI Growth Manager positioning | ✅ ru/en/et |
+| Light premium marketing layout + dark dashboard mockup | ✅ |
+| Register CTAs on homepage/header | ✅ |
+| Login/register visual alignment | ✅ light shell |
+| Theme system | ⏸ deferred |
+| Commit | `1ab8cb9` — `style: polish premium marketing landing page` |
+
 ### 4.3.36. Premium design polish (prompt 11.2)
 
 | Item | Status |
@@ -1118,4 +1129,5 @@ curl -s -o /dev/null -w "%{http_code}" -X POST http://localhost:3000/api/contact
 | 2026-07-06 | 11.0 | Mobile UX polish — overflow, friendly errors, tap targets |
 | 2026-07-06 | 11.1 | Real browser beta QA — GSC banner fix, Playwright pass at 375px |
 | 2026-07-06 | 11.2 | Premium airy design polish — SaasCard system, no theme switcher |
+| 2026-07-06 | 11.3 | Marketing landing polish — AI Growth Manager positioning, light homepage |
 | 2026-07-02 | 10.7 | Production integrations QA — www URLs, Resend alias, blocked secrets documented — промпт 10.7 |

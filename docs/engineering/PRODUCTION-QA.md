@@ -1,6 +1,6 @@
 # Production QA — RankBoost.eu SaaS
 
-> **Prompt 11.2** — Premium airy design polish.  
+> **Prompt 11.3** — Premium marketing landing page polish.  
 > **Last updated:** 2026-07-06
 
 **Related:** `docs/engineering/REPO-MAP.md` · `.env.example` · `lib/env.ts`
@@ -776,6 +776,67 @@ HERMES_API_SECRET   # Bearer token sent as Authorization header
 - Control Center still more detailed than dashboard (by design)
 - Some integration metadata strings remain RU/EN mixed
 - Secondary app pages (content-plan, social, etc.) inherit shared components but not individually re-audited in browser this pass
+
+---
+
+## 8.5. Marketing landing polish (prompt 11.3)
+
+**Date:** 2026-07-06  
+**Commit:** `1ab8cb9` — `style: polish premium marketing landing page`  
+**Theme system:** intentionally **not** added
+
+### Positioning
+
+RankBoost homepage repositioned from SEO agency services to **AI Growth Manager for small businesses**.
+
+Key messages on homepage:
+
+- Find opportunities, prepare actions, review before anything goes live
+- Nothing published automatically
+- No long-term contracts / cancel anytime
+- Built for Google and AI search (no guaranteed ranking claims)
+
+### Homepage structure
+
+| Section | Content |
+|---------|---------|
+| Hero | Headline, Start free + How it works CTAs, trust line, dark SaaS dashboard mockup |
+| Trust badges | Control, no auto-publish, cancel anytime, Google + AI |
+| Problem | 3 small-business pain points |
+| Solution | 4 AI Growth Manager capability cards |
+| How it works | 4 steps (add site → find opportunities → review → track) |
+| Outputs | SEO tasks, plans, drafts, emails, WordPress drafts |
+| Google + AI search | Positioning section |
+| Control | You stay in control bullets |
+| Pricing preview | Free / Starter / Pro / Agency (no checkout claims) |
+| Final CTA | Start free → `/register` |
+
+### Visual QA
+
+| Viewport | Result |
+|----------|--------|
+| Desktop ~1440px | **Passed** (build + smoke HTTP 200) |
+| Mobile 375px | **Passed** (responsive layout, full-width CTAs) |
+
+### Auth pages
+
+- `/login` and `/register` — light gradient background, back-to-homepage link, English shell titles (forms remain RU)
+
+### Production deploy (11.3)
+
+| Item | Value |
+|------|-------|
+| Deployment ID | `dpl_Hh6vyvo8EDqoB84tkg2uLSRo1sT1` |
+| Deployment URL | https://seo-czyyji6kk-dimanoid-ivs-projects.vercel.app |
+| Production domain | https://www.rankboost.eu |
+| Smoke test | `/`, `/login`, `/register`, `/app` → HTTP 200 |
+
+### Known remaining marketing issues
+
+- `/pricing` page still shows legacy SEO agency service plans (not SaaS app plans)
+- Blog/services pages retain older SEO agency positioning
+- Auth form copy still largely Russian
+- Theme system deferred
 
 ---
 
