@@ -2,15 +2,15 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Menu, X, TrendingUp } from "lucide-react";
+import { usePathname } from "next/navigation";
+import { Menu, Sparkles, X } from "lucide-react";
 import type { Locale } from "@/i18n/config";
 import type { Dictionary } from "@/i18n/dictionaries/ru";
 import { LocaleLink } from "@/components/ui/LocaleLink";
-import { ButtonLink } from "@/components/ui/ButtonLink";
+import { buttonVariants } from "@/components/ui/button";
 import { LanguageSwitcher } from "@/components/layout/LanguageSwitcher";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
-import { getContactPath } from "@/lib/contact-links";
 
 type HeaderProps = {
   locale: Locale;
@@ -25,22 +25,38 @@ const navItems = [
   { key: "contact" as const, href: "/contact" },
 ];
 
+function isHomePath(pathname: string): boolean {
+  return /^\/(ru|et|en)\/?$/.test(pathname);
+}
+
 export function Header({ locale, dict }: HeaderProps) {
   const [open, setOpen] = useState(false);
+  const pathname = usePathname();
+  const isHome = isHomePath(pathname ?? "");
 
   return (
-    <header className="sticky top-0 z-50 border-b border-white/5 bg-[#050816]/80 backdrop-blur-xl">
+    <header
+      className={cn(
+        "sticky top-0 z-50 backdrop-blur-xl",
+        isHome
+          ? "border-b border-slate-200/80 bg-white/85"
+          : "border-b border-white/5 bg-[#050816]/80"
+      )}
+    >
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         <LocaleLink
           locale={locale}
           href="/"
-          className="flex items-center gap-2 font-bold text-white"
+          className={cn(
+            "flex items-center gap-2.5 font-bold",
+            isHome ? "text-slate-900" : "text-white"
+          )}
         >
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-blue-500 to-violet-600">
-            <TrendingUp className="h-4 w-4 text-white" />
+          <div className="flex size-9 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-violet-600 shadow-[0_4px_14px_-4px_rgba(59,130,246,0.45)]">
+            <Sparkles className="size-4 text-white" />
           </div>
-          <span className="text-lg">
-            Rank<span className="gradient-text">Boost</span>.eu
+          <span className="text-lg tracking-tight">
+            Rank<span className="text-blue-600">Boost</span>
           </span>
         </LocaleLink>
 
@@ -50,42 +66,58 @@ export function Header({ locale, dict }: HeaderProps) {
               key={item.key}
               locale={locale}
               href={item.href}
-              className="rounded-lg px-3 py-2 text-sm text-slate-300 transition-colors hover:bg-white/5 hover:text-white"
+              className={cn(
+                "rounded-lg px-3 py-2 text-sm transition-colors",
+                isHome
+                  ? "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
+                  : "text-slate-300 hover:bg-white/5 hover:text-white"
+              )}
             >
               {dict.nav[item.key]}
             </LocaleLink>
           ))}
         </nav>
 
-        <div className="hidden items-center gap-3 md:flex">
+        <div className="hidden items-center gap-2 md:flex">
           <LanguageSwitcher currentLocale={locale} />
           <Link
-            href="/audit"
-            className="rounded-lg px-3 py-2 text-sm text-slate-300 transition-colors hover:bg-white/5 hover:text-white"
+            href="/login"
+            className={cn(
+              "rounded-lg px-3 py-2 text-sm transition-colors",
+              isHome
+                ? "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
+                : "text-slate-300 hover:bg-white/5 hover:text-white"
+            )}
           >
-            SEO-аудит
+            {dict.nav.login}
           </Link>
-          <ButtonLink
-            locale={locale}
-            href={getContactPath({ service: "seo-audit", source: "header" })}
-            size="sm"
-            className="bg-gradient-to-r from-blue-600 to-violet-600 hover:from-blue-500 hover:to-violet-500"
+          <Link
+            href="/register"
+            className={cn(
+              buttonVariants({ size: "sm" }),
+              "rounded-xl bg-gradient-to-r from-blue-600 to-violet-600 hover:from-blue-500 hover:to-violet-500"
+            )}
           >
             {dict.nav.cta}
-          </ButtonLink>
+          </Link>
         </div>
 
-        <div className="flex items-center gap-3 md:hidden">
+        <div className="flex items-center gap-2 md:hidden">
           <LanguageSwitcher currentLocale={locale} />
           <Sheet open={open} onOpenChange={setOpen}>
             <SheetTrigger
-              className="inline-flex size-8 items-center justify-center rounded-lg text-white hover:bg-white/10"
+              className={cn(
+                "inline-flex size-9 items-center justify-center rounded-lg",
+                isHome
+                  ? "text-slate-700 hover:bg-slate-100"
+                  : "text-white hover:bg-white/10"
+              )}
             >
               {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </SheetTrigger>
             <SheetContent
               side="right"
-              className="border-white/10 bg-[#050816] w-72"
+              className="w-72 border-slate-200 bg-white"
             >
               <nav className="mt-8 flex flex-col gap-1">
                 {navItems.map((item) => (
@@ -94,30 +126,28 @@ export function Header({ locale, dict }: HeaderProps) {
                     locale={locale}
                     href={item.href}
                     onClick={() => setOpen(false)}
-                    className={cn(
-                      "rounded-lg px-4 py-3 text-base text-slate-300 transition-colors hover:bg-white/5 hover:text-white"
-                    )}
+                    className="rounded-lg px-4 py-3 text-base text-slate-700 transition-colors hover:bg-slate-100"
                   >
                     {dict.nav[item.key]}
                   </LocaleLink>
                 ))}
                 <Link
-                  href="/audit"
+                  href="/login"
+                  onClick={() => setOpen(false)}
+                  className="rounded-lg px-4 py-3 text-base text-slate-700 transition-colors hover:bg-slate-100"
+                >
+                  {dict.nav.login}
+                </Link>
+                <Link
+                  href="/register"
                   onClick={() => setOpen(false)}
                   className={cn(
-                    "rounded-lg px-4 py-3 text-base text-slate-300 transition-colors hover:bg-white/5 hover:text-white"
+                    buttonVariants(),
+                    "mt-4 rounded-xl bg-gradient-to-r from-blue-600 to-violet-600"
                   )}
                 >
-                  SEO-аудит
-                </Link>
-                <ButtonLink
-                  locale={locale}
-                  href={getContactPath({ service: "seo-audit", source: "header" })}
-                  className="mt-4 bg-gradient-to-r from-blue-600 to-violet-600"
-                  onClick={() => setOpen(false)}
-                >
                   {dict.nav.cta}
-                </ButtonLink>
+                </Link>
               </nav>
             </SheetContent>
           </Sheet>

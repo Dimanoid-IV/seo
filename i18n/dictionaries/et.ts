@@ -6,9 +6,9 @@ export const dictionary: Dictionary = {
     siteDescription:
       "Veebisaitide SEO-edendamine Eestis ja Euroopas. Tehniline SEO, kohalik SEO, audit ja sisuturundus väikeettevõtetele.",
     home: {
-      title: "SEO-edendamine Eestis ja Euroopas | RankBoost.eu",
+      title: "RankBoost — AI Growth Manager väikeettevõtetele",
       description:
-        "Professionaalne SEO väike- ja keskmise suurusega ettevõtetele Tallinnas ja Euroopas. Tehniline SEO, kohalik SEO, audit, sisu ja igakuine tugi.",
+        "Leidke veebilehe kasvuvõimalused, valmistage SEO ja sisu tegevused ning parandage nähtavust Google'is ja AI-otsingus — iga samm teie kontrolli all.",
     },
     services: {
       title: "SEO-teenused | RankBoost.eu",
@@ -45,60 +45,122 @@ export const dictionary: Dictionary = {
     pricing: "Paketid",
     blog: "Blogi",
     contact: "Kontakt",
-    cta: "SEO audit",
+    login: "Logi sisse",
+    cta: "Alusta tasuta",
   },
   hero: {
-    badge: "SEO Eestis ja Euroopas",
-    title: "SEO teenused Eestis ja Euroopas",
+    badge: "AI Growth Manager",
+    title: "Teie AI Growth Manager parema veebinähtavuse jaoks",
     subtitle:
-      "Aitame ettevõtetel saada rohkem kliente Google'ist: tehniline SEO, sisustrateegia, kohalik SEO ja orgaanilise liikluse kasv.",
-    ctaPrimary: "Küsi SEO-auditit",
-    ctaSecondary: "Vaata pakette",
+      "RankBoost auditeerib teie veebilehte, leiab SEO ja sisu võimalusi, valmistab kasvutegevused ette ja aitab parandada nähtavust Google'is ja AI-otsingus — teie otsustate.",
+    ctaPrimary: "Alusta tasuta",
+    ctaSecondary: "Kuidas see töötab",
+    trustLine:
+      "Ilma pikaajaliste lepinguteta. Midagi ei avaldata automaatselt.",
     dashboard: {
-      live: "Live",
-      organicTraffic: "Orgaaniline liiklus",
-      organicTrafficValue: "+48%",
-      seoScore: "SEO skoor",
-      seoScoreValue: "87/100",
-      keywordsGrowth: "Märksõnade kasv",
-      googleVisibility: "Google nähtavus",
-      technicalSeo: "Tehniline SEO",
-      contentStrategy: "Sisustrateegia",
-      localSeo: "Kohalik SEO",
+      overview: "Teie veebilehe kasvu ülevaade",
+      status: "Jälgime teie saiti",
+      growthScore: "Growth Score",
+      growthScoreValue: "72 / 100",
+      opportunities: "Võimalused",
+      opportunitiesValue: "4 leitud",
+      needsReview: "Vajab ülevaatust",
+      needsReviewValue: "2 punkti",
+      nextAction: "Järgmine samm",
+      nextActionValue: "Vaata üle kuine kasvuplaan",
+      prepared: "Teile valmistatud",
+      preparedItems: "Artikli mustand · postitused · kinnituse e-kiri",
     },
   },
   trust: {
     items: [
-      "Eesti ja Euroopa ettevõtetele",
-      "SEO vene, eesti ja inglise keeles",
-      "Läbipaistvad kuupaketid",
-      "Fookus päringutel, mitte ainult positsioonidel",
+      "Midagi ei avaldata automaatselt",
+      "Te vaatate iga tegevuse üle",
+      "Tühistamine igal ajal",
+      "Google ja AI-otsing",
+    ],
+  },
+  problem: {
+    title: "Tuttav olukord?",
+    subtitle:
+      "Enamik väikeettevõtteid teab, et veebileht peaks tooma kliente, kuid ei tea, kust alustada.",
+    items: [
+      "Pole selge, miks Google liiklus on madal",
+      "Puudub aeg SEO-sisu loomiseks",
+      "Pole kindel, mida järgmisena postitada või parandada",
+    ],
+  },
+  solution: {
+    title: "RankBoost on teie AI Growth Manager",
+    subtitle:
+      "Platvorm leiab võimalused, valmistab plaanid ja mustandid — te otsustate, mis avaldatakse.",
+    items: [
+      {
+        title: "Leiab võimalused",
+        description: "Veebiaudit, ülesanded ja kasvuideed andmete põhjal.",
+      },
+      {
+        title: "Valmistab tegevused",
+        description: "Kuine plaan, SEO-ülesanded ja prioriteedid ühes kohas.",
+      },
+      {
+        title: "Loob mustandid",
+        description: "Artiklid, postitused ja e-kirjad ülevaatuseks, mitte autopublitseerimiseks.",
+      },
+      {
+        title: "Jälgib progressi",
+        description: "Growth Score, tegevus ja järgmine samm on alati nähtaval.",
+      },
+    ],
+  },
+  outputs: {
+    title: "Mida RankBoost valmistada saab",
+    subtitle: "Valmis teie ülevaatuseks — mitte automaatseks avaldamiseks.",
+    items: [
+      "SEO-ülesanded",
+      "Kuine kasvuplaan",
+      "Artikli mustandid",
+      "Sotsiaalpostituste mustandid",
+      "Kinnituse e-kirjad",
+      "WordPressi mustandid",
+    ],
+    trustNote: "Valmistatud ülevaatuseks — midagi ei avaldata automaatselt.",
+  },
+  aiSearch: {
+    title: "Loodud Google'i ja AI-otsingu jaoks",
+    description:
+      "RankBoost aitab luua selgemaid ja kasulikumaid lehti, mis vastavad klientide küsimustele ja parandavad nähtavust kaasaegsetes AI-otsingutes. Ilma garanteeritud positsioonide lubadusteta.",
+  },
+  control: {
+    title: "Te jääte kontrolli alla",
+    items: [
+      "Midagi ei avaldata automaatselt",
+      "E-kirju ei saadeta ilma teie kinnituseta",
+      "WordPressi sisu luuakse mustanditena",
+      "Iga soovitust saab enne tegevust üle vaadata",
+    ],
+  },
+  pricingPreview: {
+    title: "Paketid kasvuks",
+    subtitle: "Alustage tasuta. Uuendage, kui vajate rohkem tegevusi.",
+    trustNote:
+      "Ilma pikaajaliste lepinguteta. Tühistamine igal ajal. Olemasolevad andmed jäävad kättesaadavaks.",
+    plans: [
+      { name: "Free", description: "Alustage ja tutvuge RankBoostiga" },
+      { name: "Starter", description: "Üks sait ja stabiilne kasv" },
+      { name: "Pro", description: "Rohkem genereerimisi ja tegevusi" },
+      { name: "Agency", description: "Meeskonnad ja mitu projekti" },
     ],
   },
   whatWeDo: {
     title: "Mida me teeme",
-    subtitle: "Terviklik SEO lähenemine — auditist kuni igakuise kasvuni",
-    items: [
-      "SEO audit",
-      "Tehniline optimeerimine",
-      "Märksõnade analüüs",
-      "SEO artiklid ja sisu",
-      "Kohalik SEO / Google Business Profile",
-      "Sisemine linkimine",
-      "Maandumislehtede optimeerimine",
-      "Igakuine SEO tugi",
-    ],
+    subtitle: "Terviklik SEO lähenemine",
+    items: ["SEO audit", "Sisu", "Kohalik SEO"],
   },
   forWhom: {
     title: "Kellele",
-    subtitle: "Töötame igas suuruses ettevõtetega Eestis ja Euroopas",
-    items: [
-      "kohalikud ettevõtted",
-      "e-poed",
-      "teenused Tallinnas ja Eestis",
-      "ettevõtted, kes soovivad kasvada Euroopa turul",
-      "WordPress, Shopify, Webflow, Tilda ja custom Next.js veebilehed",
-    ],
+    subtitle: "Väike- ja keskmise suurusega ettevõtted",
+    items: ["kohalikud ettevõtted", "e-poed"],
   },
   services: {
     title: "SEO-teenused",
@@ -112,15 +174,25 @@ export const dictionary: Dictionary = {
     whatsIncluded: "Mis sisaldub",
   },
   process: {
-    title: "Kuidas me töötame",
-    subtitle: "Läbipaistev protsess mõõdetavate tulemustega igal etapil",
+    title: "Kuidas see töötab",
+    subtitle: "Lihtne tee veebilehest selgete järgmiste sammudeni",
     steps: [
-      { title: "Kiire veebilehe analüüs" },
-      { title: "SEO audit ja kasvukava" },
-      { title: "Tehniliste vigade parandamine" },
-      { title: "SEO-sisu loomine" },
-      { title: "Struktuuri ja maandumislehtede parandamine" },
-      { title: "Igakuine raport ja uued tegevused" },
+      {
+        title: "Lisage veebileht",
+        description: "Sisestage URL — RankBoost loob tööruumi.",
+      },
+      {
+        title: "RankBoost leiab võimalused",
+        description: "Audit, Growth Score ja kasvülesanded.",
+      },
+      {
+        title: "Vaadake üle ja kinnitage",
+        description: "Plaanid, mustandid ja e-kirjad — alles teie otsuse järel.",
+      },
+      {
+        title: "Jälgige progressi",
+        description: "Töölaual näete, mis on tehtud ja mis on järgmisena.",
+      },
     ],
   },
   pricing: {
@@ -194,11 +266,11 @@ export const dictionary: Dictionary = {
     subtitle: "Vastused peamistele küsimustele SEO-edendamise kohta",
   },
   cta: {
-    title: "Valmis Google'is kasvama?",
+    title: "Alustage veebilehe parandamist juba täna",
     subtitle:
-      "Tellige tasuta SEO audit ja uurige, kuidas suurendada oma veebilehe orgaanilist liiklust.",
-    button: "Saa audit tasuta",
-    note: "Vastame 24 tunni jooksul. Ilma kohustusteta.",
+      "RankBoost näitab, mida järgmisena parandada, ja valmistab tegevused teie ülevaatuseks.",
+    button: "Alusta tasuta",
+    note: "Free paketil krediitkaart pole vajalik. Tühistamine igal ajal.",
   },
   blog: {
     title: "SEO blogi",

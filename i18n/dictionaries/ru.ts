@@ -16,6 +16,7 @@ export type Dictionary = {
     pricing: string;
     blog: string;
     contact: string;
+    login: string;
     cta: string;
   };
   hero: {
@@ -24,21 +25,54 @@ export type Dictionary = {
     subtitle: string;
     ctaPrimary: string;
     ctaSecondary: string;
+    trustLine: string;
     dashboard: {
-      live: string;
-      organicTraffic: string;
-      organicTrafficValue: string;
-      seoScore: string;
-      seoScoreValue: string;
-      keywordsGrowth: string;
-      googleVisibility: string;
-      technicalSeo: string;
-      contentStrategy: string;
-      localSeo: string;
+      overview: string;
+      status: string;
+      growthScore: string;
+      growthScoreValue: string;
+      opportunities: string;
+      opportunitiesValue: string;
+      needsReview: string;
+      needsReviewValue: string;
+      nextAction: string;
+      nextActionValue: string;
+      prepared: string;
+      preparedItems: string;
     };
   };
   trust: {
     items: string[];
+  };
+  problem: {
+    title: string;
+    subtitle: string;
+    items: string[];
+  };
+  solution: {
+    title: string;
+    subtitle: string;
+    items: { title: string; description: string }[];
+  };
+  outputs: {
+    title: string;
+    subtitle: string;
+    items: string[];
+    trustNote: string;
+  };
+  aiSearch: {
+    title: string;
+    description: string;
+  };
+  control: {
+    title: string;
+    items: string[];
+  };
+  pricingPreview: {
+    title: string;
+    subtitle: string;
+    trustNote: string;
+    plans: { name: string; description: string }[];
   };
   whatWeDo: {
     title: string;
@@ -204,9 +238,9 @@ export const dictionary: Dictionary = {
     siteDescription:
       "SEO-продвижение сайтов в Эстонии и Европе. Техническое SEO, Local SEO, аудит и контентное продвижение для малого и среднего бизнеса.",
     home: {
-      title: "SEO-продвижение в Эстонии и Европе | RankBoost.eu",
+      title: "RankBoost — AI Growth Manager для малого бизнеса",
       description:
-        "Профессиональное SEO для малого и среднего бизнеса в Таллине и Европе. Техническое SEO, Local SEO, аудит, контент и ежемесячное сопровождение.",
+        "Находите возможности роста сайта, готовьте SEO и контент-действия и улучшайте видимость в Google и AI-поиске — с вашим контролем на каждом шаге.",
     },
     services: {
       title: "SEO-услуги | RankBoost.eu",
@@ -243,60 +277,127 @@ export const dictionary: Dictionary = {
     pricing: "Тарифы",
     blog: "Блог",
     contact: "Контакты",
-    cta: "SEO-аудит",
+    login: "Войти",
+    cta: "Начать бесплатно",
   },
   hero: {
-    badge: "SEO в Эстонии и Европе",
-    title: "SEO-продвижение сайтов в Эстонии и Европе",
+    badge: "AI Growth Manager",
+    title: "Ваш AI Growth Manager для лучшей видимости сайта",
     subtitle:
-      "Помогаем бизнесу получать больше клиентов из Google: техническая оптимизация, контент, локальное SEO и рост органического трафика.",
-    ctaPrimary: "Получить SEO-аудит",
-    ctaSecondary: "Посмотреть тарифы",
+      "RankBoost проверяет сайт, находит SEO и контент-возможности, готовит действия для роста и помогает улучшить видимость в Google и AI-поиске — вы контролируете каждый шаг.",
+    ctaPrimary: "Начать бесплатно",
+    ctaSecondary: "Как это работает",
+    trustLine:
+      "Без долгосрочных контрактов. Ничего не публикуется автоматически.",
     dashboard: {
-      live: "Live",
-      organicTraffic: "Organic traffic",
-      organicTrafficValue: "+48%",
-      seoScore: "SEO score",
-      seoScoreValue: "87/100",
-      keywordsGrowth: "Keywords growth",
-      googleVisibility: "Google visibility",
-      technicalSeo: "Technical SEO",
-      contentStrategy: "Content Strategy",
-      localSeo: "Local SEO",
+      overview: "Обзор роста вашего сайта",
+      status: "Всё под контролем",
+      growthScore: "Growth Score",
+      growthScoreValue: "72 / 100",
+      opportunities: "Возможности",
+      opportunitiesValue: "4 найдено",
+      needsReview: "Нужен обзор",
+      needsReviewValue: "2 пункта",
+      nextAction: "Следующий шаг",
+      nextActionValue: "Проверить месячный план роста",
+      prepared: "Подготовлено для вас",
+      preparedItems: "Черновик статьи · посты · письмо на согласование",
     },
   },
   trust: {
     items: [
-      "Для бизнеса в Эстонии и Европе",
-      "SEO на русском, эстонском и английском",
-      "Прозрачные ежемесячные планы",
-      "Фокус на заявках, а не только на позициях",
+      "Ничего не публикуется автоматически",
+      "Вы проверяете каждое действие",
+      "Отмена в любой момент",
+      "Google и AI-поиск",
+    ],
+  },
+  problem: {
+    title: "Знакомая ситуация?",
+    subtitle:
+      "Большинство малых бизнесов понимают, что сайт должен приносить клиентов, но не знают, с чего начать.",
+    items: [
+      "Не понятно, почему трафик из Google низкий",
+      "Нет времени на SEO-контент и регулярные улучшения",
+      "Неясно, что публиковать или улучшать дальше",
+    ],
+  },
+  solution: {
+    title: "RankBoost — ваш AI Growth Manager",
+    subtitle:
+      "Платформа находит возможности, готовит план и черновики — вы решаете, что запускать.",
+    items: [
+      {
+        title: "Находит возможности",
+        description:
+          "Аудит сайта, задачи и идеи роста на основе данных и лучших практик.",
+      },
+      {
+        title: "Готовит действия",
+        description:
+          "Месячный план, SEO-задачи и приоритеты — всё в одном месте.",
+      },
+      {
+        title: "Создаёт черновики",
+        description:
+          "Статьи, посты и письма готовятся для проверки, а не для автопубликации.",
+      },
+      {
+        title: "Отслеживает прогресс",
+        description:
+          "Growth Score, активность и следующий шаг всегда на виду.",
+      },
+    ],
+  },
+  outputs: {
+    title: "Что RankBoost может подготовить",
+    subtitle: "Готовые материалы для вашего обзора — не для автоматической публикации.",
+    items: [
+      "SEO-задачи",
+      "Месячный план роста",
+      "Черновики статей",
+      "Черновики постов",
+      "Письма на согласование",
+      "Черновики WordPress",
+    ],
+    trustNote: "Подготовлено для проверки — ничего не публикуется автоматически.",
+  },
+  aiSearch: {
+    title: "Создано для Google и AI-поиска",
+    description:
+      "RankBoost помогает создавать более понятные и полезные страницы: отвечать на вопросы клиентов, улучшать видимость в поиске и быть понятнее для современных AI-поисковых систем. Без обещаний «гарантированных позиций».",
+  },
+  control: {
+    title: "Вы остаётесь главным",
+    items: [
+      "Ничего не публикуется автоматически",
+      "Письма не отправляются без вашего одобрения",
+      "Контент WordPress создаётся как черновики",
+      "Каждую рекомендацию можно проверить перед действием",
+    ],
+  },
+  pricingPreview: {
+    title: "Тарифы для роста",
+    subtitle:
+      "Начните бесплатно. Перейдите на платный план, когда понадобится больше действий.",
+    trustNote:
+      "Без долгосрочных контрактов. Отмена в любой момент. Существующие данные остаются доступны.",
+    plans: [
+      { name: "Free", description: "Начать и протестировать RankBoost" },
+      { name: "Starter", description: "Для одного сайта и регулярного роста" },
+      { name: "Pro", description: "Больше генераций и действий" },
+      { name: "Agency", description: "Для команд и нескольких проектов" },
     ],
   },
   whatWeDo: {
     title: "Что мы делаем",
-    subtitle: "Комплексный подход к SEO — от аудита до ежемесячного роста",
-    items: [
-      "SEO-аудит сайта",
-      "Техническая оптимизация",
-      "Сбор семантики",
-      "SEO-статьи и контент",
-      "Local SEO / Google Business Profile",
-      "Внутренняя перелинковка",
-      "Оптимизация посадочных страниц",
-      "Ежемесячное сопровождение",
-    ],
+    subtitle: "Комплексный подход к SEO",
+    items: ["SEO-аудит", "Контент", "Local SEO"],
   },
   forWhom: {
     title: "Для кого",
-    subtitle: "Работаем с бизнесом любого масштаба в Эстонии и Европе",
-    items: [
-      "локальный бизнес",
-      "интернет-магазины",
-      "услуги в Таллине и Эстонии",
-      "компании, которые выходят на рынок Европы",
-      "сайты на WordPress, Shopify, Webflow, Tilda, custom Next.js",
-    ],
+    subtitle: "Малый и средний бизнес",
+    items: ["локальный бизнес", "интернет-магазины"],
   },
   services: {
     title: "SEO-услуги",
@@ -310,15 +411,25 @@ export const dictionary: Dictionary = {
     whatsIncluded: "Что входит",
   },
   process: {
-    title: "Как мы работаем",
-    subtitle: "Прозрачный процесс с измеримыми результатами на каждом этапе",
+    title: "Как это работает",
+    subtitle: "Простой путь от сайта к понятным следующим шагам",
     steps: [
-      { title: "Быстрый анализ сайта" },
-      { title: "SEO-аудит и план роста" },
-      { title: "Исправление технических ошибок" },
-      { title: "Создание SEO-контента" },
-      { title: "Улучшение структуры и посадочных страниц" },
-      { title: "Ежемесячный отчёт и новые задачи" },
+      {
+        title: "Добавьте сайт",
+        description: "Укажите URL — RankBoost создаст рабочее пространство.",
+      },
+      {
+        title: "RankBoost находит возможности",
+        description: "Аудит, Growth Score и задачи для роста.",
+      },
+      {
+        title: "Проверьте и одобрите",
+        description: "Планы, черновики и письма — только после вашего решения.",
+      },
+      {
+        title: "Отслеживайте прогресс",
+        description: "Дашборд показывает, что сделано и что дальше.",
+      },
     ],
   },
   pricing: {
@@ -392,11 +503,11 @@ export const dictionary: Dictionary = {
     subtitle: "Ответы на главные вопросы о SEO-продвижении",
   },
   cta: {
-    title: "Готовы расти в Google?",
+    title: "Начните улучшать сайт уже сегодня",
     subtitle:
-      "Закажите бесплатный SEO-аудит и узнайте, как увеличить органический трафик вашего сайта.",
-    button: "Получить аудит бесплатно",
-    note: "Ответим в течение 24 часов. Без обязательств.",
+      "RankBoost покажет, что улучшить дальше, и подготовит действия для вашего обзора.",
+    button: "Начать бесплатно",
+    note: "Без кредитной карты на Free-плане. Отмена в любой момент.",
   },
   blog: {
     title: "SEO-блог",

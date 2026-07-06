@@ -5,10 +5,13 @@ import { getDictionary, isValidLocale } from "@/lib/i18n";
 import { generatePageMetadata, SEO_KEYWORDS } from "@/lib/seo";
 import { Hero } from "@/components/sections/Hero";
 import { TrustBadges } from "@/components/sections/TrustBadges";
-import { WhatWeDoSection } from "@/components/sections/WhatWeDoSection";
-import { ForWhomSection } from "@/components/sections/ForWhomSection";
+import { ProblemSection } from "@/components/sections/ProblemSection";
+import { SolutionSection } from "@/components/sections/SolutionSection";
 import { ProcessSection } from "@/components/sections/ProcessSection";
-import { PricingSection } from "@/components/sections/PricingSection";
+import { OutputsSection } from "@/components/sections/OutputsSection";
+import { AiSearchSection } from "@/components/sections/AiSearchSection";
+import { ControlSection } from "@/components/sections/ControlSection";
+import { MarketingPricingPreview } from "@/components/sections/MarketingPricingPreview";
 import { CTASection } from "@/components/sections/CTASection";
 
 type PageProps = {
@@ -40,14 +43,17 @@ export default async function HomePage({ params }: PageProps) {
   const dict = await getDictionary(locale);
 
   return (
-    <>
+    <div className="marketing-page">
       <Hero locale={locale} dict={dict} />
       <TrustBadges dict={dict} />
-      <WhatWeDoSection dict={dict} />
-      <ForWhomSection dict={dict} />
-      <ProcessSection dict={dict} />
-      <PricingSection locale={locale as Locale} dict={dict} />
-      <CTASection locale={locale as Locale} dict={dict} source="home" />
-    </>
+      <ProblemSection dict={dict} />
+      <SolutionSection dict={dict} />
+      <ProcessSection dict={dict} theme="marketing" />
+      <OutputsSection dict={dict} />
+      <AiSearchSection dict={dict} />
+      <ControlSection dict={dict} />
+      <MarketingPricingPreview locale={locale as Locale} dict={dict} />
+      <CTASection locale={locale as Locale} dict={dict} theme="marketing" />
+    </div>
   );
 }

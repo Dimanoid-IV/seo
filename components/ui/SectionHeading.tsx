@@ -4,6 +4,7 @@ type SectionHeadingProps = {
   title: string;
   subtitle?: string;
   align?: "left" | "center";
+  theme?: "dark" | "marketing";
   className?: string;
 };
 
@@ -11,8 +12,11 @@ export function SectionHeading({
   title,
   subtitle,
   align = "center",
+  theme = "dark",
   className,
 }: SectionHeadingProps) {
+  const isMarketing = theme === "marketing";
+
   return (
     <div
       className={cn(
@@ -21,12 +25,24 @@ export function SectionHeading({
         className
       )}
     >
-      <h2 className="text-3xl font-bold tracking-tight text-white md:text-4xl lg:text-5xl">
+      <h2
+        className={cn(
+          "text-3xl font-bold tracking-tight md:text-4xl lg:text-[2.5rem]",
+          isMarketing ? "text-slate-900" : "text-white"
+        )}
+      >
         {title}
       </h2>
-      {subtitle && (
-        <p className="mt-4 text-lg text-slate-400 md:text-xl">{subtitle}</p>
-      )}
+      {subtitle ? (
+        <p
+          className={cn(
+            "mt-4 text-lg leading-relaxed md:text-xl",
+            isMarketing ? "text-slate-600" : "text-slate-400"
+          )}
+        >
+          {subtitle}
+        </p>
+      ) : null}
     </div>
   );
 }

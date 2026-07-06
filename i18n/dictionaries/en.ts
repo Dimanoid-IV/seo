@@ -6,9 +6,9 @@ export const dictionary: Dictionary = {
     siteDescription:
       "SEO promotion for websites in Estonia and Europe. Technical SEO, Local SEO, audit, and content marketing for small and medium businesses.",
     home: {
-      title: "SEO Promotion in Estonia & Europe | RankBoost.eu",
+      title: "RankBoost — AI Growth Manager for Small Businesses",
       description:
-        "Professional SEO for small and medium businesses in Tallinn and Europe. Technical SEO, Local SEO, audit, content, and monthly support.",
+        "Find website growth opportunities, prepare SEO and content actions, and improve visibility in Google and AI search — with every action reviewed by you.",
     },
     services: {
       title: "SEO Services | RankBoost.eu",
@@ -45,60 +45,127 @@ export const dictionary: Dictionary = {
     pricing: "Pricing",
     blog: "Blog",
     contact: "Contact",
-    cta: "SEO Audit",
+    login: "Log in",
+    cta: "Start free",
   },
   hero: {
-    badge: "SEO in Estonia & Europe",
-    title: "SEO Services in Estonia and Europe",
+    badge: "AI Growth Manager",
+    title: "Your AI Growth Manager for better website visibility",
     subtitle:
-      "We help businesses get more customers from Google with technical SEO, content strategy, local SEO and organic traffic growth.",
-    ctaPrimary: "Get an SEO Audit",
-    ctaSecondary: "View Pricing",
+      "RankBoost audits your website, finds SEO and content opportunities, prepares growth actions, and helps you improve visibility in Google and AI search — with you in control.",
+    ctaPrimary: "Start free",
+    ctaSecondary: "See how it works",
+    trustLine:
+      "No long-term contracts. Nothing is published automatically.",
     dashboard: {
-      live: "Live",
-      organicTraffic: "Organic traffic",
-      organicTrafficValue: "+48%",
-      seoScore: "SEO score",
-      seoScoreValue: "87/100",
-      keywordsGrowth: "Keywords growth",
-      googleVisibility: "Google visibility",
-      technicalSeo: "Technical SEO",
-      contentStrategy: "Content Strategy",
-      localSeo: "Local SEO",
+      overview: "Your website growth overview",
+      status: "Monitoring your site",
+      growthScore: "Growth Score",
+      growthScoreValue: "72 / 100",
+      opportunities: "Opportunities",
+      opportunitiesValue: "4 found",
+      needsReview: "Needs review",
+      needsReviewValue: "2 items",
+      nextAction: "Next step",
+      nextActionValue: "Review your monthly growth plan",
+      prepared: "Prepared for you",
+      preparedItems: "Article draft · social posts · review email",
     },
   },
   trust: {
     items: [
-      "For businesses in Estonia and Europe",
-      "SEO in Russian, Estonian and English",
-      "Transparent monthly plans",
-      "Focus on leads, not only rankings",
+      "Nothing is published automatically",
+      "You review every action",
+      "Cancel anytime",
+      "Google and AI search",
+    ],
+  },
+  problem: {
+    title: "Sound familiar?",
+    subtitle:
+      "Most small businesses know their website should bring more customers, but they don't know what to fix first.",
+    items: [
+      "You don't know why Google traffic is low",
+      "You don't have time to create SEO content",
+      "You're not sure what to post or improve next",
+    ],
+  },
+  solution: {
+    title: "RankBoost is your AI Growth Manager",
+    subtitle:
+      "The platform finds opportunities, prepares plans and drafts — you decide what goes live.",
+    items: [
+      {
+        title: "Find opportunities",
+        description:
+          "Website audit, tasks, and growth ideas based on data and best practices.",
+      },
+      {
+        title: "Prepare actions",
+        description:
+          "Monthly plan, SEO tasks, and priorities — all in one place.",
+      },
+      {
+        title: "Create review-ready drafts",
+        description:
+          "Articles, posts, and emails prepared for review — not auto-published.",
+      },
+      {
+        title: "Track progress",
+        description:
+          "Growth Score, activity, and your next step always visible.",
+      },
+    ],
+  },
+  outputs: {
+    title: "What RankBoost can prepare",
+    subtitle: "Ready for your review — not published automatically.",
+    items: [
+      "SEO tasks",
+      "Monthly growth plan",
+      "Article drafts",
+      "Social post drafts",
+      "Review emails",
+      "WordPress drafts",
+    ],
+    trustNote: "Prepared for review — nothing is published automatically.",
+  },
+  aiSearch: {
+    title: "Built for Google and AI search",
+    description:
+      "RankBoost helps you create clearer, more useful pages that answer customer questions, improve search visibility, and make your business easier to understand for modern AI search experiences. No guaranteed ranking claims.",
+  },
+  control: {
+    title: "You stay in control",
+    items: [
+      "Nothing is published automatically",
+      "Emails are not sent without your approval",
+      "WordPress content is created as drafts",
+      "You can review every recommendation first",
+    ],
+  },
+  pricingPreview: {
+    title: "Plans for growth",
+    subtitle:
+      "Start free. Upgrade when you need more growth actions.",
+    trustNote:
+      "No long-term contracts. Cancel anytime. Existing data stays available.",
+    plans: [
+      { name: "Free", description: "Start and explore RankBoost" },
+      { name: "Starter", description: "One website and steady growth" },
+      { name: "Pro", description: "More generations and actions" },
+      { name: "Agency", description: "Teams and multiple projects" },
     ],
   },
   whatWeDo: {
     title: "What we do",
-    subtitle: "A comprehensive SEO approach — from audit to monthly growth",
-    items: [
-      "SEO audit",
-      "Technical optimization",
-      "Keyword research",
-      "SEO articles and content",
-      "Local SEO / Google Business Profile",
-      "Internal linking",
-      "Landing page optimization",
-      "Monthly SEO support",
-    ],
+    subtitle: "Comprehensive SEO approach",
+    items: ["SEO audit", "Content", "Local SEO"],
   },
   forWhom: {
     title: "Who it's for",
-    subtitle: "We work with businesses of any size in Estonia and Europe",
-    items: [
-      "local businesses",
-      "ecommerce stores",
-      "services in Tallinn and Estonia",
-      "companies expanding into Europe",
-      "websites built on WordPress, Shopify, Webflow, Tilda and custom Next.js",
-    ],
+    subtitle: "Small and medium businesses",
+    items: ["local businesses", "ecommerce stores"],
   },
   services: {
     title: "SEO Services",
@@ -112,15 +179,25 @@ export const dictionary: Dictionary = {
     whatsIncluded: "What's included",
   },
   process: {
-    title: "How we work",
-    subtitle: "Transparent process with measurable results at every stage",
+    title: "How it works",
+    subtitle: "A simple path from website to clear next steps",
     steps: [
-      { title: "Quick website analysis" },
-      { title: "SEO audit and growth plan" },
-      { title: "Technical fixes" },
-      { title: "SEO content creation" },
-      { title: "Structure and landing page improvement" },
-      { title: "Monthly report and next tasks" },
+      {
+        title: "Add your website",
+        description: "Enter your URL — RankBoost sets up your workspace.",
+      },
+      {
+        title: "RankBoost finds opportunities",
+        description: "Audit, Growth Score, and growth tasks.",
+      },
+      {
+        title: "Review and approve",
+        description: "Plans, drafts, and emails — only after you decide.",
+      },
+      {
+        title: "Track progress",
+        description: "Your dashboard shows what's done and what's next.",
+      },
     ],
   },
   pricing: {
@@ -194,11 +271,11 @@ export const dictionary: Dictionary = {
     subtitle: "Answers to the main questions about SEO promotion",
   },
   cta: {
-    title: "Ready to grow on Google?",
+    title: "Start improving your website today",
     subtitle:
-      "Order a free SEO audit and learn how to increase your website's organic traffic.",
-    button: "Get free audit",
-    note: "We'll respond within 24 hours. No obligations.",
+      "RankBoost shows what to improve next and prepares actions for your review.",
+    button: "Start free",
+    note: "No credit card required on the Free plan. Cancel anytime.",
   },
   blog: {
     title: "SEO Blog",
