@@ -799,6 +799,16 @@ Audit / GSC sync / Article generate / Task complete / Dashboard load
 | Failed AI jobs | ✅ `FAILED` + `HERMES_UNAVAILABLE`, no broken drafts |
 | Redeploy after Hermes secrets | ⏸ pending deployment/credentials |
 
+### 4.3.34. Mobile UX QA & beta polish (prompt 11.0)
+
+| Item | Status |
+|------|--------|
+| Mobile overflow fixes | ✅ `app-content`, `app-main`, URL wrapping |
+| Friendly blocked-state copy | ✅ billing, Hermes, GSC, plan limits |
+| Dashboard mobile CTA | ✅ full-width primary button |
+| Control Center mobile | ✅ max 3 recommended actions |
+| Production deploy | ⏸ after commit |
+
 ### 4.4. Admin
 
 | Планируемый путь | URL | MVP блок |
@@ -1085,4 +1095,5 @@ curl -s -o /dev/null -w "%{http_code}" -X POST http://localhost:3000/api/contact
 | 2026-07-06 | 10.7 GSC | Google OAuth routes documented; production GSC blocked pending client secrets |
 | 2026-07-06 | 10.8 | Stripe test mode setup documented; billing checkout blocked pending Stripe keys |
 | 2026-07-06 | 10.9 | Hermes setup documented; AI generation blocked pending Hermes URL/secret |
+| 2026-07-06 | 11.0 | Mobile UX polish — overflow, friendly errors, tap targets |
 | 2026-07-02 | 10.7 | Production integrations QA — www URLs, Resend alias, blocked secrets documented — промпт 10.7 |

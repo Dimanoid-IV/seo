@@ -44,7 +44,7 @@ export function DashboardHero({ status, websiteDomain }: DashboardHeroProps) {
             {status.description}
           </p>
           {websiteDomain ? (
-            <p className="mt-3 text-xs text-slate-500">{websiteDomain}</p>
+            <p className="mt-3 break-all text-xs text-slate-500">{websiteDomain}</p>
           ) : null}
         </div>
       </div>

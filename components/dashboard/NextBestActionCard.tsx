@@ -25,7 +25,7 @@ export function NextBestActionCard({
   secondaryHref,
 }: NextBestActionCardProps) {
   const primaryClass =
-    "inline-flex items-center justify-center rounded-lg bg-blue-500 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-blue-600 disabled:cursor-not-allowed disabled:opacity-60";
+    "inline-flex min-h-11 w-full items-center justify-center rounded-lg bg-blue-500 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-blue-600 disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto";
 
   return (
     <section className="glass-card border border-blue-500/20 bg-blue-500/5 p-6">

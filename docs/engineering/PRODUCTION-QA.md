@@ -645,6 +645,42 @@ HERMES_API_SECRET   # Bearer token sent as Authorization header
 
 ## 8.1. Hermes test notes (local dev)
 
+1. Set `HERMES_API_URL` and `HERMES_API_SECRET`.
+2. Generate article / social post → quality pipeline runs before user sees content.
+3. If Hermes down → `HERMES_UNAVAILABLE` message; logged as `hermes.fetch` / `hermes.response`.
+
+---
+
+## 8.2. Mobile UX QA & beta polish (prompt 11.0)
+
+**Date:** 2026-07-06  
+**Primary viewport:** 375×812 (code audit + responsive CSS; full browser pass recommended)
+
+### Fixes applied
+
+| Area | Change |
+|------|--------|
+| App shell | `overflow-x-hidden`, `min-w-0` on `.app-main` / `.app-content`; bottom nav padding preserved |
+| Dashboard | Full-width primary CTA on mobile; `break-all` on long domains |
+| Control Center | Max 3 recommended actions on mobile; full-width action buttons |
+| Billing | `app-content` padding; friendly Stripe-not-configured copy; disabled upgrade label |
+| Integrations | Friendly GSC OAuth error copy; URL wrapping |
+| Onboarding | `app-content` wrapper; URL input `min-w-0` |
+| Sheets | `max-h-[85vh]` mobile menu; integration sheet scroll + `min-w-0` |
+| Error copy | `lib/copy/user-errors.ts` — friendly UI text for billing/Hermes/plan limits |
+
+### Pages targeted
+
+`/app`, `/app/onboarding`, `/app/autopilot-control`, `/app/content-plan`, `/app/social-posts`, `/app/email-approvals`, `/app/billing`, `/app/integrations`, `/app/timeline`, `/app/autopilot`, `/app/reports`
+
+### Known remaining mobile issues
+
+- Full 375px browser QA not automated in CI
+- Control Center still information-dense on small phones
+- Some integration sheet strings remain bilingual (RU connect timestamp)
+
+---
+
 ## 9. Known limitations (beta)
 
 - No automatic publishing, email sending, or approvals.

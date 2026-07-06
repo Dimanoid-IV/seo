@@ -19,4 +19,4 @@ export const PAGE_ERROR_FALLBACK =
   "We couldn't load this page right now. Please try again, or open the dashboard and continue from there.";
 
 export const STRIPE_NOT_CONFIGURED_COPY =
-  "Billing is not configured yet. You can still use RankBoost in development mode. Configure Stripe keys to enable checkout.";
+  "Billing upgrades are not available yet. You can keep using RankBoost on your current plan.";

@@ -250,7 +250,7 @@ export function AppSidebar() {
             <Menu className="size-5" />
             <span className="leading-tight">More</span>
           </SheetTrigger>
-          <SheetContent side="bottom" className="rounded-t-2xl border-white/10 bg-[#0a0f1e]">
+          <SheetContent side="bottom" className="max-h-[85vh] overflow-y-auto rounded-t-2xl border-white/10 bg-[#0a0f1e]">
             <SheetHeader>
               <SheetTitle className="text-white">Menu</SheetTitle>
             </SheetHeader>

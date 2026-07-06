@@ -42,6 +42,8 @@ export function clearAccessToken(): void {
   }
 }
 
+import { friendlyApiErrorMessage } from "@/lib/copy/user-errors";
+
 type ApiErrorBody = {
   error?: {
     message?: string;
@@ -55,21 +57,23 @@ type ApiErrorBody = {
 
 export async function parseApiErrorMessage(
   response: Response,
-  fallback = "Произошла ошибка"
+  fallback = "Something went wrong. Please try again."
 ): Promise<string> {
   try {
     const body = (await response.json()) as ApiErrorBody;
-    const message = body.error?.message ?? fallback;
+    const code = body.error?.code;
+    const rawMessage = body.error?.message;
+    const message = friendlyApiErrorMessage(code, rawMessage, fallback);
     const upgradeUrl = body.error?.details?.upgradeUrl;
 
     if (
       upgradeUrl &&
-      (body.error?.code === "PLAN_LIMIT_EXCEEDED" ||
-        body.error?.code === "FEATURE_NOT_AVAILABLE" ||
-        body.error?.code === "BILLING_REQUIRED" ||
+      (code === "PLAN_LIMIT_EXCEEDED" ||
+        code === "FEATURE_NOT_AVAILABLE" ||
+        code === "BILLING_REQUIRED" ||
         body.error?.details?.billingError)
     ) {
-      return `${message} Upgrade in Billing.`;
+      return `${message} Open Billing to learn more.`;
     }
 
     return message;

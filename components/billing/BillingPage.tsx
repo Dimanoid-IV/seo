@@ -105,7 +105,7 @@ export function BillingPage() {
   }
 
   return (
-    <div className="mx-auto max-w-6xl space-y-6 p-4 pb-24 lg:p-8">
+    <div className="app-content mx-auto min-w-0 max-w-6xl space-y-6 overflow-x-hidden p-4 lg:p-8">
       <PageHeader
         title="Billing & Plan"
         subtitle="Manage your RankBoost subscription. Upgrade when you need more growth actions."

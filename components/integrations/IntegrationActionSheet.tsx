@@ -169,7 +169,7 @@ function IntegrationActionSheetContent({
   return (
     <SheetContent
       side="right"
-      className="w-full overflow-y-auto border-white/10 bg-[#0a0f1e] text-slate-200 sm:max-w-lg"
+      className="max-h-[100dvh] min-w-0 w-full overflow-y-auto border-white/10 bg-[#0a0f1e] text-slate-200 sm:max-w-lg"
     >
         <SheetHeader className="border-b border-white/5 pb-4">
           <div className="flex flex-wrap items-center gap-2 pr-8">

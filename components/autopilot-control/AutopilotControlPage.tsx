@@ -200,7 +200,7 @@ export function AutopilotControlPage() {
         title="Autopilot Control Center"
         subtitle="Review what RankBoost prepared and decide what happens next."
       />
-      <p className="-mt-4 mb-6 text-xs text-slate-500">
+      <p className="-mt-4 mb-6 break-all text-xs text-slate-500">
         {data.website.name ?? data.website.domain}
       </p>
 

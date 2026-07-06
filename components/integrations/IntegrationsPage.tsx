@@ -63,13 +63,14 @@ export function IntegrationsPage() {
     if (connectedParam === "gsc") {
       return {
         type: "success" as const,
-        message: "Google Search Console успешно подключён.",
+        message: "Google Search Console connected successfully.",
       };
     }
     if (oauthErrorParam === "gsc_connection_failed") {
       return {
         type: "error" as const,
-        message: "Не удалось подключить Google Search Console. Попробуйте снова.",
+        message:
+          "Google Search Console is not ready to connect yet. You can continue using RankBoost without it.",
       };
     }
     return null;
@@ -171,7 +172,7 @@ export function IntegrationsPage() {
         subtitle="Connect data sources and publishing tools to unlock better growth actions."
       />
       {data.website ? (
-        <p className="-mt-4 mb-6 text-xs text-slate-500">{data.website.url}</p>
+        <p className="-mt-4 mb-6 break-all text-xs text-slate-500">{data.website.url}</p>
       ) : (
         <p className="-mt-4 mb-6 text-sm text-amber-300/90">
           Add a website to connect integrations to a specific project.

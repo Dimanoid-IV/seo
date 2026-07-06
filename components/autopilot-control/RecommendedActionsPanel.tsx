@@ -23,16 +23,19 @@ export function RecommendedActionsPanel({
   actionLoading,
   loadingActionId,
 }: RecommendedActionsPanelProps) {
+  const visibleActions = actions.slice(0, 3);
+  const hiddenCount = Math.max(0, actions.length - visibleActions.length);
+
   return (
     <section className="rounded-2xl border border-white/10 bg-white/[0.02] p-5">
       <h3 className="font-semibold text-white">Recommended actions</h3>
       <p className="mt-1 text-xs text-slate-500">What to do next</p>
 
       <div className="mt-4 space-y-3">
-        {actions.length === 0 ? (
+        {visibleActions.length === 0 ? (
           <p className="text-sm text-slate-400">No recommended actions right now.</p>
         ) : (
-          actions.map((action) => {
+          visibleActions.map((action) => {
             const isLoading = actionLoading && loadingActionId === action.id;
 
             return (
@@ -46,7 +49,9 @@ export function RecommendedActionsPanel({
                   </span>
                 </div>
                 <h4 className="mt-1 font-medium text-white">{action.title}</h4>
-                <p className="mt-1 text-sm text-slate-400">{action.description}</p>
+                <p className="mt-1 break-words text-sm text-slate-400">
+                  {action.description}
+                </p>
                 <div className="mt-3">
                   {action.apiAction && onApiAction ? (
                     <Button
@@ -54,7 +59,7 @@ export function RecommendedActionsPanel({
                       size="sm"
                       variant="outline"
                       disabled={isLoading}
-                      className="border-white/10 bg-transparent text-slate-200"
+                      className="min-h-10 w-full border-white/10 bg-transparent text-slate-200 sm:w-auto"
                       onClick={() => onApiAction(action)}
                     >
                       {isLoading ? (
@@ -69,7 +74,7 @@ export function RecommendedActionsPanel({
                       nativeButton={false}
                       size="sm"
                       variant="outline"
-                      className="border-white/10 bg-transparent text-slate-200"
+                      className="min-h-10 w-full border-white/10 bg-transparent text-slate-200 sm:w-auto"
                     >
                       Open
                     </Button>
@@ -79,6 +84,11 @@ export function RecommendedActionsPanel({
             );
           })
         )}
+        {hiddenCount > 0 ? (
+          <p className="text-xs text-slate-500">
+            {hiddenCount} more action{hiddenCount === 1 ? "" : "s"} available on desktop.
+          </p>
+        ) : null}
       </div>
     </section>
   );

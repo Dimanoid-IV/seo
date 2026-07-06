@@ -120,7 +120,7 @@ export function OnboardingPage() {
 
   if (data?.status === "COMPLETED") {
     return (
-      <div className="mx-auto max-w-3xl space-y-6 p-4 pb-24 lg:p-8">
+      <div className="app-content mx-auto min-w-0 max-w-3xl space-y-6 overflow-x-hidden p-4 lg:p-8">
         <section className="rounded-2xl border border-emerald-500/30 bg-emerald-500/10 p-6 text-center">
           <h2 className="text-xl font-semibold text-white">Setup complete</h2>
           <p className="mt-2 text-sm text-slate-300">
@@ -141,7 +141,7 @@ export function OnboardingPage() {
       data.progress.total > 0);
 
   return (
-    <div className="mx-auto max-w-6xl space-y-6 p-4 pb-24 lg:p-8">
+    <div className="app-content mx-auto min-w-0 max-w-6xl space-y-6 overflow-x-hidden p-4 lg:p-8">
       <header className="rounded-2xl border border-violet-500/20 bg-gradient-to-br from-violet-500/10 to-blue-500/5 p-6">
         <div className="flex items-start gap-3">
           <div className="flex size-10 items-center justify-center rounded-xl bg-violet-500/20">

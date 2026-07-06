@@ -125,7 +125,11 @@
 
   /* SaaS app shell — isolated from marketing layout */
   .app-content {
-    @apply pb-20 lg:pb-8;
+    @apply min-w-0 overflow-x-hidden pb-20 lg:pb-8;
+  }
+
+  .app-main {
+    @apply min-w-0 overflow-x-hidden;
   }
 }
 

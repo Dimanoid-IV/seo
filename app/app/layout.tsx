@@ -21,7 +21,7 @@ export default function AppShellLayout({
       <DashboardOverviewProvider>
         <div className="app-shell hero-grid min-h-screen bg-[#050816]">
           <AppSidebar />
-          <div className="app-main flex min-h-screen flex-col lg:pl-64">
+          <div className="flex min-h-screen flex-col overflow-x-hidden lg:pl-64">
             <AppHeader />
             <div className="flex-1">{children}</div>
           </div>

@@ -78,7 +78,7 @@ export function PlanCard({
             disabled={checkoutLoading || !stripeConfigured}
             onClick={() => onUpgrade(planKeyUpper)}
           >
-            {stripeConfigured ? "Upgrade plan" : "Checkout unavailable"}
+            {stripeConfigured ? "Upgrade plan" : "Upgrades unavailable"}
           </Button>
         ) : null}
       </div>
