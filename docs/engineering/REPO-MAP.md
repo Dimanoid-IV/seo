@@ -799,6 +799,16 @@ Audit / GSC sync / Article generate / Task complete / Dashboard load
 | Failed AI jobs | ✅ `FAILED` + `HERMES_UNAVAILABLE`, no broken drafts |
 | Redeploy after Hermes secrets | ⏸ pending deployment/credentials |
 
+### 4.3.36. Premium design polish (prompt 11.2)
+
+| Item | Status |
+|------|--------|
+| Shared `SaasCard` + CSS card hierarchy | ✅ |
+| Dashboard / onboarding / Control Center / billing / integrations | ✅ visually polished |
+| Theme system | ⏸ intentionally deferred |
+| Production deploy | ✅ `dpl_3xEbkUiisYrCZUSP8yb8RWEMF7oe` (2026-07-06) |
+| Commit | `ec8d9d1` — `style: polish premium SaaS dashboard design` |
+
 ### 4.3.35. Real browser beta QA (prompt 11.1)
 
 | Item | Status |
@@ -1107,4 +1117,5 @@ curl -s -o /dev/null -w "%{http_code}" -X POST http://localhost:3000/api/contact
 | 2026-07-06 | 10.9 | Hermes setup documented; AI generation blocked pending Hermes URL/secret |
 | 2026-07-06 | 11.0 | Mobile UX polish — overflow, friendly errors, tap targets |
 | 2026-07-06 | 11.1 | Real browser beta QA — GSC banner fix, Playwright pass at 375px |
+| 2026-07-06 | 11.2 | Premium airy design polish — SaasCard system, no theme switcher |
 | 2026-07-02 | 10.7 | Production integrations QA — www URLs, Resend alias, blocked secrets documented — промпт 10.7 |

@@ -1,6 +1,6 @@
 # Production QA — RankBoost.eu SaaS
 
-> **Prompt 11.1** — Real browser beta QA & critical fixes.  
+> **Prompt 11.2** — Premium airy design polish.  
 > **Last updated:** 2026-07-06
 
 **Related:** `docs/engineering/REPO-MAP.md` · `.env.example` · `lib/env.ts`
@@ -732,6 +732,50 @@ HERMES_API_SECRET   # Bearer token sent as Authorization header
 - Some integration timestamps remain RU/EN mixed
 - Full onboarding website→audit→plan flow not re-run end-to-end in browser this pass (user already registered with partial setup)
 - `/api/auth/me` requires Bearer token (via `authFetch`); cookie-only fetch returns 401 — expected
+
+---
+
+## 8.4. Premium design polish (prompt 11.2)
+
+**Date:** 2026-07-06  
+**Commit:** `ec8d9d1` — `style: polish premium SaaS dashboard design`  
+**Theme system:** intentionally **not** added (dark-only polish)
+
+### Design changes
+
+| Area | Polish applied |
+|------|----------------|
+| App shell | Subtle radial gradient background; softer borders; increased content padding |
+| Shared cards | New `SaasCard` hierarchy (hero, primary, metric, muted, success) + `saas-eyebrow` typography |
+| Dashboard `/app` | Airier hero, metric icons, elevated next-action card, calm findings rows, trust copy in Prepared section |
+| Onboarding | Guided-setup hero, softer step cards, progress bar spacing |
+| Control Center | Calmer status hero, muted panels, softer approval queue and recommended actions |
+| Billing | Premium current-plan hero; plan cards with intentional blocked-upgrade copy |
+| Integrations | Softer cards and calm OAuth error banner (blue, not red) |
+| Sidebar / header | Elegant active nav ring; improved mobile bottom nav spacing |
+
+### Visual QA
+
+| Viewport | Result | Notes |
+|----------|--------|-------|
+| Desktop ~1440px | **Passed** | Build + smoke HTTP 200 on priority routes |
+| Mobile 375px | **Passed** | Existing overflow guards preserved; full-width CTAs retained |
+
+### Production deploy (11.2)
+
+| Item | Value |
+|------|-------|
+| Deployment ID | `dpl_3xEbkUiisYrCZUSP8yb8RWEMF7oe` |
+| Deployment URL | https://seo-h84l4anpw-dimanoid-ivs-projects.vercel.app |
+| Production domain | https://www.rankboost.eu |
+| Smoke test | **Passed** |
+
+### Known remaining design issues
+
+- Light/dark theme system deferred to a future prompt
+- Control Center still more detailed than dashboard (by design)
+- Some integration metadata strings remain RU/EN mixed
+- Secondary app pages (content-plan, social, etc.) inherit shared components but not individually re-audited in browser this pass
 
 ---
 
