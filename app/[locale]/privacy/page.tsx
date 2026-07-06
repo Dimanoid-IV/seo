@@ -30,21 +30,23 @@ export default async function PrivacyPage({ params }: PageProps) {
   const dict = await getDictionary(locale);
 
   return (
-    <section className="py-16 lg:py-24">
-      <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
-        <h1 className="text-4xl font-bold text-white">{dict.privacy.title}</h1>
-        <p className="mt-2 text-sm text-slate-500">{dict.privacy.lastUpdated}</p>
-        <div className="mt-12 space-y-10">
-          {dict.privacy.sections.map((section) => (
-            <div key={section.title}>
-              <h2 className="mb-4 text-xl font-semibold text-white">
-                {section.title}
-              </h2>
-              <p className="leading-relaxed text-slate-400">{section.content}</p>
-            </div>
-          ))}
+    <div className="marketing-page min-h-screen">
+      <section className="py-16 lg:py-24">
+        <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
+          <h1 className="text-4xl font-bold text-slate-900">{dict.privacy.title}</h1>
+          <p className="mt-2 text-sm text-slate-500">{dict.privacy.lastUpdated}</p>
+          <div className="mt-12 space-y-10">
+            {dict.privacy.sections.map((section) => (
+              <div key={section.title}>
+                <h2 className="mb-4 text-xl font-semibold text-slate-900">
+                  {section.title}
+                </h2>
+                <p className="leading-relaxed text-slate-600">{section.content}</p>
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
+    </div>
   );
 }

@@ -32,11 +32,13 @@ export const dictionary: Dictionary = {
     },
     privacy: {
       title: "Privacy Policy | RankBoost.eu",
-      description: "RankBoost.eu privacy policy — how we process your data.",
+      description:
+        "How RankBoost.eu processes account, website, and integration data for its AI Growth Manager SaaS platform.",
     },
     terms: {
       title: "Terms of Service | RankBoost.eu",
-      description: "Terms of service for RankBoost.eu.",
+      description:
+        "Terms of use for the RankBoost.eu AI Growth Manager SaaS platform.",
     },
   },
   nav: {
@@ -368,72 +370,73 @@ export const dictionary: Dictionary = {
   },
   privacy: {
     title: "Privacy Policy",
-    lastUpdated: "Last updated: January 1, 2025",
+    lastUpdated: "Last updated: July 7, 2026",
     sections: [
       {
         title: "1. General",
         content:
-          "RankBoost.eu («we») respects your privacy. This policy describes how we collect and use data when you use rankboost.eu and the contact form.",
+          "RankBoost.eu («we») operates an AI Growth Manager SaaS platform. This policy describes how we collect and use data when you use rankboost.eu, create an account, use the dashboard, or contact us.",
       },
       {
         title: "2. Data we collect",
         content:
-          "Via the contact form we may receive: name, email, phone (including Telegram/WhatsApp), website URL, budget, selected service and plan, message text. Technical data may be collected automatically: IP address, browser type, referring page.",
+          "Depending on how you use RankBoost, we may process: account details (name, email), website and domain URLs, audit and growth-opportunity data, content and social drafts prepared for your review, integration metadata (for example Google Search Console site selection or WordPress connection details when you connect them), subscription and billing-related data when paid plans are enabled through our payment provider, contact form submissions (name, email, website URL, message), and technical logs (IP address, browser type, referring page, session identifiers).",
       },
       {
         title: "3. How we use data",
         content:
-          "Data is used solely to contact you, prepare proposals, and deliver SEO services. We do not sell or share your data with third parties for marketing purposes.",
+          "We use data to operate the platform, provide website audits and review-ready recommendations, save drafts you choose to review, manage your account and subscription, respond to support requests, and improve the service. We do not sell your personal data to third parties for marketing purposes. If you connect an integration such as Google Search Console or WordPress, RankBoost processes only the data needed to provide that integration.",
       },
       {
         title: "4. Storage and security",
         content:
-          "Data is stored on protected servers in the EU. We apply security measures in compliance with GDPR.",
+          "Data is stored on protected servers in the EU. We apply reasonable security measures in compliance with GDPR. No method of transmission or storage is completely secure.",
       },
       {
         title: "5. Your rights",
         content:
-          "You have the right to access, correct, and delete your data. To request deletion, email info@rankboost.eu.",
+          "You have the right to access, correct, and delete your personal data, subject to applicable law. To make a request, email info@rankboost.eu.",
       },
       {
         title: "6. Cookies",
         content:
-          "The website may use cookies for analytics. You can disable cookies in your browser settings.",
+          "The website and dashboard may use cookies or similar technologies for authentication, locale preferences, analytics, and basic platform functionality. You can limit cookies in your browser settings, but some features may not work correctly without them.",
       },
     ],
   },
   terms: {
     title: "Terms of Service",
-    lastUpdated: "Last updated: January 1, 2025",
+    lastUpdated: "Last updated: July 7, 2026",
     sections: [
       {
         title: "1. General terms",
         content:
-          "RankBoost.eu provides information about SEO services in Estonia and Europe. By using the site, you agree to these terms.",
+          "RankBoost.eu provides software tools that help users analyze websites, identify growth opportunities, prepare SEO, content, and social recommendations, and manage review-ready drafts through a subscription-based SaaS platform. By using the site or creating an account, you agree to these terms.",
       },
       {
-        title: "2. Contact form",
+        title: "2. Platform use and your responsibility",
         content:
-          "Submitting the form does not constitute a contract or create obligations for either party. We will contact you to clarify details.",
+          "RankBoost may generate audits, suggestions, drafts, and action plans. You are responsible for reviewing recommendations before publishing, sending, or applying them. Nothing is published, sent, or changed on your website automatically unless you take explicit action (for example approving a draft or triggering a supported integration action).",
       },
       {
-        title: "3. SEO results",
+        title: "3. No guaranteed results",
         content:
-          "SEO services do not guarantee a specific position in Google. Results depend on competition, website condition, content, budget, and search engine algorithms.",
+          "RankBoost does not guarantee search rankings, traffic, revenue, leads, or other business results. Outcomes depend on your website, market competition, content quality, integrations you connect, and how consistently you review and apply recommendations.",
       },
       {
-        title: "4. Pricing",
+        title: "4. Subscriptions and billing",
         content:
-          "Prices are shown as «from» and are indicative. Final cost depends on scope of work, number of pages, languages, and selected plan.",
+          "Paid plans, limits, and pricing are shown in the app. There are no long-term contracts; subscriptions can be cancelled according to the billing terms displayed in your account when billing is enabled. Free and paid features may change over time as the product evolves.",
       },
       {
-        title: "5. Confidentiality",
+        title: "5. Third-party integrations",
         content:
-          "We do not disclose client data to third parties without consent, except as required by law.",
+          "Features such as Google Search Console, WordPress drafts, Stripe billing, or email delivery may require your authorization and depend on third-party providers. RankBoost is not responsible for outages, policy changes, or limitations imposed by those providers.",
       },
       {
-        title: "6. Contact",
-        content: "For all questions: info@rankboost.eu",
+        title: "6. Contact and confidentiality",
+        content:
+          "Submitting the contact form does not create a contract. We do not disclose account or client data to third parties without consent, except as required by law. For questions: info@rankboost.eu.",
       },
     ],
   },

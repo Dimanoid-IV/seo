@@ -32,11 +32,13 @@ export const dictionary: Dictionary = {
     },
     privacy: {
       title: "Privaatsuspoliitika | RankBoost.eu",
-      description: "RankBoost.eu privaatsuspoliitika — kuidas me teie andmeid töötleme.",
+      description:
+        "Kuidas RankBoost.eu töötleb konto-, veebilehe- ja integratsiooniandmeid AI Growth Manager SaaS platvormil.",
     },
     terms: {
       title: "Kasutustingimused | RankBoost.eu",
-      description: "RankBoost.eu teenuste kasutustingimused.",
+      description:
+        "RankBoost.eu AI Growth Manager SaaS platvormi kasutustingimused.",
     },
   },
   nav: {
@@ -363,72 +365,73 @@ export const dictionary: Dictionary = {
   },
   privacy: {
     title: "Privaatsuspoliitika",
-    lastUpdated: "Viimati uuendatud: 1. jaanuar 2025",
+    lastUpdated: "Viimati uuendatud: 7. juuli 2026",
     sections: [
       {
         title: "1. Üldtingimused",
         content:
-          "RankBoost.eu («meie») austab teie privaatsust. See poliitika kirjeldab, kuidas me kogume ja kasutame andmeid rankboost.eu veebilehe ja kontaktivormi kasutamisel.",
+          "RankBoost.eu («meie») on AI Growth Manager SaaS platvorm. See poliitika kirjeldab, kuidas me kogume ja kasutame andmeid rankboost.eu kasutamisel, konto loomisel, töölaual töötamisel või meiega ühenduse võtmisel.",
       },
       {
         title: "2. Milliseid andmeid kogume",
         content:
-          "Kontaktivormi kaudu võime saada: nimi, email, telefon (sh Telegram/WhatsApp), veebilehe URL, eelarve, valitud teenus ja pakett, sõnumi tekst. Automaatselt võivad koguneda tehnilised andmed: IP-aadress, brauseri tüüp, viitav leht.",
+          "Sõltuvalt RankBoosti kasutamisest võime töödelda: kontoandmeid (nimi, email), veebilehe ja domeeni URL-e, auditi ja kasvuvõimaluste andmeid, teie ülevaatuseks valmistatud sisu- ja sotsiaalmeedia mustandeid, integratsiooni metaandmeid (nt Google Search Console saidi valik või WordPressi ühenduse detailid, kui need ühendate), tellimuse ja arvelduse andmeid, kui tasulised paketid on makseteenuse kaudu lubatud, kontaktivormi andmeid (nimi, email, veebilehe URL, sõnum) ning tehnilisi logisid (IP-aadress, brauser, viitav leht, sessiooni identifikaatorid).",
       },
       {
         title: "3. Kuidas andmeid kasutame",
         content:
-          "Andmeid kasutatakse ainult teiega ühenduse võtmiseks, pakkumise koostamiseks ja SEO-teenuste osutamiseks. Me ei müü ega jaga teie andmeid kolmandatele osapooltele turunduse eesmärgil.",
+          "Kasutame andmeid platvormi töös hoidmiseks, auditeerimiseks, ülevaatamiseks valmis soovituste ja mustandite loomiseks, konto ja tellimuse haldamiseks, toe pakkumiseks ja teenuse parandamiseks. Me ei müü isikuandmeid kolmandatele osapooltele turunduse eesmärgil. Kui ühendate integratsiooni (nt Google Search Console või WordPress), töötleb RankBoost ainult integratsiooni jaoks vajalikke andmeid.",
       },
       {
         title: "4. Säilitamine ja turvalisus",
         content:
-          "Andmed salvestatakse kaitstud serverites EL-is. Rakendame GDPR-i kohaseid turvameetmeid.",
+          "Andmed salvestatakse kaitstud serverites EL-is. Rakendame GDPR-i kohaseid mõistlikke turvameetmeid. Ükski edastus- ega salvestusviis pole täielikult riskivaba.",
       },
       {
         title: "5. Teie õigused",
         content:
-          "Teil on õigus andmetele juurdepääsuks, parandamiseks ja kustutamiseks. Andmete kustutamiseks kirjutage aadressil info@rankboost.eu.",
+          "Teil on õigus andmetele juurdepääsuks, parandamiseks ja kustutamiseks vastavalt kehtivale õigusele. Päringud: info@rankboost.eu.",
       },
       {
         title: "6. Küpsised",
         content:
-          "Veebileht võib kasutada küpsiseid analüütika jaoks. Saate need brauseri seadetes välja lülitada.",
+          "Veebileht ja töölaud võivad kasutada küpsiseid või sarnaseid tehnoloogiaid autentimiseks, keele-eelistuste jaoks, analüütikaks ja platvormi põhifunktsioonide jaoks. Saate küpsiseid brauseris piirata, kuid osa funktsioone ei pruugi ilma nendeta korralikult töötada.",
       },
     ],
   },
   terms: {
     title: "Kasutustingimused",
-    lastUpdated: "Viimati uuendatud: 1. jaanuar 2025",
+    lastUpdated: "Viimati uuendatud: 7. juuli 2026",
     sections: [
       {
         title: "1. Üldtingimused",
         content:
-          "RankBoost.eu veebileht pakub teavet SEO-teenuste kohta Eestis ja Euroopas. Saidi kasutamisega nõustute nende tingimustega.",
+          "RankBoost.eu pakub tellimuspõhist SaaS tarkvara, mis aitab analüüsida veebilehti, leida kasvuvõimalusi, valmistada SEO-, sisu- ja sotsiaalmeedia soovitusi ning hallata ülevaatamiseks valmis mustandeid. Saidi või konto kasutamisega nõustute nende tingimustega.",
       },
       {
-        title: "2. Kontaktivorm",
+        title: "2. Platvormi kasutamine ja teie vastutus",
         content:
-          "Vormi esitamine ei ole lepingu sõlmimine ega loo pooltele kohustusi. Võtame teiega ühendust detailide täpsustamiseks.",
+          "RankBoost võib luua auditeid, soovitusi, mustandeid ja tegevusplaane. Teie vastutate soovituste ülevaatamise eest enne avaldamist, saatmist või rakendamist. Midagi ei avaldata, saadeta ega muudeta teie veebilehel automaatselt, kuni te ei tee selget toimingut (nt mustandi kinnitamine või toetatud integratsiooni toiming).",
       },
       {
-        title: "3. SEO tulemused",
+        title: "3. Tulemuste garantii puudub",
         content:
-          "SEO-teenused ei garanteeri konkreetset positsiooni Google'is. Tulemus sõltub konkurentsist, veebilehe seisust, sisust, eelarvest ja otsingumootorite algoritmidest.",
+          "RankBoost ei garanteeri otsingupositsioone, liiklust, tulu, lead'e ega muid äritulemusi. Tulemus sõltub veebilehest, konkurentsist, sisust, ühendatud integratsioonidest ja sellest, kui regulaarselt te soovitusi üle vaatate ja rakendate.",
       },
       {
-        title: "4. Hinnad",
+        title: "4. Tellimused ja arveldus",
         content:
-          "Hinnad on märgitud «alates» ja on orienteerivad. Lõplik maksumus sõltub töö mahust, lehtede arvust, keeltest ja valitud paketist.",
+          "Tasulised paketid, limiidid ja hinnad kuvatakse rakenduses. Pikaajalisi lepinguid pole; tellimuse saab tühistada vastavalt konto arveldustingimustele, kui arveldus on lubatud. Tasuta ja tasulised funktsioonid võivad toote arenguga muutuda.",
       },
       {
-        title: "5. Konfidentsiaalsus",
+        title: "5. Kolmandate osapoolte integratsioonid",
         content:
-          "Me ei avalikusta klientide andmeid kolmandatele osapooltele ilma nõusolekuta, välja arvatud seadusega nõutud juhtudel.",
+          "Google Search Console, WordPressi mustandid, Stripe'i arveldus või emaili saatmine võivad nõuda teie luba ja sõltuvad kolmandatest teenusepakkujatest. RankBoost ei vastuta nende katkestuste, poliitikamuudatuste ega piirangute eest.",
       },
       {
-        title: "6. Kontakt",
-        content: "Kõikide küsimuste korral: info@rankboost.eu",
+        title: "6. Kontakt ja konfidentsiaalsus",
+        content:
+          "Kontaktivormi esitamine ei loo lepingut. Me ei avalikusta konto- ega kliendiandmeid kolmandatele osapooltele ilma nõusolekuta, välja arvatud seadusega nõutud juhtudel. Küsimused: info@rankboost.eu.",
       },
     ],
   },
