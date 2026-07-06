@@ -800,6 +800,16 @@ Audit / GSC sync / Article generate / Task complete / Dashboard load
 | Failed AI jobs | ✅ `FAILED` + `HERMES_UNAVAILABLE`, no broken drafts |
 | Redeploy after Hermes secrets | ⏸ pending deployment/credentials |
 
+### 4.3.47. Stripe Test QA + Dashboard layout fix (prompt 11.11)
+
+| Item | Status |
+|------|--------|
+| Stripe Vercel env vars | ❌ all `STRIPE_*` missing (E2E QA blocked) |
+| Checkout/webhook safe errors | ✅ 401 / 503 verified on production |
+| Dashboard right column top alignment | ✅ `SimpleDashboardPage.tsx` two-column grid |
+| Commit | `8bcbdcc` — `fix: top-align dashboard sidebar cards on desktop` |
+| Production deploy | ✅ `dpl_pU2wtvJbGUZm4Yx5uaKibzUxy758` (2026-07-07) |
+
 ### 4.3.46. Stripe Test Mode Setup (prompt 11.10)
 
 | Item | Status |

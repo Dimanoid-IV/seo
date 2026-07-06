@@ -1279,6 +1279,75 @@ stripe listen --forward-to localhost:3000/api/billing/webhook
 
 ---
 
+## 8.15. Stripe Test QA + Dashboard Layout Fix (Production Prompt 11.11)
+
+**Date:** 2026-07-07  
+**Commit:** `8bcbdcc` — `fix: top-align dashboard sidebar cards on desktop`
+
+### Stripe test env status (Vercel Production — verified 2026-07-07)
+
+| Variable | Status |
+|----------|--------|
+| `STRIPE_SECRET_KEY` | ❌ missing |
+| `STRIPE_WEBHOOK_SECRET` | ❌ missing |
+| `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` | ❌ missing |
+| `STRIPE_STARTER_PRICE_ID` | ❌ missing |
+| `STRIPE_PRO_PRICE_ID` | ❌ missing |
+| `STRIPE_AGENCY_PRICE_ID` | ❌ missing |
+| `NEXT_PUBLIC_APP_URL` | ✅ present |
+
+**Local `.env.local`:** no `STRIPE_*` vars set.
+
+### Stripe E2E QA status
+
+| Test | Result |
+|------|--------|
+| Checkout without auth | ✅ 401 (safe) |
+| Webhook without config | ✅ 503 (safe) |
+| Checkout with test card | ⏸ blocked — env vars missing |
+| Webhook signature verify | ⏸ blocked — `STRIPE_WEBHOOK_SECRET` missing |
+| Subscription DB update | ⏸ blocked |
+| Customer portal | ⏸ blocked — requires Stripe customer + Dashboard portal setup |
+
+### Stripe Dashboard setup checklist (manual — test mode only)
+
+1. Enable **Test mode** in Stripe Dashboard.
+2. Create recurring monthly products: **Starter**, **Pro**, **Agency**.
+3. Copy price IDs → Vercel env vars.
+4. Copy `sk_test_...` → `STRIPE_SECRET_KEY`, `pk_test_...` → `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`.
+5. Add webhook: `https://www.rankboost.eu/api/billing/webhook` (or `/api/stripe/webhook`).
+6. Events: `checkout.session.completed`, `customer.subscription.*`, `invoice.payment_*`.
+7. Copy signing secret → `STRIPE_WEBHOOK_SECRET`.
+8. Enable **Customer Portal** in Stripe Dashboard (Settings → Billing).
+9. Redeploy Vercel after all env vars added.
+10. Test card: `4242 4242 4242 4242`.
+
+### Dashboard layout fix
+
+**Issue:** Prepared For You + Recent Activity cards appeared below the full main column (after Findings), creating a large vertical gap on desktop.
+
+**Fix:** `SimpleDashboardPage.tsx` — desktop `lg:grid-cols-[minmax(0,1fr)_min(360px,100%)] lg:items-start`; right column `aside` with `self-start` holds sidebar cards aligned to top beside hero/metrics.
+
+### Viewport QA (structure + production smoke)
+
+| Route | 375px | 768px | 1440px |
+|-------|-------|-------|--------|
+| `/app` dashboard | ✅ single column stack (code) | ✅ grid collapses to 1 col below lg | ✅ two-column top-aligned (code) |
+| `/app/billing` | ✅ 200 smoke | ✅ 200 smoke | ✅ 200 smoke |
+| `/en/pricing` | ✅ 200 smoke | ✅ 200 smoke | ✅ 200 smoke |
+
+_Full browser viewport pass recommended after deploy; no Playwright suite in repo._
+
+### Production deploy (11.11)
+
+| Item | Value |
+|------|-------|
+| Deployment ID | `dpl_pU2wtvJbGUZm4Yx5uaKibzUxy758` |
+| Deployment URL | https://seo-m9569qjkq-dimanoid-ivs-projects.vercel.app |
+| Production domain | https://www.rankboost.eu |
+
+---
+
 ## 9. Known limitations (beta)
 
 - No automatic publishing, email sending, or approvals.
