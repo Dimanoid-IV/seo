@@ -1931,6 +1931,125 @@ Hermes prompt locale wiring verified in code: `getLocaleFromRequest()` → `buil
 
 ---
 
+## 8.25. Production Credentials Unblock + E2E Integration QA (Production Prompt 11.20)
+
+**Date:** 2026-07-08
+
+### Part A — Vercel Production env inventory
+
+Checked via `vercel env ls production` (values encrypted — not printed).
+
+#### Hermes
+
+| Variable | Status |
+|----------|--------|
+| `HERMES_API_URL` | ❌ missing |
+| `HERMES_API_SECRET` | ❌ missing |
+| `HERMES_MODEL` | ❌ missing (optional) |
+| `HERMES_TIMEOUT_MS` | ❌ missing (optional) |
+| `HERMES_MAX_RETRIES` | ❌ missing (optional) |
+| `HERMES_TEST_MODE` | ❌ missing (optional) |
+
+#### Google / GSC
+
+| Variable | Status |
+|----------|--------|
+| `GOOGLE_CLIENT_ID` | ❌ missing |
+| `GOOGLE_CLIENT_SECRET` | ❌ missing |
+| `GOOGLE_REDIRECT_URI` | ✅ present (encrypted) |
+| `ENCRYPTION_KEY` | ✅ present (encrypted) |
+
+#### Stripe
+
+| Variable | Status |
+|----------|--------|
+| `STRIPE_SECRET_KEY` | ❌ missing |
+| `STRIPE_WEBHOOK_SECRET` | ❌ missing |
+| `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` | ❌ missing |
+| `STRIPE_STARTER_PRICE_ID` | ❌ missing |
+| `STRIPE_PRO_PRICE_ID` | ❌ missing |
+| `STRIPE_AGENCY_PRICE_ID` | ❌ missing |
+| `NEXT_PUBLIC_APP_URL` | ✅ present (encrypted) |
+
+#### Other production vars present
+
+`DATABASE_URL`, `JWT_ACCESS_SECRET`, `JWT_REFRESH_SECRET`, `NEXT_PUBLIC_SITE_URL`, `RESEND_*`, `WORDPRESS_CONNECTOR_SECRET`, `CONTACT_EMAIL`, `FROM_EMAIL`.
+
+**Redeploy after env update:** N/A — no integration credentials were added this step.
+
+**Agent note:** Credentials are not in the repo and cannot be added without manual Vercel Dashboard / CLI input from the project owner.
+
+### Part B — Hermes production E2E
+
+**Status:** ⏸ **blocked** — `HERMES_API_URL` + `HERMES_API_SECRET` missing.
+
+| Check | Result |
+|-------|--------|
+| `GET /api/hermes/status` (auth) | ✅ `configured: false`, no secrets |
+| `GET /api/hermes/status?test=1` | ✅ `configured: false`, health skipped |
+| `POST …/generate` `seo_tasks` | ✅ 503 `HERMES_UNAVAILABLE` |
+| `content_brief` / `monthly_plan` | ⏸ not run (same blocker) |
+| Locale QA on production | ⏸ blocked |
+| Review Mode safety | ✅ no generation without config; no orphan AIJob |
+
+Reference: local stub E2E pass documented in §8.24.
+
+### Part C — Google/GSC production E2E
+
+**Status:** ⏸ **blocked** — `GOOGLE_CLIENT_ID` + `GOOGLE_CLIENT_SECRET` missing.
+
+| Check | Result |
+|-------|--------|
+| `GET /api/integrations/google/connect` (auth) | ✅ safe redirect → `/app/integrations?error=gsc_oauth_not_configured` |
+| OAuth flow / property picker / sync | ⏸ blocked |
+| Read-only scopes | ✅ enforced in code (not re-tested live) |
+
+**Required redirect URI when configuring Google Cloud:**
+
+`https://www.rankboost.eu/api/integrations/google/callback`
+
+### Part D — Stripe production test-mode E2E
+
+**Status:** ⏸ **blocked** — all Stripe env vars missing.
+
+| Check | Result |
+|-------|--------|
+| `POST /api/billing/checkout` (auth, Starter) | ✅ 402 `BILLING_REQUIRED` — safe, no crash |
+| Test checkout / webhook / subscription update | ⏸ blocked |
+| Customer portal | ⏸ blocked |
+
+**Webhook URL when configuring Stripe (test mode):**
+
+`https://www.rankboost.eu/api/billing/webhook`
+
+### Part E — Logged-in screenshot QA
+
+| Page / viewport | Status |
+|---------------|--------|
+| `/app`, `/app/autopilot`, `/app/autopilot-control`, `/app/integrations`, `/app/billing` | ⏸ not captured |
+| ru / et / en | ⏸ not captured |
+| 375px / 768px / 1440px | ⏸ not captured |
+
+Blocker: no shared QA session credentials; no Playwright in repo.
+
+### Validation (2026-07-08)
+
+| Check | Result |
+|-------|--------|
+| `npx prisma validate` | ✅ |
+| `npx prisma generate` | ✅ |
+| `npm run lint` | ✅ (3 pre-existing warnings) |
+| `npm run build` | ✅ |
+| Automated tests | not available |
+
+### Manual unblock checklist (project owner)
+
+1. **Hermes:** `vercel env add HERMES_API_URL production` + `HERMES_API_SECRET` → redeploy → re-run §8.24 Part B on production.
+2. **Google:** Create OAuth Web client in Google Cloud → add `GOOGLE_CLIENT_ID` + `GOOGLE_CLIENT_SECRET` → set redirect URI → add test users if consent screen in Testing → redeploy → run GSC connect E2E.
+3. **Stripe (test mode):** Create test products/prices → add all `STRIPE_*` vars + webhook secret → redeploy → run checkout with `4242…` test card.
+
+---
+
 ## 9. Known limitations (beta)
 
 - No automatic publishing, email sending, or approvals.
