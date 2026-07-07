@@ -56,6 +56,11 @@ export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
     const websiteId = searchParams.get("websiteId");
 
+    const { isGoogleOAuthConfigured } = await import("@/lib/google/config");
+    if (!isGoogleOAuthConfigured()) {
+      return redirectToIntegrations({ error: "gsc_oauth_not_configured" });
+    }
+
     const { website, organizationId } = await resolveWebsiteForOAuth(
       currentUser,
       websiteId

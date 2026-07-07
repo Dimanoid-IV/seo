@@ -186,6 +186,9 @@ export const saasDictionary: SaasDictionary = {
       openTimeline: "Open timeline",
     },
     billingNote: "You're approaching a plan limit.",
+    gscConnectHint:
+      "Connect Google Search Console to unlock real search insights.",
+    connectGsc: "Connect Search Console",
   },
   billing: {
     title: "Billing & Plan",
@@ -404,6 +407,8 @@ export const saasDictionary: SaasDictionary = {
     gscConnected: "Google Search Console connected successfully.",
     gscConnectionFailed:
       "Google Search Console is not ready to connect yet.",
+    gscOauthNotConfigured:
+      "Google OAuth is not configured yet. Add GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, and GOOGLE_REDIRECT_URI.",
     connect: "Connect",
     manage: "Manage",
     comingSoon: "Coming soon",

@@ -39,6 +39,20 @@ export function getGoogleOAuthRedirectUri(): string {
   return getGoogleOAuthConfig().redirectUri;
 }
 
+export function isGoogleOAuthConfigured(): boolean {
+  const env = getServerEnv();
+  const clientId =
+    env.GOOGLE_CLIENT_ID?.trim() || env.GOOGLE_INTEGRATIONS_CLIENT_ID?.trim();
+  const clientSecret =
+    env.GOOGLE_CLIENT_SECRET?.trim() ||
+    env.GOOGLE_INTEGRATIONS_CLIENT_SECRET?.trim();
+  const redirectUri =
+    env.GOOGLE_REDIRECT_URI?.trim() ||
+    env.GOOGLE_INTEGRATIONS_REDIRECT_URI?.trim();
+
+  return Boolean(clientId && clientSecret && redirectUri);
+}
+
 export function requireGoogleOAuthClientId(): string {
   const clientId =
     getServerEnv().GOOGLE_CLIENT_ID?.trim() ||

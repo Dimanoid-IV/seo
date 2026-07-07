@@ -148,6 +148,8 @@ export type SaasDictionary = {
     };
     activity: { title: string; empty: string; openTimeline: string };
     billingNote: string;
+    gscConnectHint: string;
+    connectGsc: string;
   };
   billing: {
     title: string;
@@ -293,6 +295,7 @@ export type SaasDictionary = {
     benefits: string[];
     gscConnected: string;
     gscConnectionFailed: string;
+    gscOauthNotConfigured: string;
     connect: string;
     manage: string;
     comingSoon: string;

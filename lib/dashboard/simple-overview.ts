@@ -9,6 +9,7 @@ import type {
 } from "@/lib/autopilot-control/types";
 import { getOnboardingSummary } from "@/lib/onboarding/get-onboarding-state";
 import type { OnboardingSummary } from "@/lib/onboarding/types";
+import { loadDashboardGoogleSearchConsole } from "./gsc-overview";
 
 import {
   localizedBillingNote,
@@ -69,6 +70,17 @@ export type SimpleDashboardViewModel = {
   }>;
   billingNote?: string;
   showSetupBanner: boolean;
+  gsc?: {
+    connected: boolean;
+    connectHref: string;
+    selectedProperty?: string | null;
+    metricsSummary?: {
+      clicks: number;
+      impressions: number;
+      ctr: number;
+      position: number;
+    } | null;
+  };
 };
 
 export function buildSimpleDashboardViewModel(input: {
@@ -157,11 +169,24 @@ export async function getSimpleDashboardOverview(
     getOnboardingSummary(currentUser.id, locale),
   ]);
 
-  return buildSimpleDashboardViewModel({
+  let gsc: SimpleDashboardViewModel["gsc"];
+  if (controlCenter.website?.id) {
+    const gscData = await loadDashboardGoogleSearchConsole(controlCenter.website.id);
+    gsc = {
+      connected: gscData.connected,
+      connectHref: "/app/integrations",
+      selectedProperty: gscData.selectedProperty,
+      metricsSummary: gscData.metricsSummary,
+    };
+  }
+
+  const viewModel = buildSimpleDashboardViewModel({
     controlCenter,
     onboarding,
     opportunitiesCount: options?.opportunitiesCount,
     subscriptionPlan: options?.subscriptionPlan,
     locale,
   });
+
+  return { ...viewModel, gsc };
 }

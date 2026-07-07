@@ -810,6 +810,38 @@ Audit / GSC sync / Article generate / Task complete / Dashboard load
 | Commit | `8bcbdcc` — `fix: top-align dashboard sidebar cards on desktop` |
 | Production deploy | ✅ `dpl_pU2wtvJbGUZm4Yx5uaKibzUxy758` (2026-07-07) |
 
+### 4.3.48. Google OAuth / GSC Test Mode Setup (prompt 11.12)
+
+| Item | Status |
+|------|--------|
+| OAuth connect `/api/integrations/google/connect` | ✅ `isGoogleOAuthConfigured()` safe redirect |
+| OAuth callback `/api/integrations/google/callback` | ✅ state validation + encrypted token storage |
+| Scope | ✅ `webmasters.readonly` (+ openid/email/profile) |
+| Token refresh | ✅ `lib/google/token-refresh.ts`, `lib/integrations/gsc-access.ts` |
+| GSC sites `/api/integrations/google/search-console/sites` | ✅ with token refresh |
+| Property select `/api/integrations/google/search-console/select-site` | ✅ validates against user's list |
+| GSC sync `/api/integrations/google/search-console/sync` | ✅ 28-day metrics |
+| GSC summary `/api/integrations/google/search-console/summary` | ✅ cached read-only summary |
+| Integrations Hub UI | ✅ connect/disconnect states, property picker, OAuth banners |
+| Dashboard GSC CTA | ✅ `SimpleDashboardPage` when not connected |
+| Onboarding GSC step | ✅ links to `/app/integrations` (no redesign) |
+| Vercel `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` | ❌ missing — E2E OAuth blocked |
+| Schema migration | ✅ none (existing `Integration` + `GoogleIntegrationData`) |
+
+**Changed files (11.12):**
+
+- `lib/google/config.ts` — `isGoogleOAuthConfigured()`
+- `lib/google/token-refresh.ts` — access token refresh
+- `lib/integrations/gsc-access.ts` — retry on `token_expired`
+- `lib/integrations/gsc-property.ts`, `gsc-sync.ts` — use `withGscAccessToken`
+- `app/api/integrations/google/connect/route.ts` — `gsc_oauth_not_configured`
+- `app/api/integrations/google/search-console/summary/route.ts` — new
+- `lib/dashboard/simple-overview.ts` — optional `gsc` field
+- `components/dashboard/SimpleDashboardPage.tsx` — connect CTA
+- `components/integrations/IntegrationsPage.tsx` — `gsc_oauth_not_configured` banner
+- `lib/i18n/saas/dictionaries/{en,ru,et}.ts` — dashboard GSC strings
+- `.env.example` — Google Cloud Console setup notes
+
 ### 4.3.46. Stripe Test Mode Setup (prompt 11.10)
 
 | Item | Status |

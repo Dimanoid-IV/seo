@@ -186,6 +186,9 @@ export const saasDictionary: SaasDictionary = {
       openTimeline: "Ava ajalugu",
     },
     billingNote: "Lähenete paketi limiidile.",
+    gscConnectHint:
+      "Ühendage Google Search Console, et avada reaalsed otsingu ülevaated.",
+    connectGsc: "Ühenda Search Console",
   },
   billing: {
     title: "Arveldus ja pakett",
@@ -404,6 +407,8 @@ export const saasDictionary: SaasDictionary = {
     gscConnected: "Google Search Console edukalt ühendatud.",
     gscConnectionFailed:
       "Google Search Console ei ole veel ühendamiseks valmis.",
+    gscOauthNotConfigured:
+      "Google OAuth pole veel seadistatud. Lisage GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET ja GOOGLE_REDIRECT_URI.",
     connect: "Ühenda",
     manage: "Halda",
     comingSoon: "Peagi",

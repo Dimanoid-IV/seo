@@ -110,12 +110,18 @@ export async function syncGscPerformanceForWebsite({
   }
 
   const period = getGscPerformanceDateRange(28);
-  const summary = await getSearchConsolePerformance({
+  const { withGscAccessToken } = await import("@/lib/integrations/gsc-access");
+  const summary = await withGscAccessToken(
+    integration.id,
     accessToken,
-    siteUrl: searchConsoleSiteUrl,
-    startDate: period.startDate,
-    endDate: period.endDate,
-  });
+    (token) =>
+      getSearchConsolePerformance({
+        accessToken: token,
+        siteUrl: searchConsoleSiteUrl,
+        startDate: period.startDate,
+        endDate: period.endDate,
+      })
+  );
 
   const syncedAt = new Date().toISOString();
   const insights = generateGscInsights(summary);

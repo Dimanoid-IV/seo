@@ -4,6 +4,7 @@ import { AppError, ErrorCode } from "@/lib/errors";
 import { getSearchConsoleSites } from "@/lib/google/search-console";
 
 import { resolveConnectedGscContext } from "./gsc-context";
+import { withGscAccessToken } from "./gsc-access";
 
 /**
  * Persists the selected Search Console property for the connected GSC integration.
@@ -19,7 +20,11 @@ export async function selectGscSearchConsoleSite(
     throw new AppError(ErrorCode.VALIDATION_ERROR, "Укажите siteUrl");
   }
 
-  const sites = await getSearchConsoleSites(context.accessToken);
+  const sites = await withGscAccessToken(
+    context.integration.id,
+    context.accessToken,
+    (token) => getSearchConsoleSites(token)
+  );
   const matchedSite = sites.find((site) => site.siteUrl === trimmedSiteUrl);
 
   if (!matchedSite) {

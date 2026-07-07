@@ -209,9 +209,18 @@ export function SimpleDashboardPage() {
             />
           </section>
 
-          <FindingsCard findings={simple.findings} />
+        <FindingsCard findings={simple.findings} />
 
-          <TrustNote variant="ai" />
+        {simple.gsc && !simple.gsc.connected ? (
+          <p className="rounded-xl border border-blue-500/20 bg-blue-500/5 px-4 py-3 text-sm text-slate-300">
+            {d.gscConnectHint}{" "}
+            <Link href={simple.gsc.connectHref} className="font-medium text-blue-300 hover:text-blue-200">
+              {d.connectGsc}
+            </Link>
+          </p>
+        ) : null}
+
+        <TrustNote variant="ai" />
 
           {simple.billingNote ? (
             <p className="text-center text-xs text-slate-500 lg:text-left">

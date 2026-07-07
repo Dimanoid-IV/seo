@@ -1348,6 +1348,106 @@ _Full browser viewport pass recommended after deploy; no Playwright suite in rep
 
 ---
 
+## 8.16. Google OAuth / GSC Test Mode Setup (Production Prompt 11.12)
+
+**Date:** 2026-07-07  
+**Scope:** `https://www.googleapis.com/auth/webmasters.readonly` (+ `openid`, `email`, `profile` for account display)
+
+### Required env vars
+
+| Variable | Purpose |
+|----------|---------|
+| `GOOGLE_CLIENT_ID` | OAuth Web client ID |
+| `GOOGLE_CLIENT_SECRET` | OAuth client secret |
+| `GOOGLE_REDIRECT_URI` | Must match Google Cloud authorized redirect URI exactly |
+| `ENCRYPTION_KEY` | Encrypts stored access/refresh tokens (64-char hex) |
+
+Optional: `GOOGLE_INTEGRATIONS_*` legacy aliases; `NEXT_PUBLIC_APP_URL` for absolute links elsewhere.
+
+### Vercel Production env status (verified 2026-07-07)
+
+| Variable | Status |
+|----------|--------|
+| `GOOGLE_CLIENT_ID` | ❌ missing |
+| `GOOGLE_CLIENT_SECRET` | ❌ missing |
+| `GOOGLE_REDIRECT_URI` | ✅ present |
+| `ENCRYPTION_KEY` | ✅ present |
+
+**E2E OAuth QA:** ⏸ **Blocked** until `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` are added and Vercel redeploys.
+
+### Google Cloud Console setup
+
+1. Create or select a Google Cloud project.
+2. **APIs & Services → Library** → enable **Google Search Console API**.
+3. **OAuth consent screen** → configure app name, support email; add test users if app is in Testing mode.
+4. **Credentials → Create credentials → OAuth client ID → Web application**.
+5. **Authorized redirect URIs:**
+   - Local: `http://localhost:3000/api/integrations/google/callback`
+   - Production: `https://www.rankboost.eu/api/integrations/google/callback`
+6. Copy Client ID and Client Secret → local `.env.local` and Vercel Production env.
+7. Set `GOOGLE_REDIRECT_URI` to the matching callback URL for each environment.
+8. Redeploy Vercel after env vars change.
+9. Use a Google account that has access to the target Search Console property.
+
+### API routes (read-only GSC)
+
+| Route | Method | Purpose |
+|-------|--------|---------|
+| `/api/integrations/google/connect` | GET | Start OAuth (auth required); redirects with `error=gsc_oauth_not_configured` if env missing |
+| `/api/integrations/google/callback` | GET | OAuth callback; validates state; stores encrypted tokens |
+| `/api/integrations/google/search-console/sites` | GET | List GSC properties (token refresh on expiry) |
+| `/api/integrations/google/search-console/select-site` | POST | Select verified property (`siteUrl`) |
+| `/api/integrations/google/search-console/sync` | POST | Fetch 28-day performance metrics |
+| `/api/integrations/google/search-console/summary` | GET | Cached summary (clicks, impressions, CTR, position, period) |
+
+**Default date range:** last 28 days (excluding today where GSC delay requires).
+
+### OAuth redirect behavior
+
+| Outcome | Redirect |
+|---------|----------|
+| Success | `/app/integrations?connected=gsc` |
+| User denied / failure | `/app/integrations?error=gsc_connection_failed` |
+| Missing OAuth env | `/app/integrations?error=gsc_oauth_not_configured` |
+
+### Local QA checklist
+
+- [ ] Set `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `GOOGLE_REDIRECT_URI=http://localhost:3000/api/integrations/google/callback`, `ENCRYPTION_KEY`
+- [ ] Add local redirect URI in Google Cloud Console
+- [ ] `npm run dev` → log in → `/app/integrations` → Connect Google Search Console
+- [ ] Complete consent → success banner → property picker opens
+- [ ] Select property → sync or summary returns data or graceful empty state
+- [ ] Confirm no tokens in browser console or client-visible API responses
+
+### Vercel QA checklist (after secrets added)
+
+- [ ] Redeploy production
+- [ ] Log in as test user → `/app/integrations`
+- [ ] Connect GSC → callback success
+- [ ] Property list loads
+- [ ] Select property → summary/sync works or empty-data note shown
+- [ ] Dashboard shows GSC connect CTA when disconnected, or metrics when connected
+
+### Error handling verified in code
+
+| Case | Behavior |
+|------|----------|
+| Missing `GOOGLE_CLIENT_*` | Safe redirect `gsc_oauth_not_configured` banner |
+| Invalid/expired OAuth state | `gsc_connection_failed` |
+| Missing refresh token | User-readable reconnect message |
+| Token refresh failure | `INTEGRATION_ERROR` with reconnect hint |
+| No GSC properties | Empty list in property picker |
+| Unverified property selection | Rejected server-side |
+| GSC API permission error | Safe API error, no secrets leaked |
+| Empty GSC data | `empty: true` in summary; not treated as hard error |
+
+### Known blockers
+
+- `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` not in Vercel Production (E2E blocked).
+- Full browser OAuth QA pending manual credential setup.
+
+---
+
 ## 9. Known limitations (beta)
 
 - No automatic publishing, email sending, or approvals.

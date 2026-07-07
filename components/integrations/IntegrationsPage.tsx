@@ -80,8 +80,14 @@ export function IntegrationsPage() {
         message: i.gscConnectionFailed,
       };
     }
+    if (oauthErrorParam === "gsc_oauth_not_configured") {
+      return {
+        type: "error" as const,
+        message: i.gscOauthNotConfigured,
+      };
+    }
     return null;
-  }, [connectedParam, oauthErrorParam]);
+  }, [connectedParam, oauthErrorParam, i]);
 
   const banner = bannerDismissed ? null : oauthBanner;
 

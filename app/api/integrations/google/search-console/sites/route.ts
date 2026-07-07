@@ -21,7 +21,12 @@ export async function GET(request: Request) {
 
     const currentUser = await requireUser(request);
     const context = await resolveConnectedGscContext(currentUser);
-    const sites = await getSearchConsoleSites(context.accessToken);
+    const { withGscAccessToken } = await import("@/lib/integrations/gsc-access");
+    const sites = await withGscAccessToken(
+      context.integration.id,
+      context.accessToken,
+      (token) => getSearchConsoleSites(token)
+    );
 
     return authJsonResponse({
       data: {
