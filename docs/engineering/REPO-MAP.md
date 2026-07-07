@@ -819,6 +819,8 @@ Audit / GSC sync / Article generate / Task complete / Dashboard load
 | Dashboard header position | ✅ starts near top of main column |
 | Two-column card alignment | ✅ unchanged from 11.11 (`lg:items-start`) |
 | Files | `app/globals.css`, `app/app/layout.tsx` |
+| Commit | `240466a` — `fix: correct app dashboard vertical offset in shell layout` |
+| Production deploy | ✅ `dpl_FJSaC2oR5nxsEqmb2E864rg2CG4k` (2026-07-07) |
 
 ### 4.3.48. Google OAuth / GSC Test Mode Setup (prompt 11.12)
 

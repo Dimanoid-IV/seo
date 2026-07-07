@@ -1451,7 +1451,7 @@ Optional: `GOOGLE_INTEGRATIONS_*` legacy aliases; `NEXT_PUBLIC_APP_URL` for abso
 ## 8.17. App Dashboard Vertical Offset Fix (Production Prompt 11.12 — layout hotfix)
 
 **Date:** 2026-07-07  
-**Commit:** (this step)
+**Commit:** `240466a` — `fix: correct app dashboard vertical offset in shell layout`
 
 ### Screenshot-observed issue
 
@@ -1483,6 +1483,14 @@ That forced the desktop sidebar and mobile nav out of fixed positioning into nor
 | 1440px | `/en/pricing` | ✅ 200 smoke |
 
 _Full logged-in browser screenshot pass recommended after deploy._
+
+### Production deploy (layout hotfix)
+
+| Item | Value |
+|------|-------|
+| Deployment ID | `dpl_FJSaC2oR5nxsEqmb2E864rg2CG4k` |
+| Deployment URL | https://seo-j3ptd84qo-dimanoid-ivs-projects.vercel.app |
+| Production domain | https://www.rankboost.eu |
 
 ---
 
