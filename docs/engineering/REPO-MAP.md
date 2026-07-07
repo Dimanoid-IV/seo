@@ -810,6 +810,19 @@ Audit / GSC sync / Article generate / Task complete / Dashboard load
 | Commit | `8bcbdcc` — `fix: top-align dashboard sidebar cards on desktop` |
 | Production deploy | ✅ `dpl_pU2wtvJbGUZm4Yx5uaKibzUxy758` (2026-07-07) |
 
+### 4.3.57. Production credentials unblock + E2E integration QA (prompt 11.20)
+
+| Item | Status |
+|------|--------|
+| Vercel Hermes vars | ❌ missing |
+| Vercel Google client vars | ❌ missing (`GOOGLE_REDIRECT_URI` + `ENCRYPTION_KEY` present) |
+| Vercel Stripe vars | ❌ missing (`NEXT_PUBLIC_APP_URL` present) |
+| Hermes / GSC / Stripe production E2E | ⏸ all blocked |
+| Safe missing-config on production | ✅ Hermes 503, GSC redirect, Stripe 402 |
+| Screenshot QA | ⏸ not captured |
+| Code changes | ❌ QA/docs-only |
+| Commit | `d73cdef` |
+
 ### 4.3.56. Hermes E2E generation QA (prompt 11.19)
 
 | Item | Status |
