@@ -19,11 +19,11 @@ export default function AppShellLayout({
   return (
     <AuthSessionProvider>
       <DashboardOverviewProvider>
-        <div className="app-shell hero-grid min-h-screen">
+        <div className="app-shell hero-grid min-h-dvh">
           <AppSidebar />
-          <div className="app-main flex min-h-screen flex-col overflow-x-hidden lg:pl-64">
+          <div className="app-main flex min-h-dvh flex-col items-stretch justify-start overflow-x-hidden lg:pl-64">
             <AppHeader />
-            <div className="flex min-h-0 flex-1 flex-col">{children}</div>
+            <div className="flex min-h-0 flex-1 flex-col justify-start">{children}</div>
           </div>
         </div>
       </DashboardOverviewProvider>

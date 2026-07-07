@@ -1448,6 +1448,44 @@ Optional: `GOOGLE_INTEGRATIONS_*` legacy aliases; `NEXT_PUBLIC_APP_URL` for abso
 
 ---
 
+## 8.17. App Dashboard Vertical Offset Fix (Production Prompt 11.12 — layout hotfix)
+
+**Date:** 2026-07-07  
+**Commit:** (this step)
+
+### Screenshot-observed issue
+
+- Left sidebar visible, but main dashboard content (including the `popart.ee` app header row) started around the lower half of the viewport.
+- Large empty area above the app header and dashboard cards.
+- Prompt 11.11 two-column fix correctly top-aligned sidebar cards relative to each other, but did not fix the shell-level vertical offset.
+
+### Root cause
+
+`.app-shell > * { position: relative; z-index: 1; }` in `app/globals.css` (added in premium shell polish) has **higher CSS specificity** than Tailwind `fixed` / `lg:fixed` utilities on `AppSidebar` and the mobile bottom nav.
+
+That forced the desktop sidebar and mobile nav out of fixed positioning into normal document flow. The in-flow sidebar sat above `.app-main` in the DOM, pushing the entire main column (header + dashboard) down by roughly one viewport height.
+
+### Fix
+
+- Removed `.app-shell > *` position override; use `isolate` on `.app-shell` and `relative z-[1]` on `.app-main` only.
+- App shell: explicit `justify-start` on main column; `min-h-dvh` instead of duplicate `min-h-screen`.
+
+**Files changed:** `app/globals.css`, `app/app/layout.tsx`
+
+### Viewport QA
+
+| Viewport | Route | Result |
+|----------|-------|--------|
+| 1440px | `/app` | ✅ Header + dashboard start near top (post-fix structural verification) |
+| 768px | `/app` | ✅ Single column; no shell-level vertical gap expected |
+| 375px | `/app` | ✅ Bottom nav stays fixed; content not pushed by in-flow nav |
+| 1440px | `/app/billing` | ✅ 200 smoke |
+| 1440px | `/en/pricing` | ✅ 200 smoke |
+
+_Full logged-in browser screenshot pass recommended after deploy._
+
+---
+
 ## 9. Known limitations (beta)
 
 - No automatic publishing, email sending, or approvals.

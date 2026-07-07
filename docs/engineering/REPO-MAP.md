@@ -810,6 +810,16 @@ Audit / GSC sync / Article generate / Task complete / Dashboard load
 | Commit | `8bcbdcc` — `fix: top-align dashboard sidebar cards on desktop` |
 | Production deploy | ✅ `dpl_pU2wtvJbGUZm4Yx5uaKibzUxy758` (2026-07-07) |
 
+### 4.3.49. App Dashboard vertical offset fix (prompt 11.12 — layout hotfix)
+
+| Item | Status |
+|------|--------|
+| Root cause | ✅ `.app-shell > * { position: relative }` overrode sidebar `fixed` |
+| Fix | ✅ `isolate` on shell; z-index only on `.app-main`; `justify-start` in layout |
+| Dashboard header position | ✅ starts near top of main column |
+| Two-column card alignment | ✅ unchanged from 11.11 (`lg:items-start`) |
+| Files | `app/globals.css`, `app/app/layout.tsx` |
+
 ### 4.3.48. Google OAuth / GSC Test Mode Setup (prompt 11.12)
 
 | Item | Status |
