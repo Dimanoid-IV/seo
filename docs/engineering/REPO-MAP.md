@@ -810,6 +810,18 @@ Audit / GSC sync / Article generate / Task complete / Dashboard load
 | Commit | `8bcbdcc` — `fix: top-align dashboard sidebar cards on desktop` |
 | Production deploy | ✅ `dpl_pU2wtvJbGUZm4Yx5uaKibzUxy758` (2026-07-07) |
 
+### 4.3.50. Google GSC E2E QA + Dashboard vertical confirm (prompt 11.13)
+
+| Item | Status |
+|------|--------|
+| Vercel `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` | ❌ still missing — E2E blocked |
+| Vercel `GOOGLE_REDIRECT_URI` / `ENCRYPTION_KEY` | ✅ present |
+| GSC OAuth E2E on production | ⏸ blocked (env vars) |
+| Connect unauthenticated smoke | ✅ `307` → login |
+| Dashboard vertical offset | ✅ fix `240466a` live; production CSS verified |
+| Code changes this step | none (QA/docs only) |
+| Production deploy | ✅ `dpl_3NrSXcBmj4WxXARYxqsZSiHSAZVq` (`ac6f2d2`) |
+
 ### 4.3.49. App Dashboard vertical offset fix (prompt 11.12 — layout hotfix)
 
 | Item | Status |

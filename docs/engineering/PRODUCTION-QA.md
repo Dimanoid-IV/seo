@@ -1494,6 +1494,96 @@ _Full logged-in browser screenshot pass recommended after deploy._
 
 ---
 
+## 8.18. Google GSC E2E QA + Dashboard Vertical Confirm (Production Prompt 11.13)
+
+**Date:** 2026-07-07  
+**Commit:** (this step — docs/QA only; no code changes)  
+**Production deploy verified:** `dpl_3NrSXcBmj4WxXARYxqsZSiHSAZVq` (`ac6f2d2`, includes layout fix `240466a`)
+
+### Part A — Vercel / Google Cloud verification
+
+| Variable / check | Status |
+|------------------|--------|
+| `GOOGLE_CLIENT_ID` (Vercel Production) | ❌ **missing** |
+| `GOOGLE_CLIENT_SECRET` (Vercel Production) | ❌ **missing** |
+| `GOOGLE_REDIRECT_URI` (Vercel Production) | ✅ present |
+| `ENCRYPTION_KEY` (Vercel Production) | ✅ present |
+| Expected redirect URI | `https://www.rankboost.eu/api/integrations/google/callback` |
+| Redeploy after Google client secrets | ⏸ N/A — secrets not added |
+
+**Google Cloud Console (manual — not verifiable from repo):**
+
+| Check | Status |
+|-------|--------|
+| Web OAuth client created | ⏸ manual — required before E2E |
+| Redirect URI includes production callback | ⏸ manual |
+| Search Console API enabled | ⏸ manual |
+| OAuth consent screen + test users | ⏸ manual |
+| QA Google account has GSC property access | ⏸ manual |
+
+### Part B — GSC E2E QA
+
+**Overall:** ⏸ **BLOCKED** — `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` still missing on Vercel Production.
+
+| Test | Result | Notes |
+|------|--------|-------|
+| Connect unauthenticated | ✅ | `307` → `/login?next=/app/integrations` |
+| Connect authenticated (missing env) | ⏸ blocked | Code path: redirect `?error=gsc_oauth_not_configured` (verified in `connect/route.ts`) |
+| OAuth consent + callback | ⏸ blocked | Requires client id/secret |
+| Connected state in Integrations Hub | ⏸ blocked | |
+| Property picker (`/search-console/sites`) | ⏸ blocked | |
+| Select property (`/search-console/select-site`) | ⏸ blocked | |
+| Sync (`/search-console/sync`) | ⏸ blocked | |
+| Summary (`/search-console/summary`) | ⏸ blocked | |
+| Token storage / refresh | ⏸ blocked | Code ready; encrypted via `Integration` model |
+| Denied consent / invalid state | ⏸ not run on production | Code paths documented in §8.16 |
+| Empty GSC data / no properties | ⏸ not run on production | Handled in summary + picker UI |
+
+**Safe error behavior (code + smoke verified where possible):**
+
+| Case | Expected | Verified |
+|------|----------|----------|
+| Missing `GOOGLE_CLIENT_*` | `gsc_oauth_not_configured` banner | ✅ code path |
+| Unauthenticated connect | Login redirect | ✅ production `307` |
+| User denies OAuth | `gsc_connection_failed` | ✅ code path (§8.16) |
+
+### Part C — Dashboard vertical layout QA
+
+Layout fix from `240466a` is **live on production** (CSS bundle confirms `.app-shell{isolation:isolate;…}` and `.app-main{z-index:1;position:relative;…}`; no `.app-shell > *` override).
+
+| Viewport | Route | Result | Notes |
+|----------|-------|--------|-------|
+| 1440px | `/app` | ✅ structural confirm | Production CSS + deploy include fix; logged-in screenshot recommended |
+| 768px | `/app` | ✅ structural confirm | Single-column stack expected |
+| 375px | `/app` | ✅ structural confirm | Fixed bottom nav; no in-flow nav offset |
+| 1440px | `/app/billing` | ✅ 200 smoke | |
+| 1440px | `/en/pricing` | ✅ 200 smoke | |
+
+**Layout checklist (post-fix):**
+
+| Item | Status |
+|------|--------|
+| App header row near top of main column | ✅ expected (fix deployed) |
+| No huge empty area above header | ✅ root cause removed |
+| Dashboard cards below header with normal padding | ✅ |
+| Right column top-aligned with main cards | ✅ `lg:items-start` unchanged |
+| Sidebar stable (`lg:fixed`) | ✅ fixed positioning restored |
+
+### Part D — Bugfixes
+
+No code changes required in this step. GSC E2E blocked by env vars; dashboard vertical offset fixed in prior commit `240466a`.
+
+### Remaining blockers
+
+1. Add `GOOGLE_CLIENT_ID` + `GOOGLE_CLIENT_SECRET` to Vercel Production.
+2. Confirm Google Cloud OAuth client + redirect URI.
+3. Redeploy Vercel after env vars added.
+4. Run full logged-in OAuth E2E with a Google account that has GSC property access.
+5. Logged-in viewport screenshot pass on `/app` (375 / 768 / 1440) recommended for final visual sign-off.
+6. Stripe test env vars still missing (unchanged).
+
+---
+
 ## 9. Known limitations (beta)
 
 - No automatic publishing, email sending, or approvals.
