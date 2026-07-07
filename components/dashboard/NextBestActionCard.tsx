@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { ArrowRight, Loader2 } from "lucide-react";
 
+import { useSaasTranslations } from "@/lib/i18n/saas/SaasLocaleProvider";
+
 type NextBestActionCardProps = {
   title: string;
   description: string;
@@ -24,12 +26,14 @@ export function NextBestActionCard({
   secondaryLabel,
   secondaryHref,
 }: NextBestActionCardProps) {
+  const { dict } = useSaasTranslations();
+  const d = dict.dashboard;
   const primaryClass =
     "inline-flex min-h-12 w-full items-center justify-center rounded-xl bg-gradient-to-r from-blue-500 to-violet-600 px-5 py-3 text-sm font-medium text-white shadow-[0_8px_24px_-8px_rgba(59,130,246,0.45)] transition hover:from-blue-600 hover:to-violet-700 disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto";
 
   return (
     <section className="saas-card-primary">
-      <p className="saas-eyebrow text-blue-300/70">What should I do now?</p>
+      <p className="saas-eyebrow text-blue-300/70">{d.whatShouldIDo}</p>
       <h3 className="mt-3 text-xl font-semibold tracking-tight text-white">
         {title}
       </h3>
@@ -51,7 +55,7 @@ export function NextBestActionCard({
             {loading ? (
               <>
                 <Loader2 className="mr-2 size-4 animate-spin" />
-                Working…
+                {dict.common.working}
               </>
             ) : (
               label

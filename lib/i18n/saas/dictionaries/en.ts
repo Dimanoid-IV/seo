@@ -189,6 +189,11 @@ export const saasDictionary: SaasDictionary = {
     gscConnectHint:
       "Connect Google Search Console to unlock real search insights.",
     connectGsc: "Connect Search Console",
+    heroUi: {
+      eyebrow: "Your website growth overview",
+      monitoringNote:
+        "RankBoost is monitoring your website and preparing growth actions.",
+    },
   },
   billing: {
     title: "Billing & Plan",
@@ -356,8 +361,15 @@ export const saasDictionary: SaasDictionary = {
     },
     recommended: {
       title: "Recommended actions",
+      subtitle: "What to do next — nothing runs automatically.",
       empty: "Recommended actions will appear after your first audit.",
+      emptyNow: "No recommended actions right now.",
       runAction: "Run action",
+      open: "Open",
+      priorityHigh: "High priority",
+      priorityMedium: "Medium priority",
+      priorityLow: "Low priority",
+      moreOnDesktop: "{count} more action(s) on desktop.",
     },
     integrations: {
       title: "Integrations",
@@ -384,6 +396,28 @@ export const saasDictionary: SaasDictionary = {
         title: "No monthly plan yet",
         description: "Generate a draft growth plan for your review.",
         cta: "Generate plan",
+      },
+    },
+    emptyStates: {
+      noWebsite: {
+        title: "Add a website to start tracking growth opportunities",
+        description:
+          "Add your website to use the Control Center and review RankBoost actions.",
+      },
+      noData: {
+        title: "RankBoost needs more data before it can manage growth actions",
+        description:
+          "Run an audit or connect Google Search Console so RankBoost can prepare growth actions.",
+      },
+      noApprovals: {
+        title: "Nothing needs review right now",
+        description:
+          "RankBoost is monitoring your website and will surface new actions here when they are ready.",
+      },
+      noActivity: {
+        title: "No recent activity",
+        description:
+          "No recent activity yet. Run an audit or connect integrations to start building your growth timeline.",
       },
     },
   },

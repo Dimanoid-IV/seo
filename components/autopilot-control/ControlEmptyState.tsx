@@ -1,36 +1,26 @@
+"use client";
+
 import { Gauge } from "lucide-react";
+
+import { useSaasTranslations } from "@/lib/i18n/saas/SaasLocaleProvider";
 
 type ControlEmptyStateProps = {
   variant: "no-website" | "no-data" | "no-approvals" | "no-activity";
 };
 
-const COPY: Record<
+const VARIANT_KEY: Record<
   ControlEmptyStateProps["variant"],
-  { title: string; description: string }
+  keyof import("@/lib/i18n/saas/types").SaasDictionary["controlCenter"]["emptyStates"]
 > = {
-  "no-website": {
-    title: "Add a website to start tracking growth opportunities",
-    description: "Add your website to use the Control Center and review RankBoost actions.",
-  },
-  "no-data": {
-    title: "RankBoost needs more data before it can manage growth actions",
-    description:
-      "Run an audit or connect Google Search Console so RankBoost can prepare growth actions.",
-  },
-  "no-approvals": {
-    title: "Nothing needs review right now",
-    description:
-      "RankBoost is monitoring your website and will surface new actions here when they are ready.",
-  },
-  "no-activity": {
-    title: "No recent activity",
-    description:
-      "No recent activity yet. Run an audit or connect integrations to start building your growth timeline.",
-  },
+  "no-website": "noWebsite",
+  "no-data": "noData",
+  "no-approvals": "noApprovals",
+  "no-activity": "noActivity",
 };
 
 export function ControlEmptyState({ variant }: ControlEmptyStateProps) {
-  const copy = COPY[variant];
+  const { dict } = useSaasTranslations();
+  const copy = dict.controlCenter.emptyStates[VARIANT_KEY[variant]];
 
   return (
     <div className="rounded-xl border border-dashed border-white/10 bg-white/[0.02] px-5 py-10 text-center">

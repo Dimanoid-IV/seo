@@ -125,7 +125,7 @@ export const saasDictionary: SaasDictionary = {
       "RankBoost vajab teie veebisaidi URL-i skaneerimiseks, planeerimiseks ja toimingute ettevalmistamiseks.",
     addWebsite: "Lisa veebisait",
     openSetup: "Ava seadistamine",
-    whatShouldIDo: "Mida edasi teha?",
+    whatShouldIDo: "Mida peaksin nüüd tegema?",
     loadFailed: "Ülevaadet ei õnnestunud laadida.",
     loadNetworkError: "Võrguviga ülevaate laadimisel.",
     generatePlanFailed: "Kuukava genereerimine ebaõnnestus.",
@@ -187,8 +187,13 @@ export const saasDictionary: SaasDictionary = {
     },
     billingNote: "Lähenete paketi limiidile.",
     gscConnectHint:
-      "Ühendage Google Search Console, et avada reaalsed otsingu ülevaated.",
+      "Ühendage Google Search Console, et näha tegelikke otsinguandmeid.",
     connectGsc: "Ühenda Search Console",
+    heroUi: {
+      eyebrow: "Veebisaidi kasvu ülevaade",
+      monitoringNote:
+        "RankBoost jälgib teie veebisaiti ja valmistab ette kasvutegevusi.",
+    },
   },
   billing: {
     title: "Arveldus ja pakett",
@@ -356,8 +361,15 @@ export const saasDictionary: SaasDictionary = {
     },
     recommended: {
       title: "Soovitatud toimingud",
+      subtitle: "Järgmine samm — midagi ei käivitu automaatselt.",
       empty: "Toimingud ilmuvad pärast esimest auditit.",
+      emptyNow: "Praegu soovitatud toiminguid pole.",
       runAction: "Käivita toiming",
+      open: "Ava",
+      priorityHigh: "Kõrge prioriteet",
+      priorityMedium: "Keskmine prioriteet",
+      priorityLow: "Madal prioriteet",
+      moreOnDesktop: "Veel {count} lauaarvutis.",
     },
     integrations: {
       title: "Integratsioonid",
@@ -384,6 +396,28 @@ export const saasDictionary: SaasDictionary = {
         title: "Kuuplaani pole veel",
         description: "Genereerige mustand kasvuplaan ülevaatamiseks.",
         cta: "Genereeri plaan",
+      },
+    },
+    emptyStates: {
+      noWebsite: {
+        title: "Lisage veebisait, et alustada kasvuvõimaluste jälgimist",
+        description:
+          "Lisage veebisait, et kasutada juhtimiskeskust ja vaadata RankBoosti toiminguid.",
+      },
+      noData: {
+        title: "RankBoost vajab rohkem andmeid kasvutoimingute haldamiseks",
+        description:
+          "Käivitage audit või ühendage Google Search Console, et RankBoost saaks toiminguid ette valmistada.",
+      },
+      noApprovals: {
+        title: "Praegu ei vaja midagi ülevaatamist",
+        description:
+          "RankBoost jälgib teie veebisaiti ja kuvab uued toimingud siin, kui need on valmis.",
+      },
+      noActivity: {
+        title: "Hiljutist tegevust pole",
+        description:
+          "Hiljutist tegevust pole veel. Käivitage audit või ühendage integratsioonid, et alustada kasvu ajajoont.",
       },
     },
   },

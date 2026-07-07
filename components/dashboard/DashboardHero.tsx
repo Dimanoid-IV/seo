@@ -4,6 +4,7 @@ import Link from "next/link";
 import { ArrowRight, Sparkles } from "lucide-react";
 
 import type { SimpleDashboardViewModel } from "@/lib/dashboard/simple-overview";
+import { useSaasTranslations } from "@/lib/i18n/saas/SaasLocaleProvider";
 import { cn } from "@/lib/utils";
 
 type DashboardHeroProps = {
@@ -22,6 +23,9 @@ const TONE_STYLES: Record<
 };
 
 export function DashboardHero({ status, websiteDomain }: DashboardHeroProps) {
+  const { dict } = useSaasTranslations();
+  const d = dict.dashboard;
+
   return (
     <section
       className={cn(
@@ -35,7 +39,7 @@ export function DashboardHero({ status, websiteDomain }: DashboardHeroProps) {
             <Sparkles className="size-5 text-blue-300" />
           </div>
           <div className="min-w-0 flex-1">
-            <p className="saas-eyebrow">Your website growth overview</p>
+            <p className="saas-eyebrow">{d.heroUi.eyebrow}</p>
             <h2 className="mt-2 text-2xl font-semibold tracking-tight text-white sm:text-[1.65rem]">
               {status.label}
             </h2>
@@ -51,12 +55,12 @@ export function DashboardHero({ status, websiteDomain }: DashboardHeroProps) {
         </div>
       </div>
       <p className="mt-6 border-t border-white/[0.06] pt-5 text-sm leading-relaxed text-slate-400">
-        RankBoost is monitoring your website and preparing growth actions.{" "}
+        {d.heroUi.monitoringNote}{" "}
         <Link
           href="/app/autopilot-control"
           className="inline-flex items-center gap-1 font-medium text-blue-300 transition hover:text-blue-200"
         >
-          Open Control Center
+          {d.prepared.openControlCenter}
           <ArrowRight className="size-3.5" />
         </Link>
       </p>

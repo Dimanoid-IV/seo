@@ -150,6 +150,10 @@ export type SaasDictionary = {
     billingNote: string;
     gscConnectHint: string;
     connectGsc: string;
+    heroUi: {
+      eyebrow: string;
+      monitoringNote: string;
+    };
   };
   billing: {
     title: string;
@@ -273,13 +277,30 @@ export type SaasDictionary = {
     };
     monthlyPlan: { title: string; empty: string; review: string };
     approvalQueue: { title: string; empty: string };
-    recommended: { title: string; empty: string; runAction: string };
+    recommended: {
+      title: string;
+      subtitle: string;
+      empty: string;
+      emptyNow: string;
+      runAction: string;
+      open: string;
+      priorityHigh: string;
+      priorityMedium: string;
+      priorityLow: string;
+      moreOnDesktop: string;
+    };
     integrations: { title: string; connected: string; notConnected: string };
     activity: { title: string; empty: string; openTimeline: string };
     empty: {
       noWebsite: { title: string; description: string; cta: string };
       needsSetup: { title: string; description: string; cta: string };
       noPlan: { title: string; description: string; cta: string };
+    };
+    emptyStates: {
+      noWebsite: { title: string; description: string };
+      noData: { title: string; description: string };
+      noApprovals: { title: string; description: string };
+      noActivity: { title: string; description: string };
     };
   };
   integrations: {

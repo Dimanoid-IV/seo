@@ -1,9 +1,12 @@
+"use client";
+
 import Link from "next/link";
 import { Loader2 } from "lucide-react";
 
 import { SaasCard, SaasSectionHeader } from "@/components/shared/SaasCard";
 import { Button } from "@/components/ui/button";
 import type { ControlCenterRecommendedAction } from "@/lib/autopilot-control/types";
+import { useSaasTranslations } from "@/lib/i18n/saas/SaasLocaleProvider";
 import { cn } from "@/lib/utils";
 
 type RecommendedActionsPanelProps = {
@@ -25,21 +28,31 @@ export function RecommendedActionsPanel({
   actionLoading,
   loadingActionId,
 }: RecommendedActionsPanelProps) {
+  const { dict } = useSaasTranslations();
+  const r = dict.controlCenter.recommended;
   const visibleActions = actions.slice(0, 3);
   const hiddenCount = Math.max(0, actions.length - visibleActions.length);
 
+  function priorityLabel(priority: string): string {
+    switch (priority) {
+      case "HIGH":
+        return r.priorityHigh;
+      case "MEDIUM":
+        return r.priorityMedium;
+      case "LOW":
+        return r.priorityLow;
+      default:
+        return r.priorityLow;
+    }
+  }
+
   return (
     <SaasCard variant="muted">
-      <SaasSectionHeader
-        title="Recommended actions"
-        subtitle="What to do next — nothing runs automatically."
-      />
+      <SaasSectionHeader title={r.title} subtitle={r.subtitle} />
 
       <div className="space-y-3">
         {visibleActions.length === 0 ? (
-          <p className="text-sm leading-relaxed text-slate-400">
-            No recommended actions right now.
-          </p>
+          <p className="text-sm leading-relaxed text-slate-400">{r.emptyNow}</p>
         ) : (
           visibleActions.map((action) => {
             const isLoading = actionLoading && loadingActionId === action.id;
@@ -52,7 +65,7 @@ export function RecommendedActionsPanel({
                   PRIORITY_STYLES[action.priority] ?? PRIORITY_STYLES.LOW
                 )}
               >
-                <span className="saas-eyebrow">{action.priority} priority</span>
+                <span className="saas-eyebrow">{priorityLabel(action.priority)}</span>
                 <h4 className="mt-2 font-medium text-white">{action.title}</h4>
                 <p className="mt-2 break-words text-sm leading-relaxed text-slate-400">
                   {action.description}
@@ -70,7 +83,7 @@ export function RecommendedActionsPanel({
                       {isLoading ? (
                         <Loader2 className="size-4 animate-spin" />
                       ) : (
-                        "Run action"
+                        r.runAction
                       )}
                     </Button>
                   ) : action.href ? (
@@ -81,7 +94,7 @@ export function RecommendedActionsPanel({
                       variant="outline"
                       className="min-h-10 w-full rounded-xl border-white/[0.08] bg-white/[0.03] text-slate-200 sm:w-auto"
                     >
-                      Open
+                      {r.open}
                     </Button>
                   ) : null}
                 </div>
@@ -91,7 +104,7 @@ export function RecommendedActionsPanel({
         )}
         {hiddenCount > 0 ? (
           <p className="pt-1 text-xs text-slate-500">
-            {hiddenCount} more action{hiddenCount === 1 ? "" : "s"} on desktop.
+            {r.moreOnDesktop.replace("{count}", String(hiddenCount))}
           </p>
         ) : null}
       </div>

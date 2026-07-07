@@ -110,7 +110,7 @@ export const saasDictionary: SaasDictionary = {
   },
   dashboard: {
     loading: "Загружаем обзор роста…",
-    growthScore: "Growth Score",
+    growthScore: "Оценка роста",
     opportunities: "Возможности",
     opportunitiesSubtitle: "Задачи и идеи роста от RankBoost",
     needsReview: "Нужен обзор",
@@ -125,7 +125,7 @@ export const saasDictionary: SaasDictionary = {
       "RankBoost нужен URL вашего сайта, чтобы сканировать, планировать и готовить действия.",
     addWebsite: "Добавить сайт",
     openSetup: "Открыть настройку",
-    whatShouldIDo: "Что делать дальше?",
+    whatShouldIDo: "Что сделать сейчас?",
     loadFailed: "Не удалось загрузить обзор.",
     loadNetworkError: "Сетевая ошибка при загрузке обзора.",
     generatePlanFailed: "Не удалось создать месячный план.",
@@ -187,8 +187,13 @@ export const saasDictionary: SaasDictionary = {
     },
     billingNote: "Вы приближаетесь к лимиту плана.",
     gscConnectHint:
-      "Подключите Google Search Console, чтобы открыть реальные поисковые инсайты.",
+      "Подключите Google Search Console, чтобы увидеть реальные данные поиска.",
     connectGsc: "Подключить Search Console",
+    heroUi: {
+      eyebrow: "Обзор роста сайта",
+      monitoringNote:
+        "RankBoost отслеживает ваш сайт и готовит действия для роста.",
+    },
   },
   billing: {
     title: "Оплата и план",
@@ -356,8 +361,15 @@ export const saasDictionary: SaasDictionary = {
     },
     recommended: {
       title: "Рекомендуемые действия",
+      subtitle: "Что делать дальше — ничего не выполняется автоматически.",
       empty: "Действия появятся после первого аудита.",
+      emptyNow: "Сейчас нет рекомендуемых действий.",
       runAction: "Выполнить",
+      open: "Открыть",
+      priorityHigh: "Высокий приоритет",
+      priorityMedium: "Средний приоритет",
+      priorityLow: "Низкий приоритет",
+      moreOnDesktop: "Ещё {count} на десктопе.",
     },
     integrations: {
       title: "Интеграции",
@@ -384,6 +396,28 @@ export const saasDictionary: SaasDictionary = {
         title: "Плана пока нет",
         description: "Создайте черновик плана роста для проверки.",
         cta: "Создать план",
+      },
+    },
+    emptyStates: {
+      noWebsite: {
+        title: "Добавьте сайт, чтобы отслеживать возможности роста",
+        description:
+          "Добавьте сайт, чтобы использовать центр управления и проверять действия RankBoost.",
+      },
+      noData: {
+        title: "RankBoost нужно больше данных для управления ростом",
+        description:
+          "Запустите аудит или подключите Google Search Console, чтобы RankBoost мог готовить действия.",
+      },
+      noApprovals: {
+        title: "Сейчас ничего не требует проверки",
+        description:
+          "RankBoost отслеживает ваш сайт и покажет новые действия, когда они будут готовы.",
+      },
+      noActivity: {
+        title: "Нет недавней активности",
+        description:
+          "Активности пока нет. Запустите аудит или подключите интеграции, чтобы начать историю роста.",
       },
     },
   },
