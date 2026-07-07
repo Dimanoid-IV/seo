@@ -810,14 +810,14 @@ Audit / GSC sync / Article generate / Task complete / Dashboard load
 | Commit | `8bcbdcc` — `fix: top-align dashboard sidebar cards on desktop` |
 | Production deploy | ✅ `dpl_pU2wtvJbGUZm4Yx5uaKibzUxy758` (2026-07-07) |
 
-### 4.3.51. Dashboard i18n completion + visual QA (prompt 11.13 — i18n)
+### 4.3.51. Dashboard i18n completion + visual QA (prompt 11.13–11.14)
 
 | Item | Status |
 |------|--------|
 | DashboardHero / NextBestActionCard | ✅ wired to SaaS dictionaries |
-| Control Center recommended/empty panels | ✅ localized |
-| ru/et/en keys | ✅ `dashboard.heroUi`, `controlCenter.recommended`, `emptyStates` |
-| Commit | `7d8351d` — `fix: complete dashboard i18n for ru and et locales` |
+| Control Center panels (recommended, empty, integrations, approval, monthly plan, hero, activity) | ✅ localized |
+| ru/et/en keys | ✅ `dashboard.heroUi`, extended `controlCenter.*` |
+| Commits | `7d8351d` dashboard; 11.14 control-center sweep |
 
 ### 4.3.50. Google GSC E2E QA + Dashboard vertical confirm (prompt 11.13)
 

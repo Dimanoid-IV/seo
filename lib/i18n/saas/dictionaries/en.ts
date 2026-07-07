@@ -338,6 +338,8 @@ export const saasDictionary: SaasDictionary = {
     openTimeline: "Open Timeline",
     openIntegrations: "Integrations",
     generateSuccess: "Monthly plan generated successfully.",
+    emailDraftSuccess:
+      "Email draft created. Review it in Email Approvals.",
     actionFailed: "Action failed. Please try again.",
     actionNetworkError: "Network error while running action",
     metrics: {
@@ -352,12 +354,23 @@ export const saasDictionary: SaasDictionary = {
     },
     monthlyPlan: {
       title: "Monthly growth plan",
+      subtitle: "Draft growth plan for your review.",
       empty: "No monthly plan yet. Generate one when you're ready.",
       review: "Review plan",
     },
     approvalQueue: {
       title: "Approval queue",
+      subtitle: "Items waiting for your review — nothing sends automatically.",
       empty: "Nothing waiting for approval right now.",
+      types: {
+        email: "Email",
+        article: "Article",
+        socialPost: "Social",
+        monthlyPlan: "Monthly plan",
+        wordpressDraft: "WordPress",
+        task: "Task",
+        integration: "Integration",
+      },
     },
     recommended: {
       title: "Recommended actions",
@@ -373,11 +386,15 @@ export const saasDictionary: SaasDictionary = {
     },
     integrations: {
       title: "Integrations",
+      subtitle: "Connect when you are ready — RankBoost works without them.",
       connected: "Connected",
       notConnected: "Not connected",
+      needsAttention: "Needs attention",
+      manageIntegrations: "Manage integrations",
     },
     activity: {
       title: "Recent activity",
+      subtitle: "Important timeline events",
       empty: "Recent activity will show up here.",
       openTimeline: "Open timeline",
     },

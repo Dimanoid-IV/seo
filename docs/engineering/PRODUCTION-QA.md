@@ -1584,10 +1584,10 @@ No code changes required in this step. GSC E2E blocked by env vars; dashboard ve
 
 ---
 
-## 8.19. Dashboard i18n Completion + Visual QA (Production Prompt 11.13 — i18n)
+## 8.19. Dashboard i18n Completion + Visual QA (Production Prompt 11.13–11.14)
 
 **Date:** 2026-07-07  
-**Commit:** `7d8351d` — `fix: complete dashboard i18n for ru and et locales`
+**Commits:** `7d8351d` (dashboard hero/action cards), follow-up control-center i18n sweep (11.14)
 
 ### Screenshot-observed issue
 
@@ -1601,24 +1601,32 @@ On Russian `/app` (locale via cookie `rankboost_locale=ru`), dashboard showed mi
 
 ### Root cause
 
-`DashboardHero.tsx` and `NextBestActionCard.tsx` had hardcoded English. `RecommendedActionsPanel` and `ControlEmptyState` also bypassed existing `dict.controlCenter` strings.
+Dashboard client components (`DashboardHero`, `NextBestActionCard`) had hardcoded English despite existing dictionaries. Control Center panels (`IntegrationStatusPanel`, `ApprovalQueue`, `MonthlyPlanPanel`, `ControlStatusHero`, `RecentActivityPanel`) and success toasts in `AutopilotControlPage` also bypassed `dict.controlCenter`.
 
 ### Fix
 
 - Added `dashboard.heroUi` (en/ru/et) and wired dashboard client components.
-- Extended `controlCenter.recommended` + `controlCenter.emptyStates` for linked Control Center panels.
-- Updated ru/et copy for hero, GSC hint, growth score label, and action headings.
+- Extended `controlCenter.recommended`, `emptyStates`, `integrations`, `monthlyPlan`, `approvalQueue`, `activity`.
+- Localized Control Center panels linked from dashboard CTA.
+- Updated ru/et copy: hero, GSC hint, growth score, needsReview/ready statuses, prepared cards.
 
 ### Language QA
 
 | Locale | Route | Result |
 |--------|-------|--------|
-| ru | `/app` (cookie) | ✅ dashboard client strings localized |
+| ru | `/app` (cookie) | ✅ dashboard client + server strings localized |
 | et | `/app` (cookie) | ✅ et keys complete |
 | en | `/app` (cookie) | ✅ English unchanged |
-| ru | `/app/autopilot-control` | ✅ recommended/empty panels localized |
+| ru | `/app/autopilot-control` | ✅ all main panels localized |
+| et | `/app/autopilot-control` | ✅ all main panels localized |
 
 Note: SaaS locale is cookie-based on `/app`, not `/ru/app` URL prefix.
+
+### Remaining untranslated areas
+
+- Timeline event severity labels (INFO/WARNING) in Control Center activity feed
+- Some server-generated timeline/activity titles (dynamic content)
+- Logged-in viewport screenshot pass at 375/1440 recommended for final sign-off
 
 ---
 

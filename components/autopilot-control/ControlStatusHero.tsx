@@ -1,8 +1,11 @@
+"use client";
+
 import Link from "next/link";
 import { ArrowRight, Plug, Sparkles } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import type { ControlCenterStatus } from "@/lib/autopilot-control/types";
+import { useSaasTranslations } from "@/lib/i18n/saas/SaasLocaleProvider";
 import { cn } from "@/lib/utils";
 
 type ControlStatusHeroProps = {
@@ -26,6 +29,8 @@ export function ControlStatusHero({
   onGeneratePlan,
   generating,
 }: ControlStatusHeroProps) {
+  const { dict } = useSaasTranslations();
+  const c = dict.controlCenter;
   const style = STATUS_STYLES[status.overall] ?? STATUS_STYLES.NEEDS_SETUP;
 
   return (
@@ -53,7 +58,7 @@ export function ControlStatusHero({
                 onClick={onGeneratePlan}
                 className="min-h-10 rounded-xl"
               >
-                Generate monthly plan
+                {c.generatePlan}
               </Button>
             ) : null}
             <Button
@@ -63,7 +68,7 @@ export function ControlStatusHero({
               size="sm"
               className="min-h-10 gap-1 rounded-xl border-white/[0.08] bg-white/[0.03] text-slate-200"
             >
-              Open Timeline
+              {c.openTimeline}
               <ArrowRight className="size-3.5" />
             </Button>
             <Button
@@ -74,7 +79,7 @@ export function ControlStatusHero({
               className="min-h-10 gap-1 rounded-xl border-white/[0.08] bg-white/[0.03] text-slate-200"
             >
               <Plug className="size-3.5" />
-              Integrations
+              {c.openIntegrations}
             </Button>
           </div>
         ) : null}

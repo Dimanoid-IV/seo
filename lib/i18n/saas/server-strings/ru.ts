@@ -75,7 +75,7 @@ export const serverStringsRu: SaasServerStrings = {
       limitedData: "Мало данных",
       limitedDataDesc:
         "Запустите аудит или подключите Google Search Console для подготовки действий.",
-      needsReview: "Нужен обзор",
+      needsReview: "Требует проверки",
       needsReviewDesc:
         "RankBoost подготовил действия роста, которые нужно проверить.",
       ready: "Готово",

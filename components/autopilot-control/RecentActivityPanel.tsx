@@ -1,8 +1,11 @@
+"use client";
+
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import type { ControlCenterRecentActivity } from "@/lib/autopilot-control/types";
+import { useSaasTranslations } from "@/lib/i18n/saas/SaasLocaleProvider";
 
 import { ControlEmptyState } from "./ControlEmptyState";
 
@@ -19,12 +22,15 @@ const SEVERITY_STYLES: Record<string, string> = {
 };
 
 export function RecentActivityPanel({ events }: RecentActivityPanelProps) {
+  const { dict } = useSaasTranslations();
+  const a = dict.controlCenter.activity;
+
   return (
     <section className="rounded-2xl border border-white/10 bg-white/[0.02] p-5">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h3 className="font-semibold text-white">Recent activity</h3>
-          <p className="mt-1 text-xs text-slate-500">Important timeline events</p>
+          <h3 className="font-semibold text-white">{a.title}</h3>
+          <p className="mt-1 text-xs text-slate-500">{a.subtitle}</p>
         </div>
         <Button
           render={<Link href="/app/timeline" />}
@@ -33,7 +39,7 @@ export function RecentActivityPanel({ events }: RecentActivityPanelProps) {
           size="sm"
           className="gap-1 border-white/10 bg-transparent text-slate-200"
         >
-          Open Timeline
+          {a.openTimeline}
           <ArrowRight className="size-3.5" />
         </Button>
       </div>

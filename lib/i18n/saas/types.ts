@@ -263,6 +263,7 @@ export type SaasDictionary = {
     openTimeline: string;
     openIntegrations: string;
     generateSuccess: string;
+    emailDraftSuccess: string;
     actionFailed: string;
     actionNetworkError: string;
     metrics: {
@@ -275,8 +276,26 @@ export type SaasDictionary = {
       integrationIssues: string;
       unreadActivity: string;
     };
-    monthlyPlan: { title: string; empty: string; review: string };
-    approvalQueue: { title: string; empty: string };
+    monthlyPlan: {
+      title: string;
+      subtitle: string;
+      empty: string;
+      review: string;
+    };
+    approvalQueue: {
+      title: string;
+      subtitle: string;
+      empty: string;
+      types: {
+        email: string;
+        article: string;
+        socialPost: string;
+        monthlyPlan: string;
+        wordpressDraft: string;
+        task: string;
+        integration: string;
+      };
+    };
     recommended: {
       title: string;
       subtitle: string;
@@ -289,8 +308,20 @@ export type SaasDictionary = {
       priorityLow: string;
       moreOnDesktop: string;
     };
-    integrations: { title: string; connected: string; notConnected: string };
-    activity: { title: string; empty: string; openTimeline: string };
+    integrations: {
+      title: string;
+      subtitle: string;
+      connected: string;
+      notConnected: string;
+      needsAttention: string;
+      manageIntegrations: string;
+    };
+    activity: {
+      title: string;
+      subtitle: string;
+      empty: string;
+      openTimeline: string;
+    };
     empty: {
       noWebsite: { title: string; description: string; cta: string };
       needsSetup: { title: string; description: string; cta: string };

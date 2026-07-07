@@ -1,36 +1,44 @@
+"use client";
+
 import Link from "next/link";
 import { ArrowRight, CheckCircle2 } from "lucide-react";
 
 import { SaasCard, SaasSectionHeader } from "@/components/shared/SaasCard";
 import { Button } from "@/components/ui/button";
 import type { ControlCenterIntegration } from "@/lib/autopilot-control/types";
+import { useSaasTranslations } from "@/lib/i18n/saas/SaasLocaleProvider";
 import { cn } from "@/lib/utils";
 
 type IntegrationStatusPanelProps = {
   integrations: ControlCenterIntegration[];
 };
 
-const STATUS_LABELS: Record<string, string> = {
-  CONNECTED: "Connected",
-  MISSING: "Not connected",
-  ERROR: "Needs attention",
-};
-
-const STATUS_STYLES: Record<string, string> = {
-  CONNECTED: "text-emerald-400",
-  MISSING: "text-slate-400",
-  ERROR: "text-amber-400",
-};
-
 export function IntegrationStatusPanel({
   integrations,
 }: IntegrationStatusPanelProps) {
+  const { dict } = useSaasTranslations();
+  const i = dict.controlCenter.integrations;
+
+  function statusLabel(status: string): string {
+    switch (status) {
+      case "CONNECTED":
+        return i.connected;
+      case "ERROR":
+        return i.needsAttention;
+      default:
+        return i.notConnected;
+    }
+  }
+
+  const STATUS_STYLES: Record<string, string> = {
+    CONNECTED: "text-emerald-400",
+    MISSING: "text-slate-400",
+    ERROR: "text-amber-400",
+  };
+
   return (
     <SaasCard variant="muted">
-      <SaasSectionHeader
-        title="Integrations"
-        subtitle="Connect when you are ready — RankBoost works without them."
-      />
+      <SaasSectionHeader title={i.title} subtitle={i.subtitle} />
 
       <ul className="space-y-3">
         {integrations.map((integration) => (
@@ -46,7 +54,7 @@ export function IntegrationStatusPanel({
                   STATUS_STYLES[integration.status] ?? "text-slate-400"
                 )}
               >
-                {STATUS_LABELS[integration.status] ?? integration.status}
+                {statusLabel(integration.status)}
               </p>
               {integration.description ? (
                 <p className="mt-1.5 text-xs leading-relaxed text-slate-500">
@@ -68,7 +76,7 @@ export function IntegrationStatusPanel({
         size="sm"
         className="mt-5 gap-1 rounded-xl border-white/[0.08] bg-white/[0.03] text-slate-200"
       >
-        Manage integrations
+        {i.manageIntegrations}
         <ArrowRight className="size-3.5" />
       </Button>
     </SaasCard>

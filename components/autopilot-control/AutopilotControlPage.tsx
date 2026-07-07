@@ -149,7 +149,7 @@ export function AutopilotControlPage() {
           return;
         }
 
-        setSuccess("Monthly plan generated.");
+        setSuccess(c.generateSuccess);
       } else if (action.apiAction === "generate_email_approval") {
         const response = await authFetch("/api/email-approvals/generate", {
           method: "POST",
@@ -167,7 +167,7 @@ export function AutopilotControlPage() {
           return;
         }
 
-        setSuccess("Email draft created. Review it in Email Approvals.");
+        setSuccess(c.emailDraftSuccess);
       }
 
       await loadControlCenter();

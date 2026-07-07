@@ -1,9 +1,12 @@
+"use client";
+
 import Link from "next/link";
 import { Loader2, Rocket, Sparkles } from "lucide-react";
 
 import { SaasCard, SaasSectionHeader } from "@/components/shared/SaasCard";
 import { Button } from "@/components/ui/button";
 import type { ControlCenterMonthlyPlan } from "@/lib/autopilot-control/types";
+import { useSaasTranslations } from "@/lib/i18n/saas/SaasLocaleProvider";
 
 type MonthlyPlanPanelProps = {
   plan?: ControlCenterMonthlyPlan;
@@ -16,12 +19,12 @@ export function MonthlyPlanPanel({
   onGenerate,
   generating,
 }: MonthlyPlanPanelProps) {
+  const { dict } = useSaasTranslations();
+  const m = dict.controlCenter.monthlyPlan;
+
   return (
     <SaasCard variant="muted">
-      <SaasSectionHeader
-        title="Monthly plan"
-        subtitle="Draft growth plan for your review."
-      />
+      <SaasSectionHeader title={m.title} subtitle={m.subtitle} />
 
       {plan ? (
         <div className="space-y-4">
@@ -44,15 +47,13 @@ export function MonthlyPlanPanel({
             size="sm"
             className="rounded-xl border-white/[0.08] bg-white/[0.03] text-slate-200"
           >
-            Review plan
+            {m.review}
           </Button>
         </div>
       ) : (
         <div className="rounded-xl border border-dashed border-white/[0.08] bg-white/[0.02] px-5 py-8 text-center">
           <Sparkles className="mx-auto size-6 text-violet-400/80" />
-          <p className="mt-3 text-sm text-slate-400">
-            No monthly plan yet. Generate one when you are ready.
-          </p>
+          <p className="mt-3 text-sm text-slate-400">{m.empty}</p>
           {onGenerate ? (
             <Button
               type="button"
@@ -66,7 +67,7 @@ export function MonthlyPlanPanel({
               ) : (
                 <>
                   <Rocket className="mr-1.5 size-4" />
-                  Generate monthly plan
+                  {dict.controlCenter.generatePlan}
                 </>
               )}
             </Button>

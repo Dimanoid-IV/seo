@@ -110,7 +110,7 @@ export const saasDictionary: SaasDictionary = {
   },
   dashboard: {
     loading: "Kasvülevaate laadimine…",
-    growthScore: "Growth Score",
+    growthScore: "Kasvuskoor",
     opportunities: "Võimalused",
     opportunitiesSubtitle: "RankBoosti leitud ülesanded ja ideed",
     needsReview: "Vajab ülevaatamist",
@@ -172,10 +172,10 @@ export const saasDictionary: SaasDictionary = {
     },
     prepared: {
       title: "Teie jaoks ette valmistatud",
-      monthlyPlan: "Kuine kasvuplaan",
+      monthlyPlan: "Kuu kasvuplaan",
       articleDrafts: "Artiklite mustandid",
-      socialPosts: "Sotsiaalpostitused",
-      reviewEmails: "Ülevaatavad e-kirjad",
+      socialPosts: "Sotsiaalmeedia postitused",
+      reviewEmails: "Kinnitamiseks saadetavad e-kirjad",
       viewAll: "Vaata kõiki",
       reviewNote: "Kontrollige mustandeid ja kinnitamisi enne avaldamist.",
       openControlCenter: "Ava juhtimiskeskus",
@@ -338,10 +338,12 @@ export const saasDictionary: SaasDictionary = {
     openTimeline: "Ava ajalugu",
     openIntegrations: "Integratsioonid",
     generateSuccess: "Kuuplaan edukalt genereeritud.",
+    emailDraftSuccess:
+      "E-kirja mustand loodud. Vaadake seda jaotises E-kirjad.",
     actionFailed: "Toiming ebaõnnestus. Proovige uuesti.",
     actionNetworkError: "Võrguviga toimingu käivitamisel",
     metrics: {
-      growthScore: "Growth Score",
+      growthScore: "Kasvuskoor",
       openTasks: "Avatud ülesanded",
       highPriority: "Kõrge prioriteet",
       pendingEmails: "Ootel e-kirjad",
@@ -351,13 +353,24 @@ export const saasDictionary: SaasDictionary = {
       unreadActivity: "Lugemata tegevus",
     },
     monthlyPlan: {
-      title: "Kuine kasvuplaan",
+      title: "Kuu kasvuplaan",
+      subtitle: "Kasvuplaani mustand teie ülevaatamiseks.",
       empty: "Kuuplaani pole veel. Genereerige, kui olete valmis.",
       review: "Vaata plaani",
     },
     approvalQueue: {
       title: "Kinnitamise järjekord",
+      subtitle: "Üksused ootavad teie ülevaatamist — midagi ei saadeta automaatselt.",
       empty: "Praegu ei oota midagi kinnitust.",
+      types: {
+        email: "E-kiri",
+        article: "Artikkel",
+        socialPost: "Sotsiaalmeedia",
+        monthlyPlan: "Kuuplaan",
+        wordpressDraft: "WordPress",
+        task: "Ülesanne",
+        integration: "Integratsioon",
+      },
     },
     recommended: {
       title: "Soovitatud toimingud",
@@ -373,12 +386,16 @@ export const saasDictionary: SaasDictionary = {
     },
     integrations: {
       title: "Integratsioonid",
+      subtitle: "Ühendage, kui olete valmis — RankBoost töötab ka ilma nendeta.",
       connected: "Ühendatud",
       notConnected: "Pole ühendatud",
+      needsAttention: "Vajab tähelepanu",
+      manageIntegrations: "Halda integratsioone",
     },
     activity: {
       title: "Hiljutine tegevus",
-      empty: "Hiljutine tegevus ilmub siia.",
+      subtitle: "Olulised ajajoone sündmused",
+      empty: "Tegevus ilmub siia.",
       openTimeline: "Ava ajalugu",
     },
     empty: {
