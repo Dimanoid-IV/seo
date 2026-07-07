@@ -1584,6 +1584,44 @@ No code changes required in this step. GSC E2E blocked by env vars; dashboard ve
 
 ---
 
+## 8.19. Dashboard i18n Completion + Visual QA (Production Prompt 11.13 — i18n)
+
+**Date:** 2026-07-07  
+**Commit:** `7d8351d` — `fix: complete dashboard i18n for ru and et locales`
+
+### Screenshot-observed issue
+
+On Russian `/app` (locale via cookie `rankboost_locale=ru`), dashboard showed mixed English/Russian copy:
+
+- "YOUR WEBSITE GROWTH OVERVIEW" (hero eyebrow)
+- "RankBoost is monitoring your website and preparing growth actions."
+- "Open Control Center"
+- "WHAT SHOULD I DO NOW?"
+- "Working…" on action buttons
+
+### Root cause
+
+`DashboardHero.tsx` and `NextBestActionCard.tsx` had hardcoded English. `RecommendedActionsPanel` and `ControlEmptyState` also bypassed existing `dict.controlCenter` strings.
+
+### Fix
+
+- Added `dashboard.heroUi` (en/ru/et) and wired dashboard client components.
+- Extended `controlCenter.recommended` + `controlCenter.emptyStates` for linked Control Center panels.
+- Updated ru/et copy for hero, GSC hint, growth score label, and action headings.
+
+### Language QA
+
+| Locale | Route | Result |
+|--------|-------|--------|
+| ru | `/app` (cookie) | ✅ dashboard client strings localized |
+| et | `/app` (cookie) | ✅ et keys complete |
+| en | `/app` (cookie) | ✅ English unchanged |
+| ru | `/app/autopilot-control` | ✅ recommended/empty panels localized |
+
+Note: SaaS locale is cookie-based on `/app`, not `/ru/app` URL prefix.
+
+---
+
 ## 9. Known limitations (beta)
 
 - No automatic publishing, email sending, or approvals.
