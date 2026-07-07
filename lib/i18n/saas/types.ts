@@ -154,6 +154,67 @@ export type SaasDictionary = {
       eyebrow: string;
       monitoringNote: string;
     };
+    metrics: {
+      growthScore: string;
+      scoreDelta: string;
+      openTasks: string;
+      completed: string;
+      opportunities: string;
+      warnings: string;
+      draftArticles: string;
+      readySocialPosts: string;
+    };
+    focusAreas: {
+      title: string;
+      technicalSeo: {
+        title: string;
+        description: string;
+        noteOne: string;
+        noteMany: string;
+        criticalFindingOne: string;
+        criticalFindingMany: string;
+      };
+      integrationDataQuality: {
+        title: string;
+        description: string;
+        note: string;
+        needsAttention: string;
+      };
+      contentProduction: {
+        title: string;
+        description: string;
+        note: string;
+        draftsNeedProgressOne: string;
+        draftsNeedProgressMany: string;
+      };
+      gscOpportunities: {
+        title: string;
+        description: string;
+        foundMany: string;
+        potential: string;
+      };
+      socialDistribution: {
+        title: string;
+        description: string;
+        readyMany: string;
+        newContent: string;
+      };
+      reviewApproval: {
+        title: string;
+        description: string;
+        waitingMany: string;
+      };
+      links: {
+        openArticle: string;
+        viewSocialPosts: string;
+        openDashboard: string;
+      };
+    };
+    priority: {
+      high: string;
+      medium: string;
+      low: string;
+    };
   };
   billing: {
     title: string;

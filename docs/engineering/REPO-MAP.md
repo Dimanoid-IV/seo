@@ -810,6 +810,16 @@ Audit / GSC sync / Article generate / Task complete / Dashboard load
 | Commit | `8bcbdcc` — `fix: top-align dashboard sidebar cards on desktop` |
 | Production deploy | ✅ `dpl_pU2wtvJbGUZm4Yx5uaKibzUxy758` (2026-07-07) |
 
+### 4.3.54. Dashboard metrics & focus areas i18n fix (prompt 11.17)
+
+| Item | Status |
+|------|--------|
+| `dict.dashboard.metrics` / `focusAreas` / `priority` | ✅ en/ru/et |
+| `AutopilotMetricsGrid` dictionary wiring | ✅ |
+| `FocusAreaCard` + `focus-area-display.ts` | ✅ id-based display localization |
+| English singular grammar fix | ✅ `generate-monthly-plan.ts` |
+| Commit | pending |
+
 ### 4.3.53. Hermes test mode setup (prompt 11.16)
 
 | Item | Status |

@@ -1726,6 +1726,47 @@ Usage: increments `AI_GENERATION` counter on success only.
 
 ---
 
+## 8.22. Dashboard Metrics & Focus Areas i18n Fix (Production Prompt 11.17)
+
+**Date:** 2026-07-08
+
+### Screenshot-observed untranslated strings (Russian `/app/autopilot`)
+
+Metrics: Growth Score, Score delta, Open tasks, Completed, Opportunities, Warnings, Draft articles, Ready social posts.
+
+Focus areas: Technical SEO, Integration & Data Quality, Content Production, priority badges (MEDIUM/LOW), descriptions and notes including “Google Search Console is not connected.”
+
+### Root cause
+
+- `AutopilotMetricsGrid` used hardcoded English metric labels.
+- `FocusAreaCard` rendered persisted English `title`/`description`/`reason` from `buildFocusAreas()` and raw `HIGH`/`MEDIUM`/`LOW` priority strings.
+- Monthly plan focus areas stored English copy in DB at generation time.
+
+### Fix
+
+- Added `dict.dashboard.metrics`, `dict.dashboard.focusAreas`, `dict.dashboard.priority` (en/ru/et).
+- `AutopilotMetricsGrid` maps metric keys through client dictionary.
+- `lib/i18n/saas/focus-area-display.ts` localizes focus areas by stable `id` at display time (works for existing DB records).
+- `FocusAreaCard` uses localized copy + priority labels.
+- `buildFocusAreas()` adds `reasonKey`/`reasonParams`; fixed English singular grammar (“1 … task **is** open”).
+
+### Language QA
+
+| Locale | Metrics | Focus areas | Priority badges |
+|--------|---------|-------------|-----------------|
+| ru | code ✅ | code ✅ | code ✅ |
+| et | code ✅ | code ✅ | code ✅ |
+| en | code ✅ | code ✅ | code ✅ |
+
+Logged-in screenshots not captured — code-level verification only.
+
+### Remaining dynamic text limitations
+
+- Focus area English strings remain in DB JSON for legacy records; UI overrides via `id` mapping.
+- Recommended actions / risks / next steps on growth plan page may still contain English server-generated copy (out of scope).
+
+---
+
 ## 9. Known limitations (beta)
 
 - No automatic publishing, email sending, or approvals.

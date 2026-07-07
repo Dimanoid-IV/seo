@@ -67,7 +67,16 @@ function buildFocusAreas(data: MonthlyAutopilotSourceData): AutopilotFocusArea[]
       reason:
         criticalCount > 0
           ? `${criticalCount} critical audit finding${criticalCount > 1 ? "s" : ""} need attention.`
-          : `${highPriorityTaskIds.length} high-priority technical task${highPriorityTaskIds.length !== 1 ? "s" : ""} are open.`,
+          : `${highPriorityTaskIds.length} high-priority technical task${highPriorityTaskIds.length !== 1 ? "s" : ""} ${highPriorityTaskIds.length === 1 ? "is" : "are"} open.`,
+      reasonKey:
+        criticalCount > 0
+          ? "criticalFindings"
+          : highPriorityTaskIds.length === 1
+            ? "highPriorityTasksOne"
+            : "highPriorityTasksMany",
+      reasonParams: {
+        count: criticalCount > 0 ? criticalCount : highPriorityTaskIds.length,
+      },
       relatedTaskIds: highPriorityTaskIds.slice(0, 5),
       score: score || SCORE_WEIGHTS.highPriorityTask,
     });
@@ -85,6 +94,9 @@ function buildFocusAreas(data: MonthlyAutopilotSourceData): AutopilotFocusArea[]
         data.gsc.opportunityCount > 0
           ? `${data.gsc.opportunityCount} Search Console opportunit${data.gsc.opportunityCount === 1 ? "y" : "ies"} found.`
           : "Search Console data shows pages with growth potential.",
+      reasonKey:
+        data.gsc.opportunityCount > 0 ? "foundMany" : "potential",
+      reasonParams: { count: data.gsc.opportunityCount },
       relatedTimelineEventIds: data.timeline.opportunities.slice(0, 3).map((e) => e.id),
       score: SCORE_WEIGHTS.gscOpportunity,
     });
@@ -110,6 +122,9 @@ function buildFocusAreas(data: MonthlyAutopilotSourceData): AutopilotFocusArea[]
         data.articles.drafts.length > 0
           ? `${data.articles.drafts.length} article draft${data.articles.drafts.length !== 1 ? "s" : ""} need progress.`
           : "Content gaps were identified from audit and growth data.",
+      reasonKey:
+        data.articles.drafts.length > 0 ? "draftsNeedProgress" : "gapsFromAudit",
+      reasonParams: { count: data.articles.drafts.length },
       relatedArticleIds: data.articles.drafts.slice(0, 5).map((a) => a.id),
       score: data.articles.drafts.length > 0 ? SCORE_WEIGHTS.articleReadyForReview : 12,
     });
@@ -132,6 +147,9 @@ function buildFocusAreas(data: MonthlyAutopilotSourceData): AutopilotFocusArea[]
         data.socialPosts.ready.length > 0
           ? `${data.socialPosts.ready.length} social post${data.socialPosts.ready.length !== 1 ? "s" : ""} ready for review.`
           : "New content can be supported with social posts.",
+      reasonKey:
+        data.socialPosts.ready.length > 0 ? "readyMany" : "newContent",
+      reasonParams: { count: data.socialPosts.ready.length },
       relatedSocialPostIds: data.socialPosts.ready.slice(0, 5).map((p) => p.id),
       relatedArticleIds: data.articles.waitingReview.slice(0, 3).map((a) => a.id),
       score: data.socialPosts.ready.length > 0 ? SCORE_WEIGHTS.socialPostReady : 12,
@@ -168,6 +186,7 @@ function buildFocusAreas(data: MonthlyAutopilotSourceData): AutopilotFocusArea[]
       reason: !data.integrations.gscConnected
         ? "Google Search Console is not connected."
         : "Some integrations need attention or more data.",
+      reasonKey: !data.integrations.gscConnected ? "gscNotConnected" : "needsAttention",
       score: score || SCORE_WEIGHTS.noGscConnection,
     });
   }
@@ -177,13 +196,20 @@ function buildFocusAreas(data: MonthlyAutopilotSourceData): AutopilotFocusArea[]
     data.socialPosts.ready.length > 0 ||
     data.articles.wordpressDrafts.length > 0
   ) {
+    const waitingCount =
+      data.articles.waitingReview.length +
+      data.socialPosts.ready.length +
+      data.articles.wordpressDrafts.length;
+
     areas.push({
       id: "review-approval",
       title: "Review & Approval",
       description:
         "Review AI-generated drafts before publishing or sharing externally.",
       priority: scoreToPriority(SCORE_WEIGHTS.articleReadyForReview),
-      reason: `${data.articles.waitingReview.length + data.socialPosts.ready.length + data.articles.wordpressDrafts.length} item(s) waiting for your review.`,
+      reason: `${waitingCount} item(s) waiting for your review.`,
+      reasonKey: "waitingMany",
+      reasonParams: { count: waitingCount },
       relatedArticleIds: [
         ...data.articles.waitingReview.map((a) => a.id),
         ...data.articles.wordpressDrafts.map((a) => a.id),

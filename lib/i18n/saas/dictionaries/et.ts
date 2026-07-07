@@ -194,6 +194,73 @@ export const saasDictionary: SaasDictionary = {
       monitoringNote:
         "RankBoost jälgib teie veebisaiti ja valmistab ette kasvutegevusi.",
     },
+    metrics: {
+      growthScore: "Kasvuskoor",
+      scoreDelta: "Skoori muutus",
+      openTasks: "Avatud ülesanded",
+      completed: "Lõpetatud",
+      opportunities: "Võimalused",
+      warnings: "Hoiatused",
+      draftArticles: "Artiklite mustandid",
+      readySocialPosts: "Valmis sotsiaalmeedia postitused",
+    },
+    focusAreas: {
+      title: "Fookusvaldkonnad",
+      technicalSeo: {
+        title: "Tehniline SEO",
+        description:
+          "Parandage tehnilised probleemid, mis võivad piirata otsingus nähtavust ja saidi roomamist.",
+        noteOne: "Avatud on 1 prioriteetne tehniline ülesanne.",
+        noteMany: "Avatud prioriteetseid tehnilisi ülesandeid: {count}.",
+        criticalFindingOne: "1 kriitiline auditi leid vajab tähelepanu.",
+        criticalFindingMany: "Kriitilisi auditi leide vajab tähelepanu: {count}.",
+      },
+      integrationDataQuality: {
+        title: "Integratsioonid ja andmekvaliteet",
+        description:
+          "Ühendage integratsioonid ja värskendage andmeid, et RankBoost saaks anda paremaid soovitusi.",
+        note: "Google Search Console ei ole ühendatud.",
+        needsAttention: "Mõned integratsioonid vajavad tähelepanu või rohkem andmeid.",
+      },
+      contentProduction: {
+        title: "Sisu loomine",
+        description:
+          "Looge ja viimistlege sisu, mis toetab märksõnu ja klientide küsimusi.",
+        note: "Sisulüngad tuvastati auditi ja kasvuandmete põhjal.",
+        draftsNeedProgressOne: "1 artikli mustand vajab edenemist.",
+        draftsNeedProgressMany: "Artikli mustandeid vajab edenemist: {count}.",
+      },
+      gscOpportunities: {
+        title: "Search Console'i võimalused",
+        description:
+          "Parandage lehti ja päringuid, mis juba saavad näitamisi, kuid võivad paremini toimida.",
+        foundMany: "Leitud Search Console'i võimalusi: {count}.",
+        potential: "Search Console'i andmed näitavad kasvupotentsiaaliga lehti.",
+      },
+      socialDistribution: {
+        title: "Sotsiaalmeedia levitamine",
+        description:
+          "Edastage valmis sisu sotsiaalmeedia mustanditega, mis on kohandatud teie auditooriumile.",
+        readyMany: "Sotsiaalmeedia postitusi on ülevaatuseks valmis: {count}.",
+        newContent: "Uut sisu saab toetada sotsiaalmeedia postitustega.",
+      },
+      reviewApproval: {
+        title: "Ülevaatus ja kinnitamine",
+        description:
+          "Vaadake AI loodud mustandid üle enne avaldamist või jagamist.",
+        waitingMany: "Üksusi ootab teie ülevaatust: {count}.",
+      },
+      links: {
+        openArticle: "Ava artikkel",
+        viewSocialPosts: "Vaata postitusi",
+        openDashboard: "Ava ülevaade",
+      },
+    },
+    priority: {
+      high: "Kõrge",
+      medium: "Keskmine",
+      low: "Madal",
+    },
   },
   billing: {
     title: "Arveldus ja pakett",

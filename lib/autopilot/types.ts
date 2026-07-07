@@ -6,6 +6,8 @@ export type AutopilotFocusArea = {
   description: string;
   priority: AutopilotPriority;
   reason: string;
+  reasonKey?: string;
+  reasonParams?: Record<string, string | number>;
   relatedTaskIds?: string[];
   relatedArticleIds?: string[];
   relatedSocialPostIds?: string[];

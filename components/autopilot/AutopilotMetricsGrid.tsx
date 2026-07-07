@@ -7,84 +7,83 @@ import {
   TrendingUp,
 } from "lucide-react";
 
+import { useSaasTranslations } from "@/lib/i18n/saas/SaasLocaleProvider";
 import type { MonthlyAutopilotMetrics } from "@/lib/autopilot/types";
 
 type AutopilotMetricsGridProps = {
   metrics: MonthlyAutopilotMetrics;
 };
 
-const METRICS = [
-  {
-    key: "growthScore" as const,
-    label: "Growth Score",
-    icon: TrendingUp,
-    format: (m: MonthlyAutopilotMetrics) =>
-      m.growthScore != null ? String(m.growthScore) : "—",
-  },
-  {
-    key: "growthScoreDelta" as const,
-    label: "Score delta",
-    icon: Target,
-    format: (m: MonthlyAutopilotMetrics) => {
-      if (m.growthScoreDelta == null) return "—";
-      const sign = m.growthScoreDelta > 0 ? "+" : "";
-      return `${sign}${m.growthScoreDelta}`;
-    },
-  },
-  {
-    key: "openTasksCount" as const,
-    label: "Open tasks",
-    icon: AlertTriangle,
-    format: (m: MonthlyAutopilotMetrics) => String(m.openTasksCount),
-  },
-  {
-    key: "completedTasksCount" as const,
-    label: "Completed",
-    icon: CheckCircle2,
-    format: (m: MonthlyAutopilotMetrics) => String(m.completedTasksCount),
-  },
-  {
-    key: "opportunitiesCount" as const,
-    label: "Opportunities",
-    icon: Target,
-    format: (m: MonthlyAutopilotMetrics) => String(m.opportunitiesCount),
-  },
-  {
-    key: "warningsCount" as const,
-    label: "Warnings",
-    icon: AlertTriangle,
-    format: (m: MonthlyAutopilotMetrics) => String(m.warningsCount),
-  },
-  {
-    key: "draftArticlesCount" as const,
-    label: "Draft articles",
-    icon: FileText,
-    format: (m: MonthlyAutopilotMetrics) => String(m.draftArticlesCount),
-  },
-  {
-    key: "readySocialPostsCount" as const,
-    label: "Ready social posts",
-    icon: Share2,
-    format: (m: MonthlyAutopilotMetrics) => String(m.readySocialPostsCount),
-  },
-];
+const METRIC_KEYS = [
+  "growthScore",
+  "scoreDelta",
+  "openTasks",
+  "completed",
+  "opportunities",
+  "warnings",
+  "draftArticles",
+  "readySocialPosts",
+] as const;
+
+const METRIC_ICONS = {
+  growthScore: TrendingUp,
+  scoreDelta: Target,
+  openTasks: AlertTriangle,
+  completed: CheckCircle2,
+  opportunities: Target,
+  warnings: AlertTriangle,
+  draftArticles: FileText,
+  readySocialPosts: Share2,
+} as const;
+
+function formatMetricValue(
+  key: (typeof METRIC_KEYS)[number],
+  metrics: MonthlyAutopilotMetrics
+): string {
+  switch (key) {
+    case "growthScore":
+      return metrics.growthScore != null ? String(metrics.growthScore) : "—";
+    case "scoreDelta": {
+      if (metrics.growthScoreDelta == null) return "—";
+      const sign = metrics.growthScoreDelta > 0 ? "+" : "";
+      return `${sign}${metrics.growthScoreDelta}`;
+    }
+    case "openTasks":
+      return String(metrics.openTasksCount);
+    case "completed":
+      return String(metrics.completedTasksCount);
+    case "opportunities":
+      return String(metrics.opportunitiesCount);
+    case "warnings":
+      return String(metrics.warningsCount);
+    case "draftArticles":
+      return String(metrics.draftArticlesCount);
+    case "readySocialPosts":
+      return String(metrics.readySocialPostsCount);
+    default:
+      return "—";
+  }
+}
 
 export function AutopilotMetricsGrid({ metrics }: AutopilotMetricsGridProps) {
+  const { dict } = useSaasTranslations();
+  const labels = dict.dashboard.metrics;
+
   return (
     <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-      {METRICS.map((item) => {
-        const Icon = item.icon;
+      {METRIC_KEYS.map((key) => {
+        const Icon = METRIC_ICONS[key];
         return (
           <div
-            key={item.key}
+            key={key}
             className="rounded-xl border border-white/10 bg-white/[0.03] p-4"
           >
             <div className="flex items-center gap-2 text-slate-400">
               <Icon className="size-4" />
-              <span className="text-xs font-medium">{item.label}</span>
+              <span className="text-xs font-medium">{labels[key]}</span>
             </div>
             <p className="mt-2 text-2xl font-semibold text-white">
-              {item.format(metrics)}
+              {formatMetricValue(key, metrics)}
             </p>
           </div>
         );

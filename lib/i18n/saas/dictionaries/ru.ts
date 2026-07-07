@@ -194,6 +194,73 @@ export const saasDictionary: SaasDictionary = {
       monitoringNote:
         "RankBoost отслеживает ваш сайт и готовит действия для роста.",
     },
+    metrics: {
+      growthScore: "Оценка роста",
+      scoreDelta: "Изменение оценки",
+      openTasks: "Открытые задачи",
+      completed: "Выполнено",
+      opportunities: "Возможности",
+      warnings: "Предупреждения",
+      draftArticles: "Черновики статей",
+      readySocialPosts: "Готовые посты",
+    },
+    focusAreas: {
+      title: "Фокусные области",
+      technicalSeo: {
+        title: "Техническое SEO",
+        description:
+          "Исправьте технические проблемы, которые могут ограничивать видимость в поиске и сканирование сайта.",
+        noteOne: "Открыта 1 приоритетная техническая задача.",
+        noteMany: "Открыто приоритетных технических задач: {count}.",
+        criticalFindingOne: "1 критическая находка аудита требует внимания.",
+        criticalFindingMany: "Критических находок аудита требуют внимания: {count}.",
+      },
+      integrationDataQuality: {
+        title: "Интеграции и качество данных",
+        description:
+          "Подключите интеграции и обновите данные, чтобы RankBoost мог давать более точные рекомендации.",
+        note: "Google Search Console не подключён.",
+        needsAttention: "Некоторым интеграциям нужно внимание или больше данных.",
+      },
+      contentProduction: {
+        title: "Подготовка контента",
+        description:
+          "Создавайте и дорабатывайте контент, который поддерживает ключевые запросы и вопросы клиентов.",
+        note: "Пробелы в контенте определены на основе аудита и данных роста.",
+        draftsNeedProgressOne: "1 черновик статьи требует доработки.",
+        draftsNeedProgressMany: "Черновиков статей требуют доработки: {count}.",
+      },
+      gscOpportunities: {
+        title: "Возможности Search Console",
+        description:
+          "Улучшите страницы и запросы, которые уже получают показы, но могут работать лучше.",
+        foundMany: "Найдено возможностей Search Console: {count}.",
+        potential: "Данные Search Console показывают страницы с потенциалом роста.",
+      },
+      socialDistribution: {
+        title: "Соцсети и распространение",
+        description:
+          "Продвигайте готовый контент с помощью черновиков постов для вашей аудитории.",
+        readyMany: "Постов готовы к проверке: {count}.",
+        newContent: "Новый контент можно поддержать постами в соцсетях.",
+      },
+      reviewApproval: {
+        title: "Проверка и одобрение",
+        description:
+          "Проверяйте AI-черновики перед публикацией или внешним распространением.",
+        waitingMany: "Элементов ждут вашей проверки: {count}.",
+      },
+      links: {
+        openArticle: "Открыть статью",
+        viewSocialPosts: "Смотреть посты",
+        openDashboard: "Открыть обзор",
+      },
+    },
+    priority: {
+      high: "Высокий",
+      medium: "Средний",
+      low: "Низкий",
+    },
   },
   billing: {
     title: "Оплата и план",

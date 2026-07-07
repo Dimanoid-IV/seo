@@ -57,6 +57,7 @@ function shiftMonth(monthKey: string, delta: number): string {
 export function MonthlyAutopilotPage() {
   const { dict, locale } = useSaasTranslations();
   const a = dict.autopilot;
+  const d = dict.dashboard;
   const { data: billing } = useBillingOverview();
   const autopilotLimit = isUsageLimitReached(billing, "monthly_autopilot");
   const [month, setMonth] = useState(() => {
@@ -324,7 +325,7 @@ export function MonthlyAutopilotPage() {
           {data.plan.focusAreas.length > 0 ? (
             <section>
               <h3 className="mb-4 text-lg font-semibold text-white">
-                {a.focusAreas}
+                {d.focusAreas.title}
               </h3>
               <div className="grid gap-4 lg:grid-cols-2">
                 {data.plan.focusAreas.map((area) => (

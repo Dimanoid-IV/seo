@@ -194,6 +194,73 @@ export const saasDictionary: SaasDictionary = {
       monitoringNote:
         "RankBoost is monitoring your website and preparing growth actions.",
     },
+    metrics: {
+      growthScore: "Growth Score",
+      scoreDelta: "Score delta",
+      openTasks: "Open tasks",
+      completed: "Completed",
+      opportunities: "Opportunities",
+      warnings: "Warnings",
+      draftArticles: "Draft articles",
+      readySocialPosts: "Ready social posts",
+    },
+    focusAreas: {
+      title: "Focus areas",
+      technicalSeo: {
+        title: "Technical SEO",
+        description:
+          "Fix technical issues that may limit search visibility and crawlability.",
+        noteOne: "1 high-priority technical task is open.",
+        noteMany: "{count} high-priority technical tasks are open.",
+        criticalFindingOne: "1 critical audit finding needs attention.",
+        criticalFindingMany: "{count} critical audit findings need attention.",
+      },
+      integrationDataQuality: {
+        title: "Integration & Data Quality",
+        description:
+          "Connect integrations and refresh data so RankBoost can give better recommendations.",
+        note: "Google Search Console is not connected.",
+        needsAttention: "Some integrations need attention or more data.",
+      },
+      contentProduction: {
+        title: "Content Production",
+        description:
+          "Create and finish content that supports keywords and customer questions.",
+        note: "Content gaps were identified from audit and growth data.",
+        draftsNeedProgressOne: "1 article draft needs progress.",
+        draftsNeedProgressMany: "{count} article drafts need progress.",
+      },
+      gscOpportunities: {
+        title: "Search Console Opportunities",
+        description:
+          "Improve pages and queries that already get impressions but can perform better.",
+        foundMany: "{count} Search Console opportunities found.",
+        potential: "Search Console data shows pages with growth potential.",
+      },
+      socialDistribution: {
+        title: "Social Distribution",
+        description:
+          "Promote ready content with social post drafts tailored to your audience.",
+        readyMany: "{count} social posts ready for review.",
+        newContent: "New content can be supported with social posts.",
+      },
+      reviewApproval: {
+        title: "Review & Approval",
+        description:
+          "Review AI-generated drafts before publishing or sharing externally.",
+        waitingMany: "{count} items waiting for your review.",
+      },
+      links: {
+        openArticle: "Open article",
+        viewSocialPosts: "View social posts",
+        openDashboard: "Open dashboard",
+      },
+    },
+    priority: {
+      high: "High",
+      medium: "Medium",
+      low: "Low",
+    },
   },
   billing: {
     title: "Billing & Plan",
