@@ -222,6 +222,12 @@ export const saasDictionary: SaasDictionary = {
     unlimited: "Piiramatu",
     perMonth: "kuus",
     features: "Funktsioonid",
+    planFeatures: {
+      wordpressDrafts: "WordPressi mustandid",
+      controlCenter: "Juhtimiskeskus",
+      emailSend: "E-kirja saatmine",
+      advancedReports: "Täiustatud aruanded",
+    },
   },
   onboarding: {
     title: "Seadistage tööruum",
@@ -566,6 +572,10 @@ export const saasDictionary: SaasDictionary = {
       sent: "Saadetud",
       failed: "Ebaõnnestus",
     },
+    emptyNoWebsiteTitle: "Lisage veebisait, et alustada kasvuvõimaluste jälgimist",
+    emptyNoWebsiteDescription:
+      "Aruanded ja kasvuajalugu ilmuvad pärast veebisaidi ühendamist.",
+    growthScoreLabel: "Kasvuskoor",
   },
   contentPlan: {
     title: "Sisuplaan",
@@ -781,7 +791,7 @@ export const saasDictionary: SaasDictionary = {
       newTasks: "Uued ülesanded",
       completedTasks: "Lõpetatud ülesanded",
       warnings: "Hoiatused",
-      growthScore: "Growth Score",
+      growthScore: "Kasvuskoor",
     },
     emptyNoWebsiteTitle: "Lisage veebisait kasvuvõimaluste jälgimiseks",
     emptyNoWebsiteDescription:
@@ -789,6 +799,15 @@ export const saasDictionary: SaasDictionary = {
     emptyNoEventsTitle: "Teie kasvu ajalugu on tühi",
     emptyNoEventsDescription:
       "Käivitage esimene audit või ühendage Google Search Console, et näha kasvutegevust.",
+    severityLabels: {
+      INFO: "Info",
+      WARNING: "Hoiatus",
+      ERROR: "Viga",
+      SUCCESS: "Valmis",
+      OPPORTUNITY: "Võimalus",
+    },
+    quietHeadline:
+      "Olulisi muutusi teie viimase külastuse järel pole. RankBoost jälgib teie veebisaiti edasi.",
   },
   autopilot: {
     title: "Kasvuplaan",

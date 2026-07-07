@@ -181,6 +181,12 @@ export type SaasDictionary = {
     unlimited: string;
     perMonth: string;
     features: string;
+    planFeatures: {
+      wordpressDrafts: string;
+      controlCenter: string;
+      emailSend: string;
+      advancedReports: string;
+    };
   };
   onboarding: {
     title: string;
@@ -437,6 +443,9 @@ export type SaasDictionary = {
     noSavedDescription: string;
     types: { monthly: string; audit: string; midMonth: string };
     statuses: { draft: string; ready: string; sent: string; failed: string };
+    emptyNoWebsiteTitle: string;
+    emptyNoWebsiteDescription: string;
+    growthScoreLabel: string;
   };
   contentPlan: {
     title: string;
@@ -649,6 +658,8 @@ export type SaasDictionary = {
     emptyNoWebsiteDescription: string;
     emptyNoEventsTitle: string;
     emptyNoEventsDescription: string;
+    severityLabels: Record<string, string>;
+    quietHeadline: string;
   };
   autopilot: {
     title: string;

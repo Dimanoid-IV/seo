@@ -1,3 +1,5 @@
+"use client";
+
 import {
   BarChart3,
   Cloud,
@@ -11,6 +13,7 @@ import {
 import { ConnectionTimeline } from "@/components/integrations/ConnectionTimeline";
 import { IntegrationStatusBadge } from "@/components/integrations/IntegrationStatusBadge";
 import { formatRelativeTime } from "@/lib/dashboard/display";
+import { useSaasTranslations } from "@/lib/i18n/saas/SaasLocaleProvider";
 import type { IntegrationOverviewItem } from "@/lib/integrations/types";
 import { cn } from "@/lib/utils";
 
@@ -61,17 +64,20 @@ const PROVIDER_ICONS: Record<
   },
 };
 
-function resolveAction(integration: IntegrationOverviewItem): {
+function resolveAction(
+  integration: IntegrationOverviewItem,
+  labels: { connect: string; manage: string; comingSoon: string }
+): {
   label: string;
   variant: "primary" | "secondary" | "muted";
 } {
   if (integration.comingSoon || !integration.available) {
-    return { label: "Coming Soon", variant: "muted" };
+    return { label: labels.comingSoon, variant: "muted" };
   }
   if (integration.connected) {
-    return { label: "Manage", variant: "secondary" };
+    return { label: labels.manage, variant: "secondary" };
   }
-  return { label: "Connect", variant: "primary" };
+  return { label: labels.connect, variant: "primary" };
 }
 
 export function IntegrationCard({
@@ -79,10 +85,18 @@ export function IntegrationCard({
   onActionClick,
   className,
 }: IntegrationCardProps) {
+  const { dict, locale } = useSaasTranslations();
+  const i = dict.integrations;
   const visual =
     PROVIDER_ICONS[integration.provider] ?? PROVIDER_ICONS.google_search_console;
   const Icon = visual.icon;
-  const action = resolveAction(integration);
+  const action = resolveAction(integration, {
+    connect: i.connect,
+    manage: i.manage,
+    comingSoon: i.comingSoon,
+  });
+  const dateLocale = locale === "ru" ? "ru-RU" : locale === "et" ? "et-EE" : "en-US";
+  const numberLocale = dateLocale;
 
   return (
     <article
@@ -119,29 +133,30 @@ export function IntegrationCard({
           integration.connected &&
           !integration.selectedProperty ? (
             <p className="mb-3 text-xs text-amber-400/90">
-              Google подключён, но сайт Search Console ещё не выбран.
+              {i.gscSiteNotSelected}
             </p>
           ) : null}
           {integration.provider === "google_search_console" &&
           integration.connected &&
           integration.selectedProperty ? (
             <p className="mb-3 text-xs text-cyan-300/90">
-              Search Console site: {integration.selectedProperty}
+              {i.searchConsoleSite} {integration.selectedProperty}
             </p>
           ) : null}
           {integration.provider === "google_search_console" &&
           integration.connected &&
           integration.metricsSummary ? (
             <p className="mb-3 text-xs text-slate-400">
-              {integration.metricsSummary.clicks.toLocaleString("ru-RU")} кликов
-              · {integration.metricsSummary.impressions.toLocaleString("ru-RU")}{" "}
-              показов за 28 дней
+              {integration.metricsSummary.clicks.toLocaleString(numberLocale)}{" "}
+              {i.clicks} ·{" "}
+              {integration.metricsSummary.impressions.toLocaleString(numberLocale)}{" "}
+              {i.impressions} {i.last28Days}
             </p>
           ) : null}
           {integration.connected && integration.connectedAt ? (
             <p className="mb-3 text-xs text-emerald-400/90">
-              Connected at{" "}
-              {new Date(integration.connectedAt).toLocaleDateString("ru-RU", {
+              {i.connectedSince}{" "}
+              {new Date(integration.connectedAt).toLocaleDateString(dateLocale, {
                 day: "numeric",
                 month: "short",
                 year: "numeric",
@@ -150,7 +165,7 @@ export function IntegrationCard({
           ) : null}
           {integration.lastSyncAt ? (
             <p className="mb-3 text-xs text-slate-500">
-              Синхронизация: {formatRelativeTime(integration.lastSyncAt)}
+              {i.sync}: {formatRelativeTime(integration.lastSyncAt)}
             </p>
           ) : null}
           <ConnectionTimeline integration={integration} />

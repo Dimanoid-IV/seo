@@ -4,6 +4,7 @@ import { AlertTriangle } from "lucide-react";
 
 import type { AutopilotRisk } from "@/lib/autopilot/types";
 import { useSaasTranslations } from "@/lib/i18n/saas/SaasLocaleProvider";
+import { translateTimelineSeverityFromDict } from "@/lib/i18n/saas/timeline-display";
 
 type AutopilotRisksCardProps = {
   risks: AutopilotRisk[];
@@ -37,7 +38,7 @@ export function AutopilotRisksCard({ risks }: AutopilotRisksCardProps) {
                     : "text-xs font-semibold uppercase text-amber-400"
                 }
               >
-                {risk.severity}
+                {translateTimelineSeverityFromDict(dict, risk.severity)}
               </span>
               <span className="font-medium text-slate-200">{risk.title}</span>
             </div>

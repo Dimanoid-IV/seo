@@ -29,8 +29,7 @@ const EMPTY_TIMELINE: TimelineListResult = {
     completedTasksCount: 0,
     opportunitiesCount: 0,
     warningsCount: 0,
-    headline:
-      "No major changes since your last visit. RankBoost is still monitoring your website.",
+    headline: "",
   },
   websiteId: null,
   nextCursor: null,

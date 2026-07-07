@@ -127,6 +127,53 @@ export const serverStringsEt: SaasServerStrings = {
       CONTINUOUS_IMPROVEMENT: "Kasvumootor",
       SYSTEM: "Süsteem",
     },
+    severityLabels: {
+      INFO: "Info",
+      WARNING: "Hoiatus",
+      ERROR: "Viga",
+      SUCCESS: "Valmis",
+      OPPORTUNITY: "Võimalus",
+    },
+    eventTitles: {
+      AUDIT_COMPLETED: "Veebisaidi audit lõpetatud",
+      SCORE_CHANGED: "Kasvuskoor muutus",
+      TASK_CREATED: "Loodud uus kasvülesanne",
+      TASK_CREATED_GSC: "Search Console'i ülevaade teisendati ülesandeks",
+      TASK_COMPLETED: "Ülesanne tehtud",
+      GSC_OPPORTUNITY_FOUND: "Leitud uus Search Console'i võimalus",
+      GSC_INSIGHT_FOUND: "Leitud uus Search Console'i ülevaade",
+      ARTICLE_DRAFT_CREATED: "Artikli mustand loodud",
+      AI_RECOMMENDATION_CREATED: "AI sisu kvaliteedikontroll lõpetatud",
+      WORDPRESS_DRAFT_CREATED: "WordPressi mustand loodud",
+      INTEGRATION_CONNECTED: "Integratsioon ühendatud",
+      INTEGRATION_ERROR: "Integratsioon vajab tähelepanu",
+      REPORT_CREATED: "Uus aruanne loodud",
+      CONTENT_IDEA_CREATED: "Uus sisuidee loodud",
+      SOCIAL_POST_DRAFT_CREATED: "Sotsiaalpostituse mustand loodud",
+      MONTHLY_AUTOPILOT_PLAN_CREATED: "Kuine kasvuplaan loodud",
+      EMAIL_APPROVAL_CREATED: "Ülevaatusmeil ette valmistatud",
+    },
+    systemNoteTitles: {
+      "Monthly growth plan approved": "Kuine kasvuplaan kinnitatud",
+      "Social post copied": "Sotsiaalpostitus kopeeritud",
+      "Review email approved": "Ülevaatusmeil kinnitatud",
+      "Review email sent": "Ülevaatusmeil saadetud",
+    },
+    summaryHeadlines: {
+      quiet:
+        "Olulisi muutusi teie viimase külastuse järel pole. RankBoost jälgib teie veebisaiti edasi.",
+      monitoringContinued:
+        "RankBoost jälgis teie veebisaiti edasi, kui te eemal olite.",
+      sinceVisit: (details) =>
+        `Teie viimase külastuse järel leidis RankBoost ${details}.`,
+      opportunities: (count) =>
+        `${count} uut ${count === 1 ? "võimalus" : "võimalust"}`,
+      newTasks: (count) =>
+        `${count} uut ${count === 1 ? "ülesanne" : "ülesannet"}`,
+      completedTasks: (count) =>
+        `${count} lõpetatud ${count === 1 ? "ülesanne" : "ülesannet"}`,
+      scoreChange: (delta) => `Kasvuskoor ${delta}`,
+    },
     actions: {
       openArticle: "Ava artikkel",
       openReport: "Ava aruanne",

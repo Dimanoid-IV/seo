@@ -90,6 +90,18 @@ export type SaasServerStrings = {
   };
   timeline: {
     sources: Record<string, string>;
+    severityLabels: Record<string, string>;
+    eventTitles: Record<string, string>;
+    systemNoteTitles: Record<string, string>;
+    summaryHeadlines: {
+      quiet: string;
+      monitoringContinued: string;
+      sinceVisit: (details: string) => string;
+      opportunities: (count: number) => string;
+      newTasks: (count: number) => string;
+      completedTasks: (count: number) => string;
+      scoreChange: (delta: string) => string;
+    };
     actions: {
       openArticle: string;
       openReport: string;

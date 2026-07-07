@@ -127,6 +127,52 @@ export const serverStringsEn: SaasServerStrings = {
       CONTINUOUS_IMPROVEMENT: "Growth Engine",
       SYSTEM: "System",
     },
+    severityLabels: {
+      INFO: "Info",
+      WARNING: "Warning",
+      ERROR: "Error",
+      SUCCESS: "Success",
+      OPPORTUNITY: "Opportunity",
+    },
+    eventTitles: {
+      AUDIT_COMPLETED: "Website audit completed",
+      SCORE_CHANGED: "Growth Score changed",
+      TASK_CREATED: "New growth task created",
+      TASK_CREATED_GSC: "Search Console insight converted into a task",
+      TASK_COMPLETED: "Task completed",
+      GSC_OPPORTUNITY_FOUND: "New Search Console opportunity found",
+      GSC_INSIGHT_FOUND: "New Search Console insight found",
+      ARTICLE_DRAFT_CREATED: "Article draft created",
+      AI_RECOMMENDATION_CREATED: "AI content quality check completed",
+      WORDPRESS_DRAFT_CREATED: "WordPress draft created",
+      INTEGRATION_CONNECTED: "Integration connected",
+      INTEGRATION_ERROR: "Integration needs attention",
+      REPORT_CREATED: "New report created",
+      CONTENT_IDEA_CREATED: "New content idea created",
+      SOCIAL_POST_DRAFT_CREATED: "Social post draft created",
+      MONTHLY_AUTOPILOT_PLAN_CREATED: "Monthly growth plan created",
+      EMAIL_APPROVAL_CREATED: "Review email prepared",
+    },
+    systemNoteTitles: {
+      "Monthly growth plan approved": "Monthly growth plan approved",
+      "Social post copied": "Social post copied",
+      "Review email approved": "Review email approved",
+      "Review email sent": "Review email sent",
+    },
+    summaryHeadlines: {
+      quiet:
+        "No major changes since your last visit. RankBoost is still monitoring your website.",
+      monitoringContinued:
+        "RankBoost continued monitoring your website while you were away.",
+      sinceVisit: (details) =>
+        `Since your last visit, RankBoost found ${details}.`,
+      opportunities: (count) =>
+        `${count} new ${count === 1 ? "opportunity" : "opportunities"}`,
+      newTasks: (count) => `${count} new ${count === 1 ? "task" : "tasks"}`,
+      completedTasks: (count) =>
+        `${count} completed ${count === 1 ? "task" : "tasks"}`,
+      scoreChange: (delta) => `Growth Score ${delta}`,
+    },
     actions: {
       openArticle: "Open article",
       openReport: "Open report",

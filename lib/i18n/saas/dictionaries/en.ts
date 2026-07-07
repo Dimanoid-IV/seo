@@ -222,6 +222,12 @@ export const saasDictionary: SaasDictionary = {
     unlimited: "Unlimited",
     perMonth: "per month",
     features: "Features",
+    planFeatures: {
+      wordpressDrafts: "WordPress drafts",
+      controlCenter: "Control Center",
+      emailSend: "Email send",
+      advancedReports: "Advanced reports",
+    },
   },
   onboarding: {
     title: "Setup your workspace",
@@ -566,6 +572,10 @@ export const saasDictionary: SaasDictionary = {
       sent: "Sent",
       failed: "Failed",
     },
+    emptyNoWebsiteTitle: "Add a website to start tracking growth opportunities",
+    emptyNoWebsiteDescription:
+      "Reports and growth history appear once your website is connected.",
+    growthScoreLabel: "Growth Score",
   },
   contentPlan: {
     title: "Content Plan",
@@ -789,6 +799,15 @@ export const saasDictionary: SaasDictionary = {
     emptyNoEventsTitle: "Your growth timeline is empty",
     emptyNoEventsDescription:
       "Run your first audit or connect Google Search Console to start seeing growth activity here.",
+    severityLabels: {
+      INFO: "Info",
+      WARNING: "Warning",
+      ERROR: "Error",
+      SUCCESS: "Success",
+      OPPORTUNITY: "Opportunity",
+    },
+    quietHeadline:
+      "No major changes since your last visit. RankBoost is still monitoring your website.",
   },
   autopilot: {
     title: "Growth Plan",

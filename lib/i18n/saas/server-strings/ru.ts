@@ -127,6 +127,53 @@ export const serverStringsRu: SaasServerStrings = {
       CONTINUOUS_IMPROVEMENT: "Движок роста",
       SYSTEM: "Система",
     },
+    severityLabels: {
+      INFO: "Инфо",
+      WARNING: "Внимание",
+      ERROR: "Ошибка",
+      SUCCESS: "Готово",
+      OPPORTUNITY: "Возможность",
+    },
+    eventTitles: {
+      AUDIT_COMPLETED: "Аудит сайта завершён",
+      SCORE_CHANGED: "Оценка роста изменилась",
+      TASK_CREATED: "Создана новая задача роста",
+      TASK_CREATED_GSC: "Инсайт Search Console преобразован в задачу",
+      TASK_COMPLETED: "Задача выполнена",
+      GSC_OPPORTUNITY_FOUND: "Найдена новая возможность в Search Console",
+      GSC_INSIGHT_FOUND: "Найден новый инсайт Search Console",
+      ARTICLE_DRAFT_CREATED: "Создан черновик статьи",
+      AI_RECOMMENDATION_CREATED: "Проверка качества AI-контента завершена",
+      WORDPRESS_DRAFT_CREATED: "Создан черновик WordPress",
+      INTEGRATION_CONNECTED: "Интеграция подключена",
+      INTEGRATION_ERROR: "Интеграция требует внимания",
+      REPORT_CREATED: "Создан новый отчёт",
+      CONTENT_IDEA_CREATED: "Создана новая идея контента",
+      SOCIAL_POST_DRAFT_CREATED: "Создан черновик поста",
+      MONTHLY_AUTOPILOT_PLAN_CREATED: "Создан месячный план роста",
+      EMAIL_APPROVAL_CREATED: "Подготовлено письмо на проверку",
+    },
+    systemNoteTitles: {
+      "Monthly growth plan approved": "Месячный план роста одобрен",
+      "Social post copied": "Пост скопирован",
+      "Review email approved": "Письмо на проверку одобрено",
+      "Review email sent": "Письмо на проверку отправлено",
+    },
+    summaryHeadlines: {
+      quiet:
+        "Существенных изменений с вашего последнего визита нет. RankBoost продолжает отслеживать ваш сайт.",
+      monitoringContinued:
+        "RankBoost продолжал отслеживать ваш сайт, пока вас не было.",
+      sinceVisit: (details) =>
+        `С вашего последнего визита RankBoost нашёл ${details}.`,
+      opportunities: (count) =>
+        `${count} ${count === 1 ? "новую возможность" : count < 5 ? "новые возможности" : "новых возможностей"}`,
+      newTasks: (count) =>
+        `${count} ${count === 1 ? "новую задачу" : count < 5 ? "новые задачи" : "новых задач"}`,
+      completedTasks: (count) =>
+        `${count} ${count === 1 ? "выполненную задачу" : count < 5 ? "выполненные задачи" : "выполненных задач"}`,
+      scoreChange: (delta) => `Оценка роста ${delta}`,
+    },
     actions: {
       openArticle: "Открыть статью",
       openReport: "Открыть отчёт",

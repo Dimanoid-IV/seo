@@ -118,7 +118,7 @@ export async function getTimelineForUser(
     return {
       events: [],
       unreadCount: 0,
-      summary: buildTimelineSummary([], null, 0),
+      summary: buildTimelineSummary([], null, 0, undefined, query.locale ?? "en"),
       websiteId: null,
       nextCursor: null,
     };
@@ -195,7 +195,8 @@ export async function getTimelineForWebsite(
     sinceEventsRaw.map((event) => formatTimelineEvent(event, locale)),
     lastSeenAt,
     sinceEventsRaw.length,
-    scoreDeltaFromDetails
+    scoreDeltaFromDetails,
+    locale
   );
 
   return {

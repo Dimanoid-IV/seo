@@ -6,6 +6,7 @@ import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import type { ControlCenterRecentActivity } from "@/lib/autopilot-control/types";
 import { useSaasTranslations } from "@/lib/i18n/saas/SaasLocaleProvider";
+import { translateTimelineSeverityFromDict } from "@/lib/i18n/saas/timeline-display";
 
 import { ControlEmptyState } from "./ControlEmptyState";
 
@@ -57,7 +58,7 @@ export function RecentActivityPanel({ events }: RecentActivityPanelProps) {
                       SEVERITY_STYLES[event.severity] ?? "text-slate-400"
                     }
                   >
-                    {event.severity}
+                    {translateTimelineSeverityFromDict(dict, event.severity)}
                   </span>
                   <span className="text-slate-500">{event.source}</span>
                   <span className="text-slate-600">

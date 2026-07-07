@@ -78,10 +78,10 @@ export function PlanCard({
           {plan.monthlyArticles} {billing.articles.toLowerCase()} ·{" "}
           {plan.monthlySocialPosts} {billing.socialPosts.toLowerCase()}
         </li>
-        <FeatureRow label="WordPress drafts" enabled={plan.features.wordpress} />
-        <FeatureRow label="Control Center" enabled={plan.features.controlCenter} />
-        <FeatureRow label="Email send" enabled={plan.features.emailSend} />
-        <FeatureRow label="Advanced reports" enabled={plan.features.advancedReports} />
+        <FeatureRow label={billing.planFeatures.wordpressDrafts} enabled={plan.features.wordpress} />
+        <FeatureRow label={billing.planFeatures.controlCenter} enabled={plan.features.controlCenter} />
+        <FeatureRow label={billing.planFeatures.emailSend} enabled={plan.features.emailSend} />
+        <FeatureRow label={billing.planFeatures.advancedReports} enabled={plan.features.advancedReports} />
       </ul>
 
       <div className="mt-6 pt-2">

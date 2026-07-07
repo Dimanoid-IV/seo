@@ -1,3 +1,6 @@
+import { getServerStrings } from "@/lib/i18n/saas/server-strings";
+import type { SaasLocale } from "@/lib/i18n/saas/locales";
+
 import type { TimelineEventViewModel, TimelineSummary } from "./types";
 
 function formatScoreDelta(delta: number): string {
@@ -11,8 +14,10 @@ export function buildTimelineSummary(
   events: TimelineEventViewModel[],
   since: Date | null,
   totalEvents: number,
-  scoreDeltaFromDetails?: number
+  scoreDeltaFromDetails?: number,
+  locale: SaasLocale = "en"
 ): TimelineSummary {
+  const headlines = getServerStrings(locale).timeline.summaryHeadlines;
   const newTasksCount = events.filter((event) => event.type === "TASK_CREATED")
     .length;
   const completedTasksCount = events.filter(
@@ -51,37 +56,29 @@ export function buildTimelineSummary(
   let headline: string;
 
   if (!since || totalEvents === 0) {
-    headline =
-      "No major changes since your last visit. RankBoost is still monitoring your website.";
+    headline = headlines.quiet;
   } else if (totalEvents === 0) {
-    headline =
-      "No major changes since your last visit. RankBoost is still monitoring your website.";
+    headline = headlines.quiet;
   } else {
     const parts: string[] = [];
 
     if (opportunitiesCount > 0) {
-      parts.push(
-        `${opportunitiesCount} new ${opportunitiesCount === 1 ? "opportunity" : "opportunities"}`
-      );
+      parts.push(headlines.opportunities(opportunitiesCount));
     }
     if (newTasksCount > 0) {
-      parts.push(
-        `${newTasksCount} new ${newTasksCount === 1 ? "task" : "tasks"}`
-      );
+      parts.push(headlines.newTasks(newTasksCount));
     }
     if (completedTasksCount > 0) {
-      parts.push(
-        `${completedTasksCount} completed ${completedTasksCount === 1 ? "task" : "tasks"}`
-      );
+      parts.push(headlines.completedTasks(completedTasksCount));
     }
     if (scoreDelta != null && scoreDelta !== 0) {
-      parts.push(`Growth Score ${formatScoreDelta(scoreDelta)}`);
+      parts.push(headlines.scoreChange(formatScoreDelta(scoreDelta)));
     }
 
     headline =
       parts.length > 0
-        ? `Since your last visit, RankBoost found ${parts.join(", ")}.`
-        : "RankBoost continued monitoring your website while you were away.";
+        ? headlines.sinceVisit(parts.join(", "))
+        : headlines.monitoringContinued;
   }
 
   return {
@@ -100,7 +97,7 @@ export async function getTimelineSummary(input: {
   userId: string;
   websiteId: string;
   since: Date | null;
-  locale?: import("@/lib/i18n/saas/locales").SaasLocale;
+  locale?: SaasLocale;
 }): Promise<TimelineSummary> {
   const { getPrisma } = await import("@/lib/db");
   const { formatTimelineEvent } = await import("./format");
@@ -120,5 +117,5 @@ export async function getTimelineSummary(input: {
 
   const events = eventsRaw.map((event) => formatTimelineEvent(event, locale));
 
-  return buildTimelineSummary(events, input.since, events.length);
+  return buildTimelineSummary(events, input.since, events.length, undefined, locale);
 }

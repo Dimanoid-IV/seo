@@ -61,7 +61,7 @@ export function TimelineSummaryCard({
         </p>
         <h2 className="text-xl font-bold text-white sm:text-2xl">{t.title}</h2>
         <p className="max-w-3xl text-sm leading-relaxed text-slate-400">
-          {summary.headline}
+          {summary.headline || t.quietHeadline}
         </p>
         {unreadCount > 0 ? (
           <p className="text-xs text-blue-300">

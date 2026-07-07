@@ -1622,11 +1622,43 @@ Dashboard client components (`DashboardHero`, `NextBestActionCard`) had hardcode
 
 Note: SaaS locale is cookie-based on `/app`, not `/ru/app` URL prefix.
 
-### Remaining untranslated areas
+### Remaining untranslated areas (addressed in §8.20)
 
-- Timeline event severity labels (INFO/WARNING) in Control Center activity feed
-- Some server-generated timeline/activity titles (dynamic content)
-- Logged-in viewport screenshot pass at 375/1440 recommended for final sign-off
+- ~~Timeline event severity labels~~ → fixed in 11.15
+- Custom/user-generated timeline summaries may remain in stored language
+- Logged-in viewport screenshot pass still recommended
+
+---
+
+## 8.20. Logged-in Visual QA + Remaining i18n Polish (Production Prompt 11.15)
+
+**Date:** 2026-07-07
+
+### Visual QA matrix
+
+| Page | ru | et | en | 375px | 768px | 1440px | Screenshots |
+|------|----|----|-----|-------|-------|--------|-------------|
+| `/app` | code ✅ | code ✅ | code ✅ | shell ✅ | — | shell ✅ | not captured |
+| `/app/autopilot-control` | code ✅ | code ✅ | code ✅ | — | — | — | not captured |
+| `/app/integrations` | code ✅ | code ✅ | code ✅ | — | — | — | not captured |
+| `/app/billing` | code ✅ | code ✅ | code ✅ | — | — | — | not captured |
+
+Note: No Playwright/screenshot tooling in repo. Logged-in browser QA requires authenticated session — structural/code verification + production shell smoke only (`/app` 200, layout classes intact). Full logged-in screenshot pass remains a manual follow-up.
+
+### i18n fixes (11.15)
+
+- Localized timeline severity labels (INFO/WARNING/ERROR/SUCCESS/OPPORTUNITY) in Control Center activity feed and autopilot risks
+- Server-side timeline event title mapping by `TimelineEventType` + known system-note titles
+- Localized timeline summary headlines (`buildTimelineSummary`)
+- Reports empty state + growth score label
+- Billing plan feature rows
+- Integration card CTAs and GSC/sync/connected copy (removed hardcoded Russian/English mix)
+
+### Known dynamic text limitations
+
+- Timeline event **summaries** stored in DB remain in creation language (English at write time)
+- Unknown/custom `SYSTEM_NOTE` titles fall back to stored text
+- User/task-specific content in summaries not re-localized
 
 ---
 

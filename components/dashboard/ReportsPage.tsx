@@ -107,8 +107,8 @@ export function ReportsPage() {
         <PageHeader title={r.title} subtitle={r.subtitle} />
         <EmptyState
           icon={Globe}
-          title="Add a website to start tracking growth opportunities"
-          description="Reports and growth history appear once your website is connected."
+          title={r.emptyNoWebsiteTitle}
+          description={r.emptyNoWebsiteDescription}
         />
       </main>
     );
@@ -130,7 +130,7 @@ export function ReportsPage() {
           {data.latestAudit ? (
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               <ReportSummaryCard
-                title="Growth Score"
+                title={r.growthScoreLabel}
                 value={data.latestAudit.growthScore ?? "—"}
                 subtitle={
                   data.latestAudit.completedAt

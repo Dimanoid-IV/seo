@@ -222,6 +222,12 @@ export const saasDictionary: SaasDictionary = {
     unlimited: "Без лимита",
     perMonth: "в месяц",
     features: "Возможности",
+    planFeatures: {
+      wordpressDrafts: "Черновики WordPress",
+      controlCenter: "Центр управления",
+      emailSend: "Отправка писем",
+      advancedReports: "Расширенные отчёты",
+    },
   },
   onboarding: {
     title: "Настройка рабочего пространства",
@@ -566,6 +572,10 @@ export const saasDictionary: SaasDictionary = {
       sent: "Отправлен",
       failed: "Ошибка",
     },
+    emptyNoWebsiteTitle: "Добавьте сайт, чтобы отслеживать возможности роста",
+    emptyNoWebsiteDescription:
+      "Отчёты и история роста появятся после подключения сайта.",
+    growthScoreLabel: "Оценка роста",
   },
   contentPlan: {
     title: "Контент-план",
@@ -781,7 +791,7 @@ export const saasDictionary: SaasDictionary = {
       newTasks: "Новые задачи",
       completedTasks: "Выполненные задачи",
       warnings: "Предупреждения",
-      growthScore: "Growth Score",
+      growthScore: "Оценка роста",
     },
     emptyNoWebsiteTitle: "Добавьте сайт, чтобы отслеживать возможности роста",
     emptyNoWebsiteDescription:
@@ -789,6 +799,15 @@ export const saasDictionary: SaasDictionary = {
     emptyNoEventsTitle: "История роста пока пуста",
     emptyNoEventsDescription:
       "Запустите первый аудит или подключите Google Search Console, чтобы видеть активность.",
+    severityLabels: {
+      INFO: "Инфо",
+      WARNING: "Внимание",
+      ERROR: "Ошибка",
+      SUCCESS: "Готово",
+      OPPORTUNITY: "Возможность",
+    },
+    quietHeadline:
+      "Существенных изменений с вашего последнего визита нет. RankBoost продолжает отслеживать ваш сайт.",
   },
   autopilot: {
     title: "План роста",
