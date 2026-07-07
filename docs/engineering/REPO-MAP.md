@@ -810,6 +810,17 @@ Audit / GSC sync / Article generate / Task complete / Dashboard load
 | Commit | `8bcbdcc` — `fix: top-align dashboard sidebar cards on desktop` |
 | Production deploy | ✅ `dpl_pU2wtvJbGUZm4Yx5uaKibzUxy758` (2026-07-07) |
 
+### 4.3.52. Logged-in visual QA + remaining i18n polish (prompt 11.15)
+
+| Item | Status |
+|------|--------|
+| Severity labels (INFO/WARNING/ERROR/SUCCESS) | ✅ `timeline.severityLabels` + UI helpers |
+| Timeline event titles | ✅ server-side type mapping in `formatTimelineEvent` |
+| Timeline summary headlines | ✅ localized `buildTimelineSummary` |
+| IntegrationCard / ReportsPage / PlanCard | ✅ dictionary wiring |
+| Logged-in screenshots | ⏸ not captured (no Playwright; auth required) |
+| Commit | `27edef2` |
+
 ### 4.3.51. Dashboard i18n completion + visual QA (prompt 11.13–11.14)
 
 | Item | Status |
@@ -817,7 +828,7 @@ Audit / GSC sync / Article generate / Task complete / Dashboard load
 | DashboardHero / NextBestActionCard | ✅ wired to SaaS dictionaries |
 | Control Center panels (recommended, empty, integrations, approval, monthly plan, hero, activity) | ✅ localized |
 | ru/et/en keys | ✅ `dashboard.heroUi`, extended `controlCenter.*` |
-| Commits | `7d8351d` dashboard; 11.14 control-center sweep |
+| Commits | `7d8351d` dashboard; `db95d02` control-center sweep |
 
 ### 4.3.50. Google GSC E2E QA + Dashboard vertical confirm (prompt 11.13)
 
