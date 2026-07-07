@@ -820,6 +820,8 @@ Audit / GSC sync / Article generate / Task complete / Dashboard load
 | `MonthlyPlanPanel` plan snippet i18n | ✅ status, title, teaser |
 | Stable keys in `generate-monthly-plan.ts` | ✅ actions, risks, next steps |
 | DB migration | ❌ not needed |
+| Commit | `ccd62d5` |
+| Production deploy | ✅ `dpl_3L6MJXEfRmGkS67efdDCbQ2JzWfJ` |
 
 ### 4.3.54. Dashboard metrics & focus areas i18n fix (prompt 11.17)
 
