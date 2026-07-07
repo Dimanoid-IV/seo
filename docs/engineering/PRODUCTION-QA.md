@@ -1811,6 +1811,126 @@ Logged-in screenshots not captured — code-level verification only.
 
 ---
 
+## 8.24. Hermes E2E Generation QA (Production Prompt 11.19)
+
+**Date:** 2026-07-08
+
+### Hermes env status (Vercel Production)
+
+| Variable | Present | Notes |
+|----------|---------|-------|
+| `HERMES_API_URL` | ❌ | Not in `vercel env ls production` (2026-07-08) |
+| `HERMES_API_SECRET` | ❌ | Not in `vercel env ls production` |
+| `HERMES_MODEL` | ❌ | Optional — not set |
+| `HERMES_TIMEOUT_MS` | ❌ | Optional — not set |
+| `HERMES_MAX_RETRIES` | ❌ | Optional — not set |
+| `HERMES_TEST_MODE` | ❌ | Optional — not set |
+| `HERMES_STUB_ENABLED` | ❌ | Dev/test only — must not be set in production |
+
+**Redeployed after env update:** N/A — vars not added.
+
+**Conclusion:** Production Hermes E2E with **real upstream Hermes** is **blocked**. Safe missing-config behavior verified instead.
+
+### Part A — Status endpoint QA
+
+| Check | Production | Local stub dev |
+|-------|------------|----------------|
+| `GET /api/hermes/status` unauthenticated | ✅ 401 `UNAUTHORIZED` | ✅ 401 |
+| Authenticated status | ✅ `configured: false` | ✅ `configured: true` |
+| Secrets exposed in response | ✅ none | ✅ none |
+| `?test=1` health check | ⏸ skipped (not configured) | ⏸ health fails safely (`connectionOk: false`) — stub URL not a real Hermes host |
+
+Production authenticated status (registered QA user):
+
+```json
+{"data":{"hermes":{"configured":false,"testMode":false,"model":null,"connectionOk":null,"connectionError":null}}}
+```
+
+### Part B — Generation E2E
+
+| Use case | Production (real Hermes) | Local dev stub (`HERMES_STUB_ENABLED=1`) |
+|----------|--------------------------|------------------------------------------|
+| `seo_tasks` | ⏸ **blocked** — 503 `HERMES_UNAVAILABLE` | ✅ pass — 2 tasks persisted, `OPEN`, `source: AI`, `reviewStatus: NEEDS_REVIEW` |
+| `content_brief` | ⏸ **blocked** | ✅ pass — Article `IDEA`, brief in `contentJson`, `NEEDS_REVIEW` |
+| `monthly_plan` | ⏸ **blocked** | ✅ pass — `persisted: false`, preview only, no plan overwrite |
+| Auth required | ✅ 401 without token | ✅ |
+| Invalid type | ✅ 400 `VALIDATION_ERROR` | ✅ |
+| AIJob on missing config | ✅ no orphan job (check before create) | N/A |
+| AIJob on success | ⏸ blocked | ✅ `COMPLETED` for all 3 types |
+| AIUsage on success | ⏸ blocked | ✅ recorded with `provider: hermes-stub` after success only |
+
+**E2E engine used:** local **stub only** (`lib/hermes/stub.ts`). Production real Hermes **not tested** — env missing.
+
+### Part C — Locale QA (stub dev)
+
+| Locale | Type | Output language | Notes |
+|--------|------|-----------------|-------|
+| en | `seo_tasks` | ✅ English titles/descriptions | Stub localized |
+| ru | `content_brief` | ✅ Russian title/summary | Topic/keyword remain English in stub metadata (acceptable for stub) |
+| et | `monthly_plan` | ✅ Estonian title/summary | Preview-only |
+
+Hermes prompt locale wiring verified in code: `getLocaleFromRequest()` → `buildHermesSystemInstructions(locale)` + `hermesLocaleFromSaasLocale()`.
+
+### Part D — UI QA
+
+| Area | Status | Notes |
+|------|--------|-------|
+| Control Center `GenerateRecommendationsPanel` missing-config | ✅ code + prod API | Shows `notConfigured` when `configured: false` |
+| Configured / generating / success / error states | ✅ stub dev | Success shows Needs review badge + limited-data note |
+| Generated task links → `/app/tasks` | ✅ code | Link rendered after `seo_tasks` |
+| Generated brief links → `/app/content-plan` | ✅ code | Link rendered after `content_brief` |
+| Logged-in screenshots 375px/1440px | ⏸ not captured | No Playwright; auth required |
+
+### Part E — Safety QA
+
+| Check | Result |
+|-------|--------|
+| Auto-publish | ✅ none |
+| Automatic email send | ✅ none |
+| Auto-approval | ✅ none — tasks `OPEN`, articles `IDEA`, `reviewStatus: NEEDS_REVIEW` |
+| WordPress publish call | ✅ none in generation path |
+| Google write calls | ✅ none |
+| Stripe/billing change on generate | ✅ usage gate only; FREE plan AI usage increments on success |
+| Guarantee language in prompts | ✅ `HERMES_REVIEW_CONSTRAINTS` forbids ranking/traffic/revenue guarantees |
+| Secrets in API responses | ✅ none observed |
+
+### Part F — Error QA
+
+| Scenario | Result |
+|----------|--------|
+| Hermes missing config | ✅ 503 `HERMES_UNAVAILABLE` / "AI engine is not configured yet." |
+| Unauthenticated generate | ✅ 401 |
+| Invalid generation type | ✅ 400 validation |
+| Hermes invalid secret / timeout / bad JSON | ⏸ not tested — no real Hermes endpoint configured |
+| User without website | ✅ code throws `NOT_FOUND` before Hermes call |
+| Plan limit exceeded | ⏸ not re-tested this step |
+
+### Part G — Stub verification
+
+- `canUseHermesStub()` requires `NODE_ENV=development|test` **and** `HERMES_STUB_ENABLED=1`.
+- Production `NODE_ENV=production` → stub never used even if flag set.
+- Stub responses include `metadata.provider: hermes-stub`, `metadata.stub: true`.
+- **Production Hermes E2E was not claimed using stub.**
+
+### Validation (2026-07-08)
+
+| Check | Result |
+|-------|--------|
+| `npx prisma validate` | ✅ |
+| `npx prisma generate` | ✅ |
+| `npm run lint` | ✅ (3 pre-existing warnings) |
+| `npm run build` | ✅ |
+| Automated tests | not available |
+
+### Next step to unblock production Hermes E2E
+
+1. Add `HERMES_API_URL` + `HERMES_API_SECRET` to Vercel Production.
+2. Redeploy.
+3. Re-run Parts B–F against `https://www.rankboost.eu` with authenticated QA user.
+4. Confirm `GET /api/hermes/status?test=1` → `connectionOk: true`.
+
+---
+
 ## 9. Known limitations (beta)
 
 - No automatic publishing, email sending, or approvals.

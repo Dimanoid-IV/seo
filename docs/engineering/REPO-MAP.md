@@ -810,6 +810,19 @@ Audit / GSC sync / Article generate / Task complete / Dashboard load
 | Commit | `8bcbdcc` — `fix: top-align dashboard sidebar cards on desktop` |
 | Production deploy | ✅ `dpl_pU2wtvJbGUZm4Yx5uaKibzUxy758` (2026-07-07) |
 
+### 4.3.56. Hermes E2E generation QA (prompt 11.19)
+
+| Item | Status |
+|------|--------|
+| Vercel `HERMES_API_URL` / `HERMES_API_SECRET` | ❌ missing on Production |
+| Production real Hermes E2E | ⏸ blocked (env) |
+| Missing-config safe failure | ✅ 503, no orphan AIJob |
+| Status endpoint auth + no secret leak | ✅ verified on production |
+| Local stub E2E (`HERMES_STUB_ENABLED=1`) | ✅ seo_tasks / content_brief / monthly_plan |
+| AIJob + AIUsage on stub success | ✅ COMPLETED + hermes-stub provider |
+| Review Mode safety (no auto-publish/approve) | ✅ verified |
+| Code changes | ❌ QA/docs-only |
+
 ### 4.3.55. Growth plan actions/risks i18n polish (prompt 11.18)
 
 | Item | Status |
