@@ -897,7 +897,7 @@ export const saasDictionary: SaasDictionary = {
   autopilot: {
     title: "Kasvuplaan",
     subtitle: "Kuine kasvuplaan teie ülevaatamiseks",
-    monthlyTitle: "Monthly Autopilot",
+    monthlyTitle: "Kuu kasvuplaan",
     pageSubtitle: "Vaadake RankBoosti kuine kasvuplaan üle enne täitmist.",
     loading: "Kasvuplaani laadimine…",
     loadingMonthly: "Kuuplaani laadimine…",
@@ -910,7 +910,7 @@ export const saasDictionary: SaasDictionary = {
     emptyTitle: "Kasvuplaani pole veel",
     emptyDescription: "Genereerige mustand juhtimiskeskusest.",
     focusAreas: "Fookusvaldkonnad",
-    recommendedActions: "Soovitatud toimingud",
+    recommendedActions: "Soovitatud tegevused",
     risks: "Riskid",
     risksTitle: "Riskid ja hoiatused",
     nextSteps: "Järgmised sammud",
@@ -932,9 +932,124 @@ export const saasDictionary: SaasDictionary = {
     emptyNoDataTitle: "Vaja on rohkem kasvuandmeid",
     emptyNoDataDescription:
       "RankBoost vajab kasvuandmeid kasuliku kuuplaani loomiseks. Käivitage audit või ühendage Google Search Console.",
-    emptyNoPlanTitle: "Kuuplaani pole veel",
+    emptyNoPlanTitle: "Plaani ei ole veel loodud",
     emptyNoPlanDescription:
-      "Genereerige plaan, et RankBoost korraldaks selle kuu SEO, sisu ja sotsiaalmeedia toimingud.",
+      "Looge plaan, et RankBoost korraldaks selle kuu SEO, sisu ja sotsiaalmeedia toimingud.",
+    reviewNote:
+      "See plaan on ette valmistatud ülevaatusrežiimis. Midagi ei avaldata automaatselt.",
+    planContent: {
+      monthlyGrowthPlanTitle: "Kuu kasvuplaan — {month}",
+      summaryTeaser:
+        "Vaadake üle selle kuu fookusvaldkonnad, soovitatud tegevused, riskid ja järgmised sammud.",
+      actionTypes: {
+        TASK: "Ülesanne",
+        ARTICLE: "Artikkel",
+        SOCIAL_POST: "Sotsiaalmeedia",
+        INTEGRATION: "Integratsioon",
+        REVIEW: "Ülevaatus",
+        REPORT: "Aruanne",
+      },
+      actions: {
+        connect_gsc: {
+          title: "Ühendage Google Search Console",
+          description: "Avage päringu- ja lehe jõudluse andmed.",
+        },
+        run_website_audit: {
+          title: "Käivitage veebisaidi audit",
+          description: "Värskendage tehnilised SEO-leiud ja Growth Score.",
+        },
+        view_monthly_report: {
+          title: "Vaata kuuaruannet",
+          description: "Vaadake selle veebisaidi edenemist ja mõõdikuid.",
+        },
+        review_social_post_draft: {
+          title: "Vaata sotsiaalmeedia mustandit",
+          description: "Mustand on valmis — kopeerige ja avaldage käsitsi.",
+        },
+        review_article: {
+          title: "Vaata üle: {title}",
+          description: "Artikli mustand ootab teie ülevaatust.",
+        },
+        continue_article: {
+          title: "Jätka: {title}",
+          description: "Lõpetage artikli mustand sisiplaani jaoks.",
+        },
+        high_priority_task: {
+          title: "{title}",
+          description: "Kõrge prioriteediga {category} ülesanne {priority} järjekorrast.",
+        },
+      },
+      risks: {
+        gsc_not_connected: {
+          title: "Search Console pole ühendatud",
+          description:
+            "Ilma GSC andmeteta ei saa RankBoost päringu- ja lehevõimalusi näidata.",
+        },
+        gsc_sync_issue: {
+          title: "Search Console sünkroniseerimise probleem",
+          description: "Google Search Console integratsioon teatas veast.",
+        },
+        growth_score_declined: {
+          title: "Growth Score langes",
+          description: "Growth Score langes hiljuti {delta} punkti võrra.",
+        },
+        many_high_priority_tasks: {
+          title: "Palju kõrge prioriteediga ülesandeid avatud",
+          description: "{count} kõrge prioriteediga ülesannet vajavad sel kuul tähelepanu.",
+        },
+        content_drafts_waiting: {
+          title: "Sisu mustandid ootavad ülevaatust",
+          description: "{count} artikli mustand(it) on valmis, kuid kinnitamata.",
+        },
+        wordpress_connection_issue: {
+          title: "WordPressi ühenduse probleem",
+          description: "WordPressi integratsioon võib vajada uuesti ühendamist.",
+        },
+        limited_growth_data: {
+          title: "Piiratud kasvuandmed",
+          description:
+            "Käivitage audit või ühendage integratsioonid, et parandada plaani kvaliteeti.",
+        },
+      },
+      nextSteps: {
+        review_high_priority_tasks: {
+          title: "Vaadake kõrge prioriteediga ülesanded üle",
+          description: "Alustage suurima mõjuga SEO parandustest juhtpaneelil.",
+        },
+        approve_content_drafts: {
+          title: "Kinnitage või muutke sisu mustandeid",
+          description: "Vaadake AI-artiklid üle enne avaldamist.",
+        },
+        copy_social_posts: {
+          title: "Kopeerige valmis sotsiaalmeedia postitused",
+          description: "Kleepige ülevaadatud mustandid käsitsi sotsiaalmeediasse.",
+        },
+        connect_missing_integrations: {
+          title: "Ühendage puuduvad integratsioonid",
+          description: "Ühendage Google Search Console otsinguandmete jaoks.",
+        },
+        run_new_audit: {
+          title: "Käivitage uus audit",
+          description: "Värskendage tehnilised leiud ja Growth Score baastaseme.",
+        },
+        check_timeline: {
+          title: "Vaadake ajajoont",
+          description: "Vaadake, mis muutus teie eemaloleku ajal.",
+        },
+      },
+      summary: {
+        intro: "Sel kuul {focus}",
+        focusOn: "Keskenduge: {areas}.",
+        focusOnDefault: "Keskenduge põhilistele SEO ja sisu parandustele.",
+        opportunitiesOne: "RankBoost leidis {count} kasvuvõimaluse",
+        opportunitiesMany: "RankBoost leidis {count} kasvuvõimalust",
+        waitingReviewOne: "{count} üksus ootab teie ülevaatust",
+        waitingReviewMany: "{count} üksust ootab teie ülevaatust",
+        openTasksOne: "{count} avatud ülesanne vajab tähelepanu",
+        openTasksMany: "{count} avatud ülesannet vajavad tähelepanu",
+        joiner: " ja ",
+      },
+    },
   },
   pricing: {
     pageTitle: "Paketid kasvuks",

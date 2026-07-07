@@ -935,6 +935,122 @@ export const saasDictionary: SaasDictionary = {
     emptyNoPlanTitle: "No monthly plan yet",
     emptyNoPlanDescription:
       "Generate a plan to let RankBoost organize this month's SEO, content, and social growth actions.",
+    reviewNote:
+      "This plan is prepared in Review Mode. Nothing is published automatically.",
+    planContent: {
+      monthlyGrowthPlanTitle: "Monthly growth plan — {month}",
+      summaryTeaser:
+        "Review this month's focus areas, recommended actions, risks, and next steps.",
+      actionTypes: {
+        TASK: "Task",
+        ARTICLE: "Article",
+        SOCIAL_POST: "Social",
+        INTEGRATION: "Integration",
+        REVIEW: "Review",
+        REPORT: "Report",
+      },
+      actions: {
+        connect_gsc: {
+          title: "Connect Google Search Console",
+          description: "Unlock search query and page performance insights.",
+        },
+        run_website_audit: {
+          title: "Run a website audit",
+          description: "Refresh technical SEO findings and Growth Score.",
+        },
+        view_monthly_report: {
+          title: "View monthly report",
+          description: "Review progress and metrics for this website.",
+        },
+        review_social_post_draft: {
+          title: "Review social post draft",
+          description: "Ready social post draft — copy and publish manually.",
+        },
+        review_article: {
+          title: "Review: {title}",
+          description: "Article draft is waiting for your review.",
+        },
+        continue_article: {
+          title: "Continue: {title}",
+          description: "Finish this article draft for your content plan.",
+        },
+        high_priority_task: {
+          title: "{title}",
+          description: "High-priority {category} task from {priority} queue.",
+        },
+      },
+      risks: {
+        gsc_not_connected: {
+          title: "Search Console not connected",
+          description:
+            "Without GSC data, RankBoost cannot surface query and page opportunities.",
+        },
+        gsc_sync_issue: {
+          title: "Search Console sync issue",
+          description:
+            "Google Search Console integration reported an error.",
+        },
+        growth_score_declined: {
+          title: "Growth Score declined",
+          description: "Your Growth Score dropped by {delta} points recently.",
+        },
+        many_high_priority_tasks: {
+          title: "Many high-priority tasks open",
+          description: "{count} high-priority tasks need attention this month.",
+        },
+        content_drafts_waiting: {
+          title: "Content drafts waiting for review",
+          description: "{count} article draft(s) are ready but not approved.",
+        },
+        wordpress_connection_issue: {
+          title: "WordPress connection issue",
+          description: "WordPress integration may need reconnection or attention.",
+        },
+        limited_growth_data: {
+          title: "Limited growth data",
+          description:
+            "Run an audit or connect integrations to improve plan quality.",
+        },
+      },
+      nextSteps: {
+        review_high_priority_tasks: {
+          title: "Review high-priority tasks",
+          description: "Start with the highest-impact SEO fixes on your dashboard.",
+        },
+        approve_content_drafts: {
+          title: "Approve or edit content drafts",
+          description: "Review AI-generated articles before publishing.",
+        },
+        copy_social_posts: {
+          title: "Copy ready social posts",
+          description: "Paste reviewed drafts into your social accounts manually.",
+        },
+        connect_missing_integrations: {
+          title: "Connect missing integrations",
+          description: "Link Google Search Console for search performance data.",
+        },
+        run_new_audit: {
+          title: "Run a new audit",
+          description: "Refresh technical findings and Growth Score baseline.",
+        },
+        check_timeline: {
+          title: "Check the timeline",
+          description: "See what changed while you were away.",
+        },
+      },
+      summary: {
+        intro: "This month, {focus}",
+        focusOn: "Focus on {areas}.",
+        focusOnDefault: "Focus on foundational SEO and content improvements.",
+        opportunitiesOne: "RankBoost found {count} growth opportunity",
+        opportunitiesMany: "RankBoost found {count} growth opportunities",
+        waitingReviewOne: "{count} item waiting for your review",
+        waitingReviewMany: "{count} items waiting for your review",
+        openTasksOne: "{count} open task to address",
+        openTasksMany: "{count} open tasks to address",
+        joiner: " and ",
+      },
+    },
   },
   pricing: {
     pageTitle: "Plans for growth",

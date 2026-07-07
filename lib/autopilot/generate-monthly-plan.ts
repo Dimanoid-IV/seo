@@ -237,8 +237,13 @@ function buildRecommendedActions(
   for (const task of data.tasks.highPriority.slice(0, 3)) {
     actions.push({
       id: nextActionId(),
+      key: "high_priority_task",
       title: task.title,
       description: `High-priority ${task.category.toLowerCase()} task from ${task.priority.toLowerCase()} queue.`,
+      descParams: {
+        category: task.category.toLowerCase(),
+        priority: task.priority.toLowerCase(),
+      },
       type: "TASK",
       priority: scoreToPriority(SCORE_WEIGHTS.highPriorityTask),
       href: "/app",
@@ -248,7 +253,9 @@ function buildRecommendedActions(
   for (const article of data.articles.waitingReview.slice(0, 2)) {
     actions.push({
       id: nextActionId(),
+      key: "review_article",
       title: `Review: ${article.title}`,
+      titleParams: { title: article.title },
       description: "Article draft is waiting for your review.",
       type: "REVIEW",
       priority: scoreToPriority(SCORE_WEIGHTS.articleReadyForReview),
@@ -259,7 +266,9 @@ function buildRecommendedActions(
   for (const article of data.articles.drafts.slice(0, 2)) {
     actions.push({
       id: nextActionId(),
+      key: "continue_article",
       title: `Continue: ${article.title}`,
+      titleParams: { title: article.title },
       description: "Finish this article draft for your content plan.",
       type: "ARTICLE",
       priority: "MEDIUM",
@@ -270,6 +279,7 @@ function buildRecommendedActions(
   for (const post of data.socialPosts.ready.slice(0, 2)) {
     actions.push({
       id: nextActionId(),
+      key: "review_social_post_draft",
       title: post.title ?? "Review social post draft",
       description: "Ready social post draft — copy and publish manually.",
       type: "SOCIAL_POST",
@@ -281,6 +291,7 @@ function buildRecommendedActions(
   if (!data.integrations.gscConnected) {
     actions.push({
       id: nextActionId(),
+      key: "connect_gsc",
       title: "Connect Google Search Console",
       description: "Unlock search query and page performance insights.",
       type: "INTEGRATION",
@@ -303,6 +314,7 @@ function buildRecommendedActions(
   if (!data.audit) {
     actions.push({
       id: nextActionId(),
+      key: "run_website_audit",
       title: "Run a website audit",
       description: "Refresh technical SEO findings and Growth Score.",
       type: "REPORT",
@@ -312,6 +324,7 @@ function buildRecommendedActions(
   } else {
     actions.push({
       id: nextActionId(),
+      key: "view_monthly_report",
       title: "View monthly report",
       description: "Review progress and metrics for this website.",
       type: "REPORT",
@@ -328,6 +341,7 @@ function buildRisks(data: MonthlyAutopilotSourceData): AutopilotRisk[] {
 
   if (!data.integrations.gscConnected) {
     risks.push({
+      key: "gsc_not_connected",
       title: "Search Console not connected",
       description:
         "Without GSC data, RankBoost cannot surface query and page opportunities.",
@@ -337,6 +351,7 @@ function buildRisks(data: MonthlyAutopilotSourceData): AutopilotRisk[] {
 
   if (data.integrations.gscError) {
     risks.push({
+      key: "gsc_sync_issue",
       title: "Search Console sync issue",
       description:
         data.gsc.lastErrorMessage ??
@@ -347,30 +362,37 @@ function buildRisks(data: MonthlyAutopilotSourceData): AutopilotRisk[] {
 
   if (data.growthScore.delta != null && data.growthScore.delta < 0) {
     risks.push({
+      key: "growth_score_declined",
       title: "Growth Score declined",
       description: `Your Growth Score dropped by ${Math.abs(data.growthScore.delta)} points recently.`,
+      descParams: { delta: Math.abs(data.growthScore.delta) },
       severity: "WARNING",
     });
   }
 
   if (data.tasks.highPriority.length >= 5) {
     risks.push({
+      key: "many_high_priority_tasks",
       title: "Many high-priority tasks open",
       description: `${data.tasks.highPriority.length} high-priority tasks need attention this month.`,
+      descParams: { count: data.tasks.highPriority.length },
       severity: "WARNING",
     });
   }
 
   if (data.articles.waitingReview.length > 0) {
     risks.push({
+      key: "content_drafts_waiting",
       title: "Content drafts waiting for review",
       description: `${data.articles.waitingReview.length} article draft(s) are ready but not approved.`,
+      descParams: { count: data.articles.waitingReview.length },
       severity: "WARNING",
     });
   }
 
   if (data.integrations.wordpressError) {
     risks.push({
+      key: "wordpress_connection_issue",
       title: "WordPress connection issue",
       description: "WordPress integration may need reconnection or attention.",
       severity: "WARNING",
@@ -379,6 +401,7 @@ function buildRisks(data: MonthlyAutopilotSourceData): AutopilotRisk[] {
 
   if (!data.sourceSummary.hasEnoughData) {
     risks.push({
+      key: "limited_growth_data",
       title: "Limited growth data",
       description:
         "Run an audit or connect integrations to improve plan quality.",
@@ -394,6 +417,7 @@ function buildNextSteps(data: MonthlyAutopilotSourceData): AutopilotNextStep[] {
 
   if (data.tasks.highPriority.length > 0) {
     steps.push({
+      key: "review_high_priority_tasks",
       title: "Review high-priority tasks",
       description: "Start with the highest-impact SEO fixes on your dashboard.",
       href: "/app",
@@ -402,6 +426,7 @@ function buildNextSteps(data: MonthlyAutopilotSourceData): AutopilotNextStep[] {
 
   if (data.articles.waitingReview.length > 0 || data.articles.drafts.length > 0) {
     steps.push({
+      key: "approve_content_drafts",
       title: "Approve or edit content drafts",
       description: "Review AI-generated articles before publishing.",
       href: "/app/content-plan",
@@ -410,6 +435,7 @@ function buildNextSteps(data: MonthlyAutopilotSourceData): AutopilotNextStep[] {
 
   if (data.socialPosts.ready.length > 0) {
     steps.push({
+      key: "copy_social_posts",
       title: "Copy ready social posts",
       description: "Paste reviewed drafts into your social accounts manually.",
       href: "/app/social-posts",
@@ -418,6 +444,7 @@ function buildNextSteps(data: MonthlyAutopilotSourceData): AutopilotNextStep[] {
 
   if (!data.integrations.gscConnected) {
     steps.push({
+      key: "connect_missing_integrations",
       title: "Connect missing integrations",
       description: "Link Google Search Console for search performance data.",
       href: "/app/integrations",
@@ -426,6 +453,7 @@ function buildNextSteps(data: MonthlyAutopilotSourceData): AutopilotNextStep[] {
 
   if (!data.audit) {
     steps.push({
+      key: "run_new_audit",
       title: "Run a new audit",
       description: "Refresh technical findings and Growth Score baseline.",
       href: "/app",
@@ -433,6 +461,7 @@ function buildNextSteps(data: MonthlyAutopilotSourceData): AutopilotNextStep[] {
   }
 
   steps.push({
+    key: "check_timeline",
     title: "Check the timeline",
     description: "See what changed while you were away.",
     href: "/app/timeline",

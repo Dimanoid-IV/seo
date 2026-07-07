@@ -897,7 +897,7 @@ export const saasDictionary: SaasDictionary = {
   autopilot: {
     title: "План роста",
     subtitle: "Месячный план роста для вашей проверки",
-    monthlyTitle: "Monthly Autopilot",
+    monthlyTitle: "Месячный план роста",
     pageSubtitle: "Проверьте месячный план роста RankBoost, прежде чем что-то выполняется.",
     loading: "Загружаем план роста…",
     loadingMonthly: "Загружаем месячный план…",
@@ -906,7 +906,7 @@ export const saasDictionary: SaasDictionary = {
     generate: "Создать месячный план",
     refreshPlan: "Обновить план",
     regenerate: "Пересоздать",
-    approvePlan: "Одобрить план",
+    approvePlan: "Подтвердить план",
     emptyTitle: "Плана роста пока нет",
     emptyDescription: "Создайте черновик из центра управления.",
     focusAreas: "Фокусные области",
@@ -932,9 +932,124 @@ export const saasDictionary: SaasDictionary = {
     emptyNoDataTitle: "Нужно больше данных роста",
     emptyNoDataDescription:
       "RankBoost нужны данные роста для полезного месячного плана. Запустите аудит или подключите Google Search Console.",
-    emptyNoPlanTitle: "Месячного плана пока нет",
+    emptyNoPlanTitle: "План ещё не создан",
     emptyNoPlanDescription:
       "Создайте план, чтобы RankBoost организовал SEO, контент и соцсети на этот месяц.",
+    reviewNote:
+      "Этот план подготовлен в режиме проверки. Ничего не публикуется автоматически.",
+    planContent: {
+      monthlyGrowthPlanTitle: "Месячный план роста — {month}",
+      summaryTeaser:
+        "Проверьте фокусные области, рекомендуемые действия, риски и следующие шаги этого месяца.",
+      actionTypes: {
+        TASK: "Задача",
+        ARTICLE: "Статья",
+        SOCIAL_POST: "Соцсети",
+        INTEGRATION: "Интеграция",
+        REVIEW: "Проверка",
+        REPORT: "Отчёт",
+      },
+      actions: {
+        connect_gsc: {
+          title: "Подключите Google Search Console",
+          description: "Откройте данные по запросам и эффективности страниц.",
+        },
+        run_website_audit: {
+          title: "Запустите аудит сайта",
+          description: "Обновите технические SEO-находки и Growth Score.",
+        },
+        view_monthly_report: {
+          title: "Открыть месячный отчёт",
+          description: "Проверьте прогресс и метрики для этого сайта.",
+        },
+        review_social_post_draft: {
+          title: "Проверить черновик поста",
+          description: "Черновик готов — скопируйте и опубликуйте вручную.",
+        },
+        review_article: {
+          title: "Проверить: {title}",
+          description: "Черновик статьи ждёт вашей проверки.",
+        },
+        continue_article: {
+          title: "Продолжить: {title}",
+          description: "Доработайте черновик статьи для контент-плана.",
+        },
+        high_priority_task: {
+          title: "{title}",
+          description: "Приоритетная задача ({category}) из очереди {priority}.",
+        },
+      },
+      risks: {
+        gsc_not_connected: {
+          title: "Search Console не подключён",
+          description:
+            "Без данных GSC RankBoost не может показать возможности по запросам и страницам.",
+        },
+        gsc_sync_issue: {
+          title: "Проблема синхронизации Search Console",
+          description: "Интеграция Google Search Console сообщила об ошибке.",
+        },
+        growth_score_declined: {
+          title: "Growth Score снизился",
+          description: "Growth Score недавно упал на {delta} пунктов.",
+        },
+        many_high_priority_tasks: {
+          title: "Много приоритетных задач открыто",
+          description: "{count} приоритетных задач требуют внимания в этом месяце.",
+        },
+        content_drafts_waiting: {
+          title: "Черновики контента ждут проверки",
+          description: "{count} черновик(ов) статьи готовы, но не одобрены.",
+        },
+        wordpress_connection_issue: {
+          title: "Проблема подключения WordPress",
+          description: "Интеграция WordPress может потребовать переподключения.",
+        },
+        limited_growth_data: {
+          title: "Недостаточно данных роста",
+          description:
+            "Запустите аудит или подключите интеграции, чтобы улучшить качество плана.",
+        },
+      },
+      nextSteps: {
+        review_high_priority_tasks: {
+          title: "Проверьте приоритетные задачи",
+          description: "Начните с SEO-исправлений с наибольшим эффектом на панели.",
+        },
+        approve_content_drafts: {
+          title: "Одобрите или отредактируйте черновики",
+          description: "Проверьте AI-статьи перед публикацией.",
+        },
+        copy_social_posts: {
+          title: "Скопируйте готовые посты",
+          description: "Вставьте проверенные черновики в соцсети вручную.",
+        },
+        connect_missing_integrations: {
+          title: "Подключите недостающие интеграции",
+          description: "Подключите Google Search Console для данных по поиску.",
+        },
+        run_new_audit: {
+          title: "Запустите новый аудит",
+          description: "Обновите технические находки и базовый Growth Score.",
+        },
+        check_timeline: {
+          title: "Откройте хронологию",
+          description: "Посмотрите, что изменилось, пока вас не было.",
+        },
+      },
+      summary: {
+        intro: "В этом месяце {focus}",
+        focusOn: "Сфокусируйтесь на {areas}.",
+        focusOnDefault: "Сфокусируйтесь на базовых улучшениях SEO и контента.",
+        opportunitiesOne: "RankBoost нашёл {count} возможность роста",
+        opportunitiesMany: "RankBoost нашёл {count} возможностей роста",
+        waitingReviewOne: "{count} элемент ждёт вашей проверки",
+        waitingReviewMany: "{count} элементов ждут вашей проверки",
+        openTasksOne: "{count} открытая задача требует внимания",
+        openTasksMany: "{count} открытых задач требуют внимания",
+        joiner: " и ",
+      },
+    },
   },
   pricing: {
     pageTitle: "Планы для роста",

@@ -3,6 +3,7 @@
 import { AlertTriangle } from "lucide-react";
 
 import type { AutopilotRisk } from "@/lib/autopilot/types";
+import { localizeRisk } from "@/lib/i18n/saas/plan-display";
 import { useSaasTranslations } from "@/lib/i18n/saas/SaasLocaleProvider";
 import { translateTimelineSeverityFromDict } from "@/lib/i18n/saas/timeline-display";
 
@@ -25,7 +26,9 @@ export function AutopilotRisksCard({ risks }: AutopilotRisksCardProps) {
         <h3 className="font-semibold text-white">{a.risksTitle}</h3>
       </div>
       <ul className="mt-4 space-y-3">
-        {risks.map((risk) => (
+        {risks.map((risk) => {
+          const copy = localizeRisk(risk, dict);
+          return (
           <li
             key={risk.title}
             className="rounded-lg border border-white/5 bg-black/20 px-4 py-3"
@@ -40,11 +43,12 @@ export function AutopilotRisksCard({ risks }: AutopilotRisksCardProps) {
               >
                 {translateTimelineSeverityFromDict(dict, risk.severity)}
               </span>
-              <span className="font-medium text-slate-200">{risk.title}</span>
+              <span className="font-medium text-slate-200">{copy.title}</span>
             </div>
-            <p className="mt-1 text-sm text-slate-400">{risk.description}</p>
+            <p className="mt-1 text-sm text-slate-400">{copy.description}</p>
           </li>
-        ))}
+          );
+        })}
       </ul>
     </section>
   );

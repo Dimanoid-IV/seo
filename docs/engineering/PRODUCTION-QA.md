@@ -1763,7 +1763,51 @@ Logged-in screenshots not captured — code-level verification only.
 ### Remaining dynamic text limitations
 
 - Focus area English strings remain in DB JSON for legacy records; UI overrides via `id` mapping.
-- Recommended actions / risks / next steps on growth plan page may still contain English server-generated copy (out of scope).
+- ~~Recommended actions / risks / next steps on growth plan page may still contain English server-generated copy (out of scope).~~ Addressed in §8.23.
+
+---
+
+## 8.23. Growth Plan Actions/Risks i18n Polish (Production Prompt 11.18)
+
+**Date:** 2026-07-08
+
+### Problem
+
+Russian/Estonian `/app/autopilot` still showed English in recommended actions, risks, next steps, plan title/summary, action type badges, and raw `HIGH`/`MEDIUM`/`LOW` priority labels. Control Center monthly plan snippet showed English title/status/summary.
+
+### Root cause
+
+- `RecommendedActionCard` had hardcoded English type labels and rendered persisted English JSON from `buildRecommendedActions()`.
+- `AutopilotRisksCard` / `AutopilotNextSteps` section headings were localized but item title/description came from English DB JSON.
+- `AutopilotSummaryCard` rendered English `plan.title` / `plan.summary` from DB columns.
+- Plan builders stored English copy at generation time without stable keys.
+
+### Fix
+
+- Added `dict.autopilot.planContent` + `dict.autopilot.reviewNote` (en/ru/et).
+- New `lib/i18n/saas/plan-display.ts` — display-time localization by stable `key` or known legacy English title/description patterns.
+- `RecommendedActionCard`, `AutopilotRisksCard`, `AutopilotNextSteps`, `AutopilotSummaryCard` use plan display helpers.
+- `MonthlyPlanPanel` localizes plan status, title, and deterministic summary teaser.
+- `MonthlyAutopilotPage` shows localized Review Mode safety note.
+- `buildRecommendedActions()` / `buildRisks()` / `buildNextSteps()` add stable `key` (+ params) for future plans.
+- No DB migration; legacy English JSON kept intact.
+
+### Language QA
+
+| Locale | Plan headings | Actions/risks/steps | Review Mode copy | Priority badges |
+|--------|---------------|---------------------|------------------|-----------------|
+| ru | code ✅ | code ✅ | code ✅ | code ✅ |
+| et | code ✅ | code ✅ | code ✅ | code ✅ |
+| en | code ✅ | code ✅ | code ✅ | code ✅ |
+
+Logged-in screenshots not captured — code-level verification only.
+
+### Remaining dynamic text limitations
+
+- User-defined task titles, article titles, and opportunity titles remain in source language (not auto-translated).
+- GSC sync error messages from Google may remain in English when custom.
+- Hermes-generated plan summaries (future) will display as stored in requested locale — not re-localized at display time.
+- Control Center plan snippet uses localized teaser for deterministic summaries; full rebuild requires opening `/app/autopilot`.
 
 ---
 

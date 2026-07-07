@@ -248,6 +248,10 @@ export function MonthlyAutopilotPage() {
         }
       />
 
+      <p className="mb-6 rounded-xl border border-violet-500/20 bg-violet-500/5 px-4 py-3 text-sm text-violet-100/90">
+        {a.reviewNote}
+      </p>
+
       <div className="mb-8 flex items-center justify-center gap-2 sm:justify-end">
         <Button
           type="button"

@@ -1,6 +1,10 @@
 "use client";
 
 import type { MonthlyAutopilotPlanViewModel } from "@/lib/autopilot/types";
+import {
+  buildLocalizedPlanSummary,
+  localizePlanTitle,
+} from "@/lib/i18n/saas/plan-display";
 import { useSaasTranslations } from "@/lib/i18n/saas/SaasLocaleProvider";
 
 type AutopilotSummaryCardProps = {
@@ -13,6 +17,8 @@ export function AutopilotSummaryCard({ plan, monthLabel }: AutopilotSummaryCardP
   const a = dict.autopilot;
   const statusLabel =
     a.statuses[plan.status as keyof typeof a.statuses] ?? plan.status;
+  const title = localizePlanTitle(monthLabel, plan.title, dict);
+  const summary = buildLocalizedPlanSummary(plan, dict);
 
   return (
     <section className="rounded-2xl border border-white/10 bg-gradient-to-br from-violet-500/10 to-blue-500/5 p-6">
@@ -21,14 +27,14 @@ export function AutopilotSummaryCard({ plan, monthLabel }: AutopilotSummaryCardP
           <p className="text-xs font-medium uppercase tracking-wide text-violet-300">
             {monthLabel}
           </p>
-          <h2 className="mt-1 text-xl font-semibold text-white">{plan.title}</h2>
+          <h2 className="mt-1 text-xl font-semibold text-white">{title}</h2>
         </div>
         <span className="rounded-full border border-violet-400/30 bg-violet-500/10 px-3 py-1 text-xs font-medium text-violet-200">
           {statusLabel}
         </span>
       </div>
-      {plan.summary ? (
-        <p className="mt-4 text-sm leading-relaxed text-slate-300">{plan.summary}</p>
+      {summary ? (
+        <p className="mt-4 text-sm leading-relaxed text-slate-300">{summary}</p>
       ) : null}
       <p className="mt-4 text-xs text-slate-500">
         {a.createdLabel} {new Date(plan.createdAt).toLocaleDateString()} · {a.updatedLabel}{" "}

@@ -777,6 +777,57 @@ export type SaasDictionary = {
     emptyNoDataDescription: string;
     emptyNoPlanTitle: string;
     emptyNoPlanDescription: string;
+    reviewNote: string;
+    planContent: {
+      monthlyGrowthPlanTitle: string;
+      summaryTeaser: string;
+      actionTypes: {
+        TASK: string;
+        ARTICLE: string;
+        SOCIAL_POST: string;
+        INTEGRATION: string;
+        REVIEW: string;
+        REPORT: string;
+      };
+      actions: {
+        connect_gsc: { title: string; description: string };
+        run_website_audit: { title: string; description: string };
+        view_monthly_report: { title: string; description: string };
+        review_social_post_draft: { title: string; description: string };
+        review_article: { title: string; description: string };
+        continue_article: { title: string; description: string };
+        high_priority_task: { title: string; description: string };
+      };
+      risks: {
+        gsc_not_connected: { title: string; description: string };
+        gsc_sync_issue: { title: string; description: string };
+        growth_score_declined: { title: string; description: string };
+        many_high_priority_tasks: { title: string; description: string };
+        content_drafts_waiting: { title: string; description: string };
+        wordpress_connection_issue: { title: string; description: string };
+        limited_growth_data: { title: string; description: string };
+      };
+      nextSteps: {
+        review_high_priority_tasks: { title: string; description: string };
+        approve_content_drafts: { title: string; description: string };
+        copy_social_posts: { title: string; description: string };
+        connect_missing_integrations: { title: string; description: string };
+        run_new_audit: { title: string; description: string };
+        check_timeline: { title: string; description: string };
+      };
+      summary: {
+        intro: string;
+        focusOn: string;
+        focusOnDefault: string;
+        opportunitiesOne: string;
+        opportunitiesMany: string;
+        waitingReviewOne: string;
+        waitingReviewMany: string;
+        openTasksOne: string;
+        openTasksMany: string;
+        joiner: string;
+      };
+    };
   };
   pricing: {
     pageTitle: string;

@@ -810,6 +810,17 @@ Audit / GSC sync / Article generate / Task complete / Dashboard load
 | Commit | `8bcbdcc` — `fix: top-align dashboard sidebar cards on desktop` |
 | Production deploy | ✅ `dpl_pU2wtvJbGUZm4Yx5uaKibzUxy758` (2026-07-07) |
 
+### 4.3.55. Growth plan actions/risks i18n polish (prompt 11.18)
+
+| Item | Status |
+|------|--------|
+| `dict.autopilot.planContent` + `reviewNote` | ✅ en/ru/et |
+| `lib/i18n/saas/plan-display.ts` | ✅ key + legacy English mapping |
+| `RecommendedActionCard` / risks / next steps / summary cards | ✅ display localization |
+| `MonthlyPlanPanel` plan snippet i18n | ✅ status, title, teaser |
+| Stable keys in `generate-monthly-plan.ts` | ✅ actions, risks, next steps |
+| DB migration | ❌ not needed |
+
 ### 4.3.54. Dashboard metrics & focus areas i18n fix (prompt 11.17)
 
 | Item | Status |

@@ -21,18 +21,30 @@ export type AutopilotRecommendedAction = {
   type: "TASK" | "ARTICLE" | "SOCIAL_POST" | "INTEGRATION" | "REVIEW" | "REPORT";
   priority: AutopilotPriority;
   href?: string;
+  /** Stable key for display-time localization (future + legacy mapping). */
+  key?: string;
+  titleKey?: string;
+  descKey?: string;
+  titleParams?: Record<string, string | number>;
+  descParams?: Record<string, string | number>;
 };
 
 export type AutopilotRisk = {
   title: string;
   description: string;
   severity: "WARNING" | "ERROR";
+  key?: string;
+  descKey?: string;
+  descParams?: Record<string, string | number>;
 };
 
 export type AutopilotNextStep = {
   title: string;
   description: string;
   href?: string;
+  key?: string;
+  descKey?: string;
+  descParams?: Record<string, string | number>;
 };
 
 export type MonthlyAutopilotMetrics = {

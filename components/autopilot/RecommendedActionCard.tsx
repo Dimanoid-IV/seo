@@ -1,18 +1,17 @@
+"use client";
+
 import Link from "next/link";
 
 import type { AutopilotRecommendedAction } from "@/lib/autopilot/types";
+import { localizeFocusAreaPriority } from "@/lib/i18n/saas/focus-area-display";
+import {
+  localizeActionType,
+  localizeRecommendedAction,
+} from "@/lib/i18n/saas/plan-display";
+import { useSaasTranslations } from "@/lib/i18n/saas/SaasLocaleProvider";
 
 type RecommendedActionCardProps = {
   action: AutopilotRecommendedAction;
-};
-
-const TYPE_LABELS: Record<string, string> = {
-  TASK: "Task",
-  ARTICLE: "Article",
-  SOCIAL_POST: "Social",
-  INTEGRATION: "Integration",
-  REVIEW: "Review",
-  REPORT: "Report",
 };
 
 const PRIORITY_STYLES: Record<string, string> = {
@@ -22,18 +21,23 @@ const PRIORITY_STYLES: Record<string, string> = {
 };
 
 export function RecommendedActionCard({ action }: RecommendedActionCardProps) {
+  const { dict } = useSaasTranslations();
+  const copy = localizeRecommendedAction(action, dict);
+  const typeLabel = localizeActionType(action.type, dict);
+  const priorityLabel = localizeFocusAreaPriority(action.priority, dict);
+
   const content = (
     <div className="flex flex-col gap-1 rounded-xl border border-white/10 bg-white/[0.02] p-4 transition-colors hover:bg-white/[0.04]">
       <div className="flex flex-wrap items-center gap-2 text-xs">
         <span className="rounded-md bg-white/10 px-2 py-0.5 font-medium text-slate-300">
-          {TYPE_LABELS[action.type] ?? action.type}
+          {typeLabel}
         </span>
         <span className={PRIORITY_STYLES[action.priority] ?? "text-slate-400"}>
-          {action.priority}
+          {priorityLabel}
         </span>
       </div>
-      <h4 className="font-medium text-white">{action.title}</h4>
-      <p className="text-sm text-slate-400">{action.description}</p>
+      <h4 className="font-medium text-white">{copy.title}</h4>
+      <p className="text-sm text-slate-400">{copy.description}</p>
     </div>
   );
 

@@ -6,6 +6,12 @@ import { Loader2, Rocket, Sparkles } from "lucide-react";
 import { SaasCard, SaasSectionHeader } from "@/components/shared/SaasCard";
 import { Button } from "@/components/ui/button";
 import type { ControlCenterMonthlyPlan } from "@/lib/autopilot-control/types";
+import type { SaasLocale } from "@/lib/i18n/saas/locales";
+import {
+  localizePlanStatus,
+  localizePlanSummarySnippet,
+  localizePlanTitle,
+} from "@/lib/i18n/saas/plan-display";
 import { useSaasTranslations } from "@/lib/i18n/saas/SaasLocaleProvider";
 
 type MonthlyPlanPanelProps = {
@@ -14,13 +20,31 @@ type MonthlyPlanPanelProps = {
   generating?: boolean;
 };
 
+function formatMonthLabel(monthKey: string, locale: SaasLocale): string {
+  const [year, month] = monthKey.split("-");
+  const parsed = new Date(Date.UTC(Number(year), Number(month) - 1, 1));
+  const intlLocale = locale === "ru" ? "ru-RU" : locale === "et" ? "et-EE" : "en-US";
+  return new Intl.DateTimeFormat(intlLocale, {
+    month: "long",
+    year: "numeric",
+  }).format(parsed);
+}
+
 export function MonthlyPlanPanel({
   plan,
   onGenerate,
   generating,
 }: MonthlyPlanPanelProps) {
-  const { dict } = useSaasTranslations();
+  const { dict, locale } = useSaasTranslations();
   const m = dict.controlCenter.monthlyPlan;
+  const monthLabel = plan ? formatMonthLabel(plan.month, locale) : "";
+  const planTitle = plan
+    ? localizePlanTitle(monthLabel, plan.title, dict)
+    : "";
+  const planSummary = plan
+    ? localizePlanSummarySnippet(plan.summary, dict)
+    : undefined;
+  const planStatus = plan ? localizePlanStatus(plan.status, dict) : "";
 
   return (
     <SaasCard variant="muted">
@@ -30,14 +54,14 @@ export function MonthlyPlanPanel({
         <div className="space-y-4">
           <div className="flex flex-wrap items-center gap-2">
             <span className="rounded-full border border-violet-400/20 bg-violet-500/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-wide text-violet-200">
-              {plan.status}
+              {planStatus}
             </span>
-            <span className="text-xs text-slate-500">{plan.month}</span>
+            <span className="text-xs text-slate-500">{monthLabel}</span>
           </div>
-          <h4 className="font-medium text-white">{plan.title}</h4>
-          {plan.summary ? (
+          <h4 className="font-medium text-white">{planTitle}</h4>
+          {planSummary ? (
             <p className="line-clamp-3 text-sm leading-relaxed text-slate-400">
-              {plan.summary}
+              {planSummary}
             </p>
           ) : null}
           <Button
