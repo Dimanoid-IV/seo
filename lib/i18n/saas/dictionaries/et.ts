@@ -443,6 +443,22 @@ export const saasDictionary: SaasDictionary = {
           "Hiljutist tegevust pole veel. Käivitage audit või ühendage integratsioonid, et alustada kasvu ajajoont.",
       },
     },
+    hermes: {
+      title: "AI mustandi soovitused",
+      subtitle: "Ülevaatuseks mõeldud soovitused Hermesest",
+      reviewNote:
+        "Genereeritud tulemused on ainult mustandid. Midagi ei avaldata, saadeta ega kinnitata automaatselt.",
+      notConfigured:
+        "AI mootor pole veel seadistatud. Mustandi genereerimine ilmub pärast Hermese ühendamist.",
+      generateTasks: "Genereeri mustandi ülesanded",
+      generateBrief: "Genereeri sisu briif",
+      generateFailed: "Soovitusi ei õnnestunud genereerida",
+      generateNetworkError: "Võrguviga soovituste genereerimisel",
+      needsReview: "Vajab ülevaatust",
+      limitedData: "Piiratud saidiandmete põhjal",
+      reviewTasks: "Vaata ülesandeid",
+      reviewBrief: "Ava sisukava",
+    },
   },
   integrations: {
     title: "Integratsioonid",
@@ -493,6 +509,8 @@ export const saasDictionary: SaasDictionary = {
     youControl: "Teie kontrollite alati, mida RankBoost automaatselt teha tohib.",
     connectionPath: "Ühenduse tee",
     comingInRankBoost: "Peagi RankBoostis",
+    hermesPlatformManaged: "RankBoosti seadistatud",
+    hermesNotConfigured: "Pole seadistatud",
     dataUsage: "Milliseid andmeid RankBoost kasutab",
     whatRankBoostCanDo: "Mida RankBoost tead teha",
     close: "Sulge",

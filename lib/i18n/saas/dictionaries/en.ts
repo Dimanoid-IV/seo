@@ -443,6 +443,22 @@ export const saasDictionary: SaasDictionary = {
           "No recent activity yet. Run an audit or connect integrations to start building your growth timeline.",
       },
     },
+    hermes: {
+      title: "AI draft recommendations",
+      subtitle: "Review-first suggestions powered by Hermes",
+      reviewNote:
+        "Generated outputs are drafts only. Nothing is published, sent, or approved automatically.",
+      notConfigured:
+        "The AI engine is not configured yet. Draft generation will appear here once Hermes is connected.",
+      generateTasks: "Generate draft tasks",
+      generateBrief: "Generate content brief",
+      generateFailed: "Could not generate recommendations",
+      generateNetworkError: "Network error while generating recommendations",
+      needsReview: "Needs review",
+      limitedData: "Based on limited site data",
+      reviewTasks: "Review tasks",
+      reviewBrief: "Open content plan",
+    },
   },
   integrations: {
     title: "Integrations",
@@ -493,6 +509,8 @@ export const saasDictionary: SaasDictionary = {
     youControl: "You always control what RankBoost can do automatically.",
     connectionPath: "Connection path",
     comingInRankBoost: "Coming soon in RankBoost",
+    hermesPlatformManaged: "Configured by RankBoost",
+    hermesNotConfigured: "Not configured",
     dataUsage: "What data RankBoost uses",
     whatRankBoostCanDo: "What RankBoost can do",
     close: "Close",

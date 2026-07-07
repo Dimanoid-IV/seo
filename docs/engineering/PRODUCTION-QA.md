@@ -1662,6 +1662,70 @@ Note: No Playwright/screenshot tooling in repo. Logged-in browser QA requires au
 
 ---
 
+## 8.21. Hermes Test Mode Setup (Production Prompt 11.16)
+
+**Date:** 2026-07-08
+
+### Env vars
+
+| Variable | Required | Notes |
+|----------|----------|-------|
+| `HERMES_API_URL` | Yes (for live AI) | Base URL, no trailing slash |
+| `HERMES_API_SECRET` | Yes (for live AI) | Bearer token, server-side only |
+| `HERMES_MODEL` | No | Optional model override |
+| `HERMES_TIMEOUT_MS` | No | Default 120000 |
+| `HERMES_MAX_RETRIES` | No | Default 0 |
+| `HERMES_TEST_MODE` | No | Flag for test deployments |
+| `HERMES_STUB_ENABLED` | No | Dev/test stub only (`development`/`test` NODE_ENV) |
+
+Documented in `.env.example`. **Not set on Vercel production** at time of this step — E2E blocked.
+
+### Safe missing-config behavior
+
+- Missing `HERMES_API_URL` or `HERMES_API_SECRET` → `HERMES_UNAVAILABLE` (503)
+- No mock output presented as real in production
+- `GET /api/hermes/status` returns `{ configured: false }` without secrets
+- Control Center AI panel shows “AI engine not configured” when disabled
+- Integrations Hub Hermes card shows “Not configured” / “Configured by RankBoost” (platform-managed)
+- Build passes without Hermes credentials
+
+### API routes
+
+| Route | Auth | Behavior |
+|-------|------|----------|
+| `GET /api/hermes/status` | Required | configured / testMode / model; optional `?test=1` health ping |
+| `POST /api/ai/recommendations/generate` | Required | `seo_tasks` \| `content_brief` \| `monthly_plan` |
+
+### Generation use cases
+
+| Type | Persisted as | Review Mode |
+|------|--------------|-------------|
+| `seo_tasks` | `Task` records (`source: AI`, `status: OPEN`, `recommendationJson.reviewStatus: NEEDS_REVIEW`) | ✅ draft tasks only |
+| `content_brief` | `Article` (`status: IDEA`, brief in `contentJson`) | ✅ draft only |
+| `monthly_plan` | Preview in API response (`persisted: false`) | ✅ no auto-approve |
+
+Usage: increments `AI_GENERATION` counter on success only.
+
+### Review Mode safety
+
+- No auto-publish, auto-send, or auto-approval
+- Hermes system prompts require no ranking/traffic/revenue guarantees
+- Limited-data context flagged in UI when audit/GSC missing
+
+### Manual QA (without Hermes env on production)
+
+- `/app` loads ✅
+- `/app/autopilot-control` loads ✅
+- Generation CTA disabled / safe not-configured message ✅
+- No crash, no secret leakage ✅
+
+### E2E blockers
+
+- Hermes E2E requires `HERMES_API_URL` + `HERMES_API_SECRET` on Vercel
+- Dev stub available only with `HERMES_STUB_ENABLED=1` in local development
+
+---
+
 ## 9. Known limitations (beta)
 
 - No automatic publishing, email sending, or approvals.

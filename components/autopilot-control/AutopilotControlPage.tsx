@@ -13,6 +13,7 @@ import { ApprovalQueue } from "./ApprovalQueue";
 import { ControlEmptyState } from "./ControlEmptyState";
 import { ControlMetricsGrid } from "./ControlMetricsGrid";
 import { ControlStatusHero } from "./ControlStatusHero";
+import { GenerateRecommendationsPanel } from "./GenerateRecommendationsPanel";
 import { IntegrationStatusPanel } from "./IntegrationStatusPanel";
 import { MonthlyPlanPanel } from "./MonthlyPlanPanel";
 import { RecentActivityPanel } from "./RecentActivityPanel";
@@ -240,6 +241,7 @@ export function AutopilotControlPage() {
               actionLoading={actionLoading}
               loadingActionId={loadingActionId}
             />
+            <GenerateRecommendationsPanel onGenerated={() => void loadControlCenter()} />
             <IntegrationStatusPanel integrations={data.integrations} />
           </div>
         </div>

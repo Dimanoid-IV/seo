@@ -66,11 +66,25 @@ const PROVIDER_ICONS: Record<
 
 function resolveAction(
   integration: IntegrationOverviewItem,
-  labels: { connect: string; manage: string; comingSoon: string }
+  labels: {
+    connect: string;
+    manage: string;
+    comingSoon: string;
+    platformManaged: string;
+    notConfigured: string;
+  }
 ): {
   label: string;
   variant: "primary" | "secondary" | "muted";
+  disabled?: boolean;
 } {
+  if (integration.provider === "hermes_ai") {
+    if (integration.hermesConfigured) {
+      return { label: labels.platformManaged, variant: "secondary", disabled: true };
+    }
+    return { label: labels.notConfigured, variant: "muted", disabled: true };
+  }
+
   if (integration.comingSoon || !integration.available) {
     return { label: labels.comingSoon, variant: "muted" };
   }
@@ -94,6 +108,8 @@ export function IntegrationCard({
     connect: i.connect,
     manage: i.manage,
     comingSoon: i.comingSoon,
+    platformManaged: i.hermesPlatformManaged,
+    notConfigured: i.hermesNotConfigured,
   });
   const dateLocale = locale === "ru" ? "ru-RU" : locale === "et" ? "et-EE" : "en-US";
   const numberLocale = dateLocale;
@@ -175,6 +191,7 @@ export function IntegrationCard({
       <button
         type="button"
         onClick={() => onActionClick?.(integration)}
+        disabled={action.disabled}
         className={cn(
           "relative mt-6 inline-flex min-h-11 w-full items-center justify-center rounded-xl px-4 py-2.5 text-sm font-medium transition",
           action.variant === "primary" &&
@@ -182,7 +199,8 @@ export function IntegrationCard({
           action.variant === "secondary" &&
             "border border-white/[0.1] bg-white/[0.04] text-slate-200 hover:bg-white/[0.07]",
           action.variant === "muted" &&
-            "border border-white/[0.06] bg-white/[0.02] text-slate-400"
+            "border border-white/[0.06] bg-white/[0.02] text-slate-400",
+          action.disabled && "cursor-default opacity-80 hover:bg-inherit"
         )}
       >
         {action.label}

@@ -109,3 +109,69 @@ export type HermesSocialPostDraftResult = {
     externalJobId?: string;
   };
 };
+
+export type HermesRecommendationType = "seo_tasks" | "content_brief" | "monthly_plan";
+
+export type HermesRecommendationItem = {
+  title: string;
+  description: string;
+  priority: "LOW" | "MEDIUM" | "HIGH" | "CRITICAL";
+  category?: string;
+  rationale?: string;
+  basedOnLimitedData?: boolean;
+  topic?: string;
+  targetKeyword?: string;
+  outline?: string[];
+};
+
+export type HermesGenerateRecommendationsInput = {
+  type: HermesRecommendationType;
+  locale: "en" | "ru" | "et";
+  website: {
+    url: string;
+    name: string | null;
+    niche: string | null;
+    language: string;
+  };
+  context: {
+    hasAudit: boolean;
+    hasGsc: boolean;
+    growthScore: number | null;
+    basedOnLimitedData: boolean;
+    auditFindings?: Array<{ title: string; category: string; severity: string }>;
+    gscSummary?: {
+      clicks: number;
+      impressions: number;
+      ctr: number;
+      position: number;
+    } | null;
+    openTasksCount: number;
+    opportunities?: Array<{ title: string; type: string }>;
+  };
+  constraints: Record<string, unknown>;
+  systemInstructions: string;
+  model?: string | null;
+};
+
+export type HermesRecommendationsResult = {
+  title: string;
+  summary: string;
+  items: HermesRecommendationItem[];
+  metadata?: {
+    provider?: string;
+    model?: string;
+    inputTokens?: number;
+    outputTokens?: number;
+    totalTokens?: number;
+    costCents?: number;
+    stub?: boolean;
+  };
+};
+
+export type HermesConnectionStatus = {
+  configured: boolean;
+  testMode: boolean;
+  model: string | null;
+  connectionOk: boolean | null;
+  connectionError: string | null;
+};

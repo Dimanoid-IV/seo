@@ -810,6 +810,19 @@ Audit / GSC sync / Article generate / Task complete / Dashboard load
 | Commit | `8bcbdcc` — `fix: top-align dashboard sidebar cards on desktop` |
 | Production deploy | ✅ `dpl_pU2wtvJbGUZm4Yx5uaKibzUxy758` (2026-07-07) |
 
+### 4.3.53. Hermes test mode setup (prompt 11.16)
+
+| Item | Status |
+|------|--------|
+| Hermes client (`lib/hermes/client.ts`, `config.ts`, `prompts.ts`, `stub.ts`) | ✅ status + recommendations |
+| `GET /api/hermes/status` | ✅ authenticated |
+| `POST /api/ai/recommendations/generate` | ✅ seo_tasks + content_brief + monthly_plan preview |
+| Control Center `GenerateRecommendationsPanel` | ✅ review-first CTAs |
+| Integrations Hub Hermes card | ✅ platform-managed status |
+| i18n (`controlCenter.hermes`, `integrations.hermes*`) | ✅ en/ru/et |
+| `.env.example` Hermes vars | ✅ |
+| Hermes E2E on production | ⏸ blocked (env vars missing) |
+
 ### 4.3.52. Logged-in visual QA + remaining i18n polish (prompt 11.15)
 
 | Item | Status |

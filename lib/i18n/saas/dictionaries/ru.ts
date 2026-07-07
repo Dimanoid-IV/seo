@@ -443,6 +443,22 @@ export const saasDictionary: SaasDictionary = {
           "Активности пока нет. Запустите аудит или подключите интеграции, чтобы начать историю роста.",
       },
     },
+    hermes: {
+      title: "Черновые AI-рекомендации",
+      subtitle: "Подсказки для проверки на базе Hermes",
+      reviewNote:
+        "Результаты — только черновики. Ничего не публикуется, не отправляется и не одобряется автоматически.",
+      notConfigured:
+        "AI-движок пока не настроен. Генерация черновиков появится после подключения Hermes.",
+      generateTasks: "Сгенерировать черновые задачи",
+      generateBrief: "Сгенерировать контент-бриф",
+      generateFailed: "Не удалось сгенерировать рекомендации",
+      generateNetworkError: "Сетевая ошибка при генерации рекомендаций",
+      needsReview: "Нужна проверка",
+      limitedData: "На основе ограниченных данных сайта",
+      reviewTasks: "Проверить задачи",
+      reviewBrief: "Открыть контент-план",
+    },
   },
   integrations: {
     title: "Интеграции",
@@ -493,6 +509,8 @@ export const saasDictionary: SaasDictionary = {
     youControl: "Вы всегда контролируете, что RankBoost может делать автоматически.",
     connectionPath: "Путь подключения",
     comingInRankBoost: "Скоро в RankBoost",
+    hermesPlatformManaged: "Настроено RankBoost",
+    hermesNotConfigured: "Не настроено",
     dataUsage: "Какие данные использует RankBoost",
     whatRankBoostCanDo: "Что сможет делать RankBoost",
     close: "Закрыть",

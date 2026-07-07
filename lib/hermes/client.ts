@@ -1,14 +1,23 @@
-import { getServerEnv } from "@/lib/env";
 import { AppError, ErrorCode } from "@/lib/errors";
 import { safeLogError } from "@/lib/logging";
 import { assertServerOnly } from "@/lib/security";
 
+import {
+  canUseHermesStub,
+  getHermesEnvConfig,
+  isHermesConfigured,
+} from "./config";
+import { generateRecommendationsStub } from "./stub";
 import type {
   HermesArticleDraftResult,
+  HermesConnectionStatus,
   HermesGenerateArticleInput,
+  HermesGenerateRecommendationsInput,
   HermesGenerateSocialPostInput,
   HermesJobPayload,
   HermesJobStatusResult,
+  HermesRecommendationItem,
+  HermesRecommendationsResult,
   HermesRepairArticleInput,
   HermesSocialPostDraftResult,
 } from "./types";
@@ -21,51 +30,61 @@ const DEFAULT_CONSTRAINTS = {
   includeMeta: true,
 } as const;
 
-function getHermesConfig() {
+const SAFE_HERMES_UNAVAILABLE =
+  "AI generation is temporarily unavailable. Please try again later.";
+
+export { isHermesConfigured } from "./config";
+
+function requireHermesConfig() {
   assertServerOnly();
+  const config = getHermesEnvConfig();
 
-  const env = getServerEnv();
-  const apiUrl = env.HERMES_API_URL?.trim();
-  const apiSecret = env.HERMES_API_SECRET?.trim();
-
-  if (!apiUrl || !apiSecret) {
-    throw new AppError(
-      ErrorCode.HERMES_UNAVAILABLE,
-      "Генерация контента временно недоступна. Попробуйте позже."
-    );
+  if (!config.apiUrl || !config.apiSecret) {
+    throw new AppError(ErrorCode.HERMES_UNAVAILABLE, SAFE_HERMES_UNAVAILABLE);
   }
 
   return {
-    apiUrl: apiUrl.replace(/\/$/, ""),
-    apiSecret,
+    apiUrl: config.apiUrl,
+    apiSecret: config.apiSecret,
+    timeoutMs: config.timeoutMs,
+    maxRetries: config.maxRetries,
+    model: config.model,
   };
 }
 
-function parseHermesError(statusCode: number, body: unknown): AppError {
-  const record = body as { message?: string; error?: { message?: string } };
-  const message =
-    typeof record?.message === "string"
-      ? record.message
-      : typeof record?.error?.message === "string"
-        ? record.error.message
-        : `Hermes вернул HTTP ${statusCode}.`;
+function parseHermesError(statusCode: number): AppError {
+  safeLogError("hermes.response", new Error(`HTTP ${statusCode}`), {
+    status: statusCode,
+  });
 
   if (statusCode === 401 || statusCode === 403) {
-    return new AppError(ErrorCode.HERMES_UNAVAILABLE, message);
+    return new AppError(ErrorCode.HERMES_UNAVAILABLE, SAFE_HERMES_UNAVAILABLE, {
+      details: { reason: "unauthorized" },
+    });
+  }
+
+  if (statusCode === 429) {
+    return new AppError(ErrorCode.RATE_LIMIT_EXCEEDED, SAFE_HERMES_UNAVAILABLE, {
+      details: { reason: "rate_limit" },
+    });
   }
 
   if (statusCode >= 500) {
-    return new AppError(ErrorCode.HERMES_UNAVAILABLE, message);
+    return new AppError(ErrorCode.HERMES_UNAVAILABLE, SAFE_HERMES_UNAVAILABLE, {
+      details: { reason: "upstream_error" },
+    });
   }
 
-  return new AppError(ErrorCode.INTERNAL_ERROR, message);
+  return new AppError(ErrorCode.HERMES_UNAVAILABLE, SAFE_HERMES_UNAVAILABLE, {
+    details: { reason: "bad_response" },
+  });
 }
 
 function validateArticleDraftResult(data: unknown): HermesArticleDraftResult {
   if (!data || typeof data !== "object") {
     throw new AppError(
       ErrorCode.INTERNAL_ERROR,
-      "Hermes вернул неожиданный ответ при генерации статьи."
+      "Hermes returned an unexpected article response."
     );
   }
 
@@ -82,7 +101,7 @@ function validateArticleDraftResult(data: unknown): HermesArticleDraftResult {
     if (typeof record[field] !== "string" || record[field].trim() === "") {
       throw new AppError(
         ErrorCode.INTERNAL_ERROR,
-        `Hermes вернул неполный ответ: отсутствует ${field}.`
+        `Hermes returned an incomplete article response (${field}).`
       );
     }
   }
@@ -104,48 +123,211 @@ function validateArticleDraftResult(data: unknown): HermesArticleDraftResult {
   };
 }
 
+function validateRecommendationItem(data: unknown): HermesRecommendationItem | null {
+  if (!data || typeof data !== "object") {
+    return null;
+  }
+
+  const record = data as Record<string, unknown>;
+  if (typeof record.title !== "string" || record.title.trim() === "") {
+    return null;
+  }
+  if (typeof record.description !== "string" || record.description.trim() === "") {
+    return null;
+  }
+
+  const priorityRaw =
+    typeof record.priority === "string" ? record.priority.toUpperCase() : "MEDIUM";
+  const priority =
+    priorityRaw === "CRITICAL" ||
+    priorityRaw === "HIGH" ||
+    priorityRaw === "MEDIUM" ||
+    priorityRaw === "LOW"
+      ? priorityRaw
+      : "MEDIUM";
+
+  return {
+    title: record.title.trim(),
+    description: record.description.trim(),
+    priority,
+    category: typeof record.category === "string" ? record.category : undefined,
+    rationale: typeof record.rationale === "string" ? record.rationale : undefined,
+    basedOnLimitedData:
+      typeof record.basedOnLimitedData === "boolean"
+        ? record.basedOnLimitedData
+        : undefined,
+    topic: typeof record.topic === "string" ? record.topic : undefined,
+    targetKeyword:
+      typeof record.targetKeyword === "string" ? record.targetKeyword : undefined,
+    outline: Array.isArray(record.outline)
+      ? record.outline.filter((line): line is string => typeof line === "string")
+      : undefined,
+  };
+}
+
+function validateRecommendationsResult(data: unknown): HermesRecommendationsResult {
+  if (!data || typeof data !== "object") {
+    throw new AppError(
+      ErrorCode.INTERNAL_ERROR,
+      "Hermes returned an unexpected recommendations response."
+    );
+  }
+
+  const record = data as Record<string, unknown>;
+  const title =
+    typeof record.title === "string" && record.title.trim()
+      ? record.title.trim()
+      : "Draft recommendations";
+  const summary =
+    typeof record.summary === "string" && record.summary.trim()
+      ? record.summary.trim()
+      : title;
+
+  const rawItems = Array.isArray(record.items) ? record.items : [];
+  const items = rawItems
+    .map((item) => validateRecommendationItem(item))
+    .filter((item): item is HermesRecommendationItem => item !== null);
+
+  if (items.length === 0) {
+    throw new AppError(
+      ErrorCode.INTERNAL_ERROR,
+      "Hermes returned recommendations without usable items."
+    );
+  }
+
+  const metadata =
+    record.metadata && typeof record.metadata === "object"
+      ? (record.metadata as HermesRecommendationsResult["metadata"])
+      : undefined;
+
+  return { title, summary, items, metadata };
+}
+
 async function hermesFetch<T>(
   path: string,
   init?: RequestInit
 ): Promise<T> {
-  const { apiUrl, apiSecret } = getHermesConfig();
+  const { apiUrl, apiSecret, timeoutMs, maxRetries } = requireHermesConfig();
+  let lastError: unknown;
 
-  let response: Response;
-  try {
-    response = await fetch(`${apiUrl}${path}`, {
-      ...init,
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${apiSecret}`,
-        ...(init?.headers ?? {}),
-      },
-      signal: AbortSignal.timeout(120_000),
-    });
-  } catch (error) {
-    safeLogError("hermes.fetch", error, { path });
-    const message =
-      error instanceof Error && error.name === "TimeoutError"
-        ? "Hermes не ответил вовремя."
-        : "Не удалось связаться с Hermes.";
-    throw new AppError(ErrorCode.HERMES_UNAVAILABLE, message);
+  for (let attempt = 0; attempt <= maxRetries; attempt += 1) {
+    try {
+      const response = await fetch(`${apiUrl}${path}`, {
+        ...init,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${apiSecret}`,
+          ...(init?.headers ?? {}),
+        },
+        signal: AbortSignal.timeout(timeoutMs),
+      });
+
+      let body: unknown = null;
+      try {
+        body = await response.json();
+      } catch {
+        body = null;
+      }
+
+      if (!response.ok) {
+        throw parseHermesError(response.status);
+      }
+
+      return body as T;
+    } catch (error) {
+      lastError = error;
+      if (error instanceof AppError) {
+        if (attempt >= maxRetries) {
+          throw error;
+        }
+        continue;
+      }
+
+      safeLogError("hermes.fetch", error, { path, attempt });
+      if (attempt >= maxRetries) {
+        const message =
+          error instanceof Error && error.name === "TimeoutError"
+            ? SAFE_HERMES_UNAVAILABLE
+            : SAFE_HERMES_UNAVAILABLE;
+        throw new AppError(ErrorCode.HERMES_UNAVAILABLE, message, {
+          details: {
+            reason:
+              error instanceof Error && error.name === "TimeoutError"
+                ? "timeout"
+                : "network",
+          },
+        });
+      }
+    }
   }
 
-  let body: unknown = null;
+  throw lastError instanceof AppError
+    ? lastError
+    : new AppError(ErrorCode.HERMES_UNAVAILABLE, SAFE_HERMES_UNAVAILABLE);
+}
+
+/** Returns Hermes configuration status without exposing secrets. */
+export async function getHermesConnectionStatus(options?: {
+  testConnection?: boolean;
+}): Promise<HermesConnectionStatus> {
+  assertServerOnly();
+  const config = getHermesEnvConfig();
+  const configured = isHermesConfigured();
+
+  if (!configured) {
+    return {
+      configured: false,
+      testMode: config.testMode,
+      model: config.model,
+      connectionOk: null,
+      connectionError: null,
+    };
+  }
+
+  if (!options?.testConnection) {
+    return {
+      configured: true,
+      testMode: config.testMode,
+      model: config.model,
+      connectionOk: null,
+      connectionError: null,
+    };
+  }
+
   try {
-    body = await response.json();
+    const { apiUrl, apiSecret, timeoutMs } = requireHermesConfig();
+    const response = await fetch(`${apiUrl}/v1/health`, {
+      method: "GET",
+      headers: { Authorization: `Bearer ${apiSecret}` },
+      signal: AbortSignal.timeout(Math.min(timeoutMs, 10_000)),
+    });
+
+    if (!response.ok) {
+      return {
+        configured: true,
+        testMode: config.testMode,
+        model: config.model,
+        connectionOk: false,
+        connectionError: "health_check_failed",
+      };
+    }
+
+    return {
+      configured: true,
+      testMode: config.testMode,
+      model: config.model,
+      connectionOk: true,
+      connectionError: null,
+    };
   } catch {
-    body = null;
+    return {
+      configured: true,
+      testMode: config.testMode,
+      model: config.model,
+      connectionOk: false,
+      connectionError: "health_check_failed",
+    };
   }
-
-  if (!response.ok) {
-    safeLogError("hermes.response", new Error(`HTTP ${response.status}`), {
-      path,
-      status: response.status,
-    });
-    throw parseHermesError(response.status, body);
-  }
-
-  return body as T;
 }
 
 /**
@@ -165,6 +347,39 @@ export async function getHermesJobStatus(
   jobId: string
 ): Promise<HermesJobStatusResult> {
   return hermesFetch<HermesJobStatusResult>(`/v1/jobs/${encodeURIComponent(jobId)}`);
+}
+
+/**
+ * Synchronously generates review-first recommendations via Hermes.
+ */
+export async function generateRecommendations(
+  input: HermesGenerateRecommendationsInput
+): Promise<HermesRecommendationsResult> {
+  if (canUseHermesStub()) {
+    return generateRecommendationsStub(input);
+  }
+
+  const config = getHermesEnvConfig();
+  const payload = {
+    ...input,
+    model: input.model ?? config.model ?? undefined,
+    constraints: input.constraints,
+  };
+
+  const response = await hermesFetch<{ data?: unknown } & Record<string, unknown>>(
+    "/v1/generate/recommendations",
+    {
+      method: "POST",
+      body: JSON.stringify(payload),
+    }
+  );
+
+  const result =
+    response.data && typeof response.data === "object"
+      ? response.data
+      : response;
+
+  return validateRecommendationsResult(result);
 }
 
 /**
@@ -232,7 +447,7 @@ function validateSocialPostDraftResult(
   if (!data || typeof data !== "object") {
     throw new AppError(
       ErrorCode.INTERNAL_ERROR,
-      "Hermes вернул неожиданный ответ при генерации social post."
+      "Hermes returned an unexpected social post response."
     );
   }
 
@@ -241,7 +456,7 @@ function validateSocialPostDraftResult(
   if (typeof record.title !== "string" || record.title.trim() === "") {
     throw new AppError(
       ErrorCode.INTERNAL_ERROR,
-      "Hermes вернул неполный social post: отсутствует title."
+      "Hermes returned an incomplete social post (title)."
     );
   }
 
@@ -255,7 +470,7 @@ function validateSocialPostDraftResult(
   if (!text || text.trim() === "") {
     throw new AppError(
       ErrorCode.INTERNAL_ERROR,
-      "Hermes вернул неполный social post: отсутствует text."
+      "Hermes returned an incomplete social post (text)."
     );
   }
 

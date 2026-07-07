@@ -69,9 +69,9 @@ export const INTEGRATION_CATALOG: IntegrationCatalogEntry[] = [
     dbProvider: null,
     title: "Hermes AI",
     description:
-      "Глубокий аудит и генерация контента на базе AI — в следующих релизах.",
-    available: false,
-    comingSoon: true,
+      "Platform AI engine for review-first SEO recommendations and content drafts.",
+    available: true,
+    comingSoon: false,
   },
 ];
 

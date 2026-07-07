@@ -24,6 +24,9 @@ export type IntegrationOverviewItem = {
   lastFetchedAt?: string | null;
   /** WordPress connector metadata */
   wordpress?: WordPressConnectionMetadata | null;
+  /** Hermes AI — platform-managed engine (not user OAuth) */
+  platformManaged?: boolean;
+  hermesConfigured?: boolean;
 };
 
 export type IntegrationsOverviewData = {

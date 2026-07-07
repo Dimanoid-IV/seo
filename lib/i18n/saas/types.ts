@@ -339,6 +339,20 @@ export type SaasDictionary = {
       noApprovals: { title: string; description: string };
       noActivity: { title: string; description: string };
     };
+    hermes: {
+      title: string;
+      subtitle: string;
+      reviewNote: string;
+      notConfigured: string;
+      generateTasks: string;
+      generateBrief: string;
+      generateFailed: string;
+      generateNetworkError: string;
+      needsReview: string;
+      limitedData: string;
+      reviewTasks: string;
+      reviewBrief: string;
+    };
   };
   integrations: {
     title: string;
@@ -377,6 +391,8 @@ export type SaasDictionary = {
     youControl: string;
     connectionPath: string;
     comingInRankBoost: string;
+    hermesPlatformManaged: string;
+    hermesNotConfigured: string;
     dataUsage: string;
     whatRankBoostCanDo: string;
     close: string;

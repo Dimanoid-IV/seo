@@ -14,6 +14,7 @@ import {
   getWordPressConnection,
   mapWordPressConnectionStatus,
 } from "./wordpress-connector";
+import { isHermesConfigured } from "@/lib/hermes/client";
 
 /**
  * Loads integrations hub overview: catalog merged with DB Integration rows.
@@ -30,6 +31,26 @@ export async function getIntegrationsOverview(
   );
 
   const emptyIntegrations = INTEGRATION_CATALOG.map((item) => {
+    if (item.provider === "hermes_ai") {
+      const configured = isHermesConfigured();
+      return {
+        provider: item.provider,
+        title: item.title,
+        description: item.description,
+        connected: configured,
+        status: configured ? "Configured" : "Not configured",
+        available: item.available,
+        comingSoon: item.comingSoon,
+        connectedAt: null,
+        lastSyncAt: null,
+        lastSuccessAt: null,
+        lastErrorAt: null,
+        lastErrorMessage: null,
+        platformManaged: true,
+        hermesConfigured: configured,
+      };
+    }
+
     const mapped = mapIntegrationDbStatus(undefined);
     return {
       provider: item.provider,
@@ -105,6 +126,26 @@ export async function getIntegrationsOverview(
   });
 
   const integrations = INTEGRATION_CATALOG.map((item) => {
+    if (item.provider === "hermes_ai") {
+      const configured = isHermesConfigured();
+      return {
+        provider: item.provider,
+        title: item.title,
+        description: item.description,
+        connected: configured,
+        status: configured ? "Configured" : "Not configured",
+        available: item.available,
+        comingSoon: item.comingSoon,
+        connectedAt: null,
+        lastSyncAt: null,
+        lastSuccessAt: null,
+        lastErrorAt: null,
+        lastErrorMessage: null,
+        platformManaged: true,
+        hermesConfigured: configured,
+      };
+    }
+
     const record = item.dbProvider
       ? dbByProvider.get(item.dbProvider)
       : undefined;
