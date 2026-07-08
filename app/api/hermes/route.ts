@@ -22,7 +22,7 @@ export async function POST(req: NextRequest) {
 
     const body = await req.json();
     const message = typeof body?.message === "string" ? body.message.trim() : "";
-    const model = typeof body?.model === "string" ? body.model : "deepseek/deepseek-v3.2";
+    const model = typeof body?.model === "string" ? body.model : "tencent/hy3:free";
     const tools = body?.tools;
 
     if (!message) {
@@ -54,7 +54,8 @@ export async function POST(req: NextRequest) {
       headers["X-Signature"] = signature;
     }
 
-    const response = await fetch(`${apiUrl.replace(/\/$/, "")}/api/v1/chat/completions`, {
+    const baseUrl = apiUrl.replace(/\/$/, "");
+    const response = await fetch(`${baseUrl}/v1/chat/completions`, {
       method: "POST",
       headers,
       body: JSON.stringify(requestBody),

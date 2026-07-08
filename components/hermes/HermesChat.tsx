@@ -20,7 +20,7 @@ export function HermesChat() {
         },
         body: JSON.stringify({
           message: message,
-          model: 'deepseek/deepseek-v3.2',
+          model: 'tencent/hy3:free',
         }),
       });
       
