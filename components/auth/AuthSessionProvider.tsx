@@ -34,6 +34,7 @@ export type SessionOrganization = {
 export type SessionSubscription = {
   id: string;
   plan: string;
+  planLabel?: string;
   status: string;
   currentPeriodStart: string | null;
   currentPeriodEnd: string | null;

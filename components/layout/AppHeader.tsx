@@ -3,45 +3,33 @@
 import Link from "next/link";
 import { useState } from "react";
 
+import { useBillingSubscription } from "@/components/billing/BillingSubscriptionProvider";
 import { LanguageSwitcher } from "@/components/i18n/LanguageSwitcher";
-import { PlanBadge, type PlanBadgeVariant } from "@/components/dashboard/PlanBadge";
+import { PlanBadge } from "@/components/dashboard/PlanBadge";
 import { useAuthSession } from "@/components/auth/AuthSessionProvider";
 import { useDashboardOverview } from "@/components/dashboard/DashboardOverviewProvider";
 import { Button } from "@/components/ui/button";
+import { billingPlanToBadgeVariant } from "@/lib/billing/plan-badge";
 import { useSaasTranslations } from "@/lib/i18n/saas/SaasLocaleProvider";
 import { Globe, Loader2, LogOut, Sparkles, User } from "lucide-react";
-
-function subscriptionToBadge(plan: string | undefined): PlanBadgeVariant {
-  const normalized = plan?.toLowerCase();
-  if (normalized === "start") return "start";
-  if (normalized === "growth") return "growth";
-  if (normalized === "pro") return "pro";
-  if (normalized === "partner") return "partner";
-  if (normalized === "free") return "demo";
-  return "demo";
-}
 
 function formatWebsiteLabel(url: string): string {
   return url.replace(/^https?:\/\//, "").replace(/\/$/, "");
 }
 
-export function AppHeader() {
+function AppHeaderContent() {
   const { dict } = useSaasTranslations();
-  const { user, organization, subscription, loading, logout } = useAuthSession();
+  const { user, loading, logout } = useAuthSession();
   const { overview, loading: overviewLoading } = useDashboardOverview();
+  const { subscription: billingSubscription, loading: billingPlanLoading } =
+    useBillingSubscription();
   const [loggingOut, setLoggingOut] = useState(false);
-
-  const planSource = overview?.subscription ?? subscription;
-  const planVariant = planSource
-    ? subscriptionToBadge(planSource.plan)
-    : "demo";
-  const planLabel = planSource?.plan?.toUpperCase() ?? (loading ? undefined : "FREE");
 
   const headerTitle = overview?.website
     ? overview.website.displayName ?? formatWebsiteLabel(overview.website.url)
     : overviewLoading
-      ? (organization?.name ?? "…")
-      : (organization?.name ?? "RankBoost");
+      ? "…"
+      : "RankBoost";
 
   async function handleLogout() {
     setLoggingOut(true);
@@ -65,7 +53,14 @@ export function AppHeader() {
               <h1 className="truncate text-base font-semibold text-white sm:text-lg">
                 {headerTitle}
               </h1>
-              <PlanBadge variant={planVariant} label={planLabel} />
+              {billingPlanLoading ? (
+                <span className="inline-flex h-6 min-w-14 animate-pulse rounded-full bg-white/10" />
+              ) : billingSubscription ? (
+                <PlanBadge
+                  variant={billingPlanToBadgeVariant(billingSubscription.plan)}
+                  label={billingSubscription.planLabel}
+                />
+              ) : null}
             </div>
             <p className="hidden items-center gap-1.5 text-xs text-slate-500 sm:flex">
               {loading ? (
@@ -120,4 +115,8 @@ export function AppHeader() {
       </div>
     </header>
   );
+}
+
+export function AppHeader() {
+  return <AppHeaderContent />;
 }

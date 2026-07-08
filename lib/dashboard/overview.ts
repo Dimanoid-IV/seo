@@ -7,12 +7,10 @@ import {
 
 import { sortDashboardTasks } from "@/lib/audit/generate-tasks";
 
-import { findActiveSubscription, resolveOwnedOrganization } from "@/lib/auth/queries";
-import {
-  serializeOrganization,
-  serializeSubscription,
-} from "@/lib/auth/serialize";
+import { resolveOwnedOrganization } from "@/lib/auth/queries";
+import { serializeOrganization } from "@/lib/auth/serialize";
 import type { CurrentUser } from "@/lib/auth/types";
+import { getSubscriptionPlanSummary } from "@/lib/billing/plan-summary";
 import { getPrisma } from "@/lib/db";
 import { AppError, ErrorCode } from "@/lib/errors";
 
@@ -82,6 +80,7 @@ export type DashboardOverviewData = {
   } | null;
   subscription: {
     plan: string;
+    planLabel: string;
     status: string;
   } | null;
   planLimit: {
@@ -194,7 +193,10 @@ export async function getDashboardOverview(
   );
 
   const subscription = organization
-    ? await findActiveSubscription(prisma, organization.id)
+    ? await getSubscriptionPlanSummary({
+        userId: currentUser.id,
+        organizationId: organization.id,
+      })
     : null;
 
   const planLimitRecord =
@@ -245,9 +247,7 @@ export async function getDashboardOverview(
 
   if (!website) {
     const simple = await getSimpleDashboardOverview(currentUser, {
-      subscriptionPlan: subscription
-        ? serializeSubscription(subscription).plan
-        : undefined,
+      subscriptionPlan: subscription?.plan,
       locale,
     });
 
@@ -264,8 +264,9 @@ export async function getDashboardOverview(
         website: null,
         subscription: subscription
           ? {
-              plan: serializeSubscription(subscription).plan,
-              status: serializeSubscription(subscription).status,
+              plan: subscription.plan,
+              planLabel: subscription.planLabel,
+              status: subscription.status,
             }
           : null,
         planLimit: serializePlanLimit(planLimitRecord),
@@ -416,9 +417,7 @@ export async function getDashboardOverview(
 
   const simple = await getSimpleDashboardOverview(currentUser, {
     opportunitiesCount: growthOpportunities.length,
-    subscriptionPlan: subscription
-      ? serializeSubscription(subscription).plan
-      : undefined,
+    subscriptionPlan: subscription?.plan,
     locale,
   });
 
@@ -441,8 +440,9 @@ export async function getDashboardOverview(
       },
       subscription: subscription
         ? {
-            plan: serializeSubscription(subscription).plan,
-            status: serializeSubscription(subscription).status,
+            plan: subscription.plan,
+            planLabel: subscription.planLabel,
+            status: subscription.status,
           }
         : null,
       planLimit: serializePlanLimit(planLimitRecord),

@@ -2,13 +2,13 @@ import { getPrisma } from "@/lib/db";
 import { assertSaasConfigured } from "@/lib/auth/saas-config";
 import { AppError, ErrorCode } from "@/lib/errors";
 import { requireUser } from "@/lib/auth/current-user";
-import { findActiveSubscription, resolveOwnedOrganization } from "@/lib/auth/queries";
+import { resolveOwnedOrganization } from "@/lib/auth/queries";
 import { authErrorResponse, authJsonResponse } from "@/lib/auth/responses";
 import {
   serializeOrganization,
-  serializeSubscription,
   serializeUser,
 } from "@/lib/auth/serialize";
+import { getSubscriptionPlanSummary } from "@/lib/billing/plan-summary";
 import { getOnboardingSummary } from "@/lib/onboarding/get-onboarding-state";
 
 function assertDatabaseConfigured(): void {
@@ -46,7 +46,10 @@ export async function GET(request: Request) {
     );
 
     const subscription = organization
-      ? await findActiveSubscription(prisma, organization.id)
+      ? await getSubscriptionPlanSummary({
+          userId: currentUser.id,
+          organizationId: organization.id,
+        })
       : null;
 
     const onboarding = await getOnboardingSummary(currentUser.id);
@@ -54,7 +57,16 @@ export async function GET(request: Request) {
     return authJsonResponse({
       user: serializeUser(dbUser),
       organization: organization ? serializeOrganization(organization) : null,
-      subscription: subscription ? serializeSubscription(subscription) : null,
+      subscription: subscription
+        ? {
+            id: subscription.id,
+            plan: subscription.plan,
+            planLabel: subscription.planLabel,
+            status: subscription.status,
+            currentPeriodStart: subscription.currentPeriodStart,
+            currentPeriodEnd: subscription.currentPeriodEnd,
+          }
+        : null,
       onboardingCompleted:
         onboarding.status === "COMPLETED" || onboarding.status === "SKIPPED",
       onboarding,

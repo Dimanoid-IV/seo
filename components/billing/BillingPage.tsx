@@ -3,11 +3,13 @@
 import { useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 
+import { notifyBillingSubscriptionUpdated } from "@/components/billing/BillingSubscriptionProvider";
 import { BillingTrustNote } from "@/components/billing/BillingTrustNote";
 import { CurrentPlanCard } from "@/components/billing/CurrentPlanCard";
 import { PlanCard } from "@/components/billing/PlanCard";
 import { UsageLimitsCard } from "@/components/billing/UsageLimitsCard";
 import { useBillingOverview } from "@/components/billing/useBillingOverview";
+import { useDashboardOverview } from "@/components/dashboard/DashboardOverviewProvider";
 import { PageErrorState } from "@/components/shared/PageErrorState";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { PageLoadingState } from "@/components/shared/PageLoadingState";
@@ -28,6 +30,7 @@ export function BillingPage() {
   const { dict } = useSaasTranslations();
   const { billing, trust } = dict;
   const { data, loading, error, reload } = useBillingOverview();
+  const { refetch: refetchDashboardOverview } = useDashboardOverview();
   const [checkoutLoading, setCheckoutLoading] = useState(false);
   const [portalLoading, setPortalLoading] = useState(false);
   const [actionError, setActionError] = useState<string | null>(null);
@@ -68,6 +71,8 @@ export function BillingPage() {
             };
 
             await reload();
+            notifyBillingSubscriptionUpdated();
+            void refetchDashboardOverview({ silent: true });
 
             if (!cancelled && body.data.synced) {
               setActionSuccess("Subscription updated.");
@@ -84,6 +89,8 @@ export function BillingPage() {
 
       if (!cancelled) {
         await reload();
+        notifyBillingSubscriptionUpdated();
+        void refetchDashboardOverview({ silent: true });
         setActionSuccess(
           "Payment received. Your plan may take a moment to update."
         );
@@ -96,7 +103,7 @@ export function BillingPage() {
     return () => {
       cancelled = true;
     };
-  }, [reload, searchParams]);
+  }, [refetchDashboardOverview, reload, searchParams]);
 
   const canManageBilling = useMemo(() => {
     if (!data) {
