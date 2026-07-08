@@ -79,6 +79,7 @@ export async function createCheckoutSession(input: {
     },
     subscription_data: {
       metadata: {
+        userId: input.userId,
         organizationId: input.organizationId,
         plan: input.plan,
       },

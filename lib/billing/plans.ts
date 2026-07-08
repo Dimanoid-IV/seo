@@ -153,9 +153,29 @@ export function getStripePriceIdForPlan(plan: BillingPlanKey): string | null {
 
 export function planFromStripePriceId(priceId: string): BillingPlanKey | null {
   const env = process.env;
-  if (priceId === env.STRIPE_STARTER_PRICE_ID) return "STARTER";
-  if (priceId === env.STRIPE_PRO_PRICE_ID) return "PRO";
-  if (priceId === env.STRIPE_AGENCY_PRICE_ID) return "AGENCY";
+  const normalizedPriceId = priceId.trim();
+  if (normalizedPriceId === env.STRIPE_STARTER_PRICE_ID?.trim()) return "STARTER";
+  if (normalizedPriceId === env.STRIPE_PRO_PRICE_ID?.trim()) return "PRO";
+  if (normalizedPriceId === env.STRIPE_AGENCY_PRICE_ID?.trim()) return "AGENCY";
+  return null;
+}
+
+export function planFromMetadata(
+  plan: string | null | undefined
+): BillingPlanKey | null {
+  if (!plan) {
+    return null;
+  }
+
+  const normalized = plan.trim().toUpperCase();
+  if (
+    normalized === "STARTER" ||
+    normalized === "PRO" ||
+    normalized === "AGENCY"
+  ) {
+    return normalized;
+  }
+
   return null;
 }
 

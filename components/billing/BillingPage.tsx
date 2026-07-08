@@ -1,6 +1,7 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useSearchParams } from "next/navigation";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import { BillingTrustNote } from "@/components/billing/BillingTrustNote";
 import { CurrentPlanCard } from "@/components/billing/CurrentPlanCard";
@@ -23,6 +24,7 @@ type PortalResponse = {
 };
 
 export function BillingPage() {
+  const searchParams = useSearchParams();
   const { dict } = useSaasTranslations();
   const { billing, trust } = dict;
   const { data, loading, error, reload } = useBillingOverview();
@@ -30,6 +32,71 @@ export function BillingPage() {
   const [portalLoading, setPortalLoading] = useState(false);
   const [actionError, setActionError] = useState<string | null>(null);
   const [actionSuccess, setActionSuccess] = useState<string | null>(null);
+  const [syncingAfterCheckout, setSyncingAfterCheckout] = useState(false);
+  const checkoutSyncStarted = useRef(false);
+
+  useEffect(() => {
+    if (searchParams.get("checkout") !== "success") {
+      return;
+    }
+
+    if (checkoutSyncStarted.current) {
+      return;
+    }
+
+    checkoutSyncStarted.current = true;
+    let cancelled = false;
+
+    async function syncAfterCheckout() {
+      setSyncingAfterCheckout(true);
+      setActionSuccess(null);
+      setActionError(null);
+
+      for (let attempt = 0; attempt < 5; attempt += 1) {
+        if (cancelled) {
+          return;
+        }
+
+        try {
+          const response = await authFetch("/api/billing/sync", {
+            method: "POST",
+          });
+
+          if (response.ok) {
+            const body = (await response.json()) as {
+              data: { synced: boolean; plan?: string };
+            };
+
+            await reload();
+
+            if (!cancelled && body.data.synced) {
+              setActionSuccess("Subscription updated.");
+              setSyncingAfterCheckout(false);
+              return;
+            }
+          }
+        } catch {
+          // Retry below.
+        }
+
+        await new Promise((resolve) => window.setTimeout(resolve, 1500));
+      }
+
+      if (!cancelled) {
+        await reload();
+        setActionSuccess(
+          "Payment received. Your plan may take a moment to update."
+        );
+        setSyncingAfterCheckout(false);
+      }
+    }
+
+    void syncAfterCheckout();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [reload, searchParams]);
 
   const canManageBilling = useMemo(() => {
     if (!data) {
@@ -93,8 +160,12 @@ export function BillingPage() {
     }
   }
 
-  if (loading) {
-    return <PageLoadingState message={billing.loading} />;
+  if (loading || syncingAfterCheckout) {
+    return (
+      <PageLoadingState
+        message={syncingAfterCheckout ? "Updating your plan..." : billing.loading}
+      />
+    );
   }
 
   if (!data) {

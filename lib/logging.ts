@@ -22,3 +22,11 @@ export function safeLogWarn(
 ): void {
   console.warn(`[${scope}]`, { ...meta, message });
 }
+
+export function safeLogInfo(
+  scope: string,
+  message: string,
+  meta?: Record<string, unknown>
+): void {
+  console.info(`[${scope}]`, { ...meta, message });
+}
