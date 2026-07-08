@@ -2042,11 +2042,96 @@ Blocker: no shared QA session credentials; no Playwright in repo.
 | `npm run build` | ✅ |
 | Automated tests | not available |
 
+## 8.26. Stripe Test Mode + Vercel Env (Production Prompt 10.6.1)
+
+**Date:** 2026-07-09
+
+### Phase 1 — Env var names (confirmed)
+
+Code matches `.env.example` / `lib/env.ts` / `lib/billing/*` / `app/api/billing/*`:
+
+| Variable | Required |
+|----------|----------|
+| `STRIPE_SECRET_KEY` | ✅ |
+| `STRIPE_WEBHOOK_SECRET` | ✅ |
+| `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` | ✅ |
+| `STRIPE_STARTER_PRICE_ID` | ✅ |
+| `STRIPE_PRO_PRICE_ID` | ✅ |
+| `STRIPE_AGENCY_PRICE_ID` | ✅ |
+
+Optional: `STRIPE_CUSTOMER_PORTAL_RETURN_URL`.
+
+### Phase 2 — Stripe Test Mode products (created via Stripe CLI sandbox)
+
+**Stripe MCP** is connected to the **Veox** account in **live mode** — not used for RankBoost test setup. No RankBoost Starter/Pro/Agency products existed there.
+
+**Stripe CLI sandbox** (test mode, `livemode: false`) — three products + monthly EUR recurring prices created:
+
+| Plan | Product | Monthly price ID (test) | Amount |
+|------|---------|-------------------------|--------|
+| RankBoost Starter | `prod_UqkwSdLn2WL8xM` | `price_1Tr3QDEpSXN2qzbi9b8XpwrS` | €19.00 |
+| RankBoost Pro | `prod_Uqkwlib2skpK0T` | `price_1Tr3QFEpSXN2qzbiggrbtQaO` | €49.00 |
+| RankBoost Agency | `prod_Uqkw27cXQdU9Sy` | `price_1Tr3QHEpSXN2qzbiQUB7nSXv` | €149.00 |
+
+**Safety:** An accidental live-mode probe product `prod_Uqku08oPbd74Aa` (“RankBoost Starter TEST DO NOT USE”) was deactivated on the Veox account during MCP mode detection.
+
+**Sandbox note:** CLI sandbox keys are **claimable** and expire (~7 days). Claim via `stripe sandbox claim` or replace with permanent **Test mode** keys from the RankBoost Stripe account before production billing QA.
+
+### Phase 3 — API keys
+
+| Source | Result |
+|--------|--------|
+| Stripe MCP `get_stripe_account_info` | ❌ cannot expose `STRIPE_SECRET_KEY` (dashboard link only) |
+| Stripe CLI sandbox | ✅ test publishable + restricted secret key saved to CLI profile |
+
+### Phase 4 — Webhook endpoint
+
+**Target URL:** `https://rankboost.eu/api/billing/webhook`
+
+| Item | Status |
+|------|--------|
+| Endpoint exists (test mode) | ❌ not created |
+| Events configured | ❌ blocked |
+
+**Blocker:** Claimable sandbox API keys cannot create webhook endpoints (`invalid_request_error: limited permissions`).
+
+**Manual step (project owner):**
+
+1. Claim sandbox (`stripe sandbox claim`) **or** `stripe login` to the RankBoost Stripe account → enable **Test mode**.
+2. Stripe Dashboard → **Developers → Webhooks → Add endpoint** → URL `https://rankboost.eu/api/billing/webhook`.
+3. Subscribe: `checkout.session.completed`, `customer.subscription.created`, `customer.subscription.updated`, `customer.subscription.deleted`, `invoice.payment_failed`, `invoice.payment_succeeded`.
+4. Copy signing secret → `vercel env add STRIPE_WEBHOOK_SECRET production` → redeploy.
+
+### Phase 5–6 — Vercel Production env (`seo` / `prj_xHiSv8d9WV7MBjs7KkQUfS8lNRX1`)
+
+Verified via `vercel env ls production` (values encrypted — not printed):
+
+| Variable | Status |
+|----------|--------|
+| `STRIPE_SECRET_KEY` | ✅ configured |
+| `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` | ✅ configured |
+| `STRIPE_STARTER_PRICE_ID` | ✅ configured |
+| `STRIPE_PRO_PRICE_ID` | ✅ configured |
+| `STRIPE_AGENCY_PRICE_ID` | ✅ configured |
+| `STRIPE_WEBHOOK_SECRET` | ❌ missing |
+
+**Deploy:** not performed (per prompt). **Redeploy required** after webhook secret is added (and optionally after replacing temporary sandbox keys).
+
+### Validation (2026-07-09)
+
+| Check | Result |
+|-------|--------|
+| `npx prisma validate` | ✅ |
+| `npx prisma generate` | ✅ |
+| `npm run lint` | ✅ (3 pre-existing warnings) |
+| `npm run build` | ✅ |
+| Automated tests | not available |
+
 ### Manual unblock checklist (project owner)
 
 1. **Hermes:** `vercel env add HERMES_API_URL production` + `HERMES_API_SECRET` → redeploy → re-run §8.24 Part B on production.
 2. **Google:** Create OAuth Web client in Google Cloud → add `GOOGLE_CLIENT_ID` + `GOOGLE_CLIENT_SECRET` → set redirect URI → add test users if consent screen in Testing → redeploy → run GSC connect E2E.
-3. **Stripe (test mode):** Create test products/prices → add all `STRIPE_*` vars + webhook secret → redeploy → run checkout with `4242…` test card.
+3. **Stripe (test mode):** Add webhook endpoint + `STRIPE_WEBHOOK_SECRET` (see §8.26 Phase 4) → claim/replace sandbox keys if needed → redeploy → run checkout with `4242…` test card.
 
 ---
 

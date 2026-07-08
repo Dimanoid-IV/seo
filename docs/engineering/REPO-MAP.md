@@ -823,6 +823,19 @@ Audit / GSC sync / Article generate / Task complete / Dashboard load
 | Code changes | ❌ QA/docs-only |
 | Commit | `d73cdef` |
 
+### 4.3.58. Stripe Test Mode + Vercel env (prompt 10.6.1)
+
+| Item | Status |
+|------|--------|
+| Stripe MCP mode | ⚠️ live (Veox) — not used for RankBoost test setup |
+| Test products Starter / Pro / Agency | ✅ created (CLI sandbox, `livemode: false`) |
+| Monthly EUR price IDs in Vercel | ✅ `STRIPE_*_PRICE_ID` ×3 |
+| Test API keys in Vercel | ✅ secret + publishable (claimable sandbox; may expire) |
+| Webhook `rankboost.eu/api/billing/webhook` | ❌ not created (sandbox key limitation) |
+| `STRIPE_WEBHOOK_SECRET` in Vercel | ❌ missing |
+| Production deploy | ❌ not performed (redeploy pending webhook secret) |
+| Code changes | ❌ docs-only (+ Vercel env via CLI) |
+
 ### 4.3.56. Hermes E2E generation QA (prompt 11.19)
 
 | Item | Status |
@@ -1398,6 +1411,7 @@ curl -s -o /dev/null -w "%{http_code}" -X POST http://localhost:3000/api/contact
 | 2026-07-02 | 10.6 | Vercel deploy + production smoke test — промпт 10.6 |
 | 2026-07-05 | 10.6 | Redeploy + smoke test after dashboard simplification (`db724f8`, `dpl_Bv3dsj9NewVMbvhDfm7BDSwQQQ3X`) |
 | 2026-07-06 | 10.7 GSC | Google OAuth routes documented; production GSC blocked pending client secrets |
+| 2026-07-09 | 10.6.1 | Stripe test products/prices + 5/6 Vercel Stripe env vars; webhook secret pending |
 | 2026-07-06 | 10.8 | Stripe test mode setup documented; billing checkout blocked pending Stripe keys |
 | 2026-07-06 | 10.9 | Hermes setup documented; AI generation blocked pending Hermes URL/secret |
 | 2026-07-06 | 11.0 | Mobile UX polish — overflow, friendly errors, tap targets |
