@@ -174,28 +174,32 @@ export const dictionary: Dictionary = {
     plans: [
       {
         name: "Free",
-        price: "€0",
+        priceAmount: "€0",
+        pricePeriod: "",
         description:
           "Try RankBoost and get your first view of growth opportunities.",
         cta: "Start free",
       },
       {
         name: "Starter",
-        price: "€19/mo",
+        priceAmount: "€19",
+        pricePeriod: "/mo",
         description:
           "For small businesses that need regular SEO tasks and a clear growth plan.",
         cta: "Choose Starter",
       },
       {
         name: "Pro",
-        price: "€49/mo",
+        priceAmount: "€49",
+        pricePeriod: "/mo",
         description:
           "For growing businesses: more insights, content, and workflows.",
         cta: "Choose Pro",
       },
       {
         name: "Agency",
-        price: "€149/mo",
+        priceAmount: "€149",
+        pricePeriod: "/mo",
         description:
           "For teams and agencies managing several websites.",
         cta: "Choose Agency",

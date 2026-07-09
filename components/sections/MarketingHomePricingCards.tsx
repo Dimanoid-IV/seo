@@ -3,6 +3,7 @@
 import type { Locale } from "@/i18n/config";
 import type { Dictionary } from "@/i18n/dictionaries/ru";
 import { MarketingPlanCheckoutButton } from "@/components/marketing/MarketingPlanCheckoutButton";
+import { MarketingPricingPrice } from "@/components/marketing/MarketingPricingPrice";
 import { ButtonLink } from "@/components/ui/ButtonLink";
 import type { BillingPlanKey } from "@/lib/billing/plans";
 import { cn } from "@/lib/utils";
@@ -45,9 +46,10 @@ export function MarketingHomePricingCards({
               </span>
             ) : null}
             <h3 className="text-xl font-semibold text-slate-900">{plan.name}</h3>
-            <p className="mt-2 text-2xl font-bold tracking-tight text-slate-900">
-              {plan.price}
-            </p>
+            <MarketingPricingPrice
+              amount={plan.priceAmount}
+              period={plan.pricePeriod || undefined}
+            />
             <p className="mt-3 flex-1 text-sm leading-relaxed text-slate-600">
               {plan.description}
             </p>

@@ -1072,11 +1072,39 @@ export const saasDictionary: SaasDictionary = {
     startFree: "Начать бесплатно",
     createAccount: "Создать аккаунт",
     plans: [
-      { name: "Free", description: "Попробуйте RankBoost и оцените возможности роста вашего сайта." },
-      { name: "Starter", description: "Для малого бизнеса с регулярными SEO и контент-действиями." },
-      { name: "Pro", description: "Для растущего бизнеса: больше черновиков, инсайтов и рабочих процессов." },
-      { name: "Agency", description: "Для агентств и команд с несколькими сайтами." },
+      {
+        name: "Free",
+        priceAmount: "€0",
+        pricePeriod: "",
+        description: "Попробуйте RankBoost и оцените возможности роста вашего сайта.",
+      },
+      {
+        name: "Starter",
+        priceAmount: "€19",
+        pricePeriod: "/мес",
+        description: "Для малого бизнеса с регулярными SEO и контент-действиями.",
+      },
+      {
+        name: "Pro",
+        priceAmount: "€49",
+        pricePeriod: "/мес",
+        description: "Для растущего бизнеса: больше черновиков, инсайтов и рабочих процессов.",
+      },
+      {
+        name: "Agency",
+        priceAmount: "€149",
+        pricePeriod: "/мес",
+        description: "Для агентств и команд с несколькими сайтами.",
+      },
     ],
+    popular: "Популярный",
+    authChoice: {
+      title: "Чтобы выбрать тариф, войдите или создайте аккаунт",
+      text: "Мы сохраним выбранный тариф и продолжим настройку после входа.",
+      login: "Войти",
+      register: "Зарегистрироваться",
+      close: "Закрыть",
+    },
     noCheckoutNote:
       "Платные планы будут доступны после завершения настройки оплаты.",
     chooseStarter: "Выбрать Starter",

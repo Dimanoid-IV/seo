@@ -170,27 +170,31 @@ export const dictionary: Dictionary = {
     plans: [
       {
         name: "Free",
-        price: "€0",
+        priceAmount: "€0",
+        pricePeriod: "",
         description: "Proovi RankBoosti ja näe esimesi kasvuvõimalusi.",
         cta: "Alusta tasuta",
       },
       {
         name: "Starter",
-        price: "€19/kuu",
+        priceAmount: "€19",
+        pricePeriod: "/kuu",
         description:
           "Väikeettevõttele, kes vajab regulaarseid SEO-ülesandeid ja selget kasvuplaani.",
         cta: "Vali Starter",
       },
       {
         name: "Pro",
-        price: "€49/kuu",
+        priceAmount: "€49",
+        pricePeriod: "/kuu",
         description:
           "Kasvavale ettevõttele: rohkem ülevaateid, sisu ja töövooge.",
         cta: "Vali Pro",
       },
       {
         name: "Agency",
-        price: "€149/kuu",
+        priceAmount: "€149",
+        pricePeriod: "/kuu",
         description:
           "Meeskondadele ja agentuuridele, kes haldavad mitut veebisaiti.",
         cta: "Vali Agency",

@@ -841,7 +841,20 @@ export type SaasDictionary = {
     trustNote: string;
     startFree: string;
     createAccount: string;
-    plans: Array<{ name: string; description: string }>;
+    plans: Array<{
+      name: string;
+      priceAmount: string;
+      pricePeriod: string;
+      description: string;
+    }>;
+    popular: string;
+    authChoice: {
+      title: string;
+      text: string;
+      login: string;
+      register: string;
+      close: string;
+    };
     noCheckoutNote: string;
     chooseStarter: string;
     choosePro: string;

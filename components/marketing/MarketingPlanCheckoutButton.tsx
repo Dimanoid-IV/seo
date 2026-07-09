@@ -2,13 +2,12 @@
 
 import { useEffect, useState } from "react";
 
+import { MarketingPlanAuthDialog } from "@/components/marketing/MarketingPlanAuthDialog";
 import { Button } from "@/components/ui/button";
 import { authFetch } from "@/lib/auth/client-session";
 import { friendlyApiErrorMessageForLocale } from "@/lib/copy/user-errors";
 import {
-  loginPathForPlan,
   onboardingPathForPlan,
-  registerPathForPlan,
 } from "@/lib/billing/plan-query";
 import type { BillingPlanKey } from "@/lib/billing/plans";
 import { getClientLocale } from "@/lib/i18n/saas/locale-state";
@@ -58,6 +57,7 @@ export function MarketingPlanCheckoutButton({
   const [authState, setAuthState] = useState<AuthState>({ status: "loading" });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [authDialogOpen, setAuthDialogOpen] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -108,7 +108,7 @@ export function MarketingPlanCheckoutButton({
       });
 
       if (response.status === 401) {
-        window.location.href = loginPathForPlan(plan);
+        setAuthDialogOpen(true);
         return;
       }
 
@@ -163,7 +163,7 @@ export function MarketingPlanCheckoutButton({
     }
 
     if (authState.status === "guest") {
-      window.location.href = registerPathForPlan(plan);
+      setAuthDialogOpen(true);
       return;
     }
 
@@ -175,23 +175,35 @@ export function MarketingPlanCheckoutButton({
     void startCheckout();
   }
 
+  const isGuest = authState.status === "guest";
+
   return (
-    <div className="mt-4 space-y-2">
-      <Button
-        type="button"
-        className="min-h-10 w-full rounded-xl bg-blue-600 hover:bg-blue-700"
-        disabled={authState.status === "loading" || loading}
-        onClick={handlePlanSelect}
-      >
-        {loading || authState.status === "loading"
-          ? pricing.checkoutLoading
-          : planCheckoutLabel(plan, pricing)}
-      </Button>
-      {error ? (
-        <p className="text-center text-xs text-red-600">{error}</p>
-      ) : (
-        <p className="text-center text-xs text-slate-400">{pricing.checkoutTrustNote}</p>
-      )}
-    </div>
+    <>
+      <div className="mt-4 space-y-2">
+        <Button
+          type="button"
+          className="min-h-10 w-full rounded-xl bg-blue-600 hover:bg-blue-700"
+          disabled={authState.status === "loading" || loading}
+          onClick={handlePlanSelect}
+        >
+          {loading || authState.status === "loading"
+            ? pricing.checkoutLoading
+            : planCheckoutLabel(plan, pricing)}
+        </Button>
+        {error && !isGuest ? (
+          <p className="text-center text-xs text-red-600">{error}</p>
+        ) : !isGuest ? (
+          <p className="text-center text-xs text-slate-400">
+            {pricing.checkoutTrustNote}
+          </p>
+        ) : null}
+      </div>
+
+      <MarketingPlanAuthDialog
+        open={authDialogOpen}
+        plan={plan}
+        onClose={() => setAuthDialogOpen(false)}
+      />
+    </>
   );
 }

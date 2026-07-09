@@ -1,11 +1,13 @@
 import Link from "next/link";
 
 import { MarketingPlanCheckoutButton } from "@/components/marketing/MarketingPlanCheckoutButton";
+import { MarketingPricingPrice } from "@/components/marketing/MarketingPricingPrice";
 import { ButtonLink } from "@/components/ui/ButtonLink";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import type { BillingPlanKey } from "@/lib/billing/plans";
 import { getSaasDictionary } from "@/lib/i18n/saas";
 import type { SaasLocale } from "@/lib/i18n/saas/locales";
+import { cn } from "@/lib/utils";
 
 const PAID_PLAN_KEYS: Array<BillingPlanKey | null> = [
   null,
@@ -39,60 +41,76 @@ export function SaasPricingSection({
           />
         ) : null}
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-          {pricing.plans.map((plan, index) => (
-            <div
-              key={plan.name}
-              className={
-                isMarketing
-                  ? index === 0
-                    ? "marketing-card border-blue-200/80 bg-gradient-to-br from-blue-50/80 to-white"
-                    : "marketing-card"
-                  : "rounded-2xl border border-white/10 bg-white/[0.03] p-6"
-              }
-            >
-              <h3
-                className={
+          {pricing.plans.map((plan, index) => {
+            const isPro = index === 2;
+
+            return (
+              <div
+                key={plan.name}
+                className={cn(
                   isMarketing
-                    ? "text-xl font-semibold text-slate-900"
-                    : "text-xl font-semibold text-white"
-                }
+                    ? index === 0
+                      ? "marketing-card relative flex h-full flex-col border-blue-200/80 bg-gradient-to-br from-blue-50/80 to-white"
+                      : "marketing-card relative flex h-full flex-col"
+                    : "relative flex h-full flex-col rounded-2xl border border-slate-200 bg-white p-6",
+                  isPro &&
+                    isMarketing &&
+                    "border-violet-200/90 ring-1 ring-violet-100"
+                )}
               >
-                {plan.name}
-              </h3>
-              <p
-                className={
-                  isMarketing
-                    ? "mt-2 text-sm leading-relaxed text-slate-600"
-                    : "mt-2 text-sm leading-relaxed text-slate-400"
-                }
-              >
-                {plan.description}
-              </p>
-              {PAID_PLAN_KEYS[index] ? (
-                <MarketingPlanCheckoutButton plan={PAID_PLAN_KEYS[index]!} />
-              ) : (
-                <div className="mt-4">
-                  <ButtonLink
-                    locale={locale}
-                    href="/register"
-                    className={
-                      isMarketing
-                        ? "inline-flex min-h-10 w-full items-center justify-center rounded-xl bg-blue-600 px-4 text-sm font-medium text-white hover:bg-blue-700"
-                        : "inline-flex min-h-10 w-full items-center justify-center rounded-xl bg-gradient-to-r from-blue-500 to-violet-600 px-4 text-sm font-medium text-white"
-                    }
-                  >
-                    {pricing.startFree}
-                  </ButtonLink>
-                </div>
-              )}
-            </div>
-          ))}
+                {isPro && isMarketing ? (
+                  <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-gradient-to-r from-blue-600 to-violet-600 px-3 py-1 text-xs font-semibold text-white shadow-sm">
+                    {pricing.popular}
+                  </span>
+                ) : null}
+                <h3
+                  className={
+                    isMarketing
+                      ? "text-xl font-semibold text-slate-900"
+                      : "text-xl font-semibold text-slate-900"
+                  }
+                >
+                  {plan.name}
+                </h3>
+                <MarketingPricingPrice
+                  amount={plan.priceAmount}
+                  period={plan.pricePeriod || undefined}
+                />
+                <p
+                  className={
+                    isMarketing
+                      ? "mt-3 flex-1 text-sm leading-relaxed text-slate-600"
+                      : "mt-3 flex-1 text-sm leading-relaxed text-slate-600"
+                  }
+                >
+                  {plan.description}
+                </p>
+                {PAID_PLAN_KEYS[index] ? (
+                  <MarketingPlanCheckoutButton plan={PAID_PLAN_KEYS[index]!} />
+                ) : (
+                  <div className="mt-6">
+                    <ButtonLink
+                      locale={locale}
+                      href="/register"
+                      className={
+                        isMarketing
+                          ? "inline-flex min-h-10 w-full items-center justify-center rounded-xl bg-blue-600 px-4 text-sm font-medium text-white hover:bg-blue-700"
+                          : "inline-flex min-h-10 w-full items-center justify-center rounded-xl bg-gradient-to-r from-blue-500 to-violet-600 px-4 text-sm font-medium text-white"
+                      }
+                    >
+                      {pricing.startFree}
+                    </ButtonLink>
+                  </div>
+                )}
+              </div>
+            );
+          })}
         </div>
         <p
           className={
             isMarketing
               ? "mx-auto mt-8 max-w-2xl text-center text-sm leading-relaxed text-slate-500"
-              : "mx-auto mt-8 max-w-2xl text-center text-sm leading-relaxed text-slate-400"
+              : "mx-auto mt-8 max-w-2xl text-center text-sm leading-relaxed text-slate-600"
           }
         >
           {pricing.trustNote}
@@ -123,7 +141,7 @@ export function SaasPricingSection({
             className={
               isMarketing
                 ? "inline-flex items-center rounded-xl border border-slate-300 bg-white px-6 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50"
-                : "inline-flex items-center rounded-xl border border-white/10 px-6 py-2.5 text-sm font-medium text-slate-300 hover:bg-white/5"
+                : "inline-flex items-center rounded-xl border border-slate-200 px-6 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50"
             }
           >
             {pricing.createAccount}

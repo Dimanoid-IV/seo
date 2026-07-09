@@ -88,7 +88,7 @@ export type Dictionary = {
     trustNote: string;
     popular: string;
     viewAllPlans: string;
-    plans: { name: string; price: string; description: string; cta: string }[];
+    plans: { name: string; priceAmount: string; pricePeriod: string; description: string; cta: string }[];
   };
   whatWeDo: {
     title: string;
@@ -423,28 +423,32 @@ export const dictionary: Dictionary = {
     plans: [
       {
         name: "Free",
-        price: "€0",
+        priceAmount: "€0",
+        pricePeriod: "",
         description:
           "Попробуйте RankBoost и получите первый обзор возможностей роста.",
         cta: "Начать бесплатно",
       },
       {
         name: "Starter",
-        price: "€19/мес",
+        priceAmount: "€19",
+        pricePeriod: "/мес",
         description:
           "Для малого бизнеса, которому нужны регулярные SEO-задачи и понятный план роста.",
         cta: "Выбрать Starter",
       },
       {
         name: "Pro",
-        price: "€49/мес",
+        priceAmount: "€49",
+        pricePeriod: "/мес",
         description:
           "Для растущего бизнеса: больше инсайтов, контента и рабочих процессов.",
         cta: "Выбрать Pro",
       },
       {
         name: "Agency",
-        price: "€149/мес",
+        priceAmount: "€149",
+        pricePeriod: "/мес",
         description:
           "Для команд и агентств, которые ведут несколько сайтов.",
         cta: "Выбрать Agency",

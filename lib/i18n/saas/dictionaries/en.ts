@@ -1073,11 +1073,39 @@ export const saasDictionary: SaasDictionary = {
     startFree: "Start free",
     createAccount: "Create account",
     plans: [
-      { name: "Free", description: "Try RankBoost and understand your website growth opportunities." },
-      { name: "Starter", description: "For small businesses that want regular SEO and content actions." },
-      { name: "Pro", description: "For growing businesses that need more drafts, insights, and review workflows." },
-      { name: "Agency", description: "For agencies or teams managing multiple websites." },
+      {
+        name: "Free",
+        priceAmount: "€0",
+        pricePeriod: "",
+        description: "Try RankBoost and understand your website growth opportunities.",
+      },
+      {
+        name: "Starter",
+        priceAmount: "€19",
+        pricePeriod: "/mo",
+        description: "For small businesses that want regular SEO and content actions.",
+      },
+      {
+        name: "Pro",
+        priceAmount: "€49",
+        pricePeriod: "/mo",
+        description: "For growing businesses that need more drafts, insights, and review workflows.",
+      },
+      {
+        name: "Agency",
+        priceAmount: "€149",
+        pricePeriod: "/mo",
+        description: "For agencies or teams managing multiple websites.",
+      },
     ],
+    popular: "Popular",
+    authChoice: {
+      title: "Sign in or create an account to choose this plan",
+      text: "We'll keep your selected plan and continue setup after you sign in.",
+      login: "Log in",
+      register: "Create account",
+      close: "Close",
+    },
     noCheckoutNote:
       "Paid plans will be available once billing setup is complete.",
     chooseStarter: "Choose Starter",

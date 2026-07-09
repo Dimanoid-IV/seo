@@ -1072,11 +1072,39 @@ export const saasDictionary: SaasDictionary = {
     startFree: "Alusta tasuta",
     createAccount: "Loo konto",
     plans: [
-      { name: "Free", description: "Proovige RankBoosti ja mõistke oma veebilehe kasvuvõimalusi." },
-      { name: "Starter", description: "Väikeettevõtetele, kes soovivad regulaarseid SEO ja sisu tegevusi." },
-      { name: "Pro", description: "Kasvavatele ettevõtetele: rohkem mustandeid, ülevaateid ja töövooge." },
-      { name: "Agency", description: "Agentuuridele ja meeskondadele, kes haldavad mitut veebilehte." },
+      {
+        name: "Free",
+        priceAmount: "€0",
+        pricePeriod: "",
+        description: "Proovige RankBoosti ja mõistke oma veebilehe kasvuvõimalusi.",
+      },
+      {
+        name: "Starter",
+        priceAmount: "€19",
+        pricePeriod: "/kuu",
+        description: "Väikeettevõtetele, kes soovivad regulaarseid SEO ja sisu tegevusi.",
+      },
+      {
+        name: "Pro",
+        priceAmount: "€49",
+        pricePeriod: "/kuu",
+        description: "Kasvavatele ettevõtetele: rohkem mustandeid, ülevaateid ja töövooge.",
+      },
+      {
+        name: "Agency",
+        priceAmount: "€149",
+        pricePeriod: "/kuu",
+        description: "Agentuuridele ja meeskondadele, kes haldavad mitut veebilehte.",
+      },
     ],
+    popular: "Populaarne",
+    authChoice: {
+      title: "Paketi valimiseks logi sisse või loo konto",
+      text: "Jätame valitud paketi meelde ja jätkame seadistust pärast sisselogimist.",
+      login: "Logi sisse",
+      register: "Loo konto",
+      close: "Sulge",
+    },
     noCheckoutNote:
       "Tasulised paketid on saadaval pärast maksete seadistamise lõpetamist.",
     chooseStarter: "Vali Starter",
