@@ -1,14 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import { MarketingPlanAuthDialog } from "@/components/marketing/MarketingPlanAuthDialog";
 import { Button } from "@/components/ui/button";
 import { authFetch } from "@/lib/auth/client-session";
+import { fetchMarketingSession } from "@/lib/auth/marketing-session";
 import { friendlyApiErrorMessageForLocale } from "@/lib/copy/user-errors";
-import {
-  onboardingPathForPlan,
-} from "@/lib/billing/plan-query";
+import { onboardingPathForPlan } from "@/lib/billing/plan-query";
 import type { BillingPlanKey } from "@/lib/billing/plans";
 import { getClientLocale } from "@/lib/i18n/saas/locale-state";
 import { useSaasTranslations } from "@/lib/i18n/saas/SaasLocaleProvider";
@@ -31,11 +30,6 @@ type ApiErrorBody = {
   };
 };
 
-type AuthState =
-  | { status: "loading" }
-  | { status: "guest" }
-  | { status: "authenticated"; hasOrganization: boolean };
-
 function planCheckoutLabel(
   plan: BillingPlanKey,
   pricing: {
@@ -54,49 +48,22 @@ export function MarketingPlanCheckoutButton({
 }: MarketingPlanCheckoutButtonProps) {
   const { dict } = useSaasTranslations();
   const { pricing, errors } = dict;
-  const [authState, setAuthState] = useState<AuthState>({ status: "loading" });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [authDialogOpen, setAuthDialogOpen] = useState(false);
 
-  useEffect(() => {
-    let cancelled = false;
-
-    async function checkSession() {
-      try {
-        const response = await authFetch("/api/auth/me");
-        if (cancelled) {
-          return;
-        }
-
-        if (!response.ok) {
-          setAuthState({ status: "guest" });
-          return;
-        }
-
-        const body = (await response.json()) as {
-          organization?: { id: string } | null;
-        };
-
-        setAuthState({
-          status: "authenticated",
-          hasOrganization: Boolean(body.organization?.id),
-        });
-      } catch {
-        if (!cancelled) {
-          setAuthState({ status: "guest" });
-        }
-      }
+  async function startCheckout() {
+    const session = await fetchMarketingSession();
+    if (!session.authenticated) {
+      setAuthDialogOpen(true);
+      return;
     }
 
-    void checkSession();
+    if (!session.hasOrganization) {
+      window.location.href = onboardingPathForPlan(plan);
+      return;
+    }
 
-    return () => {
-      cancelled = true;
-    };
-  }, []);
-
-  async function startCheckout() {
     setLoading(true);
     setError(null);
 
@@ -157,25 +124,26 @@ export function MarketingPlanCheckoutButton({
     }
   }
 
-  function handlePlanSelect() {
-    if (authState.status === "loading" || loading) {
+  async function handlePlanSelect() {
+    if (loading) {
       return;
     }
 
-    if (authState.status === "guest") {
+    setError(null);
+
+    const session = await fetchMarketingSession();
+    if (!session.authenticated) {
       setAuthDialogOpen(true);
       return;
     }
 
-    if (!authState.hasOrganization) {
+    if (!session.hasOrganization) {
       window.location.href = onboardingPathForPlan(plan);
       return;
     }
 
-    void startCheckout();
+    await startCheckout();
   }
-
-  const isGuest = authState.status === "guest";
 
   return (
     <>
@@ -183,20 +151,18 @@ export function MarketingPlanCheckoutButton({
         <Button
           type="button"
           className="min-h-10 w-full rounded-xl bg-blue-600 hover:bg-blue-700"
-          disabled={authState.status === "loading" || loading}
-          onClick={handlePlanSelect}
+          disabled={loading}
+          onClick={() => void handlePlanSelect()}
         >
-          {loading || authState.status === "loading"
-            ? pricing.checkoutLoading
-            : planCheckoutLabel(plan, pricing)}
+          {loading ? pricing.checkoutLoading : planCheckoutLabel(plan, pricing)}
         </Button>
-        {error && !isGuest ? (
+        {error && !authDialogOpen ? (
           <p className="text-center text-xs text-red-600">{error}</p>
-        ) : !isGuest ? (
+        ) : (
           <p className="text-center text-xs text-slate-400">
             {pricing.checkoutTrustNote}
           </p>
-        ) : null}
+        )}
       </div>
 
       <MarketingPlanAuthDialog
