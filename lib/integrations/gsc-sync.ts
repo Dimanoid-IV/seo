@@ -33,6 +33,18 @@ type SyncGscPerformanceInput = {
   userId: string;
 };
 
+function integrationErrorMessage(error: unknown): string {
+  if (error instanceof AppError) {
+    return error.message;
+  }
+
+  if (error instanceof Error && error.message.trim()) {
+    return error.message.trim();
+  }
+
+  return "Google Search Console sync failed.";
+}
+
 /**
  * Imports GSC performance metrics for the last 28 days and persists them.
  */
@@ -111,17 +123,30 @@ export async function syncGscPerformanceForWebsite({
 
   const period = getGscPerformanceDateRange(28);
   const { withGscAccessToken } = await import("@/lib/integrations/gsc-access");
-  const summary = await withGscAccessToken(
-    integration.id,
-    accessToken,
-    (token) =>
-      getSearchConsolePerformance({
-        accessToken: token,
-        siteUrl: searchConsoleSiteUrl,
-        startDate: period.startDate,
-        endDate: period.endDate,
-      })
-  );
+  let summary: SearchConsolePerformanceSummary;
+
+  try {
+    summary = await withGscAccessToken(
+      integration.id,
+      accessToken,
+      (token) =>
+        getSearchConsolePerformance({
+          accessToken: token,
+          siteUrl: searchConsoleSiteUrl,
+          startDate: period.startDate,
+          endDate: period.endDate,
+        })
+    );
+  } catch (error) {
+    await prisma.integration.update({
+      where: { id: integration.id },
+      data: {
+        lastErrorAt: new Date(),
+        lastErrorMessage: integrationErrorMessage(error),
+      },
+    });
+    throw error;
+  }
 
   const syncedAt = new Date().toISOString();
   const insights = generateGscInsights(summary);

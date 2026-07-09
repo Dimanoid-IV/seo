@@ -51,7 +51,7 @@ cp .env.example .env.local
 | `RESEND_API_KEY` | Yes (for contact form) | API key from [Resend](https://resend.com) |
 | `CONTACT_EMAIL` | No | Inbox for form submissions (default: `seoagenth@gmail.com`) |
 | `FROM_EMAIL` | No | Sender address (default: `RankBoost <onboarding@resend.dev>`) |
-| `NEXT_PUBLIC_SITE_URL` | No | Public URL for SEO (default: `https://rankboost.eu`) |
+| `NEXT_PUBLIC_SITE_URL` | No | Public URL for SEO (default: `https://www.rankboost.eu`) |
 
 Example `.env.local`:
 
@@ -59,7 +59,7 @@ Example `.env.local`:
 RESEND_API_KEY=re_xxxxxxxxxxxx
 CONTACT_EMAIL=seoagenth@gmail.com
 FROM_EMAIL=RankBoost <noreply@rankboost.eu>
-NEXT_PUBLIC_SITE_URL=https://rankboost.eu
+NEXT_PUBLIC_SITE_URL=https://www.rankboost.eu
 ```
 
 > **Note:** Until your domain is verified in Resend, use the test sender:
@@ -109,7 +109,7 @@ Contact form flow:
    RESEND_API_KEY
    CONTACT_EMAIL
    FROM_EMAIL
-   NEXT_PUBLIC_SITE_URL=https://rankboost.eu
+   NEXT_PUBLIC_SITE_URL=https://www.rankboost.eu
    ```
 
 5. Deploy. Vercel will run `npm run build` automatically.
@@ -263,7 +263,7 @@ Also update the email shown in error messages in `i18n/dictionaries/{ru,et,en}.t
 
 - [ ] `RESEND_API_KEY` set on Vercel
 - [ ] Domain verified in Resend → `FROM_EMAIL=RankBoost <noreply@rankboost.eu>`
-- [ ] `NEXT_PUBLIC_SITE_URL=https://rankboost.eu`
+- [ ] `NEXT_PUBLIC_SITE_URL=https://www.rankboost.eu`
 - [ ] Contact form tested on production
 - [ ] `/sitemap.xml` and `/robots.txt` accessible
 - [ ] All three locales load: `/ru`, `/et`, `/en`

@@ -65,7 +65,7 @@ const publicEnvSchema = z.object({
       emptyToUndefined,
       z.string().url().optional()
     )
-    .default("https://rankboost.eu"),
+    .default("https://www.rankboost.eu"),
   NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: optionalString,
   NEXT_PUBLIC_APP_URL: z.preprocess(emptyToUndefined, z.string().url().optional()),
 });

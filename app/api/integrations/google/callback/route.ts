@@ -23,7 +23,7 @@ function getAppOrigin(): string {
     return "http://localhost:3000";
   }
 
-  return "https://rankboost.eu";
+  return "https://www.rankboost.eu";
 }
 
 function redirectToIntegrations(
