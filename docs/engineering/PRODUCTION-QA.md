@@ -2133,7 +2133,170 @@ Verified via `vercel env ls production` (values encrypted — not printed):
 2. **Google:** Create OAuth Web client in Google Cloud → add `GOOGLE_CLIENT_ID` + `GOOGLE_CLIENT_SECRET` → set redirect URI → add test users if consent screen in Testing → redeploy → run GSC connect E2E.
 3. **Stripe (test mode):** Add webhook endpoint + `STRIPE_WEBHOOK_SECRET` (see §8.26 Phase 4) → claim/replace sandbox keys if needed → redeploy → run checkout with `4242…` test card.
 
+## 8.27. Homepage Pricing + Light Dashboard (Production Prompt 10.7)
+
+**Date:** 2026-07-09 · **Commits:** `cf92175` · **Deploy:** `dpl_GL2bTJZhVjWxwsAYbTmV3aoTx6fZ`
+
+### Summary
+
+Added a 4-card pricing section to the marketing homepage (before final CTA) and redesigned the logged-in app dashboard from dark to a light, airy theme aligned with the public website.
+
+### Homepage pricing
+
+| Item | Detail |
+|------|--------|
+| Section | `MarketingPricingPreview` + `MarketingHomePricingCards` on `/[locale]` |
+| Plans | Free €0 · Starter €19/mo · Pro €49/mo · Agency €149/mo |
+| Locales | RU, EN, ET (`i18n/dictionaries/{ru,en,et}.ts` → `pricingPreview`) |
+| Pro badge | “Популярный” / “Popular” / “Populaarne” |
+| Trust line | No long-term contracts; cancel anytime; Stripe secure payment |
+| View all | Link to `/pricing` (localized) |
+| Free CTA | `/register` |
+| Paid CTA (logged-out) | `/register?plan=starter\|pro\|agency` via `MarketingPlanCheckoutButton` |
+| Paid CTA (logged-in) | Existing Stripe checkout flow (unchanged) |
+
+### Dashboard light theme
+
+| Area | Change |
+|------|--------|
+| App shell | `#F7FAFF` background; scoped `.saas-card*` overrides in `globals.css` |
+| Sidebar / header | White/light surfaces, blue selected nav, readable slate text |
+| Pages | Dashboard, billing, control center, onboarding, integrations, timeline, social, email approvals |
+
+### Stripe / billing
+
+| Item | Status |
+|------|--------|
+| Stripe logic changed | **no** |
+| Env vars touched | **no** |
+| Checkout preserved | **yes** |
+| Real payment performed | **no** |
+
+### Validation
+
+| Check | Result |
+|-------|--------|
+| `npx prisma validate` | ✅ |
+| `npx prisma generate` | ✅ |
+| `npm run lint` | ✅ (4 pre-existing warnings) |
+| `npm run build` | ✅ |
+
+### Production URL
+
+https://www.rankboost.eu
+
 ---
+
+## 8.28. Pricing Display + Auth Choice Dialog (Production Prompt 10.7.1)
+
+**Date:** 2026-07-09 · **Commits:** `49e79c5` · **Deploy:** `dpl_HE4QfEXFR1krhPc97JHK3zzxhTJm`
+
+### Root cause
+
+Prices were a single small string (`€19/мес`) or missing entirely on the public pricing page. Logged-out paid CTAs redirected straight to `/register` with no login/register choice.
+
+### Fixes
+
+| Item | Detail |
+|------|--------|
+| Price display | `MarketingPricingPrice` — large `text-4xl` amount + muted period (`/мес`, `/mo`, `/kuu`) |
+| Homepage | `MarketingHomePricingCards` uses split `priceAmount` + `pricePeriod` |
+| Pricing page | `SaasPricingSection` shows same prominent prices + Pro badge |
+| Auth dialog | `MarketingPlanAuthDialog` — light modal for logged-out paid clicks |
+| Dialog copy | RU / EN / ET in `lib/i18n/saas/dictionaries` → `pricing.authChoice` |
+| Login link | `/login?plan=starter\|pro\|agency` |
+| Register link | `/register?plan=starter\|pro\|agency` |
+| Free plan | Direct `/register` (no modal) |
+| Shared CTA | Homepage + pricing page both use `MarketingPlanCheckoutButton` |
+
+### Files changed
+
+- `components/marketing/MarketingPricingPrice.tsx` *(new)*
+- `components/marketing/MarketingPlanAuthDialog.tsx` *(new)*
+- `components/marketing/MarketingPlanCheckoutButton.tsx`
+- `components/sections/MarketingHomePricingCards.tsx`
+- `components/sections/SaasPricingSection.tsx`
+- `i18n/dictionaries/{ru,en,et}.ts`
+- `lib/i18n/saas/dictionaries/{ru,en,et}.ts`
+- `lib/i18n/saas/types.ts`
+
+### Validation
+
+| Check | Result |
+|-------|--------|
+| `npx prisma validate` | ✅ |
+| `npx prisma generate` | ✅ |
+| `npm run lint` | ✅ |
+| `npm run build` | ✅ |
+
+### Production QA (curl)
+
+Homepage `/ru`: `text-4xl` prices €0, €19, €49, €149 visible. Pricing page `/ru/pricing`: same + `/мес` period labels.
+
+---
+
+## 8.29. Homepage Pricing Auth Gate (Production Prompt 10.7.2)
+
+**Date:** 2026-07-09 · **Commits:** `37d8cbe` · **Deploy:** `dpl_GA8Yafro66xbAbfMxgFiEiDC3eJD`
+
+### Root cause
+
+`MarketingPlanCheckoutButton` used `authFetch("/api/auth/me")`, which **silently refreshes tokens** from httpOnly cookies. Any `200` response was treated as authenticated **without verifying `body.user`**, so logged-out visitors (or visitors with stale refresh cookies) could reach `POST /api/billing/checkout` and open Stripe Checkout before login/register.
+
+### Fix
+
+| Item | Detail |
+|------|--------|
+| New helper | `lib/auth/marketing-session.ts` → `fetchMarketingSession()` |
+| Auth check | Plain `fetch` to `/api/auth/me` — **no auto-refresh** |
+| User guard | Authenticated only if `user.id` or `user.email` present |
+| On click | Fresh session check before any action |
+| Logged-out | Opens `MarketingPlanAuthDialog` — no checkout API call |
+| Before checkout | Second guard inside `startCheckout()` before `POST /api/billing/checkout` |
+| Logged-in + org | Existing live Stripe checkout (unchanged) |
+| Logged-in, no org | `/app/onboarding?plan=...` (unchanged) |
+
+### Homepage CTA source
+
+Both `MarketingHomePricingCards` (homepage) and `SaasPricingSection` (pricing page) use the same `MarketingPlanCheckoutButton`.
+
+### Files changed
+
+- `lib/auth/marketing-session.ts` *(new)*
+- `components/marketing/MarketingPlanCheckoutButton.tsx`
+
+### Expected logged-out behavior
+
+| Action | Expected |
+|--------|----------|
+| Click Starter / Pro / Agency | Auth dialog; **no** Stripe; **no** `POST /api/billing/checkout` |
+| “Войти” | `/login?plan=starter\|pro\|agency` |
+| “Зарегистрироваться” | `/register?plan=starter\|pro\|agency` |
+
+### Stripe / billing
+
+| Item | Status |
+|------|--------|
+| Stripe logic changed | **no** |
+| Env touched | **no** |
+| Secrets printed | **no** |
+| Real payment performed | **no** |
+
+### Validation
+
+| Check | Result |
+|-------|--------|
+| `npx prisma validate` | ✅ |
+| `npx prisma generate` | ✅ |
+| `npm run lint` | ✅ (4 pre-existing warnings) |
+| `npm run build` | ✅ |
+
+### Manual QA (recommended)
+
+Incognito → https://www.rankboost.eu/ru → click “Выбрать Starter” → dialog appears; DevTools Network tab shows **no** `/api/billing/checkout`. Repeat on `/ru/pricing`. Logged-in with org → checkout still opens live Stripe (cancel without paying).
+
+---
+
 
 ## 9. Known limitations (beta)
 
