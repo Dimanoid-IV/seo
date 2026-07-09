@@ -109,7 +109,7 @@ export function SaasPricingSection({
               : "mx-auto mt-3 max-w-2xl text-center text-xs text-slate-500"
           }
         >
-          {checkoutEnabled ? pricing.testModeNote : pricing.noCheckoutNote}
+          {checkoutEnabled ? pricing.checkoutTrustNote : pricing.noCheckoutNote}
         </p>
         <div className="mt-8 flex flex-wrap justify-center gap-3">
           <ButtonLink

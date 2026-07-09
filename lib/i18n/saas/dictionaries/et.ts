@@ -60,7 +60,7 @@ export const saasDictionary: SaasDictionary = {
     pageErrorFallback:
       "Seda lehte ei õnnestunud laadida. Proovige uuesti või avage ülevaade.",
     stripeNotConfigured:
-      "Arveldus on seadistamisel. Stripe test checkout on saadaval pärast env muutujate lisamist.",
+      "Arveldus on seadistamisel. Tasulised paketid on saadaval pärast seadistuse lõpetamist.",
   },
   errors: {
     billingRequired:
@@ -1056,7 +1056,7 @@ export const saasDictionary: SaasDictionary = {
     pageSubtitle:
       "Alustage tasuta. Uuendage paketti, kui vajate rohkem kasvutoiminguid. Pikaajalisi lepinguid pole. Tühistage igal ajal.",
     trustNote:
-      "Ilma pikaajaliste lepinguteta. Tühistamine igal ajal. Alustage turvaliselt ülevaatusrežiimis. Looge tasuta konto, et RankBoosti avastada.",
+      "Ilma pikaajaliste lepinguteta. Tühistamine igal ajal. Looge tasuta konto, et RankBoosti avastada.",
     startFree: "Alusta tasuta",
     createAccount: "Loo konto",
     plans: [
@@ -1066,13 +1066,15 @@ export const saasDictionary: SaasDictionary = {
       { name: "Agency", description: "Agentuuridele ja meeskondadele, kes haldavad mitut veebilehte." },
     ],
     noCheckoutNote:
-      "Tasulised uuendused Stripe test checkout kaudu pärast env muutujate seadistamist.",
-    upgradePlan: "Alusta test checkouti",
+      "Tasulised paketid on saadaval pärast maksete seadistamise lõpetamist.",
+    chooseStarter: "Vali Starter",
+    choosePro: "Vali Pro",
+    chooseAgency: "Vali Agency",
     loginToUpgrade: "Logi sisse uuendamiseks",
     checkoutLoading: "Suunan edasi…",
     checkoutNetworkError: "Checkouti ei õnnestunud alustada. Proovige uuesti.",
-    testModeNote:
-      "Stripe test mode sisemiseks QA-ks. Mitte live arveldus. Alustage ülevaatusrežiimis.",
+    checkoutTrustNote:
+      "Turvaline makse Stripe'i kaudu. Tühista igal ajal.",
   },
   publicAudit: {
     pageTitle: "Tasuta veebilehe kasvu eelvaade",

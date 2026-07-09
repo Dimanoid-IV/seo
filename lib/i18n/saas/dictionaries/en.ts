@@ -60,7 +60,7 @@ export const saasDictionary: SaasDictionary = {
     pageErrorFallback:
       "We couldn't load this page right now. Please try again, or open the dashboard and continue from there.",
     stripeNotConfigured:
-      "Billing is being configured. Stripe test checkout is available after env vars are set.",
+      "Billing is being configured. Paid plans will be available once setup is complete.",
   },
   errors: {
     billingRequired:
@@ -1057,7 +1057,7 @@ export const saasDictionary: SaasDictionary = {
     pageSubtitle:
       "Start free. Upgrade when you need more growth actions. No long-term contracts. Cancel anytime.",
     trustNote:
-      "No long-term contracts. Cancel anytime. Start safely in Review Mode. Create a free account to explore RankBoost.",
+      "No long-term contracts. Cancel anytime. Create a free account to explore RankBoost.",
     startFree: "Start free",
     createAccount: "Create account",
     plans: [
@@ -1067,13 +1067,14 @@ export const saasDictionary: SaasDictionary = {
       { name: "Agency", description: "For agencies or teams managing multiple websites." },
     ],
     noCheckoutNote:
-      "Paid upgrades use Stripe test checkout after billing env vars are configured.",
-    upgradePlan: "Start test checkout",
+      "Paid plans will be available once billing setup is complete.",
+    chooseStarter: "Choose Starter",
+    choosePro: "Choose Pro",
+    chooseAgency: "Choose Agency",
     loginToUpgrade: "Log in to upgrade",
     checkoutLoading: "Redirecting…",
     checkoutNetworkError: "Could not start checkout. Try again.",
-    testModeNote:
-      "Stripe test mode for internal QA. Not live billing. Start in Review Mode.",
+    checkoutTrustNote: "Secure payment via Stripe. Cancel anytime.",
   },
   publicAudit: {
     pageTitle: "Free website growth preview",

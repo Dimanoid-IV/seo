@@ -17,6 +17,19 @@ type CheckoutResponse = {
   data: { checkoutUrl: string };
 };
 
+function planCheckoutLabel(
+  plan: BillingPlanKey,
+  pricing: {
+    chooseStarter: string;
+    choosePro: string;
+    chooseAgency: string;
+  }
+): string {
+  if (plan === "STARTER") return pricing.chooseStarter;
+  if (plan === "PRO") return pricing.choosePro;
+  return pricing.chooseAgency;
+}
+
 export function MarketingPlanCheckoutButton({
   plan,
   checkoutEnabled,
@@ -100,7 +113,7 @@ export function MarketingPlanCheckoutButton({
         >
           {pricing.loginToUpgrade}
         </Link>
-        <p className="text-center text-xs text-slate-400">{pricing.testModeNote}</p>
+        <p className="text-center text-xs text-slate-400">{pricing.checkoutTrustNote}</p>
       </div>
     );
   }
@@ -113,12 +126,12 @@ export function MarketingPlanCheckoutButton({
         disabled={loading}
         onClick={() => void startCheckout()}
       >
-        {loading ? pricing.checkoutLoading : pricing.upgradePlan}
+        {loading ? pricing.checkoutLoading : planCheckoutLabel(plan, pricing)}
       </Button>
       {error ? (
         <p className="text-center text-xs text-red-600">{error}</p>
       ) : (
-        <p className="text-center text-xs text-slate-400">{pricing.testModeNote}</p>
+        <p className="text-center text-xs text-slate-400">{pricing.checkoutTrustNote}</p>
       )}
     </div>
   );

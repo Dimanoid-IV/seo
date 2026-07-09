@@ -60,7 +60,7 @@ export const saasDictionary: SaasDictionary = {
     pageErrorFallback:
       "Не удалось загрузить страницу. Попробуйте снова или откройте обзор.",
     stripeNotConfigured:
-      "Оплата настраивается. Тестовый Stripe checkout доступен после настройки env-переменных.",
+      "Оплата настраивается. Платные планы будут доступны после завершения настройки.",
   },
   errors: {
     billingRequired:
@@ -1056,7 +1056,7 @@ export const saasDictionary: SaasDictionary = {
     pageSubtitle:
       "Начните бесплатно. Улучшайте план, когда нужно больше действий. Без долгосрочных контрактов. Отмена в любой момент.",
     trustNote:
-      "Без долгосрочных контрактов. Отмена в любой момент. Начните безопасно с режима проверки. Создайте бесплатный аккаунт, чтобы изучить RankBoost.",
+      "Без долгосрочных контрактов. Отмена в любой момент. Создайте бесплатный аккаунт, чтобы изучить RankBoost.",
     startFree: "Начать бесплатно",
     createAccount: "Создать аккаунт",
     plans: [
@@ -1066,13 +1066,15 @@ export const saasDictionary: SaasDictionary = {
       { name: "Agency", description: "Для агентств и команд с несколькими сайтами." },
     ],
     noCheckoutNote:
-      "Платные улучшения через Stripe test checkout после настройки env-переменных.",
-    upgradePlan: "Начать тестовый checkout",
+      "Платные планы будут доступны после завершения настройки оплаты.",
+    chooseStarter: "Выбрать Starter",
+    choosePro: "Выбрать Pro",
+    chooseAgency: "Выбрать Agency",
     loginToUpgrade: "Войти для апгрейда",
     checkoutLoading: "Перенаправляем…",
     checkoutNetworkError: "Не удалось начать checkout. Попробуйте снова.",
-    testModeNote:
-      "Stripe test mode для внутреннего QA. Не live-оплата. Начните с режима проверки.",
+    checkoutTrustNote:
+      "Безопасная оплата через Stripe. Отмена в любой момент.",
   },
   publicAudit: {
     pageTitle: "Бесплатный preview роста сайта",

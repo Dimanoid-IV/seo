@@ -837,11 +837,13 @@ export type SaasDictionary = {
     createAccount: string;
     plans: Array<{ name: string; description: string }>;
     noCheckoutNote: string;
-    upgradePlan: string;
+    chooseStarter: string;
+    choosePro: string;
+    chooseAgency: string;
     loginToUpgrade: string;
     checkoutLoading: string;
     checkoutNetworkError: string;
-    testModeNote: string;
+    checkoutTrustNote: string;
   };
   publicAudit: {
     pageTitle: string;
