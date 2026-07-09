@@ -11,7 +11,6 @@ import { getPrisma } from "@/lib/db";
 
 import { billingError } from "./errors";
 import { getCurrentSubscription } from "./get-subscription";
-import { normalizeBillingPlan } from "./plans";
 import { getStripeClient } from "./stripe";
 import { syncPlanLimitsFromConfig } from "./usage";
 
