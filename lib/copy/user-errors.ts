@@ -14,9 +14,19 @@ export function friendlyApiErrorMessageForLocale(
     return errors.onboardingRequired;
   }
 
+  if (details?.billingError === "CHECKOUT_FAILED") {
+    return errors.checkoutFailed;
+  }
+
+  if (details?.billingError === "BILLING_NOT_CONFIGURED") {
+    return errors.billingUnavailable;
+  }
+
   switch (code) {
     case "BILLING_REQUIRED":
       return errors.billingRequired;
+    case "BILLING_NOT_CONFIGURED":
+      return errors.billingUnavailable;
     case "HERMES_UNAVAILABLE":
       return errors.hermesUnavailable;
     case "PLAN_LIMIT_EXCEEDED":

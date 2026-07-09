@@ -1,5 +1,6 @@
 import { ErrorCode, AppError } from "@/lib/errors";
 
+import { isStripeBillingConfigured } from "./stripe-env";
 import type { BillingErrorCode } from "./types";
 
 export function billingError(
@@ -10,9 +11,11 @@ export function billingError(
   const errorCode =
     code === "FEATURE_NOT_AVAILABLE"
       ? ErrorCode.FEATURE_NOT_AVAILABLE
-      : code === "BILLING_REQUIRED"
-        ? ErrorCode.BILLING_REQUIRED
-        : ErrorCode.PLAN_LIMIT_EXCEEDED;
+      : code === "BILLING_NOT_CONFIGURED"
+        ? ErrorCode.BILLING_NOT_CONFIGURED
+        : code === "BILLING_REQUIRED"
+          ? ErrorCode.BILLING_REQUIRED
+          : ErrorCode.PLAN_LIMIT_EXCEEDED;
 
   return new AppError(errorCode, message, {
     details: {
@@ -24,11 +27,5 @@ export function billingError(
 }
 
 export function isStripeConfigured(): boolean {
-  const env = process.env;
-  return Boolean(
-    env.STRIPE_SECRET_KEY?.trim() &&
-      env.STRIPE_STARTER_PRICE_ID?.trim() &&
-      env.STRIPE_PRO_PRICE_ID?.trim() &&
-      env.STRIPE_AGENCY_PRICE_ID?.trim()
-  );
+  return isStripeBillingConfigured();
 }

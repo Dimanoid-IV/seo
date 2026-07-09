@@ -16,7 +16,6 @@ import { useSaasTranslations } from "@/lib/i18n/saas/SaasLocaleProvider";
 
 type MarketingPlanCheckoutButtonProps = {
   plan: BillingPlanKey;
-  checkoutEnabled: boolean;
 };
 
 type CheckoutResponse = {
@@ -53,7 +52,6 @@ function planCheckoutLabel(
 
 export function MarketingPlanCheckoutButton({
   plan,
-  checkoutEnabled,
 }: MarketingPlanCheckoutButtonProps) {
   const { dict } = useSaasTranslations();
   const { pricing, errors } = dict;
@@ -130,6 +128,14 @@ export function MarketingPlanCheckoutButton({
           return;
         }
 
+        if (
+          code === "BILLING_NOT_CONFIGURED" ||
+          billingError === "BILLING_NOT_CONFIGURED"
+        ) {
+          setError(errors.billingUnavailable);
+          return;
+        }
+
         setError(
           friendlyApiErrorMessageForLocale(
             getClientLocale(),
@@ -167,14 +173,6 @@ export function MarketingPlanCheckoutButton({
     }
 
     void startCheckout();
-  }
-
-  if (!checkoutEnabled) {
-    return (
-      <p className="mt-4 text-xs leading-relaxed text-slate-400">
-        {pricing.noCheckoutNote}
-      </p>
-    );
   }
 
   return (

@@ -65,6 +65,8 @@ export const saasDictionary: SaasDictionary = {
   errors: {
     billingRequired:
       "Оплата пока не настроена. Ваш текущий план остаётся активным.",
+    billingUnavailable:
+      "Оплата временно недоступна. Мы уже проверяем настройки.",
     hermesUnavailable:
       "AI-генерация пока недоступна. Попробуйте позже.",
     planLimitExceeded:

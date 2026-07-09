@@ -65,6 +65,8 @@ export const saasDictionary: SaasDictionary = {
   errors: {
     billingRequired:
       "Checkout is not configured yet. Your current plan stays active.",
+    billingUnavailable:
+      "Payments are temporarily unavailable. We’re checking the configuration.",
     hermesUnavailable:
       "AI generation is not available yet. Please try again later.",
     planLimitExceeded:

@@ -2,18 +2,22 @@ import "server-only";
 
 import Stripe from "stripe";
 
-import { getPublicEnv, getServerEnv } from "@/lib/env";
+import { getPublicEnv } from "@/lib/env";
+
+import { readStripeSecretKey } from "./stripe-env";
 
 let stripeClient: Stripe | null = null;
+let stripeClientSecretKey: string | null = null;
 
 export function getStripeClient(): Stripe | null {
-  const secretKey = getServerEnv().STRIPE_SECRET_KEY?.trim();
+  const secretKey = readStripeSecretKey();
   if (!secretKey) {
     return null;
   }
 
-  if (!stripeClient) {
+  if (!stripeClient || stripeClientSecretKey !== secretKey) {
     stripeClient = new Stripe(secretKey);
+    stripeClientSecretKey = secretKey;
   }
 
   return stripeClient;

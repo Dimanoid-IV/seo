@@ -65,6 +65,8 @@ export const saasDictionary: SaasDictionary = {
   errors: {
     billingRequired:
       "Makse ei ole veel seadistatud. Teie praegune pakett jääb aktiivseks.",
+    billingUnavailable:
+      "Maksed pole ajutiselt saadaval. Kontrollime seadistust.",
     hermesUnavailable:
       "AI genereerimine ei ole veel saadaval. Proovige hiljem uuesti.",
     planLimitExceeded:

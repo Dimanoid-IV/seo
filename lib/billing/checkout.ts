@@ -6,6 +6,7 @@ import {
   getStripePriceIdForPlan,
   type BillingPlanKey,
 } from "./plans";
+import { isStripeBillingConfigured } from "./stripe-env";
 import { getBillingAppUrl, getStripeClient } from "./stripe";
 import { getCurrentSubscription } from "./get-subscription";
 
@@ -23,11 +24,19 @@ export async function createCheckoutSession(input: {
     );
   }
 
+  if (!isStripeBillingConfigured()) {
+    throw billingError(
+      "BILLING_NOT_CONFIGURED",
+      "Billing is not configured.",
+      input.plan.toLowerCase()
+    );
+  }
+
   const priceId = getStripePriceIdForPlan(input.plan);
   if (!priceId) {
     throw billingError(
-      "BILLING_REQUIRED",
-      "Billing is not configured yet.",
+      "BILLING_NOT_CONFIGURED",
+      "Billing is not configured.",
       input.plan.toLowerCase()
     );
   }
@@ -35,11 +44,12 @@ export async function createCheckoutSession(input: {
   const stripe = getStripeClient();
   if (!stripe) {
     throw billingError(
-      "BILLING_REQUIRED",
-      "Billing is not configured yet.",
+      "BILLING_NOT_CONFIGURED",
+      "Billing is not configured.",
       input.plan.toLowerCase()
     );
   }
+
   const current = await getCurrentSubscription({
     userId: input.userId,
     organizationId: input.organizationId,
@@ -59,7 +69,7 @@ export async function createCheckoutSession(input: {
       customerId = customer.id;
     } catch {
       throw billingError(
-        "BILLING_REQUIRED",
+        "CHECKOUT_FAILED",
         "Could not create checkout session.",
         input.plan.toLowerCase()
       );
@@ -77,27 +87,27 @@ export async function createCheckoutSession(input: {
   let session;
   try {
     session = await stripe.checkout.sessions.create({
-    mode: "subscription",
-    customer: customerId,
-    line_items: [{ price: priceId, quantity: 1 }],
-    success_url: `${appUrl}/app/billing?checkout=success`,
-    cancel_url: `${appUrl}/pricing?checkout=cancelled`,
-    metadata: {
-      userId: input.userId,
-      organizationId: input.organizationId,
-      plan: input.plan,
-    },
-    subscription_data: {
+      mode: "subscription",
+      customer: customerId,
+      line_items: [{ price: priceId, quantity: 1 }],
+      success_url: `${appUrl}/app/billing?checkout=success`,
+      cancel_url: `${appUrl}/pricing?checkout=cancelled`,
       metadata: {
         userId: input.userId,
         organizationId: input.organizationId,
         plan: input.plan,
       },
-    },
-  });
+      subscription_data: {
+        metadata: {
+          userId: input.userId,
+          organizationId: input.organizationId,
+          plan: input.plan,
+        },
+      },
+    });
   } catch {
     throw billingError(
-      "BILLING_REQUIRED",
+      "CHECKOUT_FAILED",
       "Could not create checkout session.",
       input.plan.toLowerCase()
     );
@@ -105,7 +115,7 @@ export async function createCheckoutSession(input: {
 
   if (!session.url) {
     throw billingError(
-      "BILLING_REQUIRED",
+      "CHECKOUT_FAILED",
       "Could not create checkout session.",
       input.plan.toLowerCase()
     );

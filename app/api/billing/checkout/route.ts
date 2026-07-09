@@ -8,7 +8,9 @@ import {
   validationErrorFromZod,
 } from "@/lib/auth/responses";
 import { createCheckoutSession } from "@/lib/billing/checkout";
+import { isStripeConfigured } from "@/lib/billing/errors";
 import { resolveOrganizationForBilling } from "@/lib/billing/get-subscription";
+import { billingError } from "@/lib/billing/errors";
 import type { BillingPlanKey } from "@/lib/billing/plans";
 import { getServerEnv } from "@/lib/env";
 import { AppError, ErrorCode } from "@/lib/errors";
@@ -40,6 +42,14 @@ export async function POST(request: Request) {
 
     if (!parsed.success) {
       throw validationErrorFromZod(parsed.error);
+    }
+
+    if (!isStripeConfigured()) {
+      throw billingError(
+        "BILLING_NOT_CONFIGURED",
+        "Billing is not configured.",
+        parsed.data.plan.toLowerCase()
+      );
     }
 
     const organization = await resolveOrganizationForBilling(

@@ -18,14 +18,12 @@ type SaasPricingSectionProps = {
   locale: SaasLocale;
   theme?: "marketing" | "dark";
   hideHeading?: boolean;
-  checkoutEnabled?: boolean;
 };
 
 export function SaasPricingSection({
   locale,
   theme = "marketing",
   hideHeading = false,
-  checkoutEnabled = false,
 }: SaasPricingSectionProps) {
   const pricing = getSaasDictionary(locale).pricing;
   const isMarketing = theme === "marketing";
@@ -71,10 +69,7 @@ export function SaasPricingSection({
                 {plan.description}
               </p>
               {PAID_PLAN_KEYS[index] ? (
-                <MarketingPlanCheckoutButton
-                  plan={PAID_PLAN_KEYS[index]!}
-                  checkoutEnabled={checkoutEnabled}
-                />
+                <MarketingPlanCheckoutButton plan={PAID_PLAN_KEYS[index]!} />
               ) : (
                 <div className="mt-4">
                   <ButtonLink
@@ -109,7 +104,7 @@ export function SaasPricingSection({
               : "mx-auto mt-3 max-w-2xl text-center text-xs text-slate-500"
           }
         >
-          {checkoutEnabled ? pricing.checkoutTrustNote : pricing.noCheckoutNote}
+          {pricing.checkoutTrustNote}
         </p>
         <div className="mt-8 flex flex-wrap justify-center gap-3">
           <ButtonLink

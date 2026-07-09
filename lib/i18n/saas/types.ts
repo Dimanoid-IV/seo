@@ -51,6 +51,7 @@ export type SaasDictionary = {
   };
   errors: {
     billingRequired: string;
+    billingUnavailable: string;
     hermesUnavailable: string;
     planLimitExceeded: string;
     featureNotAvailable: string;

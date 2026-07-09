@@ -79,4 +79,7 @@ export const USAGE_KEY_LABELS: Record<UsageKey, string> = {
 export type BillingErrorCode =
   | "LIMIT_REACHED"
   | "FEATURE_NOT_AVAILABLE"
-  | "BILLING_REQUIRED";
+  | "BILLING_REQUIRED"
+  | "BILLING_NOT_CONFIGURED"
+  | "CHECKOUT_FAILED"
+  | "ONBOARDING_REQUIRED";
