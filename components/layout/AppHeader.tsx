@@ -20,13 +20,13 @@ function formatWebsiteLabel(url: string): string {
 function AppHeaderContent() {
   const { dict } = useSaasTranslations();
   const { user, loading, logout } = useAuthSession();
-  const { overview, loading: overviewLoading } = useDashboardOverview();
+  const { home, loading: overviewLoading } = useDashboardOverview();
   const { subscription: billingSubscription, loading: billingPlanLoading } =
     useBillingSubscription();
   const [loggingOut, setLoggingOut] = useState(false);
 
-  const headerTitle = overview?.website
-    ? overview.website.displayName ?? formatWebsiteLabel(overview.website.url)
+  const headerTitle = home?.website
+    ? home.website.displayName ?? formatWebsiteLabel(home.website.url)
     : overviewLoading
       ? "…"
       : "RankBoost";
@@ -73,10 +73,10 @@ function AppHeaderContent() {
                   <User className="size-3" />
                   {user.name ? `${user.name} · ` : ""}
                   {user.email}
-                  {overview?.website ? (
+                  {home?.website ? (
                     <>
                       {" · "}
-                      <span className="truncate">{overview.website.url}</span>
+                      <span className="truncate">{home.website.url}</span>
                     </>
                   ) : null}
                 </>

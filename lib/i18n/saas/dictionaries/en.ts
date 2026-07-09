@@ -261,6 +261,48 @@ export const saasDictionary: SaasDictionary = {
       medium: "Medium",
       low: "Low",
     },
+    homeFlow: {
+      loading: "Loading your workspace…",
+      eyebrow: "Your website",
+      scoreLabel: "Growth score",
+      noWebsiteTitle: "Add your website to start.",
+      noWebsiteDescription:
+        "RankBoost needs your website URL before it can check your site and prepare improvements.",
+      noAuditTitle: "RankBoost has not checked this website yet.",
+      noAuditDescription:
+        "Run a website check to find issues that may stop customers from finding you online.",
+      runWebsiteCheck: "Run website check",
+      checkingWebsite: "Checking your website…",
+      auditRunningTitle: "Checking your website…",
+      auditRunningDescription:
+        "RankBoost is scanning your site. This usually takes less than a minute.",
+      needsFixTitle:
+        "RankBoost found issues that may stop customers from finding you.",
+      needsFixDescription:
+        "Start with the top issue below. RankBoost can draft a concrete improvement you can copy into your site.",
+      topIssueLabel: "Top issue",
+      generateFirstFix: "Generate first fix",
+      generatingFix: "Generating your fix…",
+      generateFailed: "Could not generate a fix right now.",
+      generateNetworkError: "Network error while generating your fix.",
+      hermesUnavailable:
+        "AI generation is not configured yet. Please try again later or contact support.",
+      fixReadyTitle: "Your first improvement is ready.",
+      fixReadyDescription:
+        "Review the draft below. Copy the text into your website — nothing is published automatically.",
+      preview: "Preview",
+      copy: "Copy text",
+      copySuccess: "Copied to clipboard",
+      copyFailed: "Could not copy to clipboard.",
+      approve: "Mark as approved",
+      approveSuccess: "Saved as approved",
+      approveFailed: "Could not save approval.",
+      approveNetworkError: "Network error while saving approval.",
+      regenerate: "Regenerate",
+      metaTitleLabel: "Meta title",
+      metaDescriptionLabel: "Meta description",
+      contentLabel: "Content",
+    },
   },
   billing: {
     title: "Billing & Plan",
