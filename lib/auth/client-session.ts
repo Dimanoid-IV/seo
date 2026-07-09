@@ -82,8 +82,10 @@ export async function parseApiErrorMessage(
       upgradeUrl &&
       (code === "PLAN_LIMIT_EXCEEDED" ||
         code === "FEATURE_NOT_AVAILABLE" ||
-        code === "BILLING_REQUIRED" ||
-        body.error?.details?.billingError)
+        code === "BILLING_REQUIRED") &&
+      body.error?.details?.billingError !== "BILLING_STATE_LEGACY_OR_INVALID" &&
+      body.error?.details?.billingError !== "BILLING_PORTAL_UNAVAILABLE" &&
+      body.error?.details?.billingError !== "CHECKOUT_FAILED"
     ) {
       return `${message}${billingHint}`;
     }

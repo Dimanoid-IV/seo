@@ -6,6 +6,7 @@ import { safeLogInfo } from "@/lib/logging";
 
 import { getCurrentSubscription } from "./get-subscription";
 import { normalizeBillingPlan } from "./plans";
+import { reconcileLegacyBillingState } from "./stripe-legacy";
 import { getStripeClient } from "./stripe";
 import { persistStripeSubscription } from "./webhook";
 
@@ -44,6 +45,26 @@ export async function syncSubscriptionFromStripe(input: {
       synced: false as const,
       reason: "no_stripe_customer",
       plan: current.planKey,
+    };
+  }
+
+  const stripe = getStripeClient();
+  if (!stripe) {
+    return {
+      synced: false as const,
+      reason: "billing_not_configured",
+      plan: current.planKey,
+    };
+  }
+
+  try {
+    await stripe.customers.retrieve(customerId);
+  } catch {
+    await reconcileLegacyBillingState(input);
+    return {
+      synced: false as const,
+      reason: "legacy_stripe_customer",
+      plan: "FREE",
     };
   }
 

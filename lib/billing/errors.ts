@@ -3,21 +3,33 @@ import { ErrorCode, AppError } from "@/lib/errors";
 import { isStripeBillingConfigured } from "./stripe-env";
 import type { BillingErrorCode } from "./types";
 
+function errorCodeForBillingError(code: BillingErrorCode): ErrorCode {
+  switch (code) {
+    case "FEATURE_NOT_AVAILABLE":
+      return ErrorCode.FEATURE_NOT_AVAILABLE;
+    case "BILLING_NOT_CONFIGURED":
+      return ErrorCode.BILLING_NOT_CONFIGURED;
+    case "BILLING_REQUIRED":
+      return ErrorCode.BILLING_REQUIRED;
+    case "BILLING_STATE_LEGACY_OR_INVALID":
+      return ErrorCode.BILLING_STATE_LEGACY_OR_INVALID;
+    case "BILLING_PORTAL_UNAVAILABLE":
+      return ErrorCode.BILLING_PORTAL_UNAVAILABLE;
+    case "CHECKOUT_FAILED":
+      return ErrorCode.CHECKOUT_FAILED;
+    case "LIMIT_REACHED":
+      return ErrorCode.PLAN_LIMIT_EXCEEDED;
+    default:
+      return ErrorCode.PLAN_LIMIT_EXCEEDED;
+  }
+}
+
 export function billingError(
   code: BillingErrorCode,
   message: string,
   plan: string
 ): AppError {
-  const errorCode =
-    code === "FEATURE_NOT_AVAILABLE"
-      ? ErrorCode.FEATURE_NOT_AVAILABLE
-      : code === "BILLING_NOT_CONFIGURED"
-        ? ErrorCode.BILLING_NOT_CONFIGURED
-        : code === "BILLING_REQUIRED"
-          ? ErrorCode.BILLING_REQUIRED
-          : ErrorCode.PLAN_LIMIT_EXCEEDED;
-
-  return new AppError(errorCode, message, {
+  return new AppError(errorCodeForBillingError(code), message, {
     details: {
       billingError: code,
       plan,

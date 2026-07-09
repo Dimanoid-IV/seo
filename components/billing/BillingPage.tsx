@@ -1,7 +1,7 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { notifyBillingSubscriptionUpdated } from "@/components/billing/BillingSubscriptionProvider";
 import { BillingTrustNote } from "@/components/billing/BillingTrustNote";
@@ -16,6 +16,8 @@ import { PageLoadingState } from "@/components/shared/PageLoadingState";
 import { TrustNote } from "@/components/shared/TrustNote";
 import { useSaasTranslations } from "@/lib/i18n/saas/SaasLocaleProvider";
 import { authFetch, parseApiErrorMessage } from "@/lib/auth/client-session";
+import { friendlyApiErrorMessageForLocale } from "@/lib/copy/user-errors";
+import { getClientLocale } from "@/lib/i18n/saas/locale-state";
 
 type CheckoutResponse = {
   data: { checkoutUrl: string };
@@ -28,7 +30,7 @@ type PortalResponse = {
 export function BillingPage() {
   const searchParams = useSearchParams();
   const { dict } = useSaasTranslations();
-  const { billing, trust } = dict;
+  const { billing, trust, errors } = dict;
   const { data, loading, error, reload } = useBillingOverview();
   const { refetch: refetchDashboardOverview } = useDashboardOverview();
   const [checkoutLoading, setCheckoutLoading] = useState(false);
@@ -105,13 +107,7 @@ export function BillingPage() {
     };
   }, [refetchDashboardOverview, reload, searchParams]);
 
-  const canManageBilling = useMemo(() => {
-    if (!data) {
-      return false;
-    }
-
-    return data.subscription.plan !== "free";
-  }, [data]);
+  const canManageBilling = data?.subscription.canManageBilling ?? false;
 
   async function handleUpgrade(planKey: string) {
     setCheckoutLoading(true);
@@ -152,8 +148,31 @@ export function BillingPage() {
       });
 
       if (!response.ok) {
+        const body = (await response.json()) as {
+          error?: { code?: string; details?: { billingError?: string } };
+        };
+        const code = body.error?.code;
+        const billingErrorCode = body.error?.details?.billingError;
+
+        if (
+          code === "BILLING_STATE_LEGACY_OR_INVALID" ||
+          billingErrorCode === "BILLING_STATE_LEGACY_OR_INVALID"
+        ) {
+          await reload();
+          notifyBillingSubscriptionUpdated();
+          void refetchDashboardOverview({ silent: true });
+          setActionError(errors.billingLegacySubscription);
+          return;
+        }
+
         setActionError(
-          await parseApiErrorMessage(response, billing.portalFailed)
+          friendlyApiErrorMessageForLocale(
+            getClientLocale(),
+            code,
+            undefined,
+            billing.portalFailed,
+            body.error?.details
+          )
         );
         return;
       }

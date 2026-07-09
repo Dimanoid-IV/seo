@@ -67,6 +67,10 @@ export const saasDictionary: SaasDictionary = {
       "Оплата пока не настроена. Ваш текущий план остаётся активным.",
     billingUnavailable:
       "Оплата временно недоступна. Мы уже проверяем настройки.",
+    billingLegacySubscription:
+      "Эта подписка была создана в тестовом режиме. Выберите тариф заново, чтобы подключить live-оплату.",
+    billingPortalUnavailable:
+      "Портал оплаты временно недоступен. Попробуйте позже или выберите тариф заново.",
     hermesUnavailable:
       "AI-генерация пока недоступна. Попробуйте позже.",
     planLimitExceeded:

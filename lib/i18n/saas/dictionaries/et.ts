@@ -67,6 +67,10 @@ export const saasDictionary: SaasDictionary = {
       "Makse ei ole veel seadistatud. Teie praegune pakett jääb aktiivseks.",
     billingUnavailable:
       "Maksed pole ajutiselt saadaval. Kontrollime seadistust.",
+    billingLegacySubscription:
+      "See tellimus loodi testrežiimis. Live-makse aktiveerimiseks vali pakett uuesti.",
+    billingPortalUnavailable:
+      "Arveldusportaal pole ajutiselt saadaval. Proovi hiljem uuesti või vali pakett uuesti.",
     hermesUnavailable:
       "AI genereerimine ei ole veel saadaval. Proovige hiljem uuesti.",
     planLimitExceeded:

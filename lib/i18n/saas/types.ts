@@ -52,6 +52,8 @@ export type SaasDictionary = {
   errors: {
     billingRequired: string;
     billingUnavailable: string;
+    billingLegacySubscription: string;
+    billingPortalUnavailable: string;
     hermesUnavailable: string;
     planLimitExceeded: string;
     featureNotAvailable: string;

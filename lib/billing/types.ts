@@ -28,6 +28,7 @@ export type BillingSubscriptionViewModel = {
   cancelAtPeriodEnd: boolean;
   trialEndsAt?: string;
   stripeConfigured: boolean;
+  canManageBilling: boolean;
   features: BillingPlanFeatures;
 };
 
@@ -81,5 +82,7 @@ export type BillingErrorCode =
   | "FEATURE_NOT_AVAILABLE"
   | "BILLING_REQUIRED"
   | "BILLING_NOT_CONFIGURED"
+  | "BILLING_STATE_LEGACY_OR_INVALID"
+  | "BILLING_PORTAL_UNAVAILABLE"
   | "CHECKOUT_FAILED"
   | "ONBOARDING_REQUIRED";

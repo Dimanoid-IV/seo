@@ -22,11 +22,25 @@ export function friendlyApiErrorMessageForLocale(
     return errors.billingUnavailable;
   }
 
+  if (details?.billingError === "BILLING_STATE_LEGACY_OR_INVALID") {
+    return errors.billingLegacySubscription;
+  }
+
+  if (details?.billingError === "BILLING_PORTAL_UNAVAILABLE") {
+    return errors.billingPortalUnavailable;
+  }
+
   switch (code) {
     case "BILLING_REQUIRED":
       return errors.billingRequired;
     case "BILLING_NOT_CONFIGURED":
       return errors.billingUnavailable;
+    case "BILLING_STATE_LEGACY_OR_INVALID":
+      return errors.billingLegacySubscription;
+    case "BILLING_PORTAL_UNAVAILABLE":
+      return errors.billingPortalUnavailable;
+    case "CHECKOUT_FAILED":
+      return errors.checkoutFailed;
     case "HERMES_UNAVAILABLE":
       return errors.hermesUnavailable;
     case "PLAN_LIMIT_EXCEEDED":

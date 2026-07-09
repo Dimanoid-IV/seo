@@ -9,6 +9,10 @@ import {
 import { isStripeBillingConfigured } from "./stripe-env";
 import { getBillingAppUrl, getStripeClient } from "./stripe";
 import { getCurrentSubscription } from "./get-subscription";
+import {
+  reconcileLegacyBillingState,
+  stripeCustomerExists,
+} from "./stripe-legacy";
 
 export async function createCheckoutSession(input: {
   userId: string;
@@ -57,6 +61,17 @@ export async function createCheckoutSession(input: {
 
   let customerId = current.subscription.stripeCustomerId;
 
+  if (customerId) {
+    const customerExists = await stripeCustomerExists(customerId);
+    if (!customerExists) {
+      await reconcileLegacyBillingState({
+        userId: input.userId,
+        organizationId: input.organizationId,
+      });
+      customerId = null;
+    }
+  }
+
   if (!customerId) {
     try {
       const customer = await stripe.customers.create({
@@ -76,8 +91,12 @@ export async function createCheckoutSession(input: {
     }
 
     const prisma = (await import("@/lib/db")).getPrisma();
+    const refreshed = await getCurrentSubscription({
+      userId: input.userId,
+      organizationId: input.organizationId,
+    });
     await prisma.subscription.update({
-      where: { id: current.subscription.id },
+      where: { id: refreshed.subscription.id },
       data: { stripeCustomerId: customerId },
     });
   }

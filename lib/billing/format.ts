@@ -14,6 +14,7 @@ import type {
 } from "./types";
 import { getCurrentSubscription } from "./get-subscription";
 import { getUsageSummary } from "./usage";
+import { reconcileLegacyBillingState } from "./stripe-legacy";
 
 export function formatBillingSubscription(input: {
   id: string;
@@ -25,6 +26,7 @@ export function formatBillingSubscription(input: {
   cancelAtPeriodEnd: boolean;
   trialEndsAt?: Date | null;
   features: BillingSubscriptionViewModel["features"];
+  canManageBilling: boolean;
 }): BillingSubscriptionViewModel {
   return {
     id: input.id,
@@ -36,6 +38,7 @@ export function formatBillingSubscription(input: {
     cancelAtPeriodEnd: input.cancelAtPeriodEnd,
     trialEndsAt: input.trialEndsAt?.toISOString(),
     stripeConfigured: isStripeConfigured(),
+    canManageBilling: input.canManageBilling,
     features: input.features,
   };
 }
@@ -68,8 +71,13 @@ export async function getBillingOverview(input: {
   userId: string;
   organizationId: string;
 }): Promise<BillingOverviewResponse> {
+  await reconcileLegacyBillingState(input);
+
   const current = await getCurrentSubscription(input);
   const usage = await getUsageSummary(input);
+  const canManageBilling =
+    current.planKey !== "FREE" &&
+    Boolean(current.subscription.stripeCustomerId?.trim());
 
   return {
     subscription: formatBillingSubscription({
@@ -82,6 +90,7 @@ export async function getBillingOverview(input: {
       cancelAtPeriodEnd: current.subscription.cancelAtPeriodEnd,
       trialEndsAt: current.subscription.trialEndsAt,
       features: current.planConfig.features,
+      canManageBilling,
     }),
     usage,
     plans: formatBillingPlans(current.planKey),

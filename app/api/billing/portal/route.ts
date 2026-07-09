@@ -26,7 +26,9 @@ export async function POST(request: Request) {
     );
 
     if (!organization) {
-      throw new AppError(ErrorCode.NOT_FOUND, "Organization not found");
+      throw new AppError(ErrorCode.NOT_FOUND, "Organization not found", {
+        details: { billingError: "ONBOARDING_REQUIRED" },
+      });
     }
 
     const result = await createCustomerPortalSession({
