@@ -35,11 +35,11 @@ export function FindingsCard({ findings }: FindingsCardProps) {
         {findings.map((item, index) => (
           <li
             key={`${item.title}-${index}`}
-            className="flex gap-3 rounded-xl px-3 py-3 transition hover:bg-white/[0.03]"
+            className="flex gap-3 rounded-xl px-3 py-3 transition hover:bg-white"
           >
             <span className="mt-2 size-1.5 shrink-0 rounded-full bg-blue-400/90" />
             <div className="min-w-0 flex-1">
-              <p className="text-sm leading-relaxed text-slate-200">
+              <p className="text-sm leading-relaxed text-slate-700">
                 {item.title}
               </p>
               {item.description ? (

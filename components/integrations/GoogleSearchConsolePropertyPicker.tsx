@@ -195,7 +195,7 @@ export function GoogleSearchConsolePropertyPicker({
         className="flex w-full items-center justify-between gap-3 text-left"
       >
         <div>
-          <p className="text-sm font-medium text-white">
+          <p className="text-sm font-medium text-slate-900">
             Выбрать сайт из Search Console
           </p>
           {activeSelected ? (
@@ -216,7 +216,7 @@ export function GoogleSearchConsolePropertyPicker({
       </button>
 
       {activeSelected ? (
-        <div className="mt-4 space-y-3 border-t border-white/10 pt-4">
+        <div className="mt-4 space-y-3 border-t border-slate-200 pt-4">
           <GscSyncButton
             onSync={handleSync}
             loading={syncing}
@@ -252,7 +252,7 @@ export function GoogleSearchConsolePropertyPicker({
       ) : null}
 
       {open ? (
-        <div className="mt-4 space-y-3 border-t border-white/10 pt-4">
+        <div className="mt-4 space-y-3 border-t border-slate-200 pt-4">
           {loading ? (
             <div className="flex items-center gap-2 text-sm text-slate-400">
               <Loader2 className="size-4 animate-spin" />
@@ -306,12 +306,12 @@ export function GoogleSearchConsolePropertyPicker({
                       "rounded-lg border p-3",
                       isSelected
                         ? "border-cyan-500/40 bg-cyan-500/10"
-                        : "border-white/10 bg-white/[0.02]"
+                        : "border-slate-200 bg-slate-50"
                     )}
                   >
                     <div className="flex items-start justify-between gap-3">
                       <div className="min-w-0 flex-1">
-                        <p className="truncate text-sm font-medium text-white">
+                        <p className="truncate text-sm font-medium text-slate-900">
                           {site.siteUrl}
                         </p>
                         <p className="mt-1 text-xs text-slate-400">
@@ -329,7 +329,7 @@ export function GoogleSearchConsolePropertyPicker({
                       size="sm"
                       disabled={Boolean(submittingSiteUrl)}
                       onClick={() => void handleSelectSite(site.siteUrl)}
-                      className="mt-3 w-full border border-white/10 bg-white/5 text-slate-200 hover:bg-white/10"
+                      className="mt-3 w-full border border-slate-200 bg-white/5 text-slate-700 hover:bg-slate-100"
                       variant="outline"
                     >
                       {isSubmitting ? (

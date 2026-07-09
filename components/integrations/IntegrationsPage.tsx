@@ -184,7 +184,7 @@ export function IntegrationsPage() {
             "mb-8 flex items-start gap-3 rounded-2xl border px-5 py-4 text-sm",
             banner.type === "success"
               ? "border-emerald-500/20 bg-emerald-500/[0.06] text-emerald-100"
-              : "border-blue-500/15 bg-blue-500/[0.05] text-slate-200"
+              : "border-blue-500/15 bg-blue-500/[0.05] text-slate-700"
           )}
         >
           {banner.type === "success" ? (
@@ -196,7 +196,7 @@ export function IntegrationsPage() {
           <button
             type="button"
             onClick={handleDismissBanner}
-            className="text-slate-400 hover:text-white"
+            className="text-slate-600 hover:text-slate-900"
             aria-label={i.close}
           >
             ×
@@ -218,7 +218,7 @@ export function IntegrationsPage() {
       )}
 
       <section className="saas-card-muted mt-12">
-        <h2 className="text-base font-semibold text-white">{i.benefitsTitle}</h2>
+        <h2 className="text-base font-semibold text-slate-900">{i.benefitsTitle}</h2>
         <ul className="mt-4 space-y-2 text-sm text-slate-400">
           {i.benefits.map((benefit) => (
             <li key={benefit} className="flex items-start gap-2">

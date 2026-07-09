@@ -126,7 +126,7 @@ export function ReportsPage() {
 
       <div className="space-y-10">
         <section className="space-y-4">
-          <h2 className="text-lg font-semibold text-white">{r.latestAudit}</h2>
+          <h2 className="text-lg font-semibold text-slate-900">{r.latestAudit}</h2>
           {data.latestAudit ? (
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               <ReportSummaryCard
@@ -164,12 +164,12 @@ export function ReportsPage() {
         </section>
 
         <section className="space-y-4">
-          <h2 className="text-lg font-semibold text-white">{r.progress}</h2>
+          <h2 className="text-lg font-semibold text-slate-900">{r.progress}</h2>
           <GrowthHistoryCard history={historyForChart} />
         </section>
 
         <section className="space-y-4">
-          <h2 className="text-lg font-semibold text-white">{r.tasks}</h2>
+          <h2 className="text-lg font-semibold text-slate-900">{r.tasks}</h2>
           <div className="grid gap-4 sm:grid-cols-2">
             <ReportSummaryCard
               title={r.completedThisMonth}
@@ -189,28 +189,28 @@ export function ReportsPage() {
         </section>
 
         <section className="space-y-4">
-          <h2 className="text-lg font-semibold text-white">{r.recentEvents}</h2>
+          <h2 className="text-lg font-semibold text-slate-900">{r.recentEvents}</h2>
           <ReportActivityList activities={data.lastActivities} />
         </section>
 
         <section className="space-y-4">
-          <h2 className="text-lg font-semibold text-white">{r.savedReports}</h2>
+          <h2 className="text-lg font-semibold text-slate-900">{r.savedReports}</h2>
           {data.reports.length > 0 ? (
             <div className="grid gap-3 lg:grid-cols-2">
               {data.reports.map((report) => (
                 <article
                   key={report.id}
-                  className="glass-card flex flex-col gap-2 border border-white/5 p-5"
+                  className="glass-card flex flex-col gap-2 border border-slate-200 p-5"
                 >
                   <div className="flex flex-wrap items-center gap-2">
-                    <span className="rounded-md bg-white/5 px-2 py-0.5 text-xs text-slate-300">
+                    <span className="rounded-md bg-white/5 px-2 py-0.5 text-xs text-slate-600">
                       {reportTypeLabels[report.type] ?? report.type}
                     </span>
-                    <span className="rounded-md border border-white/10 px-2 py-0.5 text-xs text-slate-400">
+                    <span className="rounded-md border border-slate-200 px-2 py-0.5 text-xs text-slate-400">
                       {reportStatusLabels[report.status] ?? report.status}
                     </span>
                   </div>
-                  <h3 className="font-semibold text-white">{report.title}</h3>
+                  <h3 className="font-semibold text-slate-900">{report.title}</h3>
                   {report.summary ? (
                     <p className="text-sm text-slate-400">{report.summary}</p>
                   ) : null}

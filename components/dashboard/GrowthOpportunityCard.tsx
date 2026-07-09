@@ -53,7 +53,7 @@ const EFFORT_LABELS: Record<GrowthOpportunityEffort, string> = {
 const IMPACT_STYLES: Record<GrowthOpportunityImpact, string> = {
   HIGH: "border-emerald-500/30 bg-emerald-500/10 text-emerald-300",
   MEDIUM: "border-blue-500/30 bg-blue-500/10 text-blue-300",
-  LOW: "border-slate-500/30 bg-slate-500/10 text-slate-300",
+  LOW: "border-slate-500/30 bg-slate-500/10 text-slate-600",
 };
 
 const EFFORT_STYLES: Record<GrowthOpportunityEffort, string> = {
@@ -93,7 +93,7 @@ export function GrowthOpportunityCard({
   return (
     <article
       className={cn(
-        "glass-card flex flex-col gap-3 border border-white/5 p-4 sm:p-5",
+        "glass-card flex flex-col gap-3 border border-slate-200 p-4 sm:p-5",
         className
       )}
     >
@@ -103,7 +103,7 @@ export function GrowthOpportunityCard({
         </div>
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-2">
-            <span className="rounded-md bg-white/5 px-2 py-0.5 text-xs text-slate-300">
+            <span className="rounded-md bg-white/5 px-2 py-0.5 text-xs text-slate-600">
               {TYPE_LABELS[opportunity.type]}
             </span>
             <span
@@ -123,7 +123,7 @@ export function GrowthOpportunityCard({
               {EFFORT_LABELS[opportunity.estimatedEffort]}
             </span>
           </div>
-          <h3 className="mt-1 font-semibold text-white">{opportunity.title}</h3>
+          <h3 className="mt-1 font-semibold text-slate-900">{opportunity.title}</h3>
         </div>
       </div>
 
@@ -144,7 +144,7 @@ export function GrowthOpportunityCard({
         ) : (
           <Link
             href={cta.href ?? "/app"}
-            className="inline-flex items-center rounded-lg border border-white/15 bg-white/5 px-3 py-1.5 text-sm font-medium text-slate-200 transition hover:bg-white/10"
+            className="inline-flex items-center rounded-lg border border-slate-300 bg-white/5 px-3 py-1.5 text-sm font-medium text-slate-700 transition hover:bg-slate-100"
           >
             {cta.label}
           </Link>

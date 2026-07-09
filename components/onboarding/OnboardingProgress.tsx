@@ -21,7 +21,7 @@ export function OnboardingProgress({
   return (
     <div className="saas-card-muted">
       <div className="flex flex-wrap items-center justify-between gap-2 text-sm">
-        <span className="font-medium text-white">
+        <span className="font-medium text-slate-900">
           {o.stepOfTotal
             .replace("{current}", String(currentStep))
             .replace("{total}", String(total))}
@@ -30,7 +30,7 @@ export function OnboardingProgress({
           {o.percentComplete.replace("{percent}", String(percentage))}
         </span>
       </div>
-      <div className="mt-4 h-2.5 overflow-hidden rounded-full bg-white/[0.06]">
+      <div className="mt-4 h-2.5 overflow-hidden rounded-full bg-slate-100">
         <div
           className={cn(
             "h-full rounded-full bg-gradient-to-r from-blue-500 to-violet-500 transition-all duration-500"

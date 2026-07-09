@@ -12,11 +12,11 @@ type TrustNoteProps = {
 };
 
 const VARIANT_STYLES: Record<TrustNoteVariant, string> = {
-  billing: "border-emerald-500/15 bg-emerald-500/[0.04] text-emerald-100/90",
-  ai: "border-violet-500/15 bg-violet-500/[0.04] text-violet-100/90",
-  email: "border-blue-500/15 bg-blue-500/[0.04] text-blue-100/90",
-  wordpress: "border-cyan-500/15 bg-cyan-500/[0.04] text-cyan-100/90",
-  info: "border-white/[0.08] bg-white/[0.025] text-slate-300",
+  billing: "border-emerald-200 bg-emerald-50 text-emerald-800",
+  ai: "border-violet-200 bg-violet-50 text-violet-800",
+  email: "border-blue-200 bg-blue-50 text-blue-800",
+  wordpress: "border-cyan-200 bg-cyan-50 text-cyan-800",
+  info: "border-slate-200 bg-slate-50 text-slate-700",
 };
 
 export function TrustNote({

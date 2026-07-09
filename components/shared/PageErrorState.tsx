@@ -47,7 +47,7 @@ export function PageErrorState({
               type="button"
               variant="outline"
               size="sm"
-              className="border-white/10 bg-transparent text-slate-300"
+              className="border-slate-200 bg-transparent text-slate-600"
             >
               {dict.common.openDashboard}
             </Button>

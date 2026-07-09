@@ -58,7 +58,7 @@ export function MonthlyPlanPanel({
             </span>
             <span className="text-xs text-slate-500">{monthLabel}</span>
           </div>
-          <h4 className="font-medium text-white">{planTitle}</h4>
+          <h4 className="font-medium text-slate-900">{planTitle}</h4>
           {planSummary ? (
             <p className="line-clamp-3 text-sm leading-relaxed text-slate-400">
               {planSummary}
@@ -69,13 +69,13 @@ export function MonthlyPlanPanel({
             nativeButton={false}
             variant="outline"
             size="sm"
-            className="rounded-xl border-white/[0.08] bg-white/[0.03] text-slate-200"
+            className="rounded-xl border-slate-200 bg-white text-slate-700"
           >
             {m.review}
           </Button>
         </div>
       ) : (
-        <div className="rounded-xl border border-dashed border-white/[0.08] bg-white/[0.02] px-5 py-8 text-center">
+        <div className="rounded-xl border border-dashed border-slate-200 bg-slate-50 px-5 py-8 text-center">
           <Sparkles className="mx-auto size-6 text-violet-400/80" />
           <p className="mt-3 text-sm text-slate-400">{m.empty}</p>
           {onGenerate ? (

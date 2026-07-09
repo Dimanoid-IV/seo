@@ -14,7 +14,7 @@ type TimelineEventCardProps = {
 };
 
 const SEVERITY_STYLES: Record<string, string> = {
-  INFO: "border-white/10 bg-white/[0.02]",
+  INFO: "border-slate-200 bg-slate-50",
   SUCCESS: "border-emerald-500/20 bg-emerald-500/5",
   WARNING: "border-amber-500/20 bg-amber-500/5",
   ERROR: "border-red-500/20 bg-red-500/5",
@@ -49,7 +49,7 @@ export function TimelineEventCard({ event, className }: TimelineEventCardProps) 
               </span>
             ) : null}
           </div>
-          <h3 className="mt-1 font-semibold text-white">{event.title}</h3>
+          <h3 className="mt-1 font-semibold text-slate-900">{event.title}</h3>
           {event.summary ? (
             <p className="mt-2 text-sm leading-relaxed text-slate-400">
               {event.summary}

@@ -160,16 +160,41 @@ export const dictionary: Dictionary = {
     note: "Auto-Publish Mode on kavandatud valikulise kontrollitud automatiseerimise kihina — vaikimisi pole lubatud. Alustage täna turvaliselt ülevaatusrežiimis.",
   },
   pricingPreview: {
-    title: "Alustage SEO autopilooti",
+    title: "Lihtsad hinnad, ilma pikaajaliste lepinguteta",
     subtitle:
-      "Alustage tasuta ja uuendage rohkemate tegevuste, mustandite, ülevaatuste ja tulevaste automatiseerimisseadete jaoks.",
+      "Alusta tasuta ja uuenda paketti siis, kui RankBoost hakkab sinu kasvu toetama.",
     trustNote:
-      "Ilma pikaajaliste lepinguteta. Tühistamine igal ajal. Alustage turvaliselt ülevaatusrežiimis.",
+      "Ilma pikaajaliste lepinguteta. Tühista igal ajal. Turvaline makse Stripe'i kaudu.",
+    popular: "Populaarne",
+    viewAllPlans: "Vaata kõiki pakette",
     plans: [
-      { name: "Free", description: "Proovige RankBoosti ja mõistke oma veebilehe kasvuvõimalusi." },
-      { name: "Starter", description: "Väikeettevõtetele, kes soovivad regulaarseid SEO ja sisu tegevusi." },
-      { name: "Pro", description: "Kasvavatele ettevõtetele: rohkem mustandeid, ülevaateid ja töövooge." },
-      { name: "Agency", description: "Agentuuridele ja meeskondadele, kes haldavad mitut veebilehte." },
+      {
+        name: "Free",
+        price: "€0",
+        description: "Proovi RankBoosti ja näe esimesi kasvuvõimalusi.",
+        cta: "Alusta tasuta",
+      },
+      {
+        name: "Starter",
+        price: "€19/kuu",
+        description:
+          "Väikeettevõttele, kes vajab regulaarseid SEO-ülesandeid ja selget kasvuplaani.",
+        cta: "Vali Starter",
+      },
+      {
+        name: "Pro",
+        price: "€49/kuu",
+        description:
+          "Kasvavale ettevõttele: rohkem ülevaateid, sisu ja töövooge.",
+        cta: "Vali Pro",
+      },
+      {
+        name: "Agency",
+        price: "€149/kuu",
+        description:
+          "Meeskondadele ja agentuuridele, kes haldavad mitut veebisaiti.",
+        cta: "Vali Agency",
+      },
     ],
   },
   whatWeDo: {

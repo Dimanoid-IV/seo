@@ -60,7 +60,7 @@ export function OnboardingWebsiteStep({
         onChange={(event) => setUrl(event.target.value)}
         placeholder={o.websitePlaceholder}
         disabled={disabled || loading}
-        className="min-w-0 w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2.5 text-sm text-white outline-none focus:border-violet-500/50"
+        className="min-w-0 w-full rounded-xl border border-slate-200 border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none focus:border-violet-500/50"
       />
       <Button
         type="button"

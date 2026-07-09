@@ -29,7 +29,7 @@ function StatTile({
           : "text-blue-300";
 
   return (
-    <div className="rounded-xl border border-white/10 bg-white/[0.02] p-4">
+    <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
       <p className="text-xs uppercase tracking-wider text-slate-500">{label}</p>
       <p className={cn("mt-1 text-2xl font-bold", accentClass)}>{value}</p>
     </div>
@@ -51,7 +51,7 @@ export function TimelineSummaryCard({
   return (
     <section
       className={cn(
-        "glass-card space-y-5 border border-white/10 p-5 sm:p-6",
+        "glass-card space-y-5 border border-slate-200 p-5 sm:p-6",
         className
       )}
     >
@@ -59,7 +59,7 @@ export function TimelineSummaryCard({
         <p className="text-xs font-medium uppercase tracking-wider text-blue-400">
           {t.whileAway}
         </p>
-        <h2 className="text-xl font-bold text-white sm:text-2xl">{t.title}</h2>
+        <h2 className="text-xl font-bold text-slate-900 sm:text-2xl">{t.title}</h2>
         <p className="max-w-3xl text-sm leading-relaxed text-slate-400">
           {summary.headline || t.quietHeadline}
         </p>

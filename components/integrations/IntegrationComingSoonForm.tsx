@@ -75,7 +75,7 @@ export function IntegrationComingSoonForm({
           onChange={(event) => setEmail(event.target.value)}
           placeholder="you@company.com"
           required
-          className="border-white/10 bg-white/5 text-white"
+          className="border-slate-200 bg-white text-slate-900"
         />
       </div>
       <Button

@@ -45,21 +45,21 @@ export function OnboardingResultsStep({
   return (
     <div className="space-y-4">
       <div className="grid gap-3 sm:grid-cols-3">
-        <div className="rounded-xl border border-white/10 bg-[#0a0f1e]/60 p-3">
+        <div className="rounded-xl border border-slate-200 bg-slate-50 p-3">
           <p className="text-xs text-slate-400">{o.growthScore}</p>
-          <p className="mt-1 text-2xl font-bold text-white">
+          <p className="mt-1 text-2xl font-bold text-slate-900">
             {results.growthScore ?? "—"}
           </p>
         </div>
-        <div className="rounded-xl border border-white/10 bg-[#0a0f1e]/60 p-3">
+        <div className="rounded-xl border border-slate-200 bg-slate-50 p-3">
           <p className="text-xs text-slate-400">{o.openTasks}</p>
-          <p className="mt-1 text-2xl font-bold text-white">
+          <p className="mt-1 text-2xl font-bold text-slate-900">
             {results.tasksCount ?? 0}
           </p>
         </div>
-        <div className="rounded-xl border border-white/10 bg-[#0a0f1e]/60 p-3">
+        <div className="rounded-xl border border-slate-200 bg-slate-50 p-3">
           <p className="text-xs text-slate-400">{o.opportunities}</p>
-          <p className="mt-1 text-2xl font-bold text-white">
+          <p className="mt-1 text-2xl font-bold text-slate-900">
             {results.opportunitiesCount ?? 0}
           </p>
         </div>
@@ -69,7 +69,7 @@ export function OnboardingResultsStep({
           <Button
             type="button"
             variant="outline"
-            className="gap-2 border-white/10 bg-transparent text-slate-200"
+            className="gap-2 border-slate-200 bg-transparent text-slate-700"
           >
             <Gauge className="size-4" />
             {o.openControlCenter}

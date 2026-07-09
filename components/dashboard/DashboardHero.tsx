@@ -16,10 +16,10 @@ const TONE_STYLES: Record<
   SimpleDashboardViewModel["status"]["tone"],
   string
 > = {
-  GOOD: "border-emerald-500/15 from-emerald-500/[0.12] to-blue-500/[0.06]",
-  NEEDS_REVIEW: "border-amber-500/15 from-amber-500/[0.12] to-violet-500/[0.06]",
-  SETUP: "border-blue-500/15 from-blue-500/[0.12] to-violet-500/[0.06]",
-  NO_DATA: "border-white/[0.08] from-white/[0.06] to-blue-500/[0.04]",
+  GOOD: "border-emerald-200 from-emerald-50/90 to-blue-50/50",
+  NEEDS_REVIEW: "border-amber-200 from-amber-50/90 to-violet-50/40",
+  SETUP: "border-blue-200 from-blue-50/90 to-violet-50/40",
+  NO_DATA: "border-slate-200 from-slate-50/90 to-blue-50/30",
 };
 
 export function DashboardHero({ status, websiteDomain }: DashboardHeroProps) {
@@ -35,15 +35,15 @@ export function DashboardHero({ status, websiteDomain }: DashboardHeroProps) {
     >
       <div className="flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
         <div className="flex min-w-0 items-start gap-4">
-          <div className="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-white/[0.08] ring-1 ring-white/10">
-            <Sparkles className="size-5 text-blue-300" />
+          <div className="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-blue-50 ring-1 ring-blue-100">
+            <Sparkles className="size-5 text-blue-600" />
           </div>
           <div className="min-w-0 flex-1">
             <p className="saas-eyebrow">{d.heroUi.eyebrow}</p>
-            <h2 className="mt-2 text-2xl font-semibold tracking-tight text-white sm:text-[1.65rem]">
+            <h2 className="mt-2 text-2xl font-semibold tracking-tight text-slate-900 sm:text-[1.65rem]">
               {status.label}
             </h2>
-            <p className="mt-3 max-w-2xl text-sm leading-relaxed text-slate-300 sm:text-[0.9375rem]">
+            <p className="mt-3 max-w-2xl text-sm leading-relaxed text-slate-600 sm:text-[0.9375rem]">
               {status.description}
             </p>
             {websiteDomain ? (
@@ -54,11 +54,11 @@ export function DashboardHero({ status, websiteDomain }: DashboardHeroProps) {
           </div>
         </div>
       </div>
-      <p className="mt-6 border-t border-white/[0.06] pt-5 text-sm leading-relaxed text-slate-400">
+      <p className="mt-6 border-t border-slate-200 pt-5 text-sm leading-relaxed text-slate-600">
         {d.heroUi.monitoringNote}{" "}
         <Link
           href="/app/autopilot-control"
-          className="inline-flex items-center gap-1 font-medium text-blue-300 transition hover:text-blue-200"
+          className="inline-flex items-center gap-1 font-medium text-blue-600 transition hover:text-blue-700"
         >
           {d.prepared.openControlCenter}
           <ArrowRight className="size-3.5" />

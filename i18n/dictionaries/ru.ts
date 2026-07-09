@@ -86,7 +86,9 @@ export type Dictionary = {
     title: string;
     subtitle: string;
     trustNote: string;
-    plans: { name: string; description: string }[];
+    popular: string;
+    viewAllPlans: string;
+    plans: { name: string; price: string; description: string; cta: string }[];
   };
   whatWeDo: {
     title: string;
@@ -411,16 +413,42 @@ export const dictionary: Dictionary = {
     note: "Auto-Publish Mode задуман как опциональный контролируемый слой автоматизации — по умолчанию не включён. Начните безопасно в Review Mode.",
   },
   pricingPreview: {
-    title: "Запустите SEO-автопилот",
+    title: "Простые тарифы без долгосрочных контрактов",
     subtitle:
-      "Начните бесплатно и переходите на платный план, когда понадобится больше действий, черновиков, обзоров и будущих настроек автоматизации.",
+      "Начните бесплатно, а когда RankBoost начнёт приносить пользу — подключите больше автоматизации, задач и контента.",
     trustNote:
-      "Без долгосрочных контрактов. Отмена в любой момент. Начните безопасно в режиме проверки.",
+      "Без долгосрочных контрактов. Отмена в любой момент. Безопасная оплата через Stripe.",
+    popular: "Популярный",
+    viewAllPlans: "Смотреть все тарифы",
     plans: [
-      { name: "Free", description: "Попробуйте RankBoost и оцените возможности роста вашего сайта." },
-      { name: "Starter", description: "Для малого бизнеса с регулярными SEO и контент-действиями." },
-      { name: "Pro", description: "Для растущего бизнеса: больше черновиков, инсайтов и рабочих процессов." },
-      { name: "Agency", description: "Для агентств и команд с несколькими сайтами." },
+      {
+        name: "Free",
+        price: "€0",
+        description:
+          "Попробуйте RankBoost и получите первый обзор возможностей роста.",
+        cta: "Начать бесплатно",
+      },
+      {
+        name: "Starter",
+        price: "€19/мес",
+        description:
+          "Для малого бизнеса, которому нужны регулярные SEO-задачи и понятный план роста.",
+        cta: "Выбрать Starter",
+      },
+      {
+        name: "Pro",
+        price: "€49/мес",
+        description:
+          "Для растущего бизнеса: больше инсайтов, контента и рабочих процессов.",
+        cta: "Выбрать Pro",
+      },
+      {
+        name: "Agency",
+        price: "€149/мес",
+        description:
+          "Для команд и агентств, которые ведут несколько сайтов.",
+        cta: "Выбрать Agency",
+      },
     ],
   },
   whatWeDo: {

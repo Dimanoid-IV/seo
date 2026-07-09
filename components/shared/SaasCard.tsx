@@ -55,7 +55,7 @@ export function SaasSectionHeader({
       )}
     >
       <div className="min-w-0">
-        <h3 className="text-base font-semibold tracking-tight text-white sm:text-lg">
+        <h3 className="text-base font-semibold tracking-tight text-slate-900 sm:text-lg">
           {title}
         </h3>
         {subtitle ? (

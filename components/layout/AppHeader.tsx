@@ -41,20 +41,20 @@ function AppHeaderContent() {
   }
 
   return (
-    <header className="sticky top-0 z-20 border-b border-white/[0.06] bg-[#050816]/75 backdrop-blur-xl">
+    <header className="sticky top-0 z-20 border-b border-slate-200 bg-white/90 backdrop-blur-xl">
       <div className="flex flex-wrap items-center justify-between gap-4 px-4 py-4 sm:px-6 lg:px-8">
         <div className="flex min-w-0 items-center gap-3">
-          <div className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-white/5 lg:hidden">
-            <Sparkles className="size-4 text-blue-400" />
+          <div className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-blue-50 lg:hidden">
+            <Sparkles className="size-4 text-blue-600" />
           </div>
           <div className="min-w-0">
             <div className="flex flex-wrap items-center gap-2">
-              <Globe className="hidden size-4 shrink-0 text-slate-500 sm:block" />
-              <h1 className="truncate text-base font-semibold text-white sm:text-lg">
+              <Globe className="hidden size-4 shrink-0 text-slate-400 sm:block" />
+              <h1 className="truncate text-base font-semibold text-slate-900 sm:text-lg">
                 {headerTitle}
               </h1>
               {billingPlanLoading ? (
-                <span className="inline-flex h-6 min-w-14 animate-pulse rounded-full bg-white/10" />
+                <span className="inline-flex h-6 min-w-14 animate-pulse rounded-full bg-slate-200" />
               ) : billingSubscription ? (
                 <PlanBadge
                   variant={billingPlanToBadgeVariant(billingSubscription.plan)}
@@ -91,7 +91,7 @@ function AppHeaderContent() {
             type="button"
             variant="outline"
             size="sm"
-            className="border-white/10 bg-white/5 text-slate-300 hover:bg-white/10"
+            className="border-slate-200 bg-white text-slate-700 hover:bg-slate-50"
             onClick={handleLogout}
             disabled={loggingOut}
           >

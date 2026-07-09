@@ -40,16 +40,16 @@ export function EmailApprovalGenerateDialog({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
-      <div className="w-full max-w-md rounded-2xl border border-white/10 bg-[#0a0f1e] p-6 shadow-xl">
-        <h3 className="text-lg font-semibold text-white">{e.generateTitle}</h3>
+      <div className="w-full max-w-md rounded-2xl border border-slate-200 bg-white p-6 shadow-xl">
+        <h3 className="text-lg font-semibold text-slate-900">{e.generateTitle}</h3>
         <p className="mt-1 text-sm text-slate-400">{e.generateDescription}</p>
 
         <label className="mt-5 block space-y-2">
-          <span className="text-sm text-slate-300">{e.emailType}</span>
+          <span className="text-sm text-slate-600">{e.emailType}</span>
           <select
             value={type}
             onChange={(event) => setType(event.target.value)}
-            className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white"
+            className="w-full rounded-lg border border-slate-200 border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900"
           >
             {TYPE_OPTIONS.map((option) => (
               <option key={option.value} value={option.value}>

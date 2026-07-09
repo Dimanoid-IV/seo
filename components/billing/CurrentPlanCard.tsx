@@ -35,17 +35,17 @@ export function CurrentPlanCard({
   const trialEnd = formatDate(subscription.trialEndsAt, locale);
 
   return (
-    <section className="saas-card-hero border border-violet-500/15 bg-gradient-to-br from-violet-500/[0.1] to-blue-500/[0.04]">
+    <section className="saas-card-hero border border-violet-200/80 bg-gradient-to-br from-violet-50/90 to-blue-50/50">
       <div className="flex flex-wrap items-start justify-between gap-5">
         <div>
-          <div className="flex items-center gap-2.5 text-violet-200">
+          <div className="flex items-center gap-2.5 text-violet-700">
             <CreditCard className="size-4" />
-            <span className="saas-eyebrow text-violet-300/80">{billing.currentPlan}</span>
+            <span className="saas-eyebrow text-violet-600">{billing.currentPlan}</span>
           </div>
-          <h2 className="mt-3 text-2xl font-bold tracking-tight text-white sm:text-3xl">
+          <h2 className="mt-3 text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
             {subscription.planLabel}
           </h2>
-          <p className="mt-2 text-sm capitalize text-slate-400">
+          <p className="mt-2 text-sm capitalize text-slate-600">
             {subscription.status.replace(/_/g, " ")}
           </p>
         </div>
@@ -56,14 +56,14 @@ export function CurrentPlanCard({
             variant="outline"
             disabled={managing || !subscription.stripeConfigured}
             onClick={onManageBilling}
-            className="min-h-10 rounded-xl border-white/[0.08] bg-white/[0.03] text-slate-200 hover:bg-white/[0.06]"
+            className="min-h-10 rounded-xl border-slate-200 bg-white text-slate-700 hover:bg-slate-50"
           >
             {managing ? `${billing.manageBilling}…` : billing.manageBilling}
           </Button>
         ) : null}
       </div>
 
-      <div className="mt-6 space-y-1.5 border-t border-white/[0.06] pt-5 text-sm leading-relaxed text-slate-300">
+      <div className="mt-6 space-y-1.5 border-t border-slate-200 pt-5 text-sm leading-relaxed text-slate-600">
         {trialEnd ? (
           <p>
             {billing.trialEnds}: {trialEnd}
@@ -76,7 +76,7 @@ export function CurrentPlanCard({
           </p>
         ) : null}
         {!subscription.stripeConfigured ? (
-          <p className="text-amber-200/90">{trust.stripeNotConfigured}</p>
+          <p className="text-amber-700">{trust.stripeNotConfigured}</p>
         ) : null}
       </div>
     </section>

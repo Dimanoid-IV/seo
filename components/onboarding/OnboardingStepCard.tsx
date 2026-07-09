@@ -36,20 +36,20 @@ export function OnboardingStepCard({ step, children }: OnboardingStepCardProps) 
           ? "border-violet-500/25 bg-gradient-to-br from-violet-500/[0.1] to-blue-500/[0.04] shadow-[0_8px_32px_-12px_rgba(139,92,246,0.2)]"
           : step.status === "DONE"
             ? "border-emerald-500/15 bg-emerald-500/[0.04]"
-            : "border-white/[0.06] bg-white/[0.015] opacity-90"
+            : "border-slate-200 bg-white/[0.015] opacity-90"
       )}
     >
       <div className="flex items-start gap-4">
-        <div className="mt-0.5 flex size-9 shrink-0 items-center justify-center rounded-full border border-white/[0.08] bg-[#0a0f1e]/80">
+        <div className="mt-0.5 flex size-9 shrink-0 items-center justify-center rounded-full border border-slate-200 bg-white/80">
           {statusIcon(step.status)}
         </div>
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-2">
-            <h3 className="text-base font-semibold tracking-tight text-white">
+            <h3 className="text-base font-semibold tracking-tight text-slate-900">
               {step.title}
             </h3>
             {step.optional ? (
-              <span className="rounded-full bg-white/[0.06] px-2.5 py-0.5 text-[10px] font-medium uppercase tracking-wide text-slate-400">
+              <span className="rounded-full bg-slate-100 px-2.5 py-0.5 text-[10px] font-medium uppercase tracking-wide text-slate-400">
                 {dict.common.optional}
               </span>
             ) : null}

@@ -84,7 +84,7 @@ export function OnboardingPlanStep({
         <Button
           type="button"
           variant="outline"
-          className="border-white/10 bg-transparent text-slate-300"
+          className="border-slate-200 bg-transparent text-slate-600"
         >
           {o.viewAutopilot}
         </Button>

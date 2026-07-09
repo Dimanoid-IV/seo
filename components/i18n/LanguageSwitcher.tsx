@@ -36,7 +36,7 @@ export function LanguageSwitcher({
   const triggerClass =
     variant === "auth"
       ? "border-slate-200 bg-white text-slate-700 hover:bg-slate-50"
-      : "border-white/10 bg-white/5 text-slate-300 hover:bg-white/10";
+      : "border-slate-200 bg-white text-slate-700 hover:bg-slate-50";
 
   return (
     <Select

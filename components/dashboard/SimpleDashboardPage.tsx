@@ -117,13 +117,13 @@ export function SimpleDashboardPage() {
               <div className="flex flex-wrap justify-center gap-3">
                 <Link
                   href="/app/onboarding"
-                  className="inline-flex items-center rounded-lg bg-blue-500 px-4 py-2 text-sm font-medium text-white hover:bg-blue-600"
+                  className="inline-flex items-center rounded-lg bg-blue-500 px-4 py-2 text-sm font-medium text-slate-900 hover:bg-blue-600"
                 >
                   {d.addWebsite}
                 </Link>
                 <Link
                   href="/app/onboarding"
-                  className="inline-flex items-center rounded-lg border border-white/10 px-4 py-2 text-sm text-slate-300 hover:bg-white/5"
+                  className="inline-flex items-center rounded-lg border border-slate-200 px-4 py-2 text-sm text-slate-700 hover:bg-slate-50"
                 >
                   {d.openSetup}
                 </Link>
@@ -183,7 +183,7 @@ export function SimpleDashboardPage() {
           ) : null}
 
           {actionError ? (
-            <div className="rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-300">
+            <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
               {actionError}
             </div>
           ) : null}
@@ -212,9 +212,9 @@ export function SimpleDashboardPage() {
         <FindingsCard findings={simple.findings} />
 
         {simple.gsc && !simple.gsc.connected ? (
-          <p className="rounded-xl border border-blue-500/20 bg-blue-500/5 px-4 py-3 text-sm text-slate-300">
+          <p className="rounded-xl border border-blue-200 bg-blue-50 px-4 py-3 text-sm text-slate-700">
             {d.gscConnectHint}{" "}
-            <Link href={simple.gsc.connectHref} className="font-medium text-blue-300 hover:text-blue-200">
+            <Link href={simple.gsc.connectHref} className="font-medium text-blue-600 hover:text-blue-700">
               {d.connectGsc}
             </Link>
           </p>
@@ -225,7 +225,7 @@ export function SimpleDashboardPage() {
           {simple.billingNote ? (
             <p className="text-center text-xs text-slate-500 lg:text-left">
               {d.billingNote}{" "}
-              <Link href="/app/billing" className="text-blue-300 hover:text-blue-200">
+              <Link href="/app/billing" className="text-blue-600 hover:text-blue-700">
                 {dict.common.viewPlans}
               </Link>
             </p>

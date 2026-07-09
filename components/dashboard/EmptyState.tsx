@@ -24,11 +24,11 @@ export function EmptyState({
       )}
     >
       {Icon ? (
-        <div className="mb-5 flex size-16 items-center justify-center rounded-2xl bg-white/[0.04] ring-1 ring-white/[0.08]">
+        <div className="mb-5 flex size-16 items-center justify-center rounded-2xl bg-slate-50 ring-1 ring-white/[0.08]">
           <Icon className="size-7 text-slate-400" />
         </div>
       ) : null}
-      <h3 className="text-lg font-semibold tracking-tight text-white sm:text-xl">
+      <h3 className="text-lg font-semibold tracking-tight text-slate-900 sm:text-xl">
         {title}
       </h3>
       {description ? (

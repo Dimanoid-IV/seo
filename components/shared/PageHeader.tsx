@@ -24,18 +24,18 @@ export function PageHeader({
     >
       <div className="min-w-0">
         {eyebrow ? (
-          <p className="saas-eyebrow text-violet-400/90">{eyebrow}</p>
+          <p className="saas-eyebrow text-violet-600">{eyebrow}</p>
         ) : null}
         <h1
           className={cn(
-            "text-2xl font-bold tracking-tight text-white sm:text-[1.875rem]",
+            "text-2xl font-bold tracking-tight text-slate-900 sm:text-[1.875rem]",
             eyebrow && "mt-2"
           )}
         >
           {title}
         </h1>
         {subtitle ? (
-          <p className="mt-3 max-w-2xl text-sm leading-relaxed text-slate-400 sm:text-[0.9375rem]">
+          <p className="mt-3 max-w-2xl text-sm leading-relaxed text-slate-600 sm:text-[0.9375rem]">
             {subtitle}
           </p>
         ) : null}

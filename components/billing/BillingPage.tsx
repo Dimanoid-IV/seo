@@ -208,13 +208,13 @@ export function BillingPage() {
       <PageHeader title={billing.title} subtitle={billing.subtitle} />
 
       {actionError ? (
-        <p className="rounded-xl border border-red-500/30 bg-red-500/10 p-3 text-sm text-red-200">
+        <p className="rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-700">
           {actionError}
         </p>
       ) : null}
 
       {actionSuccess ? (
-        <p className="rounded-xl border border-emerald-500/30 bg-emerald-500/10 p-3 text-sm text-emerald-200">
+        <p className="rounded-xl border border-emerald-200 bg-emerald-50 p-3 text-sm text-emerald-700">
           {actionSuccess}
         </p>
       ) : null}
@@ -235,7 +235,7 @@ export function BillingPage() {
       <UsageLimitsCard usage={data.usage} />
 
       <section className="space-y-5">
-        <h2 className="text-lg font-semibold tracking-tight text-white">
+        <h2 className="text-lg font-semibold tracking-tight text-slate-900">
           {billing.availablePlans}
         </h2>
         <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">

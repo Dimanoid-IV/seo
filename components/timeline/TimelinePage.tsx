@@ -179,7 +179,7 @@ export function TimelinePage() {
 
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h3 className="text-lg font-semibold text-white">{t.activityTitle}</h3>
+          <h3 className="text-lg font-semibold text-slate-900">{t.activityTitle}</h3>
           <p className="text-sm text-slate-500">{t.activitySubtitle}</p>
         </div>
         {timeline.unreadCount > 0 ? (
@@ -187,7 +187,7 @@ export function TimelinePage() {
             type="button"
             onClick={() => void handleMarkRead()}
             disabled={markingRead}
-            className="inline-flex items-center gap-2 rounded-lg border border-white/15 bg-white/5 px-3 py-2 text-sm text-slate-200 hover:bg-white/10 disabled:opacity-60"
+            className="inline-flex items-center gap-2 rounded-lg border border-slate-300 bg-white/5 px-3 py-2 text-sm text-slate-700 hover:bg-slate-100 disabled:opacity-60"
           >
             {markingRead ? <Loader2 className="size-4 animate-spin" /> : null}
             {t.markAllRead}
@@ -196,7 +196,7 @@ export function TimelinePage() {
       </div>
 
       {gscHintVisible ? (
-        <p className="rounded-lg border border-white/10 bg-white/[0.02] px-4 py-3 text-sm text-slate-400">
+        <p className="rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-400">
           {t.gscHint}
         </p>
       ) : null}

@@ -125,10 +125,10 @@ export function OnboardingPage() {
     return (
       <div className="app-content mx-auto min-w-0 max-w-3xl space-y-8 overflow-x-hidden p-4 sm:p-6 lg:p-10">
         <section className="saas-card-success text-center">
-          <h2 className="text-xl font-semibold tracking-tight text-white sm:text-2xl">
+          <h2 className="text-xl font-semibold tracking-tight text-slate-900 sm:text-2xl">
             {o.setupCompleteTitle}
           </h2>
-          <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-slate-300">
+          <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-slate-600">
             {o.setupCompletePageSubtitle}
           </p>
           <Link href="/app/autopilot-control" className="mt-7 inline-block">
@@ -156,7 +156,7 @@ export function OnboardingPage() {
           </div>
           <div>
             <p className="saas-eyebrow text-violet-400/80">{o.eyebrow}</p>
-            <h1 className="mt-2 text-2xl font-bold tracking-tight text-white sm:text-[1.875rem]">
+            <h1 className="mt-2 text-2xl font-bold tracking-tight text-slate-900 sm:text-[1.875rem]">
               {o.pageTitle}
             </h1>
             <p className="mt-3 max-w-2xl text-sm leading-relaxed text-slate-400">
@@ -207,7 +207,7 @@ export function OnboardingPage() {
                 variant="ghost"
                 disabled={skippingAll}
                 onClick={() => void handleSkipAll()}
-                className="text-slate-400 hover:text-slate-200"
+                className="text-slate-400 hover:text-slate-700"
               >
                 {skippingAll ? <Loader2 className="size-4 animate-spin" /> : null}
                 {o.skipSetupForNow}
@@ -216,7 +216,7 @@ export function OnboardingPage() {
                 <Button
                   type="button"
                   variant="outline"
-                  className="gap-2 border-white/10 bg-transparent text-slate-300"
+                  className="gap-2 border-slate-200 bg-transparent text-slate-600"
                 >
                   {o.goToDashboard}
                   <ArrowRight className="size-4" />
@@ -227,7 +227,7 @@ export function OnboardingPage() {
 
           <aside className="space-y-5">
             <section className="saas-card-muted">
-              <h2 className="text-sm font-semibold text-white">
+              <h2 className="text-sm font-semibold text-slate-900">
                 {o.sidebarNextTitle}
               </h2>
               <ul className="mt-4 space-y-3 text-sm leading-relaxed text-slate-400">
@@ -239,27 +239,27 @@ export function OnboardingPage() {
 
             {data.results ? (
               <section className="saas-card-muted">
-                <h2 className="text-sm font-semibold text-white">
+                <h2 className="text-sm font-semibold text-slate-900">
                   {o.sidebarResultsTitle}
                 </h2>
                 {data.results.growthScore != null ? (
                   <div className="mt-3 grid gap-2 text-sm">
-                    <p className="text-slate-300">
+                    <p className="text-slate-600">
                       {o.growthScoreLabel}{" "}
-                      <span className="font-medium text-white">
+                      <span className="font-medium text-slate-900">
                         {data.results.growthScore}
                       </span>
                     </p>
-                    <p className="text-slate-300">
+                    <p className="text-slate-600">
                       {o.openTasksLabel}{" "}
-                      <span className="font-medium text-white">
+                      <span className="font-medium text-slate-900">
                         {data.results.tasksCount ?? 0}
                       </span>
                     </p>
                     {data.results.monthlyPlanStatus ? (
-                      <p className="text-slate-300">
+                      <p className="text-slate-600">
                         {o.monthlyPlanLabel}{" "}
-                        <span className="font-medium capitalize text-white">
+                        <span className="font-medium capitalize text-slate-900">
                           {data.results.monthlyPlanStatus}
                         </span>
                       </p>

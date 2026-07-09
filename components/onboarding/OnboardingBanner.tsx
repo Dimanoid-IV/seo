@@ -30,7 +30,7 @@ export function OnboardingBanner() {
             <Sparkles className="size-4 text-violet-300" />
           </div>
           <div>
-            <p className="font-medium text-white">{o.bannerTitle}</p>
+            <p className="font-medium text-slate-900">{o.bannerTitle}</p>
             <p className="mt-1 text-sm text-slate-400">
               {o.bannerProgressDescription.replace(
                 "{percent}",
@@ -50,7 +50,7 @@ export function OnboardingBanner() {
             type="button"
             size="icon"
             variant="ghost"
-            className="size-8 text-slate-400 hover:text-slate-200"
+            className="size-8 text-slate-400 hover:text-slate-700"
             onClick={() => setDismissed(true)}
             aria-label={o.dismissBannerAria}
           >

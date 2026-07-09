@@ -30,10 +30,10 @@ export function EmailApprovalCard({
   const isBusy = actionEmailId === email.id;
 
   return (
-    <article className="rounded-xl border border-white/10 bg-white/[0.03] p-5">
+    <article className="rounded-xl border border-slate-200 bg-white p-5">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div className="min-w-0 flex-1">
-          <h3 className="truncate font-semibold text-white">{email.subject}</h3>
+          <h3 className="truncate font-semibold text-slate-900">{email.subject}</h3>
           <div className="mt-2 flex flex-wrap items-center gap-2">
             <EmailApprovalTypeBadge type={email.type} />
             <EmailApprovalStatusBadge status={email.status} />
@@ -59,7 +59,7 @@ export function EmailApprovalCard({
           type="button"
           disabled={isBusy || email.status === "sent"}
           onClick={() => onEdit(email)}
-          className="rounded-lg border border-white/10 px-3 py-1.5 text-xs font-medium text-slate-200 hover:bg-white/5 disabled:opacity-50"
+          className="rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-medium text-slate-700 hover:bg-slate-50 disabled:opacity-50"
         >
           {e.edit}
         </button>
@@ -78,7 +78,7 @@ export function EmailApprovalCard({
             type="button"
             disabled={isBusy}
             onClick={() => onArchive(email)}
-            className="rounded-lg border border-white/10 px-3 py-1.5 text-xs font-medium text-slate-400 hover:bg-white/5 disabled:opacity-50"
+            className="rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-medium text-slate-400 hover:bg-slate-50 disabled:opacity-50"
           >
             {e.archive}
           </button>

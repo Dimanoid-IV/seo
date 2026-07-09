@@ -23,9 +23,9 @@ export function ControlEmptyState({ variant }: ControlEmptyStateProps) {
   const copy = dict.controlCenter.emptyStates[VARIANT_KEY[variant]];
 
   return (
-    <div className="rounded-xl border border-dashed border-white/10 bg-white/[0.02] px-5 py-10 text-center">
+    <div className="rounded-xl border border-dashed border-slate-200 bg-slate-50 px-5 py-10 text-center">
       <Gauge className="mx-auto mb-3 size-8 text-slate-500" />
-      <h3 className="font-medium text-white">{copy.title}</h3>
+      <h3 className="font-medium text-slate-900">{copy.title}</h3>
       <p className="mt-1 text-sm text-slate-400">{copy.description}</p>
     </div>
   );

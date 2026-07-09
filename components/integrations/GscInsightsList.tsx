@@ -43,11 +43,11 @@ const TYPE_STYLES: Record<
 export function GscMetricsExplainer({ className }: { className?: string }) {
   return (
     <section className={cn("space-y-2", className)}>
-      <h4 className="text-sm font-semibold text-white">Что это значит</h4>
+      <h4 className="text-sm font-semibold text-slate-900">Что это значит</h4>
       <ul className="space-y-2 text-sm text-slate-400">
         {GSC_METRICS_EXPLAINER.map((item) => (
           <li key={item.label}>
-            <span className="font-medium text-slate-300">{item.label}:</span>{" "}
+            <span className="font-medium text-slate-600">{item.label}:</span>{" "}
             {item.text}
           </li>
         ))}
@@ -72,7 +72,7 @@ export function GscInsightsList({
 
       {insights.length > 0 ? (
         <section className="space-y-3">
-          <h4 className="flex items-center gap-2 text-sm font-semibold text-white">
+          <h4 className="flex items-center gap-2 text-sm font-semibold text-slate-900">
             <Sparkles className="size-4 text-violet-400" aria-hidden />
             Выводы за 28 дней
           </h4>
@@ -100,7 +100,7 @@ export function GscInsightsList({
                         {insight.title}
                       </p>
                       {!compact ? (
-                        <p className="text-sm text-slate-300">
+                        <p className="text-sm text-slate-600">
                           {insight.description}
                         </p>
                       ) : null}

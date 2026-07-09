@@ -54,7 +54,7 @@ export function ScoreCard({
           <p className="text-xs font-medium uppercase tracking-wide text-slate-400">
             {title}
           </p>
-          <p className="mt-1 text-3xl font-bold text-white tabular-nums">
+          <p className="mt-1 text-3xl font-bold text-slate-900 tabular-nums">
             {value}
           </p>
           {subtitle ? (

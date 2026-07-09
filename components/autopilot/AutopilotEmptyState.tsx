@@ -25,7 +25,7 @@ export function AutopilotEmptyState({ variant }: AutopilotEmptyStateProps) {
         : { title: a.emptyNoPlanTitle, description: a.emptyNoPlanDescription };
 
   return (
-    <div className="flex flex-col items-center rounded-2xl border border-dashed border-white/10 bg-white/[0.02] px-6 py-16 text-center">
+    <div className="flex flex-col items-center rounded-2xl border border-dashed border-slate-200 bg-slate-50 px-6 py-16 text-center">
       <div className="mb-4 flex size-14 items-center justify-center rounded-2xl bg-violet-500/10">
         {variant === "no-plan" ? (
           <Sparkles className="size-7 text-violet-400" />
@@ -33,7 +33,7 @@ export function AutopilotEmptyState({ variant }: AutopilotEmptyStateProps) {
           <CalendarDays className="size-7 text-slate-400" />
         )}
       </div>
-      <h3 className="text-lg font-semibold text-white">{copy.title}</h3>
+      <h3 className="text-lg font-semibold text-slate-900">{copy.title}</h3>
       <p className="mt-2 max-w-md text-sm text-slate-400">{copy.description}</p>
       {"action" in copy && copy.action ? (
         <Link

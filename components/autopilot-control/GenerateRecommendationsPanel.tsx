@@ -139,7 +139,7 @@ export function GenerateRecommendationsPanel({
               size="sm"
               variant="outline"
               disabled={loading || configured !== true}
-              className="min-h-10 rounded-xl border-white/[0.08] bg-white/[0.03] text-slate-200"
+              className="min-h-10 rounded-xl border-slate-200 bg-white text-slate-700"
               onClick={() => void handleGenerate("content_brief")}
             >
               {h.generateBrief}
@@ -155,7 +155,7 @@ export function GenerateRecommendationsPanel({
       ) : null}
 
       {result ? (
-        <div className="mt-4 space-y-3 rounded-xl border border-white/[0.08] bg-white/[0.02] p-4">
+        <div className="mt-4 space-y-3 rounded-xl border border-slate-200 bg-slate-50 p-4">
           <div className="flex flex-wrap items-center gap-2">
             <span className="rounded-full border border-amber-400/20 bg-amber-500/10 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-amber-200">
               {h.needsReview}
@@ -164,10 +164,10 @@ export function GenerateRecommendationsPanel({
               <span className="text-xs text-slate-500">{h.limitedData}</span>
             ) : null}
           </div>
-          <h4 className="font-medium text-white">{result.title}</h4>
+          <h4 className="font-medium text-slate-900">{result.title}</h4>
           <p className="text-sm leading-relaxed text-slate-400">{result.summary}</p>
           {result.tasks && result.tasks.length > 0 ? (
-            <ul className="space-y-2 text-sm text-slate-300">
+            <ul className="space-y-2 text-sm text-slate-600">
               {result.tasks.slice(0, 3).map((task) => (
                 <li key={task.id} className="break-words">
                   • {task.title}
@@ -176,7 +176,7 @@ export function GenerateRecommendationsPanel({
             </ul>
           ) : null}
           {result.contentBrief ? (
-            <p className="text-sm text-slate-300">{result.contentBrief.title}</p>
+            <p className="text-sm text-slate-600">{result.contentBrief.title}</p>
           ) : null}
           <div className="flex flex-wrap gap-2 pt-1">
             {result.tasks && result.tasks.length > 0 ? (
@@ -185,7 +185,7 @@ export function GenerateRecommendationsPanel({
                 nativeButton={false}
                 size="sm"
                 variant="outline"
-                className="rounded-xl border-white/[0.08] bg-white/[0.03] text-slate-200"
+                className="rounded-xl border-slate-200 bg-white text-slate-700"
               >
                 {h.reviewTasks}
               </Button>
@@ -196,7 +196,7 @@ export function GenerateRecommendationsPanel({
                 nativeButton={false}
                 size="sm"
                 variant="outline"
-                className="rounded-xl border-white/[0.08] bg-white/[0.03] text-slate-200"
+                className="rounded-xl border-slate-200 bg-white text-slate-700"
               >
                 {h.reviewBrief}
               </Button>

@@ -47,7 +47,7 @@ export function PreparedForYouCard({
         {rows.map((row) => (
           <div
             key={row.label}
-            className="flex items-center justify-between gap-4 rounded-xl bg-white/[0.02] px-4 py-3 text-sm"
+            className="flex items-center justify-between gap-4 rounded-xl bg-slate-50 px-4 py-3 text-sm"
           >
             <dt className="text-slate-400">{row.label}</dt>
             <dd className="font-medium text-slate-100">{row.value}</dd>

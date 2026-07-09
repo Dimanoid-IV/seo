@@ -137,13 +137,13 @@ export function WordPressConnectorPanel({
           {wpConnection?.pluginVersion ? (
             <div>
               <dt className="text-slate-500">{wp.pluginVersion}</dt>
-              <dd className="text-slate-300">{wpConnection.pluginVersion}</dd>
+              <dd className="text-slate-600">{wpConnection.pluginVersion}</dd>
             </div>
           ) : null}
           {wpConnection?.lastPingAt ? (
             <div>
               <dt className="text-slate-500">{wp.lastPing}</dt>
-              <dd className="text-slate-300">
+              <dd className="text-slate-600">
                 {formatRelativeTime(wpConnection.lastPingAt)}
               </dd>
             </div>
@@ -152,7 +152,7 @@ export function WordPressConnectorPanel({
 
         {wpConnection?.permissions ? (
           <div>
-            <p className="mb-2 text-xs font-medium text-slate-300">
+            <p className="mb-2 text-xs font-medium text-slate-600">
               {wp.permissionsTitle}
             </p>
             <ul className="space-y-1 text-xs text-slate-400">
@@ -203,7 +203,7 @@ export function WordPressConnectorPanel({
         className
       )}
     >
-      <p className="text-sm text-slate-300">{wp.createKeyDescription}</p>
+      <p className="text-sm text-slate-600">{wp.createKeyDescription}</p>
       <p className="text-xs text-cyan-100/90">{wp.draftOnlyMessage}</p>
 
       <Button
@@ -240,7 +240,7 @@ export function WordPressConnectorPanel({
 
           {apiKey ? (
             <div className="space-y-1">
-              <p className="text-xs font-medium text-slate-300">{wp.apiKey}</p>
+              <p className="text-xs font-medium text-slate-600">{wp.apiKey}</p>
               <div className="flex items-center gap-2">
                 <code className="flex-1 overflow-x-auto rounded bg-black/30 px-3 py-2 text-xs text-cyan-200">
                   {apiKey}
@@ -248,7 +248,7 @@ export function WordPressConnectorPanel({
                 <button
                   type="button"
                   onClick={() => void handleCopyValue(apiKey, "key")}
-                  className="shrink-0 rounded-lg border border-white/10 p-2 text-slate-300 hover:bg-white/5"
+                  className="shrink-0 rounded-lg border border-slate-200 p-2 text-slate-600 hover:bg-slate-50"
                   aria-label={wp.copyKeyAria}
                 >
                   <Copy className="size-4" />
@@ -262,7 +262,7 @@ export function WordPressConnectorPanel({
 
           {apiSecret ? (
             <div className="space-y-1">
-              <p className="text-xs font-medium text-slate-300">{wp.sharedSecret}</p>
+              <p className="text-xs font-medium text-slate-600">{wp.sharedSecret}</p>
               <div className="flex items-center gap-2">
                 <code className="flex-1 overflow-x-auto rounded bg-black/30 px-3 py-2 text-xs text-cyan-200">
                   {apiSecret}
@@ -270,7 +270,7 @@ export function WordPressConnectorPanel({
                 <button
                   type="button"
                   onClick={() => void handleCopyValue(apiSecret, "secret")}
-                  className="shrink-0 rounded-lg border border-white/10 p-2 text-slate-300 hover:bg-white/5"
+                  className="shrink-0 rounded-lg border border-slate-200 p-2 text-slate-600 hover:bg-slate-50"
                   aria-label={wp.copySecretAria}
                 >
                   <Copy className="size-4" />
@@ -285,7 +285,7 @@ export function WordPressConnectorPanel({
       ) : null}
 
       <div>
-        <p className="mb-2 text-sm font-medium text-white">{wp.instructions}</p>
+        <p className="mb-2 text-sm font-medium text-slate-900">{wp.instructions}</p>
         <ol className="list-decimal space-y-2 pl-5 text-sm text-slate-400">
           {wp.setupSteps.map((step) => (
             <li key={step}>{step}</li>

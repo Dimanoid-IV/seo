@@ -19,7 +19,7 @@ export function ContentPlanSection({
     <section className={cn("space-y-4", className)}>
       <div className="flex flex-wrap items-end justify-between gap-2">
         <div>
-          <h2 className="text-lg font-semibold text-white">{title}</h2>
+          <h2 className="text-lg font-semibold text-slate-900">{title}</h2>
           {description ? (
             <p className="mt-1 text-sm text-slate-400">{description}</p>
           ) : null}

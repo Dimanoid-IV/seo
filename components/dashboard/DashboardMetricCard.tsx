@@ -16,9 +16,9 @@ const ACCENT: Record<
   NonNullable<DashboardMetricCardProps["accent"]>,
   { value: string; icon: string; Icon: LucideIcon }
 > = {
-  emerald: { value: "text-emerald-300", icon: "text-emerald-400/80", Icon: TrendingUp },
-  cyan: { value: "text-cyan-300", icon: "text-cyan-400/80", Icon: BarChart3 },
-  amber: { value: "text-amber-300", icon: "text-amber-400/80", Icon: ClipboardCheck },
+  emerald: { value: "text-emerald-600", icon: "text-emerald-500", Icon: TrendingUp },
+  cyan: { value: "text-cyan-600", icon: "text-cyan-500", Icon: BarChart3 },
+  amber: { value: "text-amber-600", icon: "text-amber-500", Icon: ClipboardCheck },
 };
 
 export function DashboardMetricCard({
@@ -44,7 +44,7 @@ export function DashboardMetricCard({
       >
         {value}
       </p>
-      <p className="mt-3 text-sm leading-relaxed text-slate-400">{subtitle}</p>
+      <p className="mt-3 text-sm leading-relaxed text-slate-600">{subtitle}</p>
     </div>
   );
 }

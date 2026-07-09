@@ -47,8 +47,8 @@ export function OnboardingCompleteCard({ onComplete }: OnboardingCompleteCardPro
   return (
     <section className="rounded-2xl border border-emerald-500/30 bg-emerald-500/10 p-6 text-center">
       <CheckCircle2 className="mx-auto size-10 text-emerald-400" />
-      <h3 className="mt-4 text-xl font-semibold text-white">{o.readyTitle}</h3>
-      <p className="mt-2 text-sm text-slate-300">{o.readySubtitle}</p>
+      <h3 className="mt-4 text-xl font-semibold text-slate-900">{o.readyTitle}</h3>
+      <p className="mt-2 text-sm text-slate-600">{o.readySubtitle}</p>
       <Button
         type="button"
         className="mt-5"

@@ -6,9 +6,9 @@ type UsageLimitsCardProps = {
 
 export function UsageLimitsCard({ usage }: UsageLimitsCardProps) {
   return (
-    <section className="rounded-2xl border border-white/10 bg-white/[0.03] p-5">
-      <h2 className="text-lg font-semibold text-white">Usage this month</h2>
-      <p className="mt-1 text-sm text-slate-400">Period: {usage.month}</p>
+    <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+      <h2 className="text-lg font-semibold text-slate-900">Usage this month</h2>
+      <p className="mt-1 text-sm text-slate-600">Period: {usage.month}</p>
 
       <div className="mt-4 grid gap-3 sm:grid-cols-2">
         {usage.items.map((item) => {
@@ -18,15 +18,15 @@ export function UsageLimitsCard({ usage }: UsageLimitsCardProps) {
           return (
             <div
               key={item.key}
-              className="rounded-xl border border-white/10 bg-[#0a0f1e]/60 p-3"
+              className="rounded-xl border border-slate-200 bg-slate-50 p-3"
             >
               <div className="flex items-center justify-between gap-2 text-sm">
-                <span className="text-slate-300">{item.label}</span>
-                <span className="font-medium text-white">
+                <span className="text-slate-600">{item.label}</span>
+                <span className="font-medium text-slate-900">
                   {item.current} / {item.limit}
                 </span>
               </div>
-              <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-white/10">
+              <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-slate-200">
                 <div
                   className="h-full rounded-full bg-gradient-to-r from-blue-500 to-violet-500"
                   style={{ width: `${ratio * 100}%` }}

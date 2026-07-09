@@ -47,7 +47,7 @@ export function ReportSummaryCard({
           <p className="text-xs font-medium uppercase tracking-wide text-slate-400">
             {title}
           </p>
-          <p className="mt-1 text-2xl font-bold tabular-nums text-white">{value}</p>
+          <p className="mt-1 text-2xl font-bold tabular-nums text-slate-900">{value}</p>
           {subtitle ? (
             <p className="mt-1 text-sm text-slate-400">{subtitle}</p>
           ) : null}

@@ -17,10 +17,10 @@ type ControlStatusHeroProps = {
 
 const STATUS_STYLES: Record<string, string> = {
   NEEDS_REVIEW:
-    "border-amber-500/15 from-amber-500/[0.1] to-orange-500/[0.04]",
-  READY: "border-emerald-500/15 from-emerald-500/[0.1] to-teal-500/[0.04]",
-  NEEDS_SETUP: "border-blue-500/15 from-blue-500/[0.1] to-violet-500/[0.04]",
-  NO_DATA: "border-white/[0.08] from-white/[0.05] to-slate-500/[0.03]",
+    "border-amber-200 from-amber-50/90 to-orange-50/50",
+  READY: "border-emerald-200 from-emerald-50/90 to-teal-50/50",
+  NEEDS_SETUP: "border-blue-200 from-blue-50/90 to-violet-50/50",
+  NO_DATA: "border-slate-200 from-slate-50/90 to-blue-50/30",
 };
 
 export function ControlStatusHero({
@@ -43,7 +43,7 @@ export function ControlStatusHero({
             <Sparkles className="size-5 text-violet-400" />
             <span className="saas-eyebrow text-violet-300/80">{status.label}</span>
           </div>
-          <h2 className="mt-3 text-xl font-semibold tracking-tight text-white sm:text-2xl">
+          <h2 className="mt-3 text-xl font-semibold tracking-tight text-slate-900 sm:text-2xl">
             {status.description}
           </h2>
         </div>
@@ -66,7 +66,7 @@ export function ControlStatusHero({
               nativeButton={false}
               variant="outline"
               size="sm"
-              className="min-h-10 gap-1 rounded-xl border-white/[0.08] bg-white/[0.03] text-slate-200"
+              className="min-h-10 gap-1 rounded-xl border-slate-200 bg-white text-slate-700"
             >
               {c.openTimeline}
               <ArrowRight className="size-3.5" />
@@ -76,7 +76,7 @@ export function ControlStatusHero({
               nativeButton={false}
               variant="outline"
               size="sm"
-              className="min-h-10 gap-1 rounded-xl border-white/[0.08] bg-white/[0.03] text-slate-200"
+              className="min-h-10 gap-1 rounded-xl border-slate-200 bg-white text-slate-700"
             >
               <Plug className="size-3.5" />
               {c.openIntegrations}

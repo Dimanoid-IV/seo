@@ -23,7 +23,7 @@ export function AutopilotRisksCard({ risks }: AutopilotRisksCardProps) {
     <section className="rounded-2xl border border-amber-500/20 bg-amber-500/5 p-6">
       <div className="flex items-center gap-2">
         <AlertTriangle className="size-5 text-amber-400" />
-        <h3 className="font-semibold text-white">{a.risksTitle}</h3>
+        <h3 className="font-semibold text-slate-900">{a.risksTitle}</h3>
       </div>
       <ul className="mt-4 space-y-3">
         {risks.map((risk) => {
@@ -31,7 +31,7 @@ export function AutopilotRisksCard({ risks }: AutopilotRisksCardProps) {
           return (
           <li
             key={risk.title}
-            className="rounded-lg border border-white/5 bg-black/20 px-4 py-3"
+            className="rounded-lg border border-slate-200 bg-slate-50 px-4 py-3"
           >
             <div className="flex items-center gap-2">
               <span
@@ -43,7 +43,7 @@ export function AutopilotRisksCard({ risks }: AutopilotRisksCardProps) {
               >
                 {translateTimelineSeverityFromDict(dict, risk.severity)}
               </span>
-              <span className="font-medium text-slate-200">{copy.title}</span>
+              <span className="font-medium text-slate-700">{copy.title}</span>
             </div>
             <p className="mt-1 text-sm text-slate-400">{copy.description}</p>
           </li>

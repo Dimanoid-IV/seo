@@ -33,11 +33,11 @@ export function NextBestActionCard({
 
   return (
     <section className="saas-card-primary">
-      <p className="saas-eyebrow text-blue-300/70">{d.whatShouldIDo}</p>
-      <h3 className="mt-3 text-xl font-semibold tracking-tight text-white">
+      <p className="saas-eyebrow text-blue-600">{d.whatShouldIDo}</p>
+      <h3 className="mt-3 text-xl font-semibold tracking-tight text-slate-900">
         {title}
       </h3>
-      <p className="mt-3 max-w-2xl text-sm leading-relaxed text-slate-300">
+      <p className="mt-3 max-w-2xl text-sm leading-relaxed text-slate-600">
         {description}
       </p>
       <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
@@ -65,7 +65,7 @@ export function NextBestActionCard({
         {secondaryLabel && secondaryHref ? (
           <Link
             href={secondaryHref}
-            className="inline-flex min-h-12 items-center justify-center gap-1 text-sm font-medium text-slate-400 transition hover:text-slate-200 sm:px-2"
+            className="inline-flex min-h-12 items-center justify-center gap-1 text-sm font-medium text-slate-600 transition hover:text-slate-900 sm:px-2"
           >
             {secondaryLabel}
             <ArrowRight className="size-3.5" />

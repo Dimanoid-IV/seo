@@ -51,8 +51,8 @@ export function EmailApprovalEditor({
 
   return (
     <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/60 p-4 sm:items-center">
-      <div className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-2xl border border-white/10 bg-[#0a0f1e] p-6 shadow-xl">
-        <h2 className="text-lg font-semibold text-white">{e.reviewTitle}</h2>
+      <div className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-2xl border border-slate-200 bg-white p-6 shadow-xl">
+        <h2 className="text-lg font-semibold text-slate-900">{e.reviewTitle}</h2>
         <TrustNote variant="email" className="mt-4" />
 
         <div className="mt-4 space-y-4">
@@ -62,7 +62,7 @@ export function EmailApprovalEditor({
               id="email-subject"
               value={subject}
               onChange={(ev) => setSubject(ev.target.value)}
-              className="border-white/10 bg-white/5"
+              className="border-slate-200 bg-white/5"
               disabled={email.status === "sent"}
             />
           </div>
@@ -75,7 +75,7 @@ export function EmailApprovalEditor({
               value={recipientEmail}
               onChange={(ev) => setRecipientEmail(ev.target.value)}
               placeholder={e.recipientPlaceholder}
-              className="border-white/10 bg-white/5"
+              className="border-slate-200 bg-white/5"
               disabled={email.status === "sent"}
             />
           </div>
@@ -87,7 +87,7 @@ export function EmailApprovalEditor({
               value={body}
               onChange={(ev) => setBody(ev.target.value)}
               rows={14}
-              className="border-white/10 bg-white/5 font-mono text-sm"
+              className="border-slate-200 bg-white/5 font-mono text-sm"
               disabled={email.status === "sent"}
             />
           </div>

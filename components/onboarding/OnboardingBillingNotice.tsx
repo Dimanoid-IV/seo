@@ -39,7 +39,7 @@ export function OnboardingBillingNotice({
           .
         </p>
       ) : billing.upgradeRecommended ? (
-        <p className="text-sm text-slate-300">
+        <p className="text-sm text-slate-600">
           Need more audits or monthly plans?{" "}
           <Link href="/app/billing" className="text-violet-300 underline">
             View plans

@@ -29,7 +29,7 @@ export function SocialPostCard({
   const s = dict.socialPosts;
 
   return (
-    <article className="glass-card flex flex-col gap-4 border border-white/5 p-4 sm:p-5">
+    <article className="glass-card flex flex-col gap-4 border border-slate-200 p-4 sm:p-5">
       <div className="flex flex-wrap items-center gap-2">
         <PlatformBadge platform={post.platform} />
         <SocialPostQualityBadge post={post} />
@@ -37,7 +37,7 @@ export function SocialPostCard({
       </div>
 
       <div>
-        <h3 className="font-semibold text-white">{post.title}</h3>
+        <h3 className="font-semibold text-slate-900">{post.title}</h3>
         {post.hook ? (
           <p className="mt-1 text-sm text-blue-300/90">{post.hook}</p>
         ) : null}
@@ -134,17 +134,17 @@ export function SocialPostGenerateDialog({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
-      <div className="w-full max-w-lg rounded-2xl border border-white/10 bg-[#0a0f1e] p-6 shadow-xl">
-        <h3 className="text-lg font-semibold text-white">{s.generateTitle}</h3>
+      <div className="w-full max-w-lg rounded-2xl border border-slate-200 bg-white p-6 shadow-xl">
+        <h3 className="text-lg font-semibold text-slate-900">{s.generateTitle}</h3>
         <p className="mt-1 text-sm text-slate-400">{s.generateDescription}</p>
 
         <div className="mt-5 space-y-4">
           <label className="block space-y-2">
-            <span className="text-sm text-slate-300">{s.platform}</span>
+            <span className="text-sm text-slate-600">{s.platform}</span>
             <select
               value={platform}
               onChange={(event) => setPlatform(event.target.value)}
-              className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white"
+              className="w-full rounded-lg border border-slate-200 border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900"
             >
               {Object.entries(s.platforms).map(([value, label]) => (
                 <option key={value} value={value}>
@@ -155,11 +155,11 @@ export function SocialPostGenerateDialog({
           </label>
 
           <label className="block space-y-2">
-            <span className="text-sm text-slate-300">{s.source}</span>
+            <span className="text-sm text-slate-600">{s.source}</span>
             <select
               value={source}
               onChange={(event) => setSource(event.target.value)}
-              className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white"
+              className="w-full rounded-lg border border-slate-200 border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900"
             >
               {Object.entries(s.sources).map(([value, label]) => (
                 <option key={value} value={value}>
@@ -244,41 +244,41 @@ export function SocialPostEditor({ post, onClose, onSaved }: SocialPostEditorPro
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
-      <div className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-2xl border border-white/10 bg-[#0a0f1e] p-6 shadow-xl">
-        <h3 className="text-lg font-semibold text-white">{s.editTitle}</h3>
+      <div className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-2xl border border-slate-200 bg-white p-6 shadow-xl">
+        <h3 className="text-lg font-semibold text-slate-900">{s.editTitle}</h3>
 
         <div className="mt-5 space-y-4">
           <label className="block space-y-2">
-            <span className="text-sm text-slate-300">{s.postTitle}</span>
+            <span className="text-sm text-slate-600">{s.postTitle}</span>
             <input
               value={title}
               onChange={(event) => setTitle(event.target.value)}
-              className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white"
+              className="w-full rounded-lg border border-slate-200 border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900"
             />
           </label>
           <label className="block space-y-2">
-            <span className="text-sm text-slate-300">{s.content}</span>
+            <span className="text-sm text-slate-600">{s.content}</span>
             <textarea
               value={content}
               onChange={(event) => setContent(event.target.value)}
               rows={8}
-              className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white"
+              className="w-full rounded-lg border border-slate-200 border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900"
             />
           </label>
           <label className="block space-y-2">
-            <span className="text-sm text-slate-300">{s.cta}</span>
+            <span className="text-sm text-slate-600">{s.cta}</span>
             <input
               value={cta}
               onChange={(event) => setCta(event.target.value)}
-              className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white"
+              className="w-full rounded-lg border border-slate-200 border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900"
             />
           </label>
           <label className="block space-y-2">
-            <span className="text-sm text-slate-300">{s.hashtags}</span>
+            <span className="text-sm text-slate-600">{s.hashtags}</span>
             <input
               value={hashtags}
               onChange={(event) => setHashtags(event.target.value)}
-              className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white"
+              className="w-full rounded-lg border border-slate-200 border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900"
             />
           </label>
         </div>

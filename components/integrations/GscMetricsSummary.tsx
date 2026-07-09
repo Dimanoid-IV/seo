@@ -40,12 +40,12 @@ export function GscMetricsSummaryDisplay({
       {items.map((item) => (
         <div
           key={item.label}
-          className="rounded-lg border border-white/10 bg-white/[0.03] px-3 py-2.5"
+          className="rounded-lg border border-slate-200 bg-white px-3 py-2.5"
         >
           <dt className="text-[11px] uppercase tracking-wide text-slate-500">
             {item.label}
           </dt>
-          <dd className="mt-1 text-lg font-semibold text-white">{item.value}</dd>
+          <dd className="mt-1 text-lg font-semibold text-slate-900">{item.value}</dd>
         </div>
       ))}
     </dl>

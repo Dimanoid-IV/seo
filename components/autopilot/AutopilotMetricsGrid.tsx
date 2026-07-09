@@ -76,13 +76,13 @@ export function AutopilotMetricsGrid({ metrics }: AutopilotMetricsGridProps) {
         return (
           <div
             key={key}
-            className="rounded-xl border border-white/10 bg-white/[0.03] p-4"
+            className="rounded-xl border border-slate-200 bg-white p-4"
           >
             <div className="flex items-center gap-2 text-slate-400">
               <Icon className="size-4" />
               <span className="text-xs font-medium">{labels[key]}</span>
             </div>
-            <p className="mt-2 text-2xl font-semibold text-white">
+            <p className="mt-2 text-2xl font-semibold text-slate-900">
               {formatMetricValue(key, metrics)}
             </p>
           </div>

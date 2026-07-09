@@ -51,7 +51,7 @@ export function OnboardingGscStep({
           variant="outline"
           disabled={disabled || skipping}
           onClick={() => void handleSkip()}
-          className="border-white/10 bg-transparent text-slate-300"
+          className="border-slate-200 bg-transparent text-slate-600"
         >
           {skipping ? <Loader2 className="size-4 animate-spin" /> : null}
           {o.skipGsc}

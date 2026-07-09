@@ -20,8 +20,8 @@ export function AutopilotNextSteps({ steps }: AutopilotNextStepsProps) {
   }
 
   return (
-    <section className="rounded-2xl border border-white/10 bg-white/[0.02] p-6">
-      <h3 className="font-semibold text-white">{a.nextSteps}</h3>
+    <section className="rounded-2xl border border-slate-200 bg-slate-50 p-6">
+      <h3 className="font-semibold text-slate-900">{a.nextSteps}</h3>
       <ul className="mt-4 space-y-3">
         {steps.map((step) => {
           const copy = localizeNextStep(step, dict);
@@ -37,7 +37,7 @@ export function AutopilotNextSteps({ steps }: AutopilotNextStepsProps) {
                   {copy.title}
                 </Link>
               ) : (
-                <p className="font-medium text-white">{copy.title}</p>
+                <p className="font-medium text-slate-900">{copy.title}</p>
               )}
               <p className="text-sm text-slate-400">{copy.description}</p>
             </div>

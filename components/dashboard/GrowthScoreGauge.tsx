@@ -67,7 +67,7 @@ export function GrowthScoreGauge({
           </defs>
         </svg>
         <div className="absolute inset-0 flex flex-col items-center justify-center">
-          <span className={cn("font-bold tabular-nums text-white", fontSize)}>
+          <span className={cn("font-bold tabular-nums text-slate-900", fontSize)}>
             {Math.round(clamped)}
           </span>
           <span className="text-[10px] text-slate-500">/ {maxScore}</span>

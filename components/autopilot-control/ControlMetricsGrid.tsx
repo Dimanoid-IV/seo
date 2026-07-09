@@ -71,7 +71,7 @@ export function ControlMetricsGrid({ metrics }: ControlMetricsGridProps) {
               <Icon className="size-4 shrink-0" />
               <span className="text-xs font-medium">{m[item.labelKey]}</span>
             </div>
-            <p className="mt-3 text-2xl font-semibold tracking-tight text-white">
+            <p className="mt-3 text-2xl font-semibold tracking-tight text-slate-900">
               {value}
             </p>
           </div>

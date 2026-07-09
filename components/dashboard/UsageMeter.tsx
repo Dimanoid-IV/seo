@@ -27,9 +27,9 @@ export function UsageMeter({
   return (
     <div className={cn("space-y-2", className)}>
       <div className="flex items-baseline justify-between gap-2">
-        <span className="text-sm text-slate-300">{label}</span>
+        <span className="text-sm text-slate-600">{label}</span>
         <span className="text-sm tabular-nums text-slate-400">
-          <span className="font-semibold text-white">{used}</span>
+          <span className="font-semibold text-slate-900">{used}</span>
           {" / "}
           {limit}
           {unitSuffix}

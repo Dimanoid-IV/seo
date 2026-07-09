@@ -16,7 +16,7 @@ export function PlatformBadge({ platform, className }: PlatformBadgeProps) {
   return (
     <span
       className={cn(
-        "rounded-md border border-white/10 bg-white/5 px-2 py-0.5 text-xs text-slate-300",
+        "rounded-md border border-slate-200 bg-white/5 px-2 py-0.5 text-xs text-slate-600",
         className
       )}
     >

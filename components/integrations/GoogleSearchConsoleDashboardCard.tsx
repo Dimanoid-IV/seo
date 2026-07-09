@@ -21,7 +21,7 @@ export function GoogleSearchConsoleDashboardCard({
   return (
     <section
       className={cn(
-        "glass-card border border-white/10 p-5 sm:p-6",
+        "glass-card border border-slate-200 p-5 sm:p-6",
         className
       )}
     >
@@ -30,7 +30,7 @@ export function GoogleSearchConsoleDashboardCard({
           <Search className="size-5 text-white" aria-hidden />
         </div>
         <div className="min-w-0 flex-1">
-          <h3 className="text-base font-semibold text-white">
+          <h3 className="text-base font-semibold text-slate-900">
             Google Search Console
           </h3>
           <p className="mt-1 text-xs text-slate-500">Последние 28 дней</p>
@@ -74,7 +74,7 @@ export function GoogleSearchConsoleDashboardCard({
           {data.tasksCreatedLastSync != null && data.tasksCreatedLastSync > 0 ? (
             <p className="rounded-lg border border-violet-500/20 bg-violet-500/5 px-3 py-2 text-sm text-violet-200">
               На основе этих данных создано{" "}
-              <span className="font-semibold text-white">
+              <span className="font-semibold text-slate-900">
                 {data.tasksCreatedLastSync}
               </span>{" "}
               новых задач. Смотрите в блоке «Главные улучшения».

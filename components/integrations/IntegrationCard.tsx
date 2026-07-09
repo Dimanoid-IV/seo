@@ -117,7 +117,7 @@ export function IntegrationCard({
   return (
     <article
       className={cn(
-        "group relative flex h-full flex-col overflow-hidden rounded-2xl border border-white/[0.08] bg-gradient-to-br from-white/[0.04] to-transparent p-6 shadow-[0_4px_24px_-8px_rgba(0,0,0,0.35)] transition-all duration-300 hover:border-white/[0.12] hover:bg-white/[0.05] sm:p-7",
+        "group relative flex h-full flex-col overflow-hidden rounded-2xl border border-slate-200 bg-gradient-to-br from-white/[0.04] to-transparent p-6 shadow-[0_4px_24px_-8px_rgba(0,0,0,0.35)] transition-all duration-300 hover:border-white/[0.12] hover:bg-slate-50 sm:p-7",
         className
       )}
     >
@@ -139,12 +139,12 @@ export function IntegrationCard({
       </div>
 
       <div className="relative mt-4 flex flex-1 flex-col">
-        <h3 className="text-lg font-semibold text-white">{integration.title}</h3>
+        <h3 className="text-lg font-semibold text-slate-900">{integration.title}</h3>
         <p className="mt-2 flex-1 text-sm leading-relaxed text-slate-400">
           {integration.description}
         </p>
 
-        <div className="mt-4 border-t border-white/5 pt-4">
+        <div className="mt-4 border-t border-slate-200 pt-4">
           {integration.provider === "google_search_console" &&
           integration.connected &&
           !integration.selectedProperty ? (
@@ -197,9 +197,9 @@ export function IntegrationCard({
           action.variant === "primary" &&
             "bg-gradient-to-r from-blue-600 to-violet-600 text-white shadow-[0_6px_20px_-6px_rgba(59,130,246,0.4)] hover:from-blue-500 hover:to-violet-500",
           action.variant === "secondary" &&
-            "border border-white/[0.1] bg-white/[0.04] text-slate-200 hover:bg-white/[0.07]",
+            "border border-white/[0.1] bg-slate-50 text-slate-700 hover:bg-slate-100",
           action.variant === "muted" &&
-            "border border-white/[0.06] bg-white/[0.02] text-slate-400",
+            "border border-slate-200 bg-slate-50 text-slate-400",
           action.disabled && "cursor-default opacity-80 hover:bg-inherit"
         )}
       >

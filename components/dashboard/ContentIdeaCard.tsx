@@ -38,7 +38,7 @@ export function ContentIdeaCard({
   return (
     <article
       className={cn(
-        "glass-card flex flex-col gap-3 border border-white/5 p-4 sm:p-5",
+        "glass-card flex flex-col gap-3 border border-slate-200 p-4 sm:p-5",
         className
       )}
     >
@@ -49,7 +49,7 @@ export function ContentIdeaCard({
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-2">
             {badge ? (
-              <span className="rounded-md bg-white/5 px-2 py-0.5 text-xs text-slate-300">
+              <span className="rounded-md bg-white/5 px-2 py-0.5 text-xs text-slate-600">
                 {badge}
               </span>
             ) : null}
@@ -74,7 +74,7 @@ export function ContentIdeaCard({
               <span className="text-xs text-slate-500">{meta}</span>
             ) : null}
           </div>
-          <h3 className="mt-1 font-semibold text-white">
+          <h3 className="mt-1 font-semibold text-slate-900">
             {href ? (
               <Link href={href} className="hover:text-cyan-300">
                 {title}

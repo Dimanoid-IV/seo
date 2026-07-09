@@ -46,7 +46,7 @@ export function ActivityItem({
 
       <div className="min-w-0 flex-1 pb-1">
         <div className="flex flex-wrap items-baseline justify-between gap-x-2 gap-y-0.5">
-          <p className="text-sm font-medium text-slate-200">{title}</p>
+          <p className="text-sm font-medium text-slate-700">{title}</p>
           <time className="shrink-0 text-xs text-slate-500">{timestamp}</time>
         </div>
         {description ? (

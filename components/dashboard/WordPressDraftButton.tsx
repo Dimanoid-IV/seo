@@ -92,7 +92,7 @@ export function WordPressDraftButton({
           variant="outline"
           disabled={loading || wordpressGate.blocked}
           onClick={() => void handleCreateDraft()}
-          className="border-white/15 bg-white/5 text-slate-200 hover:bg-white/10"
+          className="border-slate-300 bg-white/5 text-slate-700 hover:bg-slate-100"
         >
           {loading ? (
             <>

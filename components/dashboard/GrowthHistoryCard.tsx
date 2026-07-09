@@ -62,7 +62,7 @@ export function GrowthHistoryCard({ history, className }: GrowthHistoryCardProps
   return (
     <div className={cn("glass-card flex flex-col gap-4 p-5", className)}>
       <div>
-        <h3 className="text-lg font-semibold text-white">История прогресса</h3>
+        <h3 className="text-lg font-semibold text-slate-900">История прогресса</h3>
         <p className="mt-1 text-sm text-slate-400">
           SEO не растёт мгновенно — но сайт должен становиться лучше каждый месяц.
         </p>
@@ -72,13 +72,13 @@ export function GrowthHistoryCard({ history, className }: GrowthHistoryCardProps
       </div>
 
       {history.length === 1 ? (
-        <div className="rounded-lg border border-white/5 bg-white/[0.02] px-4 py-5 text-sm text-slate-300">
+        <div className="rounded-lg border border-slate-200 bg-slate-50 px-4 py-5 text-sm text-slate-600">
           Первый замер сохранён ({last.score} баллов). История появится после
           следующей проверки.
         </div>
       ) : (
         <>
-          <div className="relative w-full overflow-hidden rounded-lg border border-white/5 bg-white/[0.02] px-2 py-3">
+          <div className="relative w-full overflow-hidden rounded-lg border border-slate-200 bg-slate-50 px-2 py-3">
             <svg
               viewBox={`0 0 ${CHART_WIDTH} ${CHART_HEIGHT}`}
               className="h-24 w-full"
@@ -152,7 +152,7 @@ export function GrowthHistoryCard({ history, className }: GrowthHistoryCardProps
             />
           </div>
 
-          <ul className="max-h-36 space-y-2 overflow-y-auto border-t border-white/5 pt-3">
+          <ul className="max-h-36 space-y-2 overflow-y-auto border-t border-slate-200 pt-3">
             {[...history].reverse().slice(0, 5).map((entry) => (
               <li
                 key={entry.id}
@@ -161,7 +161,7 @@ export function GrowthHistoryCard({ history, className }: GrowthHistoryCardProps
                 <span className="text-slate-500">
                   {formatRelativeTime(entry.createdAt)}
                 </span>
-                <span className="font-medium tabular-nums text-white">{entry.score}</span>
+                <span className="font-medium tabular-nums text-slate-900">{entry.score}</span>
                 {entry.delta != null && entry.delta !== 0 ? (
                   <span
                     className={cn(
@@ -195,7 +195,7 @@ function StatBlock({
   icon?: React.ReactNode;
 }) {
   return (
-    <div className="rounded-lg border border-white/5 bg-white/[0.02] px-2 py-3 sm:px-3">
+    <div className="rounded-lg border border-slate-200 bg-slate-50 px-2 py-3 sm:px-3">
       <p className="text-[10px] font-medium uppercase tracking-wide text-slate-500 sm:text-xs">
         {label}
       </p>

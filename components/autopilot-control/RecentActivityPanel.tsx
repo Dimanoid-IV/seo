@@ -27,10 +27,10 @@ export function RecentActivityPanel({ events }: RecentActivityPanelProps) {
   const a = dict.controlCenter.activity;
 
   return (
-    <section className="rounded-2xl border border-white/10 bg-white/[0.02] p-5">
+    <section className="rounded-2xl border border-slate-200 bg-slate-50 p-5">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h3 className="font-semibold text-white">{a.title}</h3>
+          <h3 className="font-semibold text-slate-900">{a.title}</h3>
           <p className="mt-1 text-xs text-slate-500">{a.subtitle}</p>
         </div>
         <Button
@@ -38,7 +38,7 @@ export function RecentActivityPanel({ events }: RecentActivityPanelProps) {
           nativeButton={false}
           variant="outline"
           size="sm"
-          className="gap-1 border-white/10 bg-transparent text-slate-200"
+          className="gap-1 border-slate-200 bg-transparent text-slate-700"
         >
           {a.openTimeline}
           <ArrowRight className="size-3.5" />
@@ -51,7 +51,7 @@ export function RecentActivityPanel({ events }: RecentActivityPanelProps) {
         ) : (
           events.map((event) => {
             const inner = (
-              <div className="rounded-lg border border-white/5 bg-black/20 px-4 py-3">
+              <div className="rounded-lg border border-slate-200 bg-slate-50 px-4 py-3">
                 <div className="flex flex-wrap items-center gap-2 text-xs">
                   <span
                     className={
@@ -65,7 +65,7 @@ export function RecentActivityPanel({ events }: RecentActivityPanelProps) {
                     {new Date(event.createdAt).toLocaleDateString()}
                   </span>
                 </div>
-                <h4 className="mt-1 font-medium text-white">{event.title}</h4>
+                <h4 className="mt-1 font-medium text-slate-900">{event.title}</h4>
                 {event.summary ? (
                   <p className="mt-1 text-sm text-slate-400 line-clamp-2">
                     {event.summary}

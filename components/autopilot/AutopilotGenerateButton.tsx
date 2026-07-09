@@ -44,7 +44,7 @@ export function AutopilotGenerateButton({
           variant="outline"
           disabled={loading || blocked}
           onClick={() => onGenerate(true)}
-          className="gap-2 border-white/10 bg-transparent text-slate-200 hover:bg-white/5"
+          className="gap-2 border-slate-200 bg-transparent text-slate-700 hover:bg-slate-50"
         >
           <RefreshCw className="size-4" />
           {a.regenerate}

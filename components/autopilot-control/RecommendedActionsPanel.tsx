@@ -19,7 +19,7 @@ type RecommendedActionsPanelProps = {
 const PRIORITY_STYLES: Record<string, string> = {
   HIGH: "border-amber-500/15 bg-amber-500/[0.04]",
   MEDIUM: "border-blue-500/10 bg-blue-500/[0.03]",
-  LOW: "border-white/[0.06] bg-white/[0.02]",
+  LOW: "border-slate-200 bg-slate-50",
 };
 
 export function RecommendedActionsPanel({
@@ -66,7 +66,7 @@ export function RecommendedActionsPanel({
                 )}
               >
                 <span className="saas-eyebrow">{priorityLabel(action.priority)}</span>
-                <h4 className="mt-2 font-medium text-white">{action.title}</h4>
+                <h4 className="mt-2 font-medium text-slate-900">{action.title}</h4>
                 <p className="mt-2 break-words text-sm leading-relaxed text-slate-400">
                   {action.description}
                 </p>
@@ -77,7 +77,7 @@ export function RecommendedActionsPanel({
                       size="sm"
                       variant="outline"
                       disabled={isLoading}
-                      className="min-h-10 w-full rounded-xl border-white/[0.08] bg-white/[0.03] text-slate-200 sm:w-auto"
+                      className="min-h-10 w-full rounded-xl border-slate-200 bg-white text-slate-700 sm:w-auto"
                       onClick={() => onApiAction(action)}
                     >
                       {isLoading ? (
@@ -92,7 +92,7 @@ export function RecommendedActionsPanel({
                       nativeButton={false}
                       size="sm"
                       variant="outline"
-                      className="min-h-10 w-full rounded-xl border-white/[0.08] bg-white/[0.03] text-slate-200 sm:w-auto"
+                      className="min-h-10 w-full rounded-xl border-slate-200 bg-white text-slate-700 sm:w-auto"
                     >
                       {r.open}
                     </Button>

@@ -127,7 +127,7 @@ export function ContentPlanPage() {
       </p>
       <TrustNote variant="ai" className="mb-8" />
       {plan.monthlyPlan?.summary ? (
-        <p className="mb-8 max-w-2xl text-sm text-slate-300">
+        <p className="mb-8 max-w-2xl text-sm text-slate-600">
           {plan.monthlyPlan.summary}
         </p>
       ) : null}
@@ -255,7 +255,7 @@ export function ContentPlanPage() {
                         variant: "outline",
                         size: "sm",
                         className:
-                          "border-white/15 bg-white/5 text-slate-200 hover:bg-white/10",
+                          "border-slate-300 bg-white/5 text-slate-700 hover:bg-slate-100",
                       })}
                     >
                       {cp.openArticle}

@@ -90,12 +90,12 @@ export function TaskCard({
   return (
     <article
       className={cn(
-        "glass-card group flex flex-col gap-3 p-4 transition-colors hover:border-white/15 sm:p-5",
+        "glass-card group flex flex-col gap-3 p-4 transition-colors hover:border-slate-300 sm:p-5",
         className
       )}
     >
       <div className="flex flex-wrap items-center gap-2">
-        <span className="rounded-md bg-white/5 px-2 py-0.5 text-xs text-slate-300">
+        <span className="rounded-md bg-white/5 px-2 py-0.5 text-xs text-slate-600">
           {category}
         </span>
         <span
@@ -108,13 +108,13 @@ export function TaskCard({
         </span>
         {impactScore != null ? (
           <span className="ml-auto text-xs text-slate-500">
-            Impact: <span className="font-semibold text-slate-300">{impactScore}</span>
+            Impact: <span className="font-semibold text-slate-600">{impactScore}</span>
           </span>
         ) : null}
       </div>
 
       <div>
-        <h3 className="font-semibold text-white group-hover:text-blue-100">
+        <h3 className="font-semibold text-slate-900 group-hover:text-blue-100">
           {title}
         </h3>
         {description ? (
@@ -137,7 +137,7 @@ export function TaskCard({
       {footerAction ? <div className="pt-1">{footerAction}</div> : null}
 
       {canShowActions ? (
-        <div className="flex flex-wrap gap-2 border-t border-white/5 pt-3">
+        <div className="flex flex-wrap gap-2 border-t border-slate-200 pt-3">
           {onComplete ? (
             <button
               type="button"
@@ -158,7 +158,7 @@ export function TaskCard({
               type="button"
               onClick={onDismiss}
               disabled={actionLoading}
-              className="inline-flex items-center gap-1.5 rounded-md border border-white/10 bg-white/5 px-3 py-1.5 text-xs font-medium text-slate-400 transition hover:bg-white/10 hover:text-slate-300 disabled:cursor-not-allowed disabled:opacity-60"
+              className="inline-flex items-center gap-1.5 rounded-md border border-slate-200 bg-white/5 px-3 py-1.5 text-xs font-medium text-slate-400 transition hover:bg-slate-100 hover:text-slate-600 disabled:cursor-not-allowed disabled:opacity-60"
             >
               Скрыть
             </button>

@@ -164,16 +164,42 @@ export const dictionary: Dictionary = {
     note: "Auto-Publish Mode is designed as an optional, controlled automation layer — not enabled by default. Start safely in Review Mode today.",
   },
   pricingPreview: {
-    title: "Start your SEO autopilot",
+    title: "Simple pricing, no long-term contracts",
     subtitle:
-      "Start free, then upgrade when you need more growth actions, drafts, review workflows, and future automation controls.",
+      "Start free, then upgrade when RankBoost starts helping you grow.",
     trustNote:
-      "No long-term contracts. Cancel anytime. Start safely in Review Mode.",
+      "No long-term contracts. Cancel anytime. Secure payment via Stripe.",
+    popular: "Popular",
+    viewAllPlans: "View all plans",
     plans: [
-      { name: "Free", description: "Try RankBoost and see your first growth opportunities." },
-      { name: "Starter", description: "Regular SEO and content autopilot actions for small businesses." },
-      { name: "Pro", description: "More drafts, AI search readiness, insights, and review workflows." },
-      { name: "Agency", description: "Multiple websites and team-ready growth workflows." },
+      {
+        name: "Free",
+        price: "€0",
+        description:
+          "Try RankBoost and get your first view of growth opportunities.",
+        cta: "Start free",
+      },
+      {
+        name: "Starter",
+        price: "€19/mo",
+        description:
+          "For small businesses that need regular SEO tasks and a clear growth plan.",
+        cta: "Choose Starter",
+      },
+      {
+        name: "Pro",
+        price: "€49/mo",
+        description:
+          "For growing businesses: more insights, content, and workflows.",
+        cta: "Choose Pro",
+      },
+      {
+        name: "Agency",
+        price: "€149/mo",
+        description:
+          "For teams and agencies managing several websites.",
+        cta: "Choose Agency",
+      },
     ],
   },
   whatWeDo: {

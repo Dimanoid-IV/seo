@@ -47,9 +47,9 @@ export function ApprovalQueueItemCard({ item }: ApprovalQueueItemCardProps) {
   }
 
   const content = (
-    <div className="rounded-xl border border-white/[0.06] bg-white/[0.02] px-4 py-4 transition-colors hover:bg-white/[0.04]">
+    <div className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-4 transition-colors hover:bg-slate-50">
       <div className="flex flex-wrap items-center gap-2 text-xs">
-        <span className="rounded-md bg-white/[0.06] px-2.5 py-0.5 font-medium text-slate-300">
+        <span className="rounded-md bg-slate-100 px-2.5 py-0.5 font-medium text-slate-600">
           {typeLabels[item.type] ?? item.type}
         </span>
         <span className={PRIORITY_STYLES[item.priority] ?? "text-slate-400"}>
@@ -57,7 +57,7 @@ export function ApprovalQueueItemCard({ item }: ApprovalQueueItemCardProps) {
         </span>
         <span className="text-slate-500 capitalize">{item.status}</span>
       </div>
-      <h4 className="mt-2.5 font-medium text-white">{item.title}</h4>
+      <h4 className="mt-2.5 font-medium text-slate-900">{item.title}</h4>
       {item.description ? (
         <p className="mt-1.5 text-sm leading-relaxed text-slate-400">
           {item.description}

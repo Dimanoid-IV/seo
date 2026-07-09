@@ -257,19 +257,19 @@ export function MonthlyAutopilotPage() {
           type="button"
           variant="outline"
           size="icon"
-          className="border-white/10 bg-transparent text-slate-300"
+          className="border-slate-200 bg-transparent text-slate-600"
           onClick={() => setMonth((m) => shiftMonth(m, -1))}
         >
           <ChevronLeft className="size-4" />
         </Button>
-        <span className="min-w-[140px] text-center text-sm font-medium text-white">
+        <span className="min-w-[140px] text-center text-sm font-medium text-slate-900">
           {monthLabel}
         </span>
         <Button
           type="button"
           variant="outline"
           size="icon"
-          className="border-white/10 bg-transparent text-slate-300"
+          className="border-slate-200 bg-transparent text-slate-600"
           onClick={() => setMonth((m) => shiftMonth(m, 1))}
         >
           <ChevronRight className="size-4" />
@@ -328,7 +328,7 @@ export function MonthlyAutopilotPage() {
 
           {data.plan.focusAreas.length > 0 ? (
             <section>
-              <h3 className="mb-4 text-lg font-semibold text-white">
+              <h3 className="mb-4 text-lg font-semibold text-slate-900">
                 {d.focusAreas.title}
               </h3>
               <div className="grid gap-4 lg:grid-cols-2">
@@ -341,7 +341,7 @@ export function MonthlyAutopilotPage() {
 
           {data.plan.recommendedActions.length > 0 ? (
             <section>
-              <h3 className="mb-4 text-lg font-semibold text-white">
+              <h3 className="mb-4 text-lg font-semibold text-slate-900">
                 {a.recommendedActions}
               </h3>
               <div className="grid gap-3 md:grid-cols-2">

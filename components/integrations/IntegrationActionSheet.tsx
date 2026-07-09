@@ -68,7 +68,7 @@ function DetailSection({
 
   return (
     <section className="space-y-2">
-      <h3 className="flex items-center gap-2 text-sm font-semibold text-white">
+      <h3 className="flex items-center gap-2 text-sm font-semibold text-slate-900">
         <Icon className="size-4 text-slate-500" aria-hidden />
         {title}
       </h3>
@@ -184,11 +184,11 @@ function IntegrationActionSheetContent({
   return (
     <SheetContent
       side="right"
-      className="max-h-[100dvh] min-w-0 w-full overflow-y-auto border-white/10 bg-[#0a0f1e] text-slate-200 sm:max-w-lg"
+      className="max-h-[100dvh] min-w-0 w-full overflow-y-auto border-slate-200 bg-white text-slate-700 sm:max-w-lg"
     >
-        <SheetHeader className="border-b border-white/5 pb-4">
+        <SheetHeader className="border-b border-slate-200 pb-4">
           <div className="flex flex-wrap items-center gap-2 pr-8">
-            <SheetTitle className="text-xl text-white">
+            <SheetTitle className="text-xl text-slate-900">
               {integration.title}
             </SheetTitle>
             <IntegrationStatusBadge
@@ -196,20 +196,20 @@ function IntegrationActionSheetContent({
               comingSoon={isComingSoon}
             />
           </div>
-          <SheetDescription className="text-slate-400">
+          <SheetDescription className="text-slate-600">
             {integration.description}
           </SheetDescription>
           {isConnected && integration.connectedAt ? (
-            <p className="text-xs text-emerald-400/90">
+            <p className="text-xs text-emerald-700">
               {i.connectedSince}{" "}
               {formatConnectedAt(integration.connectedAt, locale)}
             </p>
           ) : null}
           {isGsc && isConnected && !gscPropertySelected ? (
-            <p className="text-xs text-amber-400/90">{i.gscSiteNotSelected}</p>
+            <p className="text-xs text-amber-700">{i.gscSiteNotSelected}</p>
           ) : null}
           {isGsc && isConnected && integration.selectedProperty ? (
-            <p className="text-xs text-cyan-300/90">
+            <p className="text-xs text-cyan-700">
               {i.searchConsoleSite} {integration.selectedProperty}
             </p>
           ) : null}
@@ -253,14 +253,14 @@ function IntegrationActionSheetContent({
                   </p>
 
                   <section className="space-y-2">
-                    <h3 className="flex items-center gap-2 text-sm font-semibold text-white">
+                    <h3 className="flex items-center gap-2 text-sm font-semibold text-slate-900">
                       <ArrowRight className="size-4 text-slate-500" />
                       {i.connectionPath}
                     </h3>
                     <ol className="space-y-2 text-sm text-slate-400">
                       {details.connectionPath.map((step, index) => (
                         <li key={step} className="flex gap-3">
-                          <span className="flex size-6 shrink-0 items-center justify-center rounded-full bg-white/5 text-xs font-medium text-slate-300">
+                          <span className="flex size-6 shrink-0 items-center justify-center rounded-full bg-white/5 text-xs font-medium text-slate-600">
                             {index + 1}
                           </span>
                           <span className="pt-0.5">{step}</span>
@@ -297,9 +297,9 @@ function IntegrationActionSheetContent({
           ) : null}
 
           {isGsc && isConnected && gscPropertySelected ? (
-            <section className="space-y-3 rounded-xl border border-white/10 bg-white/[0.02] p-4">
+            <section className="space-y-3 rounded-xl border border-slate-200 bg-slate-50 p-4">
               <div className="flex items-center justify-between gap-3">
-                <h3 className="text-sm font-semibold text-white">
+                <h3 className="text-sm font-semibold text-slate-900">
                   {i.metrics28Days}
                 </h3>
                 {integration.lastFetchedAt ? (
@@ -345,7 +345,7 @@ function IntegrationActionSheetContent({
         </div>
 
         {!isComingSoon && !isWordPress ? (
-          <SheetFooter className="border-t border-white/5">
+          <SheetFooter className="border-t border-slate-200">
             {isGsc ? (
               isConnected ? (
                 <>
@@ -353,7 +353,7 @@ function IntegrationActionSheetContent({
                     type="button"
                     disabled
                     variant="outline"
-                    className="w-full border border-white/15 bg-white/5 text-slate-300"
+                    className="w-full border border-slate-300 bg-white/5 text-slate-600"
                   >
                     {i.manageConnection}
                   </Button>
@@ -391,7 +391,7 @@ function IntegrationActionSheetContent({
                   className={cn(
                     "w-full",
                     isConnected
-                      ? "border border-white/15 bg-white/5 text-slate-300"
+                      ? "border border-slate-300 bg-white/5 text-slate-600"
                       : "bg-gradient-to-r from-blue-600 to-violet-600 text-white opacity-80"
                   )}
                   variant={isConnected ? "outline" : "default"}
