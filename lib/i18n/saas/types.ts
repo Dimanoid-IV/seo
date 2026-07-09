@@ -60,6 +60,9 @@ export type SaasDictionary = {
     notFound: string;
     configurationMissing: string;
     gscConnectionFailed: string;
+    checkoutAuthRequired: string;
+    checkoutFailed: string;
+    onboardingRequired: string;
     generic: string;
   };
   auth: {

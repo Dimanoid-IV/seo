@@ -14,17 +14,25 @@ import {
   parseApiErrorMessage,
   storeAccessToken,
 } from "@/lib/auth/client-session";
+import {
+  billingPathForPlanQuery,
+  normalizeBillingPlanQuery,
+  planQuerySuffix,
+} from "@/lib/billing/plan-query";
 
 export function RegisterForm({
   initialWebsite = "",
   initialPreviewToken = "",
+  selectedPlan = "",
 }: {
   initialWebsite?: string;
   initialPreviewToken?: string;
+  selectedPlan?: string;
 }) {
   const router = useRouter();
   const { dict, locale } = useSaasTranslations();
   const { auth } = dict;
+  const normalizedPlan = normalizeBillingPlanQuery(selectedPlan);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -79,7 +87,7 @@ export function RegisterForm({
       }
 
       storeAccessToken(data.accessToken);
-      router.push("/app");
+      router.push(normalizedPlan ? billingPathForPlanQuery(normalizedPlan) : "/app");
       router.refresh();
     } catch {
       setError(auth.networkError);
@@ -210,7 +218,10 @@ export function RegisterForm({
 
       <p className="text-center text-sm text-slate-500">
         {auth.hasAccount}{" "}
-        <Link href="/login" className="text-blue-600 hover:text-blue-700">
+        <Link
+          href={`/login${planQuerySuffix(normalizedPlan)}`}
+          className="text-blue-600 hover:text-blue-700"
+        >
           {auth.login}
         </Link>
       </p>

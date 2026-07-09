@@ -77,6 +77,12 @@ export const saasDictionary: SaasDictionary = {
     configurationMissing: "Эта функция пока не настроена.",
     gscConnectionFailed:
       "Google Search Console пока не готов к подключению.",
+    checkoutAuthRequired:
+      "Войдите или создайте аккаунт, чтобы оформить подписку.",
+    checkoutFailed:
+      "Не удалось открыть оплату. Попробуйте ещё раз или войдите в аккаунт.",
+    onboardingRequired:
+      "Завершите настройку аккаунта, чтобы оформить подписку.",
     generic: "Что-то пошло не так. Попробуйте ещё раз.",
   },
   auth: {

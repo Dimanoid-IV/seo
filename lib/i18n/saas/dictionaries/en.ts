@@ -77,6 +77,12 @@ export const saasDictionary: SaasDictionary = {
     configurationMissing: "This feature is not configured yet.",
     gscConnectionFailed:
       "Google Search Console is not ready to connect yet.",
+    checkoutAuthRequired:
+      "Sign in or create an account to choose this plan.",
+    checkoutFailed:
+      "Could not open checkout. Please try again or sign in.",
+    onboardingRequired:
+      "Complete account setup before choosing a paid plan.",
     generic: "Something went wrong. Please try again.",
   },
   auth: {

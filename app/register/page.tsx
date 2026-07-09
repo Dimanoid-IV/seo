@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 };
 
 type RegisterPageProps = {
-  searchParams: Promise<{ website?: string; previewToken?: string }>;
+  searchParams: Promise<{ website?: string; previewToken?: string; plan?: string }>;
 };
 
 export default async function RegisterPage({ searchParams }: RegisterPageProps) {
@@ -19,6 +19,7 @@ export default async function RegisterPage({ searchParams }: RegisterPageProps) 
     <RegisterPageContent
       initialWebsite={params.website?.trim() ?? ""}
       initialPreviewToken={params.previewToken?.trim() ?? ""}
+      selectedPlan={params.plan?.trim() ?? ""}
     />
   );
 }

@@ -48,14 +48,22 @@ export async function createCheckoutSession(input: {
   let customerId = current.subscription.stripeCustomerId;
 
   if (!customerId) {
-    const customer = await stripe.customers.create({
-      email: input.userEmail,
-      metadata: {
-        userId: input.userId,
-        organizationId: input.organizationId,
-      },
-    });
-    customerId = customer.id;
+    try {
+      const customer = await stripe.customers.create({
+        email: input.userEmail,
+        metadata: {
+          userId: input.userId,
+          organizationId: input.organizationId,
+        },
+      });
+      customerId = customer.id;
+    } catch {
+      throw billingError(
+        "BILLING_REQUIRED",
+        "Could not create checkout session.",
+        input.plan.toLowerCase()
+      );
+    }
 
     const prisma = (await import("@/lib/db")).getPrisma();
     await prisma.subscription.update({
@@ -66,7 +74,9 @@ export async function createCheckoutSession(input: {
 
   const appUrl = getBillingAppUrl();
 
-  const session = await stripe.checkout.sessions.create({
+  let session;
+  try {
+    session = await stripe.checkout.sessions.create({
     mode: "subscription",
     customer: customerId,
     line_items: [{ price: priceId, quantity: 1 }],
@@ -85,6 +95,13 @@ export async function createCheckoutSession(input: {
       },
     },
   });
+  } catch {
+    throw billingError(
+      "BILLING_REQUIRED",
+      "Could not create checkout session.",
+      input.plan.toLowerCase()
+    );
+  }
 
   if (!session.url) {
     throw billingError(

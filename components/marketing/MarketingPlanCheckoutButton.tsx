@@ -1,12 +1,18 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
-import { authFetch, parseApiErrorMessage } from "@/lib/auth/client-session";
-import { useSaasTranslations } from "@/lib/i18n/saas/SaasLocaleProvider";
+import { authFetch } from "@/lib/auth/client-session";
+import { friendlyApiErrorMessageForLocale } from "@/lib/copy/user-errors";
+import {
+  loginPathForPlan,
+  onboardingPathForPlan,
+  registerPathForPlan,
+} from "@/lib/billing/plan-query";
 import type { BillingPlanKey } from "@/lib/billing/plans";
+import { getClientLocale } from "@/lib/i18n/saas/locale-state";
+import { useSaasTranslations } from "@/lib/i18n/saas/SaasLocaleProvider";
 
 type MarketingPlanCheckoutButtonProps = {
   plan: BillingPlanKey;
@@ -16,6 +22,21 @@ type MarketingPlanCheckoutButtonProps = {
 type CheckoutResponse = {
   data: { checkoutUrl: string };
 };
+
+type ApiErrorBody = {
+  error?: {
+    code?: string;
+    message?: string;
+    details?: {
+      billingError?: string;
+    };
+  };
+};
+
+type AuthState =
+  | { status: "loading" }
+  | { status: "guest" }
+  | { status: "authenticated"; hasOrganization: boolean };
 
 function planCheckoutLabel(
   plan: BillingPlanKey,
@@ -36,7 +57,7 @@ export function MarketingPlanCheckoutButton({
 }: MarketingPlanCheckoutButtonProps) {
   const { dict } = useSaasTranslations();
   const { pricing, errors } = dict;
-  const [authenticated, setAuthenticated] = useState<boolean | null>(null);
+  const [authState, setAuthState] = useState<AuthState>({ status: "loading" });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -46,12 +67,26 @@ export function MarketingPlanCheckoutButton({
     async function checkSession() {
       try {
         const response = await authFetch("/api/auth/me");
-        if (!cancelled) {
-          setAuthenticated(response.ok);
+        if (cancelled) {
+          return;
         }
+
+        if (!response.ok) {
+          setAuthState({ status: "guest" });
+          return;
+        }
+
+        const body = (await response.json()) as {
+          organization?: { id: string } | null;
+        };
+
+        setAuthState({
+          status: "authenticated",
+          hasOrganization: Boolean(body.organization?.id),
+        });
       } catch {
         if (!cancelled) {
-          setAuthenticated(false);
+          setAuthState({ status: "guest" });
         }
       }
     }
@@ -74,8 +109,36 @@ export function MarketingPlanCheckoutButton({
         body: JSON.stringify({ plan: plan.toLowerCase() }),
       });
 
+      if (response.status === 401) {
+        window.location.href = loginPathForPlan(plan);
+        return;
+      }
+
       if (!response.ok) {
-        setError(await parseApiErrorMessage(response, errors.billingRequired));
+        let body: ApiErrorBody = {};
+        try {
+          body = (await response.json()) as ApiErrorBody;
+        } catch {
+          body = {};
+        }
+
+        const billingError = body.error?.details?.billingError;
+        const code = body.error?.code;
+
+        if (response.status === 404 || billingError === "ONBOARDING_REQUIRED") {
+          window.location.href = onboardingPathForPlan(plan);
+          return;
+        }
+
+        setError(
+          friendlyApiErrorMessageForLocale(
+            getClientLocale(),
+            code,
+            body.error?.message,
+            errors.checkoutFailed,
+            body.error?.details
+          )
+        );
         return;
       }
 
@@ -88,6 +151,24 @@ export function MarketingPlanCheckoutButton({
     }
   }
 
+  function handlePlanSelect() {
+    if (authState.status === "loading" || loading) {
+      return;
+    }
+
+    if (authState.status === "guest") {
+      window.location.href = registerPathForPlan(plan);
+      return;
+    }
+
+    if (!authState.hasOrganization) {
+      window.location.href = onboardingPathForPlan(plan);
+      return;
+    }
+
+    void startCheckout();
+  }
+
   if (!checkoutEnabled) {
     return (
       <p className="mt-4 text-xs leading-relaxed text-slate-400">
@@ -96,37 +177,17 @@ export function MarketingPlanCheckoutButton({
     );
   }
 
-  if (authenticated === null) {
-    return (
-      <Button type="button" disabled className="mt-4 min-h-10 w-full rounded-xl">
-        {pricing.checkoutLoading}
-      </Button>
-    );
-  }
-
-  if (!authenticated) {
-    return (
-      <div className="mt-4 space-y-2">
-        <Link
-          href="/login"
-          className="inline-flex min-h-10 w-full items-center justify-center rounded-xl border border-slate-300 bg-white px-4 text-sm font-medium text-slate-700 hover:bg-slate-50"
-        >
-          {pricing.loginToUpgrade}
-        </Link>
-        <p className="text-center text-xs text-slate-400">{pricing.checkoutTrustNote}</p>
-      </div>
-    );
-  }
-
   return (
     <div className="mt-4 space-y-2">
       <Button
         type="button"
         className="min-h-10 w-full rounded-xl bg-blue-600 hover:bg-blue-700"
-        disabled={loading}
-        onClick={() => void startCheckout()}
+        disabled={authState.status === "loading" || loading}
+        onClick={handlePlanSelect}
       >
-        {loading ? pricing.checkoutLoading : planCheckoutLabel(plan, pricing)}
+        {loading || authState.status === "loading"
+          ? pricing.checkoutLoading
+          : planCheckoutLabel(plan, pricing)}
       </Button>
       {error ? (
         <p className="text-center text-xs text-red-600">{error}</p>

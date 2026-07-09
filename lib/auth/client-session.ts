@@ -68,7 +68,8 @@ export async function parseApiErrorMessage(
       getClientLocale(),
       code,
       rawMessage,
-      fallback
+      fallback,
+      body.error?.details
     );
     const upgradeUrl = body.error?.details?.upgradeUrl;
     const billingHint = getClientLocale() === "ru"

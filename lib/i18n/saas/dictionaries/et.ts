@@ -77,6 +77,12 @@ export const saasDictionary: SaasDictionary = {
     configurationMissing: "See funktsioon pole veel seadistatud.",
     gscConnectionFailed:
       "Google Search Console ei ole veel ühendamiseks valmis.",
+    checkoutAuthRequired:
+      "Paketi valimiseks logi sisse või loo konto.",
+    checkoutFailed:
+      "Makse avamine ebaõnnestus. Proovi uuesti või logi sisse.",
+    onboardingRequired:
+      "Tasulise paketi valimiseks lõpeta esmalt konto seadistamine.",
     generic: "Midagi läks valesti. Proovige uuesti.",
   },
   auth: {

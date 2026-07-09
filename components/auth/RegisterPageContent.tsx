@@ -10,9 +10,11 @@ import { useSaasTranslations } from "@/lib/i18n/saas/SaasLocaleProvider";
 export function RegisterPageContent({
   initialWebsite = "",
   initialPreviewToken = "",
+  selectedPlan = "",
 }: {
   initialWebsite?: string;
   initialPreviewToken?: string;
+  selectedPlan?: string;
 }) {
   const { dict } = useSaasTranslations();
 
@@ -29,6 +31,7 @@ export function RegisterPageContent({
           <RegisterForm
             initialWebsite={initialWebsite}
             initialPreviewToken={initialPreviewToken}
+            selectedPlan={selectedPlan}
           />
         </AuthCard>
         <p className="text-center text-sm text-slate-500">

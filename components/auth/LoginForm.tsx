@@ -14,11 +14,17 @@ import {
   parseApiErrorMessage,
   storeAccessToken,
 } from "@/lib/auth/client-session";
+import {
+  billingPathForPlanQuery,
+  normalizeBillingPlanQuery,
+  planQuerySuffix,
+} from "@/lib/billing/plan-query";
 
-export function LoginForm() {
+export function LoginForm({ selectedPlan = "" }: { selectedPlan?: string }) {
   const router = useRouter();
   const { dict } = useSaasTranslations();
   const { auth } = dict;
+  const normalizedPlan = normalizeBillingPlanQuery(selectedPlan);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -50,7 +56,7 @@ export function LoginForm() {
       }
 
       storeAccessToken(data.accessToken);
-      router.push("/app");
+      router.push(normalizedPlan ? billingPathForPlanQuery(normalizedPlan) : "/app");
       router.refresh();
     } catch {
       setError(auth.networkError);
@@ -120,7 +126,10 @@ export function LoginForm() {
 
       <p className="text-center text-sm text-slate-500">
         {auth.noAccount}{" "}
-        <Link href="/register" className="text-blue-600 hover:text-blue-700">
+        <Link
+          href={`/register${planQuerySuffix(normalizedPlan)}`}
+          className="text-blue-600 hover:text-blue-700"
+        >
           {auth.register}
         </Link>
       </p>

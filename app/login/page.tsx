@@ -8,6 +8,12 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-export default function LoginPage() {
-  return <LoginPageContent />;
+type LoginPageProps = {
+  searchParams: Promise<{ plan?: string }>;
+};
+
+export default async function LoginPage({ searchParams }: LoginPageProps) {
+  const params = await searchParams;
+
+  return <LoginPageContent selectedPlan={params.plan?.trim() ?? ""} />;
 }

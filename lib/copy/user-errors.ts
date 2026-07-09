@@ -5,9 +5,14 @@ export function friendlyApiErrorMessageForLocale(
   locale: SaasLocale,
   code: string | undefined,
   rawMessage: string | undefined,
-  fallback: string
+  fallback: string,
+  details?: { billingError?: string }
 ): string {
   const errors = getSaasDictionary(locale).errors;
+
+  if (details?.billingError === "ONBOARDING_REQUIRED") {
+    return errors.onboardingRequired;
+  }
 
   switch (code) {
     case "BILLING_REQUIRED":
@@ -28,9 +33,14 @@ export function friendlyApiErrorMessageForLocale(
     case "FORBIDDEN":
       return errors.forbidden;
     case "NOT_FOUND":
+      if (details?.billingError === "ONBOARDING_REQUIRED") {
+        return errors.onboardingRequired;
+      }
       return errors.notFound;
     case "CONFIGURATION_MISSING":
       return errors.configurationMissing;
+    case "INTERNAL_ERROR":
+      return errors.checkoutFailed;
     default:
       break;
   }
@@ -48,7 +58,7 @@ export function friendlyApiErrorMessageForLocale(
 }
 
 const TECHNICAL_PATTERN =
-  /BILLING_REQUIRED|HERMES_UNAVAILABLE|PLAN_LIMIT|OAuth|VALIDATION_ERROR|INTERNAL_ERROR|gsc_connection|UNAUTHORIZED|FORBIDDEN|NOT_FOUND|CONFIGURATION_MISSING/i;
+  /BILLING_REQUIRED|HERMES_UNAVAILABLE|PLAN_LIMIT|OAuth|VALIDATION_ERROR|INTERNAL_ERROR|Internal server error|gsc_connection|UNAUTHORIZED|FORBIDDEN|NOT_FOUND|CONFIGURATION_MISSING/i;
 
 export function looksTechnicalErrorMessage(message: string): boolean {
   return TECHNICAL_PATTERN.test(message);
@@ -57,7 +67,8 @@ export function looksTechnicalErrorMessage(message: string): boolean {
 export function friendlyApiErrorMessage(
   code: string | undefined,
   rawMessage: string | undefined,
-  fallback: string
+  fallback: string,
+  details?: { billingError?: string }
 ): string {
-  return friendlyApiErrorMessageForLocale("en", code, rawMessage, fallback);
+  return friendlyApiErrorMessageForLocale("en", code, rawMessage, fallback, details);
 }

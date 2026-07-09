@@ -7,7 +7,7 @@ import { LoginForm } from "@/components/auth/LoginForm";
 import { LanguageSwitcher } from "@/components/i18n/LanguageSwitcher";
 import { useSaasTranslations } from "@/lib/i18n/saas/SaasLocaleProvider";
 
-export function LoginPageContent() {
+export function LoginPageContent({ selectedPlan = "" }: { selectedPlan?: string }) {
   const { dict } = useSaasTranslations();
 
   return (
@@ -17,7 +17,7 @@ export function LoginPageContent() {
           <LanguageSwitcher variant="auth" />
         </div>
         <AuthCard title={dict.auth.loginTitle} subtitle={dict.auth.loginSubtitle}>
-          <LoginForm />
+          <LoginForm selectedPlan={selectedPlan} />
         </AuthCard>
         <p className="text-center text-sm text-slate-500">
           <Link href="/" className="text-blue-600 hover:text-blue-700">

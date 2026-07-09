@@ -7,6 +7,7 @@ import {
 
 import { findPrimaryOrganization, monthPeriod, resolveOwnedOrganization } from "@/lib/auth/queries";
 import { getPrisma } from "@/lib/db";
+import { AppError, ErrorCode } from "@/lib/errors";
 
 import {
   billingPlanToSubscriptionPlan,
@@ -72,7 +73,9 @@ export async function getCurrentSubscription(input: {
   }
 
   if (!organizationId) {
-    throw new Error("Organization not found");
+    throw new AppError(ErrorCode.NOT_FOUND, "Organization not found", {
+      details: { billingError: "ONBOARDING_REQUIRED" },
+    });
   }
 
   const subscription = await ensureSubscription({
