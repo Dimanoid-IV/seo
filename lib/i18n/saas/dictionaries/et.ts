@@ -261,6 +261,48 @@ export const saasDictionary: SaasDictionary = {
       medium: "Keskmine",
       low: "Madal",
     },
+    homeFlow: {
+      loading: "Tööruumi laadimine…",
+      eyebrow: "Teie veebisait",
+      scoreLabel: "Kasvuskoor",
+      noWebsiteTitle: "Alustamiseks lisage oma veebisait.",
+      noWebsiteDescription:
+        "RankBoost vajab teie veebisaidi URL-i, et seda kontrollida ja parandusi ette valmistada.",
+      noAuditTitle: "RankBoost pole seda veebisaiti veel kontrollinud.",
+      noAuditDescription:
+        "Käivitage veebisaidi kontroll, et leida probleeme, mis võivad takistada klientidel teid leidmast.",
+      runWebsiteCheck: "Käivita veebisaidi kontroll",
+      checkingWebsite: "Kontrollime teie veebisaiti…",
+      auditRunningTitle: "Kontrollime teie veebisaiti…",
+      auditRunningDescription:
+        "RankBoost skaneerib teie saiti. See võtab tavaliselt vähem kui minuti.",
+      needsFixTitle:
+        "RankBoost leidis probleeme, mis võivad takistada klientidel teid leidmast.",
+      needsFixDescription:
+        "Alustage alloleva peamise probleemiga. RankBoost koostab konkreetse paranduse, mida saate saidile kopeerida.",
+      topIssueLabel: "Peamine probleem",
+      generateFirstFix: "Genereeri esimene parandus",
+      generatingFix: "Paranduse genereerimine…",
+      generateFailed: "Parandust ei õnnestunud genereerida.",
+      generateNetworkError: "Võrguviga paranduse genereerimisel.",
+      hermesUnavailable:
+        "AI genereerimine pole veel seadistatud. Proovige hiljem uuesti või võtke ühendust toega.",
+      fixReadyTitle: "Teie esimene parandus on valmis.",
+      fixReadyDescription:
+        "Vaadake allolev mustand üle. Kopeerige tekst oma veebisaidile — midagi automaatselt ei avaldata.",
+      preview: "Eelvaade",
+      copy: "Kopeeri tekst",
+      copySuccess: "Kopeeritud lõikelauale",
+      copyFailed: "Lõikelauale kopeerimine ebaõnnestus.",
+      approve: "Märgi kinnitatuks",
+      approveSuccess: "Salvestatud kinnitatuna",
+      approveFailed: "Kinnituse salvestamine ebaõnnestus.",
+      approveNetworkError: "Võrguviga kinnituse salvestamisel.",
+      regenerate: "Genereeri uuesti",
+      metaTitleLabel: "Meta pealkiri",
+      metaDescriptionLabel: "Meta kirjeldus",
+      contentLabel: "Sisu",
+    },
   },
   billing: {
     title: "Arveldus ja pakett",

@@ -3,19 +3,10 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
-  BarChart3,
   CreditCard,
-  FileText,
-  History,
   LayoutDashboard,
-  ListTodo,
-  Mail,
   Menu,
   Plug,
-  Rocket,
-  Gauge,
-  Settings,
-  Share2,
   Sparkles,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -100,49 +91,6 @@ export function AppSidebar() {
       title: nav.groups.main,
       items: [
         { href: "/app", label: nav.dashboard, icon: LayoutDashboard, enabled: true },
-        {
-          href: "/app/autopilot-control",
-          label: nav.controlCenter,
-          icon: Gauge,
-          enabled: true,
-        },
-        { href: "/app/tasks", label: nav.tasks, icon: ListTodo, enabled: false },
-      ],
-    },
-    {
-      title: nav.groups.growth,
-      items: [
-        {
-          href: "/app/content-plan",
-          label: nav.contentPlan,
-          icon: FileText,
-          enabled: true,
-        },
-        {
-          href: "/app/social-posts",
-          label: nav.socialPosts,
-          icon: Share2,
-          enabled: true,
-        },
-        { href: "/app/reports", label: nav.reports, icon: BarChart3, enabled: true },
-      ],
-    },
-    {
-      title: nav.groups.automation,
-      items: [
-        { href: "/app/timeline", label: nav.timeline, icon: History, enabled: true },
-        {
-          href: "/app/autopilot",
-          label: nav.growthPlan,
-          icon: Rocket,
-          enabled: true,
-        },
-        {
-          href: "/app/email-approvals",
-          label: nav.reviewEmails,
-          icon: Mail,
-          enabled: true,
-        },
       ],
     },
     {
@@ -155,7 +103,6 @@ export function AppSidebar() {
           enabled: true,
         },
         { href: "/app/billing", label: nav.billing, icon: CreditCard, enabled: true },
-        { href: "/app/settings", label: nav.settings, icon: Settings, enabled: false },
       ],
     },
   ];
@@ -163,9 +110,7 @@ export function AppSidebar() {
   const flatNavItems = navGroups.flatMap((group) => group.items);
   const mobilePrimary = [
     flatNavItems.find((i) => i.href === "/app")!,
-    flatNavItems.find((i) => i.href === "/app/autopilot-control")!,
-    flatNavItems.find((i) => i.href === "/app/content-plan")!,
-    flatNavItems.find((i) => i.href === "/app/social-posts")!,
+    flatNavItems.find((i) => i.href === "/app/billing")!,
   ];
   const mobileMore = flatNavItems.filter(
     (item) => !mobilePrimary.some((primary) => primary.href === item.href)

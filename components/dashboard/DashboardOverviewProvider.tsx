@@ -10,8 +10,7 @@ import {
 } from "react";
 
 import { authFetch } from "@/lib/auth/client-session";
-import type { DashboardOverviewData } from "@/lib/dashboard/overview";
-import type { SimpleDashboardViewModel } from "@/lib/dashboard/simple-overview";
+import type { HomeScreenData } from "@/lib/dashboard/home";
 import { useSaasTranslations } from "@/lib/i18n/saas/SaasLocaleProvider";
 
 type RefetchOptions = {
@@ -19,8 +18,11 @@ type RefetchOptions = {
 };
 
 type DashboardOverviewContextValue = {
-  overview: DashboardOverviewData | null;
-  simple: SimpleDashboardViewModel | null;
+  home: HomeScreenData | null;
+  /** @deprecated Use `home` — kept for billing refetch compatibility */
+  overview: { website: HomeScreenData["website"] } | null;
+  /** @deprecated Removed from home screen */
+  simple: null;
   loading: boolean;
   error: string | null;
   refetch: (options?: RefetchOptions) => Promise<void>;
@@ -39,35 +41,28 @@ export function useDashboardOverview(): DashboardOverviewContextValue {
   return context;
 }
 
-async function fetchOverview(): Promise<{
-  overview: DashboardOverviewData | null;
-  simple: SimpleDashboardViewModel | null;
+async function fetchHome(): Promise<{
+  home: HomeScreenData | null;
   error: string | null;
 }> {
   try {
-    const response = await authFetch("/api/dashboard/overview");
+    const response = await authFetch("/api/dashboard/home");
 
     if (!response.ok) {
       return {
-        overview: null,
-        simple: null,
+        home: null,
         error: "loadFailed",
       };
     }
 
-    const body = (await response.json()) as {
-      data: DashboardOverviewData;
-      simple?: SimpleDashboardViewModel;
-    };
+    const body = (await response.json()) as { data: HomeScreenData };
     return {
-      overview: body.data,
-      simple: body.simple ?? null,
+      home: body.data,
       error: null,
     };
   } catch {
     return {
-      overview: null,
-      simple: null,
+      home: null,
       error: "loadNetworkError",
     };
   }
@@ -79,8 +74,7 @@ export function DashboardOverviewProvider({
   children: React.ReactNode;
 }) {
   const { dict, locale } = useSaasTranslations();
-  const [overview, setOverview] = useState<DashboardOverviewData | null>(null);
-  const [simple, setSimple] = useState<SimpleDashboardViewModel | null>(null);
+  const [home, setHome] = useState<HomeScreenData | null>(null);
   const [loading, setLoading] = useState(true);
   const [errorKey, setErrorKey] = useState<string | null>(null);
 
@@ -96,9 +90,8 @@ export function DashboardOverviewProvider({
       setErrorKey(null);
     }
 
-    const result = await fetchOverview();
-    setOverview(result.overview);
-    setSimple(result.simple);
+    const result = await fetchHome();
+    setHome(result.home);
     if (!options?.silent) {
       setErrorKey(result.error);
       setLoading(false);
@@ -110,33 +103,38 @@ export function DashboardOverviewProvider({
   useEffect(() => {
     let cancelled = false;
 
-    async function loadInitialOverview() {
-      const result = await fetchOverview();
+    async function loadInitialHome() {
+      const result = await fetchHome();
       if (cancelled) {
         return;
       }
-      setOverview(result.overview);
-      setSimple(result.simple);
+      setHome(result.home);
       setErrorKey(result.error);
       setLoading(false);
     }
 
-    void loadInitialOverview();
+    void loadInitialHome();
 
     return () => {
       cancelled = true;
     };
   }, [locale]);
 
+  const overview = useMemo(
+    () => (home?.website ? { website: home.website } : null),
+    [home]
+  );
+
   const value = useMemo(
     () => ({
+      home,
       overview,
-      simple,
+      simple: null,
       loading,
       error,
       refetch,
     }),
-    [overview, simple, loading, error, refetch]
+    [home, overview, loading, error, refetch]
   );
 
   return (

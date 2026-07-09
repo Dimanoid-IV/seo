@@ -261,6 +261,48 @@ export const saasDictionary: SaasDictionary = {
       medium: "Средний",
       low: "Низкий",
     },
+    homeFlow: {
+      loading: "Загружаем рабочую область…",
+      eyebrow: "Ваш сайт",
+      scoreLabel: "Оценка роста",
+      noWebsiteTitle: "Добавьте сайт, чтобы начать.",
+      noWebsiteDescription:
+        "RankBoost нужен URL вашего сайта, чтобы проверить его и подготовить улучшения.",
+      noAuditTitle: "RankBoost ещё не проверял этот сайт.",
+      noAuditDescription:
+        "Запустите проверку сайта, чтобы найти проблемы, из‑за которых клиенты могут вас не находить.",
+      runWebsiteCheck: "Запустить проверку сайта",
+      checkingWebsite: "Проверяем ваш сайт…",
+      auditRunningTitle: "Проверяем ваш сайт…",
+      auditRunningDescription:
+        "RankBoost сканирует сайт. Обычно это занимает меньше минуты.",
+      needsFixTitle:
+        "RankBoost нашёл проблемы, из‑за которых клиенты могут вас не находить.",
+      needsFixDescription:
+        "Начните с главной проблемы ниже. RankBoost подготовит конкретное улучшение, которое можно скопировать на сайт.",
+      topIssueLabel: "Главная проблема",
+      generateFirstFix: "Сгенерировать первое исправление",
+      generatingFix: "Генерируем исправление…",
+      generateFailed: "Не удалось сгенерировать исправление.",
+      generateNetworkError: "Сетевая ошибка при генерации исправления.",
+      hermesUnavailable:
+        "AI-генерация пока не настроена. Попробуйте позже или обратитесь в поддержку.",
+      fixReadyTitle: "Ваше первое улучшение готово.",
+      fixReadyDescription:
+        "Проверьте черновик ниже. Скопируйте текст на сайт — ничего не публикуется автоматически.",
+      preview: "Просмотр",
+      copy: "Скопировать текст",
+      copySuccess: "Скопировано в буфер обмена",
+      copyFailed: "Не удалось скопировать в буфер обмена.",
+      approve: "Отметить как одобренное",
+      approveSuccess: "Сохранено как одобренное",
+      approveFailed: "Не удалось сохранить одобрение.",
+      approveNetworkError: "Сетевая ошибка при сохранении одобрения.",
+      regenerate: "Сгенерировать заново",
+      metaTitleLabel: "Meta title",
+      metaDescriptionLabel: "Meta description",
+      contentLabel: "Контент",
+    },
   },
   billing: {
     title: "Оплата и план",
