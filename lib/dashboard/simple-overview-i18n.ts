@@ -102,7 +102,7 @@ export function localizedFindings(
   if (control.metrics.openTasksCount > 0) {
     findings.push({
       title: f.seoTasksWaiting(control.metrics.openTasksCount),
-      href: "/app/autopilot-control",
+      href: "/app/tasks",
     });
   }
 

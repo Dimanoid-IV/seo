@@ -735,6 +735,34 @@ export const saasDictionary: SaasDictionary = {
       scheduled: "Plaanitud",
     },
   },
+  tasksPage: {
+    title: "Ülesanded",
+    subtitle:
+      "Prioriteetsed SEO-tegevused, mille RankBoost teie veebisaidi jaoks leidis.",
+    loading: "Ülesannete laadimine…",
+    loadFailed:
+      "Ülesannete laadimine ebaõnnestus. Värskenda lehte.",
+    loadNetworkError:
+      "Ülesannete laadimine ebaõnnestus. Värskenda lehte.",
+    emptyTitle: "Ülesandeid pole veel",
+    emptyDescription:
+      "RankBoost loob ülesanded pärast esimest auditit.",
+    sourceLabel: "Allikas",
+    createdLabel: "Loodud",
+    sections: {
+      open: "Avatud",
+      inProgress: "Töös",
+      completed: "Lõpetatud",
+      dismissed: "Peidetud",
+    },
+    sources: {
+      audit: "Audit",
+      ai: "AI",
+      system: "Süsteem",
+      user: "Kasutaja",
+      admin: "Admin",
+    },
+  },
   socialPosts: {
     title: "Sotsiaalpostitused",
     subtitle: "Muutke veebisaidi kasvuvõimalused ülevaadatavateks sotsiaalmeedia mustanditeks.",

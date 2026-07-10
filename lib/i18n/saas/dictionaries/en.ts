@@ -735,6 +735,31 @@ export const saasDictionary: SaasDictionary = {
       scheduled: "Scheduled",
     },
   },
+  tasksPage: {
+    title: "Tasks",
+    subtitle: "Prioritized SEO actions RankBoost found for your website.",
+    loading: "Loading tasks…",
+    loadFailed: "Could not load tasks. Please refresh the page.",
+    loadNetworkError: "Could not load tasks. Please refresh the page.",
+    emptyTitle: "No tasks yet",
+    emptyDescription:
+      "RankBoost will create tasks after the first audit.",
+    sourceLabel: "Source",
+    createdLabel: "Created",
+    sections: {
+      open: "Open",
+      inProgress: "In progress",
+      completed: "Completed",
+      dismissed: "Dismissed",
+    },
+    sources: {
+      audit: "Audit",
+      ai: "AI",
+      system: "System",
+      user: "User",
+      admin: "Admin",
+    },
+  },
   socialPosts: {
     title: "Social Posts",
     subtitle: "Turn website growth opportunities into ready-to-review social media drafts.",

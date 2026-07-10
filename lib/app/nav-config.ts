@@ -65,7 +65,7 @@ export const APP_NAV_ITEMS: AppNavItemConfig[] = [
     href: "/app/tasks",
     group: "main",
     icon: ListTodo,
-    enabled: false,
+    enabled: true,
     advanced: false,
   },
   {

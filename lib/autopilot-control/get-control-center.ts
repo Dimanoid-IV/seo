@@ -407,8 +407,8 @@ export async function getAutopilotControlCenter(input: {
       description: task.description ?? "High-priority SEO task.",
       status: task.status.toLowerCase(),
       priority: "HIGH",
-      href: "/app",
-      actionLabel: "Open dashboard",
+      href: "/app/tasks",
+      actionLabel: "Open tasks",
       actionType: "link",
     });
   }

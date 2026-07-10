@@ -586,6 +586,30 @@ export type SaasDictionary = {
       scheduled: string;
     };
   };
+  tasksPage: {
+    title: string;
+    subtitle: string;
+    loading: string;
+    loadFailed: string;
+    loadNetworkError: string;
+    emptyTitle: string;
+    emptyDescription: string;
+    sourceLabel: string;
+    createdLabel: string;
+    sections: {
+      open: string;
+      inProgress: string;
+      completed: string;
+      dismissed: string;
+    };
+    sources: {
+      audit: string;
+      ai: string;
+      system: string;
+      user: string;
+      admin: string;
+    };
+  };
   socialPosts: {
     title: string;
     subtitle: string;

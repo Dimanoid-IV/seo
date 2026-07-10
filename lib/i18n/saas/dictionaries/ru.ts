@@ -735,6 +735,33 @@ export const saasDictionary: SaasDictionary = {
       scheduled: "Запланирован",
     },
   },
+  tasksPage: {
+    title: "Задачи",
+    subtitle:
+      "Приоритетные SEO-действия, которые RankBoost нашёл для вашего сайта.",
+    loading: "Загружаем задачи…",
+    loadFailed: "Не удалось загрузить задачи. Попробуйте обновить страницу.",
+    loadNetworkError:
+      "Не удалось загрузить задачи. Попробуйте обновить страницу.",
+    emptyTitle: "Пока нет задач",
+    emptyDescription:
+      "RankBoost создаст задачи после первого аудита.",
+    sourceLabel: "Источник",
+    createdLabel: "Создано",
+    sections: {
+      open: "Открытые",
+      inProgress: "В работе",
+      completed: "Выполненные",
+      dismissed: "Скрытые",
+    },
+    sources: {
+      audit: "Аудит",
+      ai: "ИИ",
+      system: "Система",
+      user: "Пользователь",
+      admin: "Админ",
+    },
+  },
   socialPosts: {
     title: "Соцсети",
     subtitle: "Превращайте возможности роста сайта в черновики для соцсетей.",

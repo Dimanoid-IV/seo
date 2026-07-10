@@ -113,7 +113,7 @@ export function buildRecommendedActions(
       description: r.fixTasksDesc(input.highPriorityTasksCount),
       priority: "HIGH",
       type: "OPEN_TASK",
-      href: "/app",
+      href: "/app/tasks",
     });
   }
 
