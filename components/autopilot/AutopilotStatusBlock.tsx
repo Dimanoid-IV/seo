@@ -1,11 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import { CalendarClock, Loader2, Shield, Sparkles } from "lucide-react";
-import { useState } from "react";
+import { CalendarClock, Loader2, Play, Shield, Sparkles } from "lucide-react";
+import { useMemo, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import type { AutopilotStatusSnapshot } from "@/lib/autopilot/autopilot-status";
+import { findDuePlanItems } from "@/lib/autopilot/execution-eligibility";
+import type { AutopilotPlanItemsDocument } from "@/lib/autopilot/plan-item-types";
 import type { SaasLocale } from "@/lib/i18n/saas/locales";
 import { useSaasTranslations } from "@/lib/i18n/saas/SaasLocaleProvider";
 import { authFetch, parseApiErrorMessage } from "@/lib/auth/client-session";
@@ -22,7 +24,9 @@ type AutopilotStatusBlockProps = {
   settingsMode: string;
   autopublishAvailable?: boolean;
   websiteId?: string | null;
+  planItems?: AutopilotPlanItemsDocument | null;
   onModeChange?: (mode: string) => void;
+  onRunDue?: () => void;
   compact?: boolean;
 };
 
@@ -47,15 +51,30 @@ export function AutopilotStatusBlock({
   settingsMode,
   autopublishAvailable = false,
   websiteId,
+  planItems,
   onModeChange,
+  onRunDue,
   compact = false,
 }: AutopilotStatusBlockProps) {
   const { dict, locale } = useSaasTranslations();
   const t = dict.autopilot.statusBlock;
   const [optimisticMode, setOptimisticMode] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
+  const [runningDue, setRunningDue] = useState(false);
+  const [runMessage, setRunMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const mode = optimisticMode ?? settingsMode;
+
+  const dueCount = useMemo(
+    () => (planItems?.items ? findDuePlanItems(planItems.items).length : 0),
+    [planItems]
+  );
+
+  const canRunDue =
+    mode !== "off" &&
+    dueCount > 0 &&
+    (status.planApprovalStatus === "approved" ||
+      status.planApprovalStatus === "partial");
 
   async function handleModeChange(nextMode: AutopilotModeClient) {
     if (nextMode === "autopublish" && !autopublishAvailable) {
@@ -88,6 +107,50 @@ export function AutopilotStatusBlock({
       setError(t.modeChangeNetworkError);
     } finally {
       setSaving(false);
+    }
+  }
+
+  async function handleRunDue(dryRun: boolean) {
+    setRunningDue(true);
+    setError(null);
+    setRunMessage(null);
+
+    try {
+      const response = await authFetch("/api/autopilot/run-due", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          dryRun,
+          websiteId: websiteId ?? undefined,
+        }),
+      });
+
+      if (!response.ok) {
+        setError(await parseApiErrorMessage(response, t.runDueNowFailed));
+        return;
+      }
+
+      const body = (await response.json()) as {
+        data: {
+          dryRun: boolean;
+          dueItemsFound: number;
+          executedCount: number;
+          skippedCount: number;
+        };
+      };
+
+      if (body.data.dryRun) {
+        setRunMessage(t.dryRunSuccess(body.data.dueItemsFound));
+      } else {
+        setRunMessage(
+          t.runDueNowSuccess(body.data.executedCount, body.data.skippedCount)
+        );
+        onRunDue?.();
+      }
+    } catch {
+      setError(t.runDueNowNetworkError);
+    } finally {
+      setRunningDue(false);
     }
   }
 
@@ -159,10 +222,21 @@ export function AutopilotStatusBlock({
             </p>
           </div>
 
+          {dueCount > 0 ? (
+            <div>
+              <p className="text-[10px] font-semibold uppercase tracking-wide text-emerald-700">
+                {t.dueNow}
+              </p>
+              <p className="mt-1 text-sm font-medium text-emerald-800">
+                {t.dueItemsCount(dueCount)}
+              </p>
+            </div>
+          ) : null}
+
           <div>
             <p className="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-wide text-slate-500">
               <CalendarClock className="size-3.5" />
-              {t.nextAction}
+              {t.nextScheduled}
             </p>
             {status.nextScheduledItem ? (
               <div className="mt-1">
@@ -197,6 +271,9 @@ export function AutopilotStatusBlock({
       {error ? (
         <p className="mt-3 text-sm text-red-600">{error}</p>
       ) : null}
+      {runMessage ? (
+        <p className="mt-3 text-sm text-emerald-700">{runMessage}</p>
+      ) : null}
 
       {!compact ? (
         <div className="mt-4 flex flex-wrap gap-2">
@@ -209,6 +286,35 @@ export function AutopilotStatusBlock({
           >
             {t.openReviewQueue}
           </Button>
+          {canRunDue ? (
+            <>
+              <Button
+                type="button"
+                variant="default"
+                size="sm"
+                className="rounded-xl"
+                disabled={runningDue || mode === "off"}
+                onClick={() => void handleRunDue(false)}
+              >
+                {runningDue ? (
+                  <Loader2 className="size-4 animate-spin" />
+                ) : (
+                  <Play className="size-4" />
+                )}
+                {t.runDueNow}
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                className="rounded-xl border-slate-200 bg-white"
+                disabled={runningDue || mode === "off"}
+                onClick={() => void handleRunDue(true)}
+              >
+                {t.dryRunLabel}
+              </Button>
+            </>
+          ) : null}
         </div>
       ) : null}
     </section>

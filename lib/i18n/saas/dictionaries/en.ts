@@ -1213,6 +1213,24 @@ export const saasDictionary: SaasDictionary = {
         autopilotOff: "Autopilot is off",
         articleNeedsRevision: "Article draft needs revision before publishing",
       },
+      dueNow: "Due now",
+      nextScheduled: "Next scheduled",
+      waitingForReviewApproval: "Waiting for Review Queue approval",
+      qualityFailed: "Article did not pass quality gates",
+      wordpressRequired: "WordPress connection required",
+      draftWillBePrepared: "Autopilot will prepare a draft for review",
+      wordpressDraftCreated: "WordPress draft created — review before publishing",
+      publishedExecuted: "Plan item completed",
+      runDueNow: "Run due items now",
+      runDueNowFailed: "Could not run due autopilot items.",
+      runDueNowNetworkError: "Network error while running due items.",
+      runDueNowSuccess: (executed: number, skipped: number) =>
+        `Processed ${executed} item${executed === 1 ? "" : "s"}. ${skipped} skipped.`,
+      dryRunLabel: "Preview due items",
+      dryRunSuccess: (due: number) =>
+        `${due} due item${due === 1 ? "" : "s"} ready (preview only, nothing executed).`,
+      dueItemsCount: (count: number) =>
+        `${count} item${count === 1 ? "" : "s"} due now`,
     },
     planApproval: {
       title: "Plan approval",
@@ -1271,6 +1289,11 @@ export const saasDictionary: SaasDictionary = {
       articleGeneratedNeedsRevision:
         "Article draft created but needs revision before review",
       openArticleDraft: "Open article draft",
+      dueNowBadge: "Due now",
+      schedulerWillPrepareDraft: "Autopilot will prepare a draft on schedule",
+      schedulerWaitingReview: "Waiting for your approval in Review Queue",
+      schedulerQualityFailed: "Draft failed quality gates — revision needed",
+      schedulerWordPressRequired: "WordPress required before draft can be sent",
     },
     planContent: {
       monthlyGrowthPlanTitle: "Monthly growth plan — {month}",

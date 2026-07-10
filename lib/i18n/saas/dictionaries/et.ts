@@ -1219,6 +1219,24 @@ export const saasDictionary: SaasDictionary = {
         autopilotOff: "Autopiloot on väljas",
         articleNeedsRevision: "Artikli mustand vajab enne avaldamist parandamist",
       },
+      dueNow: "Tähtaeg on saabunud",
+      nextScheduled: "Järgmine graafikus",
+      waitingForReviewApproval: "Ootab ülevaate järjekorra kinnitust",
+      qualityFailed: "Artikkel ei läbinud kvaliteedikontrolli",
+      wordpressRequired: "WordPressi ühendus on vajalik",
+      draftWillBePrepared: "Autopiloot valmistab mustandi ülevaatuseks",
+      wordpressDraftCreated: "WordPressi mustand loodud — vaata enne avaldamist üle",
+      publishedExecuted: "Plaani punkt täidetud",
+      runDueNow: "Käivita tähtaja saanud punktid",
+      runDueNowFailed: "Tähtaja saanud autopiloodi punkte ei saanud käivitada.",
+      runDueNowNetworkError: "Võrguviga tähtaja saanud punktide käivitamisel.",
+      runDueNowSuccess: (executed: number, skipped: number) =>
+        `Töödeldud: ${executed}. Vahele jäetud: ${skipped}.`,
+      dryRunLabel: "Eelvaade tähtaja saanud punktidest",
+      dryRunSuccess: (due: number) =>
+        `${due} tähtaja saanud punkti (ainult eelvaade, midagi ei käivitatud).`,
+      dueItemsCount: (count: number) =>
+        `${count} punkt${count === 1 ? "" : "i"} on tähtaja saabunud`,
     },
     planApproval: {
       title: "Plaani kinnitamine",
@@ -1278,6 +1296,11 @@ export const saasDictionary: SaasDictionary = {
       articleGeneratedNeedsRevision:
         "Mustand loodud, kuid vajab enne ülevaatust parandamist",
       openArticleDraft: "Ava artikli mustand",
+      dueNowBadge: "Tähtaeg on saabunud",
+      schedulerWillPrepareDraft: "Autopiloot valmistab mustandi graafiku järgi",
+      schedulerWaitingReview: "Ootab sinu kinnitust ülevaate järjekorras",
+      schedulerQualityFailed: "Mustand ei läbinud kvaliteedikontrolli",
+      schedulerWordPressRequired: "WordPress on vajalik enne mustandi saatmist",
     },
     planContent: {
       monthlyGrowthPlanTitle: "Kuu kasvuplaan — {month}",

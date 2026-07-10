@@ -1216,6 +1216,24 @@ export const saasDictionary: SaasDictionary = {
         autopilotOff: "Автопилот выключен",
         articleNeedsRevision: "Черновик статьи требует доработки перед публикацией",
       },
+      dueNow: "Пора выполнить",
+      nextScheduled: "Следующее по расписанию",
+      waitingForReviewApproval: "Ожидает одобрения в очереди проверки",
+      qualityFailed: "Статья не прошла проверку качества",
+      wordpressRequired: "Требуется подключение WordPress",
+      draftWillBePrepared: "Автопилот подготовит черновик для проверки",
+      wordpressDraftCreated: "Черновик WordPress создан — проверьте перед публикацией",
+      publishedExecuted: "Пункт плана выполнен",
+      runDueNow: "Запустить просроченные пункты",
+      runDueNowFailed: "Не удалось выполнить просроченные пункты автопилота.",
+      runDueNowNetworkError: "Сетевая ошибка при запуске просроченных пунктов.",
+      runDueNowSuccess: (executed: number, skipped: number) =>
+        `Обработано: ${executed}. Пропущено: ${skipped}.`,
+      dryRunLabel: "Предпросмотр просроченных",
+      dryRunSuccess: (due: number) =>
+        `${due} просроченных пунктов (только предпросмотр, без выполнения).`,
+      dueItemsCount: (count: number) =>
+        `${count} пункт${count === 1 ? "" : count < 5 ? "а" : "ов"} пора выполнить`,
     },
     planApproval: {
       title: "Одобрение плана",
@@ -1275,6 +1293,11 @@ export const saasDictionary: SaasDictionary = {
       articleGeneratedNeedsRevision:
         "Черновик создан, но требует доработки перед проверкой",
       openArticleDraft: "Открыть черновик",
+      dueNowBadge: "Пора выполнить",
+      schedulerWillPrepareDraft: "Автопилот подготовит черновик по расписанию",
+      schedulerWaitingReview: "Ожидает вашего одобрения в очереди проверки",
+      schedulerQualityFailed: "Черновик не прошёл проверку качества",
+      schedulerWordPressRequired: "Для отправки нужен WordPress",
     },
     planContent: {
       monthlyGrowthPlanTitle: "Месячный план роста — {month}",

@@ -1025,6 +1025,21 @@ export type SaasDictionary = {
         autopilotOff: string;
         articleNeedsRevision: string;
       };
+      dueNow: string;
+      nextScheduled: string;
+      waitingForReviewApproval: string;
+      qualityFailed: string;
+      wordpressRequired: string;
+      draftWillBePrepared: string;
+      wordpressDraftCreated: string;
+      publishedExecuted: string;
+      runDueNow: string;
+      runDueNowFailed: string;
+      runDueNowNetworkError: string;
+      runDueNowSuccess: (executed: number, skipped: number) => string;
+      dryRunLabel: string;
+      dryRunSuccess: (due: number) => string;
+      dueItemsCount: (count: number) => string;
     };
     planApproval: {
       title: string;
@@ -1058,6 +1073,11 @@ export type SaasDictionary = {
       articleGeneratedSuccess: string;
       articleGeneratedNeedsRevision: string;
       openArticleDraft: string;
+      dueNowBadge: string;
+      schedulerWillPrepareDraft: string;
+      schedulerWaitingReview: string;
+      schedulerQualityFailed: string;
+      schedulerWordPressRequired: string;
     };
     planContent: {
       monthlyGrowthPlanTitle: string;

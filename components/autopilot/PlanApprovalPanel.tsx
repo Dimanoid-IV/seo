@@ -12,6 +12,7 @@ import type {
   AutopilotPlanItemsDocument,
   AutopilotPlanPeriod,
 } from "@/lib/autopilot/plan-item-types";
+import { isPlanItemDueNow } from "@/lib/autopilot/execution-eligibility";
 import type { SaasLocale } from "@/lib/i18n/saas/locales";
 import { useSaasTranslations } from "@/lib/i18n/saas/SaasLocaleProvider";
 import { cn } from "@/lib/utils";
@@ -29,6 +30,33 @@ function formatActionDate(iso: string | undefined, locale: SaasLocale): string {
     month: "short",
     day: "numeric",
   }).format(new Date(iso));
+}
+
+function getSchedulerHint(
+  item: AutopilotPlanItem,
+  t: ReturnType<typeof useSaasTranslations>["dict"]["autopilot"]["planApproval"]
+): string | null {
+  if (!["approved", "scheduled", "prepared"].includes(item.status)) {
+    return null;
+  }
+
+  if (item.blockedReasonKey === "wordpressNotConnected") {
+    return t.schedulerWordPressRequired;
+  }
+
+  if (item.type === "ARTICLE") {
+    if (!item.generatedArticleId) {
+      return t.schedulerWillPrepareDraft;
+    }
+    if (item.articleQualityPassed === false) {
+      return t.schedulerQualityFailed;
+    }
+    if (item.status === "prepared" && item.articleQualityPassed) {
+      return t.schedulerWaitingReview;
+    }
+  }
+
+  return null;
 }
 
 function isSelectable(item: AutopilotPlanItem): boolean {
@@ -277,6 +305,8 @@ export function PlanApprovalPanel({
           const statusLabel =
             t.itemStatuses[item.status as keyof typeof t.itemStatuses] ??
             item.status;
+          const dueNow = isPlanItemDueNow(item);
+          const schedulerHint = getSchedulerHint(item, t);
 
           return (
             <li
@@ -315,6 +345,11 @@ export function PlanApprovalPanel({
                     >
                       {statusLabel}
                     </span>
+                    {dueNow ? (
+                      <span className="rounded-full bg-violet-100 px-2.5 py-0.5 text-[10px] font-semibold uppercase text-violet-800">
+                        {t.dueNowBadge}
+                      </span>
+                    ) : null}
                   </div>
 
                   <p className="text-sm text-slate-600">{item.reason}</p>
@@ -408,6 +443,10 @@ export function PlanApprovalPanel({
                         item.blockedReasonKey as keyof typeof dict.autopilot.statusBlock.blockedReasons
                       ] ?? item.blockedReasonKey}
                     </p>
+                  ) : null}
+
+                  {schedulerHint ? (
+                    <p className="text-xs text-violet-700">{schedulerHint}</p>
                   ) : null}
 
                   {item.reviewQueueHref &&

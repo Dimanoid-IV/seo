@@ -52,3 +52,33 @@ export async function timelineAfterMonthlyAutopilotPlanApproved(input: {
     },
   });
 }
+
+export async function timelineAfterAutopilotPlanItemExecuted(input: {
+  userId: string;
+  websiteId: string;
+  planId: string;
+  planItemId: string;
+  action: "PREPARE_ARTICLE_DRAFT" | "PUBLISH_APPROVED_ARTICLE";
+  itemTitle: string;
+}) {
+  const summary =
+    input.action === "PREPARE_ARTICLE_DRAFT"
+      ? "Autopilot prepared an article draft for review."
+      : "Autopilot created a WordPress draft from an approved article.";
+
+  await createTimelineEvent({
+    userId: input.userId,
+    websiteId: input.websiteId,
+    type: TimelineEventType.SYSTEM_NOTE,
+    source: TimelineEventSource.CONTINUOUS_IMPROVEMENT,
+    severity: TimelineEventSeverity.INFO,
+    title: "Autopilot plan item executed",
+    summary,
+    details: {
+      planId: input.planId,
+      planItemId: input.planItemId,
+      action: input.action,
+      itemTitle: input.itemTitle,
+    },
+  });
+}
