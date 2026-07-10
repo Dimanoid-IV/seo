@@ -30,6 +30,12 @@ export type ReviewQueueItem = {
   editHref?: string;
   canEdit: boolean;
   canApprove: boolean;
+  articleContext?: {
+    qualityScore: number | null;
+    qualityPassed: boolean | null;
+    linkedAutopilotPlanItem: boolean;
+    autopilotUnlockOnApprove: boolean;
+  };
   preparedFix?: {
     generatedBy: PreparedFixGeneratedBy;
     fallbackUsed: boolean;

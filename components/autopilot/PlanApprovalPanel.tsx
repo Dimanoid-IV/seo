@@ -32,6 +32,33 @@ function formatActionDate(iso: string | undefined, locale: SaasLocale): string {
   }).format(new Date(iso));
 }
 
+function getArticleApprovalStateLabel(
+  item: AutopilotPlanItem,
+  t: ReturnType<typeof useSaasTranslations>["dict"]["autopilot"]["planApproval"]
+): string | null {
+  if (item.type !== "ARTICLE" || !item.generatedArticleId) {
+    return null;
+  }
+
+  if (item.articleQualityPassed === false) {
+    return t.articleApprovalState.qualityFailed;
+  }
+
+  if (item.status === "executed" || item.status === "published") {
+    return t.articleApprovalState.wordpressDraft;
+  }
+
+  if (item.linkedArticleApprovedAt) {
+    return t.articleApprovalState.readyForRun;
+  }
+
+  if (item.articleQualityPassed) {
+    return t.articleApprovalState.waitingReview;
+  }
+
+  return null;
+}
+
 function getSchedulerHint(
   item: AutopilotPlanItem,
   t: ReturnType<typeof useSaasTranslations>["dict"]["autopilot"]["planApproval"]
@@ -50,6 +77,12 @@ function getSchedulerHint(
     }
     if (item.articleQualityPassed === false) {
       return t.schedulerQualityFailed;
+    }
+    if (item.status === "executed" || item.status === "published") {
+      return t.schedulerWordPressDraftCreated;
+    }
+    if (item.linkedArticleApprovedAt) {
+      return t.schedulerReadyForNextRun;
     }
     if (item.status === "prepared" && item.articleQualityPassed) {
       return t.schedulerWaitingReview;
@@ -307,6 +340,7 @@ export function PlanApprovalPanel({
             item.status;
           const dueNow = isPlanItemDueNow(item);
           const schedulerHint = getSchedulerHint(item, t);
+          const articleApprovalState = getArticleApprovalStateLabel(item, t);
 
           return (
             <li
@@ -391,32 +425,39 @@ export function PlanApprovalPanel({
                   ) : null}
 
                   {item.generatedArticleId ? (
-                    <div className="flex flex-wrap items-center gap-2 text-xs">
-                      <span className="text-slate-500">
-                        {t.qualityScore}:{" "}
-                        <span className="font-semibold text-slate-800">
-                          {item.articleQualityScore ?? "—"}
+                    <div className="space-y-1">
+                      <div className="flex flex-wrap items-center gap-2 text-xs">
+                        <span className="text-slate-500">
+                          {t.qualityScore}:{" "}
+                          <span className="font-semibold text-slate-800">
+                            {item.articleQualityScore ?? "—"}
+                          </span>
                         </span>
-                      </span>
-                      <span
-                        className={cn(
-                          "rounded-full px-2 py-0.5 font-medium",
-                          item.articleQualityPassed
-                            ? "bg-emerald-100 text-emerald-800"
-                            : "bg-amber-100 text-amber-800"
-                        )}
-                      >
-                        {item.articleQualityPassed
-                          ? t.qualityPassed
-                          : t.qualityNeedsRevision}
-                      </span>
-                      <Link
-                        href={`/app/articles/${item.generatedArticleId}`}
-                        className="inline-flex items-center gap-1 font-medium text-violet-600 hover:text-violet-800"
-                      >
-                        {t.openArticleDraft}
-                        <ExternalLink className="size-3" />
-                      </Link>
+                        <span
+                          className={cn(
+                            "rounded-full px-2 py-0.5 font-medium",
+                            item.articleQualityPassed
+                              ? "bg-emerald-100 text-emerald-800"
+                              : "bg-amber-100 text-amber-800"
+                          )}
+                        >
+                          {item.articleQualityPassed
+                            ? t.qualityPassed
+                            : t.qualityNeedsRevision}
+                        </span>
+                        <Link
+                          href={`/app/articles/${item.generatedArticleId}`}
+                          className="inline-flex items-center gap-1 font-medium text-violet-600 hover:text-violet-800"
+                        >
+                          {t.openArticleDraft}
+                          <ExternalLink className="size-3" />
+                        </Link>
+                      </div>
+                      {articleApprovalState ? (
+                        <p className="text-xs font-medium text-slate-700">
+                          {articleApprovalState}
+                        </p>
+                      ) : null}
                     </div>
                   ) : null}
 

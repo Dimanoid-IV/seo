@@ -58,6 +58,8 @@ export type AutopilotPlanItem = {
   generatedArticleId?: string;
   articleQualityScore?: number;
   articleQualityPassed?: boolean;
+  /** Set when the linked generated article is approved in Review Queue. */
+  linkedArticleApprovedAt?: string;
 };
 
 export type AutopilotPlanItemsDocument = {

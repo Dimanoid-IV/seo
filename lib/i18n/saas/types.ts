@@ -778,6 +778,14 @@ export type SaasDictionary = {
       DRAFT: string;
       READY_TO_PUBLISH: string;
     };
+    qualityScoreLabel: string;
+    qualityPassedLabel: string;
+    qualityFailedLabel: string;
+    qualityUnknownLabel: string;
+    autopilotLinkedLabel: string;
+    autopilotUnlockHint: string;
+    autopilotAlreadyApprovedHint: string;
+    approveBlockedQuality: string;
   };
   socialPosts: {
     title: string;
@@ -1078,6 +1086,14 @@ export type SaasDictionary = {
       schedulerWaitingReview: string;
       schedulerQualityFailed: string;
       schedulerWordPressRequired: string;
+      schedulerReadyForNextRun: string;
+      schedulerWordPressDraftCreated: string;
+      articleApprovalState: {
+        waitingReview: string;
+        readyForRun: string;
+        wordpressDraft: string;
+        qualityFailed: string;
+      };
     };
     planContent: {
       monthlyGrowthPlanTitle: string;

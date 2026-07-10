@@ -11,6 +11,7 @@ import {
 import { resolveOwnedOrganization } from "@/lib/auth/queries";
 import type { CurrentUser } from "@/lib/auth/types";
 import { getPrisma } from "@/lib/db";
+import { parsePlanItemsDocument } from "@/lib/autopilot/plan-items";
 import { parsePreparedFix } from "@/lib/tasks/prepared-fix";
 
 import type {
@@ -126,7 +127,7 @@ export async function getReviewQueue(
       })
     : null;
 
-  if (!website) {
+  if (!website || !organization) {
     return {
       website: null,
       items: [],
@@ -135,8 +136,10 @@ export async function getReviewQueue(
   }
 
   const userId = currentUser.id;
+  const organizationId = organization.id;
 
-  const [emails, articles, socialPosts, tasksWithFixes] = await Promise.all([
+  const [emails, articles, socialPosts, tasksWithFixes, autopilotPlans] =
+    await Promise.all([
     prisma.emailApproval.findMany({
       where: {
         websiteId: website.id,
@@ -178,6 +181,8 @@ export async function getReviewQueue(
         title: true,
         contentHtml: true,
         status: true,
+        qualityScore: true,
+        qualityPassed: true,
         createdAt: true,
         updatedAt: true,
       },
@@ -224,7 +229,31 @@ export async function getReviewQueue(
         createdAt: true,
       },
     }),
+    prisma.monthlyAutopilotPlan.findMany({
+      where: {
+        userId,
+        organizationId,
+        websiteId: website.id,
+        archivedAt: null,
+      },
+      select: {
+        planItemsJson: true,
+      },
+    }),
   ]);
+
+  const autopilotArticleIds = new Set<string>();
+  for (const plan of autopilotPlans) {
+    const document = plan.planItemsJson
+      ? parsePlanItemsDocument(plan.planItemsJson)
+      : null;
+    if (!document) continue;
+    for (const item of document.items) {
+      if (item.generatedArticleId) {
+        autopilotArticleIds.add(item.generatedArticleId);
+      }
+    }
+  }
 
   const items: ReviewQueueItem[] = [];
 
@@ -251,6 +280,12 @@ export async function getReviewQueue(
       ? article.contentHtml.replace(/<[^>]+>/g, " ")
       : article.title;
 
+    const linkedAutopilotPlanItem = autopilotArticleIds.has(article.id);
+    const qualityPassed = article.qualityPassed;
+    const canApproveArticle =
+      article.status === ArticleStatus.WAITING_REVIEW &&
+      qualityPassed !== false;
+
     items.push({
       id: reviewItemId("ARTICLE_DRAFT", article.id),
       sourceId: article.id,
@@ -263,7 +298,16 @@ export async function getReviewQueue(
       updatedAt: article.updatedAt.toISOString(),
       editHref: `/app/articles/${article.id}`,
       canEdit: true,
-      canApprove: true,
+      canApprove: canApproveArticle,
+      articleContext: {
+        qualityScore: article.qualityScore,
+        qualityPassed,
+        linkedAutopilotPlanItem,
+        autopilotUnlockOnApprove:
+          linkedAutopilotPlanItem &&
+          canApproveArticle &&
+          qualityPassed === true,
+      },
     });
   }
 

@@ -947,6 +947,17 @@ export const saasDictionary: SaasDictionary = {
       DRAFT: "Черновик",
       READY_TO_PUBLISH: "Готово к публикации",
     },
+    qualityScoreLabel: "Оценка качества",
+    qualityPassedLabel: "Проверки качества пройдены",
+    qualityFailedLabel: "Требует доработки",
+    qualityUnknownLabel: "Качество не оценено",
+    autopilotLinkedLabel: "Связано с планом Autopilot",
+    autopilotUnlockHint:
+      "Одобрение разблокирует следующий запланированный запуск Autopilot (только черновик WordPress — ничего не публикуется автоматически).",
+    autopilotAlreadyApprovedHint:
+      "Уже одобрено — Autopilot продолжит на следующем запланированном запуске.",
+    approveBlockedQuality:
+      "Черновик нельзя одобрить, пока не пройдены проверки качества.",
   },
   socialPosts: {
     title: "Соцсети",
@@ -1298,6 +1309,15 @@ export const saasDictionary: SaasDictionary = {
       schedulerWaitingReview: "Ожидает вашего одобрения в очереди проверки",
       schedulerQualityFailed: "Черновик не прошёл проверку качества",
       schedulerWordPressRequired: "Для отправки нужен WordPress",
+      schedulerReadyForNextRun:
+        "Статья одобрена — готова к следующему запланированному запуску Autopilot",
+      schedulerWordPressDraftCreated: "Черновик WordPress создан",
+      articleApprovalState: {
+        waitingReview: "Ожидает одобрения в очереди проверки",
+        readyForRun: "Одобрено — готово к следующему запуску",
+        wordpressDraft: "Черновик WordPress создан",
+        qualityFailed: "Качество не пройдено — нужна доработка",
+      },
     },
     planContent: {
       monthlyGrowthPlanTitle: "Месячный план роста — {month}",

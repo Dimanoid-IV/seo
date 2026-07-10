@@ -9,6 +9,7 @@ import {
 import type { Prisma } from "@prisma/client";
 
 import type { CurrentUser } from "@/lib/auth/types";
+import { approveArticleForAutopilot } from "@/lib/articles/approve-article-for-autopilot";
 import { updateArticleForUser } from "@/lib/articles/article-actions";
 import { getPrisma } from "@/lib/db";
 import { archiveEmailApproval, updateEmailApproval } from "@/lib/email-approvals/update-email-approval";
@@ -79,10 +80,9 @@ async function applyEmailAction(input: ReviewActionInput) {
 
 async function applyArticleAction(input: ReviewActionInput) {
   if (input.action === "APPROVE") {
-    return updateArticleForUser({
+    return approveArticleForAutopilot({
       articleId: input.sourceId,
       currentUser: input.currentUser,
-      data: { status: "APPROVED" },
     });
   }
 
@@ -123,10 +123,9 @@ async function applyArticleAction(input: ReviewActionInput) {
   }
 
   if (input.action === "MARK_DONE") {
-    return updateArticleForUser({
+    return approveArticleForAutopilot({
       articleId: input.sourceId,
       currentUser: input.currentUser,
-      data: { status: ArticleStatus.APPROVED },
     });
   }
 

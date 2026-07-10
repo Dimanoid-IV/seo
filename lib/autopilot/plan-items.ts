@@ -342,6 +342,10 @@ function parsePlanItem(value: unknown): AutopilotPlanItem | null {
       typeof record.articleQualityPassed === "boolean"
         ? record.articleQualityPassed
         : undefined,
+    linkedArticleApprovedAt:
+      typeof record.linkedArticleApprovedAt === "string"
+        ? record.linkedArticleApprovedAt
+        : undefined,
   };
 }
 

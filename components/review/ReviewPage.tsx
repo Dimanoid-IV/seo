@@ -353,6 +353,54 @@ export function ReviewPage() {
                       {t.riskLevels[item.preparedFix.riskLevel]}
                     </p>
                   ) : null}
+
+                  {item.type === "ARTICLE_DRAFT" && item.articleContext ? (
+                    <div className="space-y-2 rounded-lg border border-slate-100 bg-slate-50/80 px-3 py-2">
+                      <div className="flex flex-wrap items-center gap-2 text-xs">
+                        <span className="text-slate-500">
+                          {t.qualityScoreLabel}:{" "}
+                          <span className="font-semibold text-slate-800">
+                            {item.articleContext.qualityScore ?? "—"}
+                          </span>
+                        </span>
+                        {item.articleContext.qualityPassed === true ? (
+                          <span className="rounded-full bg-emerald-100 px-2 py-0.5 font-medium text-emerald-800">
+                            {t.qualityPassedLabel}
+                          </span>
+                        ) : item.articleContext.qualityPassed === false ? (
+                          <span className="rounded-full bg-amber-100 px-2 py-0.5 font-medium text-amber-800">
+                            {t.qualityFailedLabel}
+                          </span>
+                        ) : (
+                          <span className="rounded-full bg-slate-100 px-2 py-0.5 font-medium text-slate-600">
+                            {t.qualityUnknownLabel}
+                          </span>
+                        )}
+                        {item.articleContext.linkedAutopilotPlanItem ? (
+                          <span className="rounded-full border border-violet-200 bg-violet-50 px-2 py-0.5 font-medium text-violet-700">
+                            {t.autopilotLinkedLabel}
+                          </span>
+                        ) : null}
+                      </div>
+                      {item.articleContext.autopilotUnlockOnApprove ? (
+                        <p className="text-xs text-violet-700">
+                          {t.autopilotUnlockHint}
+                        </p>
+                      ) : null}
+                      {item.status === "APPROVED" &&
+                      item.articleContext.linkedAutopilotPlanItem ? (
+                        <p className="text-xs text-emerald-700">
+                          {t.autopilotAlreadyApprovedHint}
+                        </p>
+                      ) : null}
+                      {!item.canApprove &&
+                      item.articleContext.qualityPassed === false ? (
+                        <p className="text-xs text-amber-700">
+                          {t.approveBlockedQuality}
+                        </p>
+                      ) : null}
+                    </div>
+                  ) : null}
                 </div>
 
                 {isAdvanced && item.editHref ? (

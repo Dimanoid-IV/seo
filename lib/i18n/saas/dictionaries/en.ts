@@ -944,6 +944,17 @@ export const saasDictionary: SaasDictionary = {
       DRAFT: "Draft",
       READY_TO_PUBLISH: "Ready to publish",
     },
+    qualityScoreLabel: "Quality score",
+    qualityPassedLabel: "Passed quality checks",
+    qualityFailedLabel: "Needs revision",
+    qualityUnknownLabel: "Quality not scored",
+    autopilotLinkedLabel: "Linked to Autopilot plan",
+    autopilotUnlockHint:
+      "Approving unlocks the next scheduled Autopilot run (WordPress draft only — nothing is published automatically).",
+    autopilotAlreadyApprovedHint:
+      "Already approved — Autopilot will continue on the next due run.",
+    approveBlockedQuality:
+      "This draft cannot be approved until quality checks pass.",
   },
   socialPosts: {
     title: "Social Posts",
@@ -1294,6 +1305,15 @@ export const saasDictionary: SaasDictionary = {
       schedulerWaitingReview: "Waiting for your approval in Review Queue",
       schedulerQualityFailed: "Draft failed quality gates — revision needed",
       schedulerWordPressRequired: "WordPress required before draft can be sent",
+      schedulerReadyForNextRun:
+        "Article approved — ready for next scheduled Autopilot run",
+      schedulerWordPressDraftCreated: "WordPress draft created",
+      articleApprovalState: {
+        waitingReview: "Waiting for review approval",
+        readyForRun: "Approved — ready for next due run",
+        wordpressDraft: "WordPress draft created",
+        qualityFailed: "Quality failed — needs revision",
+      },
     },
     planContent: {
       monthlyGrowthPlanTitle: "Monthly growth plan — {month}",

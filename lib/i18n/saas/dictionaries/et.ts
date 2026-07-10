@@ -950,6 +950,17 @@ export const saasDictionary: SaasDictionary = {
       DRAFT: "Mustand",
       READY_TO_PUBLISH: "Valmis avaldamiseks",
     },
+    qualityScoreLabel: "Kvaliteediskoor",
+    qualityPassedLabel: "Kvaliteedikontroll läbitud",
+    qualityFailedLabel: "Vajab parandamist",
+    qualityUnknownLabel: "Kvaliteeti pole hinnatud",
+    autopilotLinkedLabel: "Seotud Autopiloti plaaniga",
+    autopilotUnlockHint:
+      "Kinnitamine avab järgmise plaanitud Autopiloti käigu (ainult WordPressi mustand — midagi automaatselt ei avaldata).",
+    autopilotAlreadyApprovedHint:
+      "Juba kinnitatud — Autopilot jätkab järgmisel tähtajal.",
+    approveBlockedQuality:
+      "Seda mustandit ei saa kinnitada enne, kui kvaliteedikontroll on läbitud.",
   },
   socialPosts: {
     title: "Sotsiaalpostitused",
@@ -1301,6 +1312,15 @@ export const saasDictionary: SaasDictionary = {
       schedulerWaitingReview: "Ootab sinu kinnitust ülevaate järjekorras",
       schedulerQualityFailed: "Mustand ei läbinud kvaliteedikontrolli",
       schedulerWordPressRequired: "WordPress on vajalik enne mustandi saatmist",
+      schedulerReadyForNextRun:
+        "Artikkel kinnitatud — valmis järgmiseks plaanitud Autopiloti käiguks",
+      schedulerWordPressDraftCreated: "WordPressi mustand loodud",
+      articleApprovalState: {
+        waitingReview: "Ootab kinnitust ülevaate järjekorras",
+        readyForRun: "Kinnitatud — valmis järgmiseks tähtajaks",
+        wordpressDraft: "WordPressi mustand loodud",
+        qualityFailed: "Kvaliteet ebaõnnestus — vajab parandamist",
+      },
     },
     planContent: {
       monthlyGrowthPlanTitle: "Kuu kasvuplaan — {month}",
