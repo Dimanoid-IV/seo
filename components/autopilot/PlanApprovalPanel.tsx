@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Check, ExternalLink, Loader2 } from "lucide-react";
+import { Check, ExternalLink, Loader2, Sparkles } from "lucide-react";
 import { useMemo, useState } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -53,12 +53,25 @@ export function PlanApprovalPanel({
     return initial;
   });
   const [submitting, setSubmitting] = useState(false);
+  const [generatingItemId, setGeneratingItemId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+  const [itemOverrides, setItemOverrides] = useState<
+    Record<string, Partial<AutopilotPlanItem>>
+  >({});
+
+  const displayItems = useMemo(
+    () =>
+      planItems.items.map((item) => ({
+        ...item,
+        ...(itemOverrides[item.id] ?? {}),
+      })),
+    [itemOverrides, planItems.items]
+  );
 
   const selectableItems = useMemo(
-    () => planItems.items.filter(isSelectable),
-    [planItems.items]
+    () => displayItems.filter(isSelectable),
+    [displayItems]
   );
 
   const allSelected =
@@ -131,7 +144,79 @@ export function PlanApprovalPanel({
     }
   }
 
-  if (planItems.items.length === 0) {
+  async function handleGenerateDraft(item: AutopilotPlanItem) {
+    if (!item.researchBrief) {
+      setError(t.researchBriefMissing);
+      return;
+    }
+
+    setGeneratingItemId(item.id);
+    setError(null);
+    setSuccess(null);
+
+    try {
+      const response = await authFetch(
+        `/api/autopilot/monthly/${planId}/generate-article-draft`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ itemId: item.id }),
+        }
+      );
+
+      if (!response.ok) {
+        setError(
+          await parseApiErrorMessage(response, t.generateDraftFailed)
+        );
+        return;
+      }
+
+      const body = (await response.json()) as {
+        data: {
+          article: { id: string; qualityScore: number | null; qualityPassed: boolean | null };
+          qualityReport: { score: number; passed: boolean };
+          planItem: {
+            generatedArticleId: string;
+            articleQualityScore: number;
+            articleQualityPassed: boolean;
+            reviewQueueHref: string;
+          };
+        };
+      };
+
+      setItemOverrides((prev) => ({
+        ...prev,
+        [item.id]: {
+          status: "prepared",
+          generatedArticleId: body.data.planItem.generatedArticleId,
+          articleQualityScore: body.data.planItem.articleQualityScore,
+          articleQualityPassed: body.data.planItem.articleQualityPassed,
+          sourceRef: {
+            type: "article",
+            id: body.data.planItem.generatedArticleId,
+          },
+          reviewQueueHref: body.data.planItem.reviewQueueHref,
+          blockedReasonKey: body.data.qualityReport.passed
+            ? undefined
+            : "articleNeedsRevision",
+        },
+      }));
+
+      setSuccess(
+        body.data.qualityReport.passed
+          ? t.articleGeneratedSuccess
+          : t.articleGeneratedNeedsRevision
+      );
+
+      onApproved?.();
+    } catch {
+      setError(t.generateDraftNetworkError);
+    } finally {
+      setGeneratingItemId(null);
+    }
+  }
+
+  if (displayItems.length === 0) {
     return (
       <div className="rounded-xl border border-dashed border-slate-200 bg-slate-50 px-4 py-8 text-center text-sm text-slate-500">
         {t.emptyItems}
@@ -139,7 +224,7 @@ export function PlanApprovalPanel({
     );
   }
 
-  const hasApprovedItems = planItems.items.some(
+  const hasApprovedItems = displayItems.some(
     (item) =>
       item.status === "scheduled" ||
       item.status === "approved" ||
@@ -186,7 +271,7 @@ export function PlanApprovalPanel({
       </div>
 
       <ul className="space-y-3">
-        {planItems.items.map((item) => {
+        {displayItems.map((item) => {
           const checked = selected.has(item.id);
           const selectable = isSelectable(item);
           const statusLabel =
@@ -243,6 +328,63 @@ export function PlanApprovalPanel({
                     />
                   ) : null}
 
+                  {item.type === "ARTICLE" &&
+                  item.researchBrief &&
+                  !item.generatedArticleId &&
+                  ["approved", "scheduled", "prepared", "proposed"].includes(
+                    item.status
+                  ) ? (
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      className="rounded-xl"
+                      disabled={
+                        generatingItemId !== null ||
+                        submitting ||
+                        item.status === "blocked"
+                      }
+                      onClick={() => void handleGenerateDraft(item)}
+                    >
+                      {generatingItemId === item.id ? (
+                        <Loader2 className="size-4 animate-spin" />
+                      ) : (
+                        <Sparkles className="size-4" />
+                      )}
+                      {t.generateDraftFromResearch}
+                    </Button>
+                  ) : null}
+
+                  {item.generatedArticleId ? (
+                    <div className="flex flex-wrap items-center gap-2 text-xs">
+                      <span className="text-slate-500">
+                        {t.qualityScore}:{" "}
+                        <span className="font-semibold text-slate-800">
+                          {item.articleQualityScore ?? "—"}
+                        </span>
+                      </span>
+                      <span
+                        className={cn(
+                          "rounded-full px-2 py-0.5 font-medium",
+                          item.articleQualityPassed
+                            ? "bg-emerald-100 text-emerald-800"
+                            : "bg-amber-100 text-amber-800"
+                        )}
+                      >
+                        {item.articleQualityPassed
+                          ? t.qualityPassed
+                          : t.qualityNeedsRevision}
+                      </span>
+                      <Link
+                        href={`/app/articles/${item.generatedArticleId}`}
+                        className="inline-flex items-center gap-1 font-medium text-violet-600 hover:text-violet-800"
+                      >
+                        {t.openArticleDraft}
+                        <ExternalLink className="size-3" />
+                      </Link>
+                    </div>
+                  ) : null}
+
                   <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-slate-500">
                     <span>
                       {t.riskLabel}: {t.riskLevels[item.riskLevel]}
@@ -269,7 +411,9 @@ export function PlanApprovalPanel({
                   ) : null}
 
                   {item.reviewQueueHref &&
-                  (item.status === "prepared" || item.type === "TASK_FIX") ? (
+                  (item.status === "prepared" ||
+                    item.type === "TASK_FIX" ||
+                    item.generatedArticleId) ? (
                     <Link
                       href={item.reviewQueueHref}
                       className="inline-flex items-center gap-1 text-xs font-medium text-violet-600 hover:text-violet-800"

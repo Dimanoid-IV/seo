@@ -19,9 +19,8 @@ export async function tryEnhanceBriefWithHermes(
     return brief;
   }
 
-  // Hermes article-research endpoint is not wired yet (Prompt 11.23).
-  // When available, call a lightweight research enrichment here.
-  // For now, mark as not enhanced and return the deterministic brief unchanged.
+  // Hermes article-research endpoint is not wired yet.
+  // Research-aware article generation uses repair pass for humanization (Prompt 11.23).
   return {
     ...brief,
     hermesEnhanced: false,

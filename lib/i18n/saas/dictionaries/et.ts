@@ -1217,6 +1217,7 @@ export const saasDictionary: SaasDictionary = {
         gscNotConnected: "Google Search Console pole ühendatud",
         planNotApproved: "Plaani pole veel kinnitatud",
         autopilotOff: "Autopiloot on väljas",
+        articleNeedsRevision: "Artikli mustand vajab enne avaldamist parandamist",
       },
     },
     planApproval: {
@@ -1266,6 +1267,17 @@ export const saasDictionary: SaasDictionary = {
         medium: "Keskmine",
         high: "Kõrge",
       },
+      generateDraftFromResearch: "Loo mustand uuringust",
+      qualityScore: "Kvaliteediskoor",
+      qualityPassed: "Kvaliteedikontroll läbitud",
+      qualityNeedsRevision: "Vajab parandamist",
+      generateDraftFailed: "Artikli mustandi loomine ebaõnnestus",
+      generateDraftNetworkError: "Võrguviga mustandi loomisel",
+      researchBriefMissing: "Uuring puudub",
+      articleGeneratedSuccess: "Artikkel loodud ja lisatud ülevaatusse",
+      articleGeneratedNeedsRevision:
+        "Mustand loodud, kuid vajab enne ülevaatust parandamist",
+      openArticleDraft: "Ava artikli mustand",
     },
     planContent: {
       monthlyGrowthPlanTitle: "Kuu kasvuplaan — {month}",

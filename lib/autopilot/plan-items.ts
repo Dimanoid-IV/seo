@@ -330,6 +330,18 @@ function parsePlanItem(value: unknown): AutopilotPlanItem | null {
       record.researchBrief && typeof record.researchBrief === "object"
         ? (record.researchBrief as Record<string, unknown>)
         : undefined,
+    generatedArticleId:
+      typeof record.generatedArticleId === "string"
+        ? record.generatedArticleId
+        : undefined,
+    articleQualityScore:
+      typeof record.articleQualityScore === "number"
+        ? record.articleQualityScore
+        : undefined,
+    articleQualityPassed:
+      typeof record.articleQualityPassed === "boolean"
+        ? record.articleQualityPassed
+        : undefined,
   };
 }
 

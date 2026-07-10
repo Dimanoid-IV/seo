@@ -1211,6 +1211,7 @@ export const saasDictionary: SaasDictionary = {
         gscNotConnected: "Google Search Console not connected",
         planNotApproved: "Plan not approved yet",
         autopilotOff: "Autopilot is off",
+        articleNeedsRevision: "Article draft needs revision before publishing",
       },
     },
     planApproval: {
@@ -1259,6 +1260,17 @@ export const saasDictionary: SaasDictionary = {
         medium: "Medium",
         high: "High",
       },
+      generateDraftFromResearch: "Generate draft from research",
+      qualityScore: "Quality score",
+      qualityPassed: "Passed quality checks",
+      qualityNeedsRevision: "Needs revision",
+      generateDraftFailed: "Could not generate article draft",
+      generateDraftNetworkError: "Network error while generating article draft",
+      researchBriefMissing: "Research brief missing",
+      articleGeneratedSuccess: "Article generated and added to review",
+      articleGeneratedNeedsRevision:
+        "Article draft created but needs revision before review",
+      openArticleDraft: "Open article draft",
     },
     planContent: {
       monthlyGrowthPlanTitle: "Monthly growth plan — {month}",

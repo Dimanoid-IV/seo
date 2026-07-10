@@ -1214,6 +1214,7 @@ export const saasDictionary: SaasDictionary = {
         gscNotConnected: "Google Search Console не подключён",
         planNotApproved: "План ещё не одобрен",
         autopilotOff: "Автопилот выключен",
+        articleNeedsRevision: "Черновик статьи требует доработки перед публикацией",
       },
     },
     planApproval: {
@@ -1263,6 +1264,17 @@ export const saasDictionary: SaasDictionary = {
         medium: "Средний",
         high: "Высокий",
       },
+      generateDraftFromResearch: "Создать черновик из исследования",
+      qualityScore: "Оценка качества",
+      qualityPassed: "Проверки пройдены",
+      qualityNeedsRevision: "Требует доработки",
+      generateDraftFailed: "Не удалось создать черновик статьи",
+      generateDraftNetworkError: "Сетевая ошибка при создании черновика",
+      researchBriefMissing: "Исследование отсутствует",
+      articleGeneratedSuccess: "Статья создана и добавлена на проверку",
+      articleGeneratedNeedsRevision:
+        "Черновик создан, но требует доработки перед проверкой",
+      openArticleDraft: "Открыть черновик",
     },
     planContent: {
       monthlyGrowthPlanTitle: "Месячный план роста — {month}",

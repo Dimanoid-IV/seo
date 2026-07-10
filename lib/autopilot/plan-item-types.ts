@@ -54,6 +54,10 @@ export type AutopilotPlanItem = {
    * Generated before article creation for ARTICLE items.
    */
   researchBrief?: Record<string, unknown>;
+  /** Linked article draft after research-based generation (Prompt 11.23). */
+  generatedArticleId?: string;
+  articleQualityScore?: number;
+  articleQualityPassed?: boolean;
 };
 
 export type AutopilotPlanItemsDocument = {

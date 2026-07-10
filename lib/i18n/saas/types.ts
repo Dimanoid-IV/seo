@@ -1023,6 +1023,7 @@ export type SaasDictionary = {
         gscNotConnected: string;
         planNotApproved: string;
         autopilotOff: string;
+        articleNeedsRevision: string;
       };
     };
     planApproval: {
@@ -1047,6 +1048,16 @@ export type SaasDictionary = {
       itemTypes: Record<string, string>;
       itemStatuses: Record<string, string>;
       riskLevels: { low: string; medium: string; high: string };
+      generateDraftFromResearch: string;
+      qualityScore: string;
+      qualityPassed: string;
+      qualityNeedsRevision: string;
+      generateDraftFailed: string;
+      generateDraftNetworkError: string;
+      researchBriefMissing: string;
+      articleGeneratedSuccess: string;
+      articleGeneratedNeedsRevision: string;
+      openArticleDraft: string;
     };
     planContent: {
       monthlyGrowthPlanTitle: string;
