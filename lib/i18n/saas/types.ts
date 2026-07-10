@@ -631,6 +631,35 @@ export type SaasDictionary = {
     emptyDescription: string;
     sourceLabel: string;
     createdLabel: string;
+    completedLabel: string;
+    updatedLabel: string;
+    impactLabel: string;
+    openTask: string;
+    details: string;
+    markDone: string;
+    markInProgress: string;
+    skipTask: string;
+    updateFailed: string;
+    taskNotFound: string;
+    detailDescriptionLabel: string;
+    detailWhyItMattersLabel: string;
+    detailRecommendedActionLabel: string;
+    detailFallbackDescription: string;
+    emptyOpenTitle: string;
+    emptyOpenDescription: string;
+    statusLabels: {
+      open: string;
+      inProgress: string;
+      completed: string;
+      dismissed: string;
+      waitingReview: string;
+    };
+    priorityLabels: {
+      low: string;
+      medium: string;
+      high: string;
+      critical: string;
+    };
     sections: {
       open: string;
       inProgress: string;

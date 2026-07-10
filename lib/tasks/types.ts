@@ -8,6 +8,12 @@ export type TaskListItem = {
   source: string;
   impactScore: number | null;
   createdAt: string;
+  updatedAt: string;
+  completedAt: string | null;
+  whyItMatters: string | null;
+  recommendedAction: string | null;
+  estimatedFixMinutes: number | null;
+  auditCheckCode: string | null;
 };
 
 export type TasksOverviewData = {

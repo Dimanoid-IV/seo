@@ -4,6 +4,7 @@ import { resolveOwnedOrganization } from "@/lib/auth/queries";
 import type { CurrentUser } from "@/lib/auth/types";
 import { sortDashboardTasks } from "@/lib/audit/generate-tasks";
 import { getPrisma } from "@/lib/db";
+import { parseTaskRecommendation } from "@/lib/tasks/recommendation";
 
 import type { TasksOverviewResponse } from "./types";
 
@@ -62,7 +63,10 @@ export async function getTasksOverview(
       status: true,
       source: true,
       impactScore: true,
+      recommendationJson: true,
       createdAt: true,
+      updatedAt: true,
+      completedAt: true,
     },
   });
 
@@ -73,17 +77,27 @@ export async function getTasksOverview(
     .filter((task) => CLOSED_STATUSES.includes(task.status))
     .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
 
-  const tasks = [...activeTasks, ...closedTasks].map((task) => ({
-    id: task.id,
-    title: task.title,
-    description: task.description,
-    category: task.category,
-    priority: task.priority,
-    status: task.status,
-    source: task.source,
-    impactScore: task.impactScore,
-    createdAt: task.createdAt.toISOString(),
-  }));
+  const tasks = [...activeTasks, ...closedTasks].map((task) => {
+    const recommendation = parseTaskRecommendation(task.recommendationJson);
+
+    return {
+      id: task.id,
+      title: task.title,
+      description: task.description,
+      category: task.category,
+      priority: task.priority,
+      status: task.status,
+      source: task.source,
+      impactScore: task.impactScore,
+      createdAt: task.createdAt.toISOString(),
+      updatedAt: task.updatedAt.toISOString(),
+      completedAt: task.completedAt?.toISOString() ?? null,
+      whyItMatters: recommendation.whyItMatters,
+      recommendedAction: recommendation.recommendation,
+      estimatedFixMinutes: recommendation.estimatedFixMinutes,
+      auditCheckCode: recommendation.auditCheckCode,
+    };
+  });
 
   return {
     data: {

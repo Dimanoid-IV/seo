@@ -4,6 +4,7 @@ import type { CurrentUser } from "@/lib/auth/types";
 import { getPrisma } from "@/lib/db";
 import { AppError, ErrorCode } from "@/lib/errors";
 import { syncGrowthOpportunitiesForWebsite } from "@/lib/growth/sync-opportunities";
+import { parseTaskRecommendation } from "@/lib/tasks/recommendation";
 
 export type SerializedTask = {
   id: string;
@@ -14,9 +15,15 @@ export type SerializedTask = {
   category: string;
   priority: string;
   status: string;
+  source: string;
   impactScore: number | null;
   completedAt: string | null;
   createdAt: string;
+  updatedAt: string;
+  whyItMatters: string | null;
+  recommendedAction: string | null;
+  estimatedFixMinutes: number | null;
+  auditCheckCode: string | null;
 };
 
 type TaskRecord = {
@@ -28,12 +35,34 @@ type TaskRecord = {
   category: string;
   priority: string;
   status: TaskStatus;
+  source: string;
   impactScore: number | null;
+  recommendationJson: unknown;
   completedAt: Date | null;
   createdAt: Date;
+  updatedAt: Date;
 };
 
+const TASK_SELECT = {
+  id: true,
+  websiteId: true,
+  organizationId: true,
+  title: true,
+  description: true,
+  category: true,
+  priority: true,
+  status: true,
+  source: true,
+  impactScore: true,
+  recommendationJson: true,
+  completedAt: true,
+  createdAt: true,
+  updatedAt: true,
+} as const;
+
 function serializeTask(task: TaskRecord): SerializedTask {
+  const recommendation = parseTaskRecommendation(task.recommendationJson);
+
   return {
     id: task.id,
     websiteId: task.websiteId,
@@ -43,9 +72,15 @@ function serializeTask(task: TaskRecord): SerializedTask {
     category: task.category,
     priority: task.priority,
     status: task.status,
+    source: task.source,
     impactScore: task.impactScore,
     completedAt: task.completedAt?.toISOString() ?? null,
     createdAt: task.createdAt.toISOString(),
+    updatedAt: task.updatedAt.toISOString(),
+    whyItMatters: recommendation.whyItMatters,
+    recommendedAction: recommendation.recommendation,
+    estimatedFixMinutes: recommendation.estimatedFixMinutes,
+    auditCheckCode: recommendation.auditCheckCode,
   };
 }
 
@@ -61,20 +96,82 @@ async function findTaskForUser(taskId: string, userId: string) {
         deletedAt: null,
       },
     },
-    select: {
-      id: true,
-      websiteId: true,
-      organizationId: true,
-      title: true,
-      description: true,
-      category: true,
-      priority: true,
-      status: true,
-      impactScore: true,
-      completedAt: true,
-      createdAt: true,
-    },
+    select: TASK_SELECT,
   });
+}
+
+const UPDATABLE_STATUSES = new Set<TaskStatus>([
+  TaskStatus.IN_PROGRESS,
+  TaskStatus.COMPLETED,
+  TaskStatus.DISMISSED,
+]);
+
+export async function updateTaskStatus(input: {
+  taskId: string;
+  status: TaskStatus;
+  currentUser: CurrentUser;
+}): Promise<SerializedTask> {
+  if (!UPDATABLE_STATUSES.has(input.status)) {
+    throw new AppError(
+      ErrorCode.VALIDATION_ERROR,
+      "Недопустимый статус задачи",
+      { details: { status: input.status } }
+    );
+  }
+
+  if (input.status === TaskStatus.COMPLETED) {
+    return completeTask({
+      taskId: input.taskId,
+      currentUser: input.currentUser,
+    });
+  }
+
+  if (input.status === TaskStatus.DISMISSED) {
+    return dismissTask({
+      taskId: input.taskId,
+      currentUser: input.currentUser,
+    });
+  }
+
+  return startTaskInProgress({
+    taskId: input.taskId,
+    currentUser: input.currentUser,
+  });
+}
+
+export async function startTaskInProgress(input: {
+  taskId: string;
+  currentUser: CurrentUser;
+}): Promise<SerializedTask> {
+  const task = await findTaskForUser(input.taskId, input.currentUser.id);
+
+  if (!task) {
+    throw new AppError(ErrorCode.NOT_FOUND, "Задача не найдена или недоступна");
+  }
+
+  if (task.status === TaskStatus.IN_PROGRESS) {
+    return serializeTask(task);
+  }
+
+  if (
+    task.status !== TaskStatus.OPEN &&
+    task.status !== TaskStatus.WAITING_REVIEW
+  ) {
+    throw new AppError(
+      ErrorCode.VALIDATION_ERROR,
+      "Эту задачу нельзя перевести в работу",
+      { details: { status: task.status } }
+    );
+  }
+
+  const prisma = getPrisma();
+  const updated = await prisma.task.update({
+    where: { id: task.id },
+    data: { status: TaskStatus.IN_PROGRESS },
+    select: TASK_SELECT,
+  });
+
+  return serializeTask(updated);
 }
 
 export async function completeTask(input: {
@@ -101,19 +198,7 @@ export async function completeTask(input: {
         status: TaskStatus.COMPLETED,
         completedAt: now,
       },
-      select: {
-        id: true,
-        websiteId: true,
-        organizationId: true,
-        title: true,
-        description: true,
-        category: true,
-        priority: true,
-        status: true,
-        impactScore: true,
-        completedAt: true,
-        createdAt: true,
-      },
+      select: TASK_SELECT,
     });
 
     await tx.activity.create({
@@ -178,19 +263,7 @@ export async function dismissTask(input: {
       data: {
         status: TaskStatus.DISMISSED,
       },
-      select: {
-        id: true,
-        websiteId: true,
-        organizationId: true,
-        title: true,
-        description: true,
-        category: true,
-        priority: true,
-        status: true,
-        impactScore: true,
-        completedAt: true,
-        createdAt: true,
-      },
+      select: TASK_SELECT,
     });
 
     await tx.activity.create({
