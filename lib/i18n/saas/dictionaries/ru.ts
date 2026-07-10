@@ -1500,6 +1500,23 @@ export const saasDictionary: SaasDictionary = {
       networkError: "Сетевая ошибка. Проверьте подключение и попробуйте снова",
     },
   },
+  contentResearch: {
+    title: "Исследование перед статьёй",
+    primaryKeyword: "Ключевой запрос",
+    buyerQuestion: "Вопрос покупателя",
+    geoPrompts: "GEO-вопросы",
+    competitors: "Конкуренты",
+    competitorsUnavailable: "Недостаточно данных о конкурентах",
+    hint: "RankBoost использует задачи, аудит и Search Console, чтобы подготовить статью перед генерацией.",
+    refresh: "Обновить исследование",
+    refreshFailed: "Не удалось обновить исследование.",
+    refreshNetworkError: "Сетевая ошибка при обновлении исследования.",
+    statuses: {
+      ready: "Исследование готово",
+      partial: "Частично",
+      blocked: "Заблокировано",
+    },
+  },
   statuses: {
     draft: "Черновик",
     ready: "Готово",

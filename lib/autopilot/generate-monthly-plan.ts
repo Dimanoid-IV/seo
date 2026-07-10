@@ -608,7 +608,21 @@ export async function generateMonthlyAutopilotPlan(input: {
   });
 
   const payload = buildPlanPayload(sourceData, month);
-  const planItemsDoc = buildPlanItemsFromSource(sourceData, "monthly");
+  let planItemsDoc = buildPlanItemsFromSource(sourceData, "monthly");
+
+  const { attachResearchBriefsToPlanItems } = await import(
+    "@/lib/content-research/plan-integration"
+  );
+  planItemsDoc = {
+    ...planItemsDoc,
+    items: await attachResearchBriefsToPlanItems({
+      items: planItemsDoc.items,
+      websiteId: website.id,
+      organizationId: organization.id,
+      userId: input.userId,
+      focusAreaTitles: payload.focusAreas.map((a) => a.title),
+    }),
+  };
 
   const planData = {
     userId: input.userId,

@@ -326,6 +326,10 @@ function parsePlanItem(value: unknown): AutopilotPlanItem | null {
       typeof record.blockedReasonKey === "string"
         ? record.blockedReasonKey
         : undefined,
+    researchBrief:
+      record.researchBrief && typeof record.researchBrief === "object"
+        ? (record.researchBrief as Record<string, unknown>)
+        : undefined,
   };
 }
 

@@ -5,6 +5,7 @@ import { Check, ExternalLink, Loader2 } from "lucide-react";
 import { useMemo, useState } from "react";
 
 import { Button } from "@/components/ui/button";
+import { ResearchBriefPreview } from "@/components/content-research/ResearchBriefPreview";
 import { authFetch, parseApiErrorMessage } from "@/lib/auth/client-session";
 import type {
   AutopilotPlanItem,
@@ -232,6 +233,15 @@ export function PlanApprovalPanel({
                   </div>
 
                   <p className="text-sm text-slate-600">{item.reason}</p>
+
+                  {item.type === "ARTICLE" && item.researchBrief ? (
+                    <ResearchBriefPreview
+                      researchBrief={item.researchBrief}
+                      planId={planId}
+                      planItemId={item.id}
+                      compact
+                    />
+                  ) : null}
 
                   <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-slate-500">
                     <span>

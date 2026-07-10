@@ -49,6 +49,11 @@ export type AutopilotPlanItem = {
   selected?: boolean;
   reviewQueueHref?: string;
   blockedReasonKey?: string;
+  /**
+   * Content research brief (Prompt 11.22) — embedded JSON, not a separate DB model.
+   * Generated before article creation for ARTICLE items.
+   */
+  researchBrief?: Record<string, unknown>;
 };
 
 export type AutopilotPlanItemsDocument = {

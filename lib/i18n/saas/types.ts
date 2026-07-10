@@ -1197,4 +1197,21 @@ export type SaasDictionary = {
     notConfigured: string;
     sent: string;
   };
+  contentResearch: {
+    title: string;
+    primaryKeyword: string;
+    buyerQuestion: string;
+    geoPrompts: string;
+    competitors: string;
+    competitorsUnavailable: string;
+    hint: string;
+    refresh: string;
+    refreshFailed: string;
+    refreshNetworkError: string;
+    statuses: {
+      ready: string;
+      partial: string;
+      blocked: string;
+    };
+  };
 };

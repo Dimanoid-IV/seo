@@ -1496,6 +1496,23 @@ export const saasDictionary: SaasDictionary = {
       networkError: "Network error. Check your connection and try again",
     },
   },
+  contentResearch: {
+    title: "Pre-article research",
+    primaryKeyword: "Primary keyword",
+    buyerQuestion: "Buyer question",
+    geoPrompts: "GEO questions",
+    competitors: "Competitors",
+    competitorsUnavailable: "Insufficient competitor data",
+    hint: "RankBoost uses tasks, audit, and Search Console to prepare an article before generation.",
+    refresh: "Refresh research",
+    refreshFailed: "Could not refresh research brief.",
+    refreshNetworkError: "Network error while refreshing research.",
+    statuses: {
+      ready: "Research ready",
+      partial: "Partial",
+      blocked: "Blocked",
+    },
+  },
   statuses: {
     draft: "Draft",
     ready: "Ready",

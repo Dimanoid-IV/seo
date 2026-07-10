@@ -1503,6 +1503,23 @@ export const saasDictionary: SaasDictionary = {
       networkError: "Võrguviga. Kontrollige ühendust ja proovige uuesti",
     },
   },
+  contentResearch: {
+    title: "Uurimus enne artiklit",
+    primaryKeyword: "Põhi märksõna",
+    buyerQuestion: "Ostja küsimus",
+    geoPrompts: "GEO-küsimused",
+    competitors: "Konkurendid",
+    competitorsUnavailable: "Konkurentide andmed puuduvad",
+    hint: "RankBoost kasutab ülesandeid, auditit ja Search Console'i, et valmistada artikkel enne genereerimist ette.",
+    refresh: "Värskenda uurimist",
+    refreshFailed: "Uurimust ei saanud värskendada.",
+    refreshNetworkError: "Võrguviga uurimuse värskendamisel.",
+    statuses: {
+      ready: "Uurimus valmis",
+      partial: "Osaliselt",
+      blocked: "Blokeeritud",
+    },
+  },
   statuses: {
     draft: "Mustand",
     ready: "Valmis",
