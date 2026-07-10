@@ -615,6 +615,41 @@ export const saasDictionary: SaasDictionary = {
     gscSyncNetworkError: "Network error while refreshing Search Console data",
     searchConsoleSite: "Search Console site:",
     oauthApiSoonTitle: "OAuth/API connection will arrive in a future release",
+    gscPropertyPicker: {
+      title: "Choose a Search Console site",
+      subtitle: "Link a Google property to your website in RankBoost",
+      currentSite: "Current:",
+      linkPropertyHint: "Link a Google property to your website in RankBoost",
+      loadingProperties: "Loading properties…",
+      loadFailed: "Could not load Search Console sites",
+      loadNetworkError: "Network error while loading Search Console sites",
+      syncData: "Load Search Console data",
+      syncSuccess: "Search Console data loaded for the last 28 days.",
+      siteSelected: "Search Console site selected:",
+      saving: "Saving…",
+      useThisSite: "Use this site",
+      selected: "Selected",
+      mismatchTitle: "We couldn’t find this site in Google Search Console",
+      mismatchText: (domain: string) =>
+        `Google is connected, but ${domain} was not found among your available properties. Make sure the site is added and verified in Google Search Console, or continue without this integration.`,
+      noPropertiesTitle: "No sites in Google Search Console yet",
+      noPropertiesText:
+        "There are no available sites in your Google Search Console account yet.",
+      openSearchConsole: "Open Google Search Console",
+      retry: "Retry",
+      continueWithoutGsc: "Continue without GSC",
+      chooseOtherPropertyAnyway: "Choose a different property anyway",
+      otherPropertiesTitle: "Other available properties",
+      selectSiteFailed: "Could not save the selected site",
+      syncTasksCreated: (count: number) =>
+        `${count} new tasks created — they will appear in Tasks.`,
+      permissions: {
+        siteOwner: "Owner",
+        siteFullUser: "Full access",
+        siteRestrictedUser: "Restricted access",
+        siteUnverifiedUser: "Unverified",
+      },
+    },
     wordpress: {
       setupSteps: [
         "Install the RankBoost Connector plugin in WordPress.",

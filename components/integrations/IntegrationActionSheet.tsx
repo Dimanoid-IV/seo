@@ -100,6 +100,7 @@ export function IntegrationActionSheet({
           websiteId={websiteId}
           userEmail={userEmail}
           onIntegrationUpdated={onIntegrationUpdated}
+          onOpenChange={onOpenChange}
         />
       ) : null}
     </Sheet>
@@ -122,11 +123,13 @@ function IntegrationActionSheetContent({
   websiteId,
   userEmail,
   onIntegrationUpdated,
+  onOpenChange,
 }: {
   integration: IntegrationOverviewItem;
   websiteId?: string | null;
   userEmail?: string | null;
   onIntegrationUpdated?: () => void;
+  onOpenChange: (open: boolean) => void;
 }) {
   const { dict, locale } = useSaasTranslations();
   const i = dict.integrations;
@@ -293,6 +296,7 @@ function IntegrationActionSheetContent({
               websiteId={websiteId}
               onSiteSelected={() => onIntegrationUpdated?.()}
               onIntegrationUpdated={onIntegrationUpdated}
+              onContinueWithoutGsc={() => onOpenChange(false)}
             />
           ) : null}
 

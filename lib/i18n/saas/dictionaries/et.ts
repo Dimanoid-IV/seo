@@ -615,6 +615,43 @@ export const saasDictionary: SaasDictionary = {
     gscSyncNetworkError: "Võrguviga Search Console'i andmete värskendamisel",
     searchConsoleSite: "Search Console'i sait:",
     oauthApiSoonTitle: "OAuth/API ühendus tuleb järgmises versioonis",
+    gscPropertyPicker: {
+      title: "Vali Search Console'i sait",
+      subtitle: "Seo Google'i atribuut oma veebisaidiga RankBoostis",
+      currentSite: "Praegune:",
+      linkPropertyHint: "Seo Google'i atribuut oma veebisaidiga RankBoostis",
+      loadingProperties: "Atribuutide laadimine…",
+      loadFailed: "Search Console'i saite ei õnnestunud laadida",
+      loadNetworkError:
+        "Võrguviga Search Console'i saitide laadimisel",
+      syncData: "Laadi Search Console'i andmed",
+      syncSuccess:
+        "Search Console'i andmed on laaditud viimase 28 päeva kohta.",
+      siteSelected: "Search Console'i sait valitud:",
+      saving: "Salvestamine…",
+      useThisSite: "Kasuta seda saiti",
+      selected: "Valitud",
+      mismatchTitle: "Me ei leidnud seda saiti Google Search Console'is",
+      mismatchText: (domain: string) =>
+        `Google on ühendatud, kuid ${domain} ei ole saadaval olevate atribuutide hulgas. Kontrolli, et sait oleks Google Search Console'is lisatud ja kinnitatud, või jätka ilma selle integratsioonita.`,
+      noPropertiesTitle: "Google Search Console'is pole saite",
+      noPropertiesText:
+        "Teie Google Search Console'i kontol pole veel ühtegi saadaolevat saiti.",
+      openSearchConsole: "Ava Google Search Console",
+      retry: "Proovi uuesti",
+      continueWithoutGsc: "Jätka ilma GSC-ta",
+      chooseOtherPropertyAnyway: "Vali siiski mõni muu atribuut",
+      otherPropertiesTitle: "Muud saadaolevad atribuudid",
+      selectSiteFailed: "Valitud saiti ei õnnestunud salvestada",
+      syncTasksCreated: (count: number) =>
+        `Loodi ${count} uut ülesannet — need ilmuvad jaotises Ülesanded.`,
+      permissions: {
+        siteOwner: "Omanik",
+        siteFullUser: "Täielik juurdepääs",
+        siteRestrictedUser: "Piiratud juurdepääs",
+        siteUnverifiedUser: "Kinnitamata",
+      },
+    },
     wordpress: {
       setupSteps: [
         "Installige WordPressi plugin RankBoost Connector.",

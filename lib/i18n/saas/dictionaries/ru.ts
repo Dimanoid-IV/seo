@@ -615,6 +615,41 @@ export const saasDictionary: SaasDictionary = {
     gscSyncNetworkError: "Сетевая ошибка при обновлении данных Search Console",
     searchConsoleSite: "Сайт Search Console:",
     oauthApiSoonTitle: "OAuth/API подключение появится в следующем релизе",
+    gscPropertyPicker: {
+      title: "Выбрать сайт из Search Console",
+      subtitle: "Свяжите property Google с сайтом в RankBoost",
+      currentSite: "Текущий:",
+      linkPropertyHint: "Свяжите property Google с сайтом в RankBoost",
+      loadingProperties: "Загружаем properties…",
+      loadFailed: "Не удалось загрузить сайты Search Console",
+      loadNetworkError: "Сетевая ошибка при загрузке сайтов Search Console",
+      syncData: "Загрузить данные Search Console",
+      syncSuccess: "Данные Search Console загружены за последние 28 дней.",
+      siteSelected: "Сайт Search Console выбран:",
+      saving: "Сохраняем…",
+      useThisSite: "Использовать этот сайт",
+      selected: "Выбран",
+      mismatchTitle: "Мы не нашли этот сайт в Google Search Console",
+      mismatchText: (domain: string) =>
+        `Google подключён, но сайт ${domain} не найден среди доступных свойств. Проверьте, что сайт добавлен и подтверждён в Google Search Console, или продолжите без этой интеграции.`,
+      noPropertiesTitle: "Нет сайтов в Google Search Console",
+      noPropertiesText:
+        "В вашем Google Search Console пока нет доступных сайтов.",
+      openSearchConsole: "Открыть Google Search Console",
+      retry: "Повторить",
+      continueWithoutGsc: "Продолжить без GSC",
+      chooseOtherPropertyAnyway: "Выбрать другое свойство всё равно",
+      otherPropertiesTitle: "Другие доступные свойства",
+      selectSiteFailed: "Не удалось сохранить выбранный сайт",
+      syncTasksCreated: (count: number) =>
+        `Создано ${count} новых задач — они появятся в разделе Задачи.`,
+      permissions: {
+        siteOwner: "Владелец",
+        siteFullUser: "Полный доступ",
+        siteRestrictedUser: "Ограниченный доступ",
+        siteUnverifiedUser: "Не подтверждён",
+      },
+    },
     wordpress: {
       setupSteps: [
         "Установите плагин RankBoost Connector в WordPress.",

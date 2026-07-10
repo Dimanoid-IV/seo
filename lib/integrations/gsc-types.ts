@@ -6,6 +6,10 @@ export type SearchConsoleSite = {
 export type GscSitesData = {
   sites: SearchConsoleSite[];
   selectedSiteUrl: string | null;
+  websiteUrl: string;
+  websiteDomain: string;
+  hasMatchingProperty: boolean;
+  matchingSiteUrl: string | null;
 };
 
 export type GscSitesResponse = {

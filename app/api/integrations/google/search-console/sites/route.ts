@@ -4,6 +4,11 @@ import { getServerEnv } from "@/lib/env";
 import { AppError, ErrorCode } from "@/lib/errors";
 import { getSearchConsoleSites } from "@/lib/google/search-console";
 import { resolveConnectedGscContext } from "@/lib/integrations/gsc-context";
+import {
+  findMatchingGscProperty,
+  hasMatchingGscProperty,
+  normalizeWebsiteDomain,
+} from "@/lib/integrations/gsc-domain-match";
 
 function assertDatabaseConfigured(): void {
   if (!getServerEnv().DATABASE_URL) {
@@ -28,10 +33,17 @@ export async function GET(request: Request) {
       (token) => getSearchConsoleSites(token)
     );
 
+    const websiteUrl = context.website.url;
+    const matchingSite = findMatchingGscProperty(sites, websiteUrl);
+
     return authJsonResponse({
       data: {
         sites,
         selectedSiteUrl: context.selectedSiteUrl,
+        websiteUrl,
+        websiteDomain: normalizeWebsiteDomain(websiteUrl),
+        hasMatchingProperty: hasMatchingGscProperty(sites, websiteUrl),
+        matchingSiteUrl: matchingSite?.siteUrl ?? null,
       },
     });
   } catch (error) {

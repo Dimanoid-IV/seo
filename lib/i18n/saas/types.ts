@@ -481,6 +481,38 @@ export type SaasDictionary = {
     gscSyncNetworkError: string;
     searchConsoleSite: string;
     oauthApiSoonTitle: string;
+    gscPropertyPicker: {
+      title: string;
+      subtitle: string;
+      currentSite: string;
+      linkPropertyHint: string;
+      loadingProperties: string;
+      loadFailed: string;
+      loadNetworkError: string;
+      syncData: string;
+      syncSuccess: string;
+      siteSelected: string;
+      saving: string;
+      useThisSite: string;
+      selected: string;
+      mismatchTitle: string;
+      mismatchText: (domain: string) => string;
+      noPropertiesTitle: string;
+      noPropertiesText: string;
+      openSearchConsole: string;
+      retry: string;
+      continueWithoutGsc: string;
+      chooseOtherPropertyAnyway: string;
+      otherPropertiesTitle: string;
+      selectSiteFailed: string;
+      syncTasksCreated: (count: number) => string;
+      permissions: {
+        siteOwner: string;
+        siteFullUser: string;
+        siteRestrictedUser: string;
+        siteUnverifiedUser: string;
+      };
+    };
     wordpress: {
       setupSteps: string[];
       draftOnlyMessage: string;
