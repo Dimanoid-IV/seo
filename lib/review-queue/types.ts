@@ -30,6 +30,15 @@ export type ReviewQueueItem = {
   editHref?: string;
   canEdit: boolean;
   canApprove: boolean;
+  preparedFix?: {
+    generatedBy: PreparedFixGeneratedBy;
+    fallbackUsed: boolean;
+    summary?: string;
+    whyItMatters?: string;
+    implementationNotes?: string;
+    riskLevel?: PreparedFixRiskLevel;
+    approvalRequired: boolean;
+  };
 };
 
 export type ReviewQueueData = {
@@ -46,6 +55,16 @@ export type ReviewQueueData = {
 
 export type PreparedFixStatus = "AWAITING_REVIEW" | "APPROVED" | "REJECTED";
 
+export type PreparedFixGeneratedBy = "HERMES" | "TEMPLATE";
+
+export type PreparedFixRiskLevel = "low" | "medium" | "high";
+
+export type PreparedFixIntegrationRequirement =
+  | "none"
+  | "wordpress"
+  | "gsc"
+  | "manual";
+
 export type PreparedFix = {
   id: string;
   type: "META_FIX" | "SEO_FIX" | "TASK_FIX";
@@ -54,6 +73,15 @@ export type PreparedFix = {
   title: string;
   preview: string;
   suggestedValue: string;
+  summary?: string;
+  whyItMatters?: string;
+  implementationNotes?: string;
+  riskLevel?: PreparedFixRiskLevel;
+  requiresIntegration?: PreparedFixIntegrationRequirement;
+  approvalRequired: boolean;
+  generatedBy: PreparedFixGeneratedBy;
+  generatedAt: string;
+  fallbackUsed: boolean;
   createdAt: string;
   updatedAt: string;
 };

@@ -7,19 +7,23 @@ import {
   getHermesEnvConfig,
   isHermesConfigured,
 } from "./config";
-import { generateRecommendationsStub } from "./stub";
+import { generateRecommendationsStub, generateTaskPreparedFixStub } from "./stub";
 import type {
   HermesArticleDraftResult,
   HermesConnectionStatus,
   HermesGenerateArticleInput,
   HermesGenerateRecommendationsInput,
   HermesGenerateSocialPostInput,
+  HermesGenerateTaskFixInput,
   HermesJobPayload,
   HermesJobStatusResult,
   HermesRecommendationItem,
   HermesRecommendationsResult,
   HermesRepairArticleInput,
   HermesSocialPostDraftResult,
+  HermesTaskFixIntegrationRequirement,
+  HermesTaskFixRiskLevel,
+  HermesTaskPreparedFixResult,
 } from "./types";
 
 const DEFAULT_CONSTRAINTS = {
@@ -523,4 +527,154 @@ export async function generateSocialPostDraft(
       : response;
 
   return validateSocialPostDraftResult(result);
+}
+
+function parseRiskLevel(value: unknown): HermesTaskFixRiskLevel {
+  if (value === "medium" || value === "high") {
+    return value;
+  }
+  return "low";
+}
+
+function parseIntegrationRequirement(
+  value: unknown
+): HermesTaskFixIntegrationRequirement {
+  if (
+    value === "wordpress" ||
+    value === "gsc" ||
+    value === "manual" ||
+    value === "none"
+  ) {
+    return value;
+  }
+  return "manual";
+}
+
+function extractJsonObjectFromText(text: string): unknown | null {
+  const trimmed = text.trim();
+  if (!trimmed) {
+    return null;
+  }
+
+  if (trimmed.startsWith("{")) {
+    try {
+      return JSON.parse(trimmed);
+    } catch {
+      // fall through
+    }
+  }
+
+  const fenced = trimmed.match(/```(?:json)?\s*([\s\S]*?)```/i);
+  if (fenced?.[1]) {
+    try {
+      return JSON.parse(fenced[1].trim());
+    } catch {
+      return null;
+    }
+  }
+
+  return null;
+}
+
+function validateTaskPreparedFixResult(data: unknown): HermesTaskPreparedFixResult {
+  let record: Record<string, unknown> | null =
+    data && typeof data === "object" ? (data as Record<string, unknown>) : null;
+
+  if (!record && typeof data === "string") {
+    record = extractJsonObjectFromText(data) as Record<string, unknown> | null;
+  }
+
+  if (!record) {
+    throw new AppError(
+      ErrorCode.INTERNAL_ERROR,
+      "Hermes returned an unexpected task fix response."
+    );
+  }
+
+  const proposedFix =
+    typeof record.proposedFix === "string"
+      ? record.proposedFix.trim()
+      : typeof record.suggestedValue === "string"
+        ? record.suggestedValue.trim()
+        : typeof record.content === "string"
+          ? record.content.trim()
+          : "";
+
+  if (!proposedFix) {
+    throw new AppError(
+      ErrorCode.INTERNAL_ERROR,
+      "Hermes returned a task fix without proposed content."
+    );
+  }
+
+  const title =
+    typeof record.title === "string" && record.title.trim()
+      ? record.title.trim()
+      : "Prepared fix";
+  const summary =
+    typeof record.summary === "string" && record.summary.trim()
+      ? record.summary.trim()
+      : proposedFix.slice(0, 180);
+  const whyItMatters =
+    typeof record.whyItMatters === "string" && record.whyItMatters.trim()
+      ? record.whyItMatters.trim()
+      : summary;
+  const implementationNotes =
+    typeof record.implementationNotes === "string" &&
+    record.implementationNotes.trim()
+      ? record.implementationNotes.trim()
+      : "Review this draft and apply it manually on your website.";
+
+  const metadata =
+    record.metadata && typeof record.metadata === "object"
+      ? (record.metadata as HermesTaskPreparedFixResult["metadata"])
+      : undefined;
+
+  return {
+    title,
+    summary,
+    proposedFix,
+    whyItMatters,
+    implementationNotes,
+    riskLevel: parseRiskLevel(record.riskLevel),
+    requiresIntegration: parseIntegrationRequirement(record.requiresIntegration),
+    approvalRequired:
+      typeof record.approvalRequired === "boolean" ? record.approvalRequired : true,
+    metadata,
+  };
+}
+
+/**
+ * Synchronously generates a review-first task prepared fix via Hermes.
+ */
+export async function generateTaskPreparedFix(
+  input: HermesGenerateTaskFixInput
+): Promise<HermesTaskPreparedFixResult> {
+  if (canUseHermesStub()) {
+    return generateTaskPreparedFixStub(input);
+  }
+
+  const config = getHermesEnvConfig();
+  const payload = {
+    ...input,
+    model: input.model ?? config.model ?? undefined,
+    constraints: input.constraints,
+  };
+
+  const response = await hermesFetch<{ data?: unknown } & Record<string, unknown>>(
+    "/v1/generate/task-fix",
+    {
+      method: "POST",
+      body: JSON.stringify(payload),
+    }
+  );
+
+  const result =
+    response.data && typeof response.data === "object"
+      ? response.data
+      : typeof response.text === "string"
+        ? response.text
+        : response;
+
+  return validateTaskPreparedFixResult(result);
 }

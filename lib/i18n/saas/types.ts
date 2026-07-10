@@ -719,6 +719,10 @@ export type SaasDictionary = {
       prepareFixSuccess: string;
       openReviewQueue: string;
       prepareFixFailed: string;
+      prepareFixLoading: string;
+      hermesFallbackWarning: string;
+      regenerateFix: string;
+      existingFixTitle: string;
     };
   };
   reviewPage: {
@@ -740,6 +744,18 @@ export type SaasDictionary = {
     saveEdit: string;
     advancedEditHint: string;
     openFullEditor: string;
+    generatedByHermes: string;
+    generatedByTemplate: string;
+    approvalRequiredLabel: string;
+    whyItMattersLabel: string;
+    implementationNotesLabel: string;
+    summaryLabel: string;
+    riskLevelLabel: string;
+    riskLevels: {
+      low: string;
+      medium: string;
+      high: string;
+    };
     tabs: {
       all: string;
       seo: string;

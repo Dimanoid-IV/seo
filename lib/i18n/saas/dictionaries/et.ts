@@ -886,6 +886,11 @@ export const saasDictionary: SaasDictionary = {
         "Parandus on ette valmistatud ja lisatud ülevaatusjärjekorda. Midagi ei avaldatud.",
       openReviewQueue: "Ava ülevaatus",
       prepareFixFailed: "Parandust ei õnnestunud ette valmistada. Proovige uuesti.",
+      prepareFixLoading: "RankBoost valmistab parandust ette…",
+      hermesFallbackWarning:
+        "Hermes pole ajutiselt saadaval. Valmistasime põhiversiooni, mida saad muuta.",
+      regenerateFix: "Genereeri uuesti",
+      existingFixTitle: "Ettevalmistatud parandus ootab ülevaatust",
     },
   },
   reviewPage: {
@@ -911,6 +916,18 @@ export const saasDictionary: SaasDictionary = {
     saveEdit: "Salvesta muudatused",
     advancedEditHint: "Täielikuks muutmiseks avage redaktor:",
     openFullEditor: "Ava redaktor",
+    generatedByHermes: "Hermes ette valmistas",
+    generatedByTemplate: "Põhiversioon",
+    approvalRequiredLabel: "Vajab sinu kinnitust",
+    whyItMattersLabel: "Miks see oluline on",
+    implementationNotesLabel: "Rakendamise märkmed",
+    summaryLabel: "Kokkuvõte",
+    riskLevelLabel: "Risk",
+    riskLevels: {
+      low: "madal",
+      medium: "keskmine",
+      high: "kõrge",
+    },
     tabs: {
       all: "Kõik",
       seo: "SEO parandused",

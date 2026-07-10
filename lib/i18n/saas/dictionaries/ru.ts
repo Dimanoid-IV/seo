@@ -883,6 +883,11 @@ export const saasDictionary: SaasDictionary = {
         "Исправление подготовлено и добавлено в очередь проверки. Ничего не опубликовано.",
       openReviewQueue: "Открыть проверку",
       prepareFixFailed: "Не удалось подготовить исправление. Попробуйте ещё раз.",
+      prepareFixLoading: "RankBoost готовит исправление…",
+      hermesFallbackWarning:
+        "Hermes временно недоступен, поэтому мы подготовили базовый вариант. Его можно отредактировать перед одобрением.",
+      regenerateFix: "Перегенерировать",
+      existingFixTitle: "Подготовленное исправление ждёт проверки",
     },
   },
   reviewPage: {
@@ -908,6 +913,18 @@ export const saasDictionary: SaasDictionary = {
     saveEdit: "Сохранить изменения",
     advancedEditHint: "Для полного редактирования откройте редактор:",
     openFullEditor: "Открыть редактор",
+    generatedByHermes: "Подготовлено Hermes",
+    generatedByTemplate: "Базовый вариант",
+    approvalRequiredLabel: "Требует вашего одобрения",
+    whyItMattersLabel: "Почему это важно",
+    implementationNotesLabel: "Как внедрить",
+    summaryLabel: "Кратко",
+    riskLevelLabel: "Риск",
+    riskLevels: {
+      low: "низкий",
+      medium: "средний",
+      high: "высокий",
+    },
     tabs: {
       all: "Все",
       seo: "SEO-исправления",

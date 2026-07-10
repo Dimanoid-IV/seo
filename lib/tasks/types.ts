@@ -14,7 +14,13 @@ export type TaskListItem = {
   recommendedAction: string | null;
   estimatedFixMinutes: number | null;
   auditCheckCode: string | null;
+  preparedFixStatus?: PreparedFixStatus | null;
+  preparedFixPreview?: string | null;
+  preparedFixGeneratedBy?: PreparedFixGeneratedBy | null;
 };
+
+export type PreparedFixStatus = "AWAITING_REVIEW" | "APPROVED" | "REJECTED";
+export type PreparedFixGeneratedBy = "HERMES" | "TEMPLATE";
 
 export type TaskIntegrationsContext = {
   gscConnected: boolean;

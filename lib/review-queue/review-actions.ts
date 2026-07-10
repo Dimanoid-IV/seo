@@ -241,7 +241,11 @@ async function applyTaskFixAction(input: ReviewActionInput) {
     const recommendationJson = updatePreparedFixStatus(
       task.recommendationJson,
       parsed.preparedFix.status,
-      { preview: input.content, suggestedValue: input.content }
+      {
+        preview: input.content,
+        suggestedValue: input.content,
+        summary: input.content.slice(0, 180),
+      }
     );
 
     if (!recommendationJson) {

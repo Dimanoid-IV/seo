@@ -29,12 +29,16 @@ type TaskDetailSheetProps = {
   actionError?: string | null;
   prepareFixPreview?: string | null;
   prepareFixSuccess?: boolean;
+  prepareFixLoading?: boolean;
+  hermesFallbackWarning?: boolean;
+  showExistingPreparedFix?: boolean;
   showExecutionFlow?: boolean;
   onMarkDone?: () => void;
   onMarkInProgress?: () => void;
   onSkip?: () => void;
   onDraftCreated?: (articleId: string) => void;
   onPrepareFixClick?: () => void;
+  onRegenerateFixClick?: () => void;
 };
 
 const priorityStyles = {
@@ -63,12 +67,16 @@ export function TaskDetailSheet({
   actionError,
   prepareFixPreview = null,
   prepareFixSuccess = false,
+  prepareFixLoading = false,
+  hermesFallbackWarning = false,
+  showExistingPreparedFix = false,
   showExecutionFlow = false,
   onMarkDone,
   onMarkInProgress,
   onSkip,
   onDraftCreated,
   onPrepareFixClick,
+  onRegenerateFixClick,
 }: TaskDetailSheetProps) {
   const { dict, locale } = useSaasTranslations();
   const t = dict.tasksPage;
@@ -152,7 +160,11 @@ export function TaskDetailSheet({
               showPrepareFixNote={showExecutionFlow}
               prepareFixPreview={prepareFixPreview}
               prepareFixSuccess={prepareFixSuccess}
+              prepareFixLoading={prepareFixLoading}
+              hermesFallbackWarning={hermesFallbackWarning}
+              showExistingPreparedFix={showExistingPreparedFix}
               onPrepareFixClick={onPrepareFixClick}
+              onRegenerateFixClick={onRegenerateFixClick}
               onMarkDone={onMarkDone}
               onMarkInProgress={onMarkInProgress}
               onSkip={onSkip}

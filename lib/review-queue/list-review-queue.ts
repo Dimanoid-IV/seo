@@ -314,6 +314,15 @@ export async function getReviewQueue(
       updatedAt: preparedFix.updatedAt,
       canEdit: true,
       canApprove: true,
+      preparedFix: {
+        generatedBy: preparedFix.generatedBy,
+        fallbackUsed: preparedFix.fallbackUsed,
+        summary: preparedFix.summary,
+        whyItMatters: preparedFix.whyItMatters,
+        implementationNotes: preparedFix.implementationNotes,
+        riskLevel: preparedFix.riskLevel,
+        approvalRequired: preparedFix.approvalRequired,
+      },
     });
   }
 

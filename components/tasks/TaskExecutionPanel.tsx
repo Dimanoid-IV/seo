@@ -20,7 +20,11 @@ type TaskExecutionPanelProps = {
   showPrepareFixNote?: boolean;
   prepareFixPreview?: string | null;
   prepareFixSuccess?: boolean;
+  prepareFixLoading?: boolean;
+  hermesFallbackWarning?: boolean;
+  showExistingPreparedFix?: boolean;
   onPrepareFixClick?: () => void;
+  onRegenerateFixClick?: () => void;
   onMarkDone?: () => void;
   onMarkInProgress?: () => void;
   onSkip?: () => void;
@@ -43,7 +47,11 @@ export function TaskExecutionPanel({
   showPrepareFixNote = false,
   prepareFixPreview = null,
   prepareFixSuccess = false,
+  prepareFixLoading = false,
+  hermesFallbackWarning = false,
+  showExistingPreparedFix = false,
   onPrepareFixClick,
+  onRegenerateFixClick,
   onMarkDone,
   onMarkInProgress,
   onSkip,
@@ -110,24 +118,57 @@ export function TaskExecutionPanel({
 
       {showPrepareFixNote && capability.primaryAction === "PREPARE_FIX" ? (
         <div className="space-y-3">
-          <div className="rounded-lg border border-violet-100 bg-violet-50/70 px-3 py-3 text-sm text-slate-700">
-            {prepareFixSuccess ? t.prepareFixSuccess : t.prepareFixSafeNote}
-          </div>
-          {prepareFixPreview ? (
-            <p className="rounded-lg border border-slate-100 bg-slate-50 px-3 py-3 text-sm leading-relaxed text-slate-700">
-              {prepareFixPreview}
-            </p>
-          ) : null}
-          {prepareFixSuccess ? (
-            <Button
-              render={<Link href="/app/review" />}
-              nativeButton={false}
-              variant="outline"
-              className="w-full border-violet-200 text-violet-800"
-            >
-              {t.openReviewQueue}
-            </Button>
-          ) : null}
+          {prepareFixLoading ? (
+            <div className="rounded-lg border border-violet-100 bg-violet-50/70 px-3 py-3 text-sm text-slate-700">
+              <span className="inline-flex items-center gap-2">
+                <Loader2 className="size-4 animate-spin" />
+                {t.prepareFixLoading}
+              </span>
+            </div>
+          ) : (
+            <>
+              <div className="rounded-lg border border-violet-100 bg-violet-50/70 px-3 py-3 text-sm text-slate-700">
+                {showExistingPreparedFix
+                  ? t.existingFixTitle
+                  : prepareFixSuccess
+                    ? t.prepareFixSuccess
+                    : t.prepareFixSafeNote}
+              </div>
+              {hermesFallbackWarning ? (
+                <div className="rounded-lg border border-amber-100 bg-amber-50/80 px-3 py-3 text-sm text-amber-900">
+                  {t.hermesFallbackWarning}
+                </div>
+              ) : null}
+              {prepareFixPreview ? (
+                <p className="rounded-lg border border-slate-100 bg-slate-50 px-3 py-3 text-sm leading-relaxed text-slate-700">
+                  {prepareFixPreview}
+                </p>
+              ) : null}
+              {showExistingPreparedFix || prepareFixSuccess ? (
+                <div className="flex flex-col gap-2">
+                  <Button
+                    render={<Link href="/app/review" />}
+                    nativeButton={false}
+                    variant="outline"
+                    className="w-full border-violet-200 text-violet-800"
+                  >
+                    {t.openReviewQueue}
+                  </Button>
+                  {onRegenerateFixClick ? (
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      disabled={prepareFixLoading}
+                      onClick={onRegenerateFixClick}
+                      className="w-full text-slate-500"
+                    >
+                      {t.regenerateFix}
+                    </Button>
+                  ) : null}
+                </div>
+              ) : null}
+            </>
+          )}
         </div>
       ) : null}
 
@@ -158,19 +199,23 @@ export function TaskExecutionPanel({
               {primaryLabel}
             </Button>
           ) : capability.primaryAction === "PREPARE_FIX" ? (
-            <Button
-              type="button"
-              disabled={actionLoading}
-              onClick={onPrepareFixClick}
-              className="w-full bg-violet-600 text-white hover:bg-violet-500"
-            >
-              {actionLoading ? (
-                <Loader2 className="size-4 animate-spin" />
-              ) : (
-                <Sparkles className="size-4" />
-              )}
-              {primaryLabel}
-            </Button>
+            !prepareFixLoading &&
+            !showExistingPreparedFix &&
+            !(showPrepareFixNote && prepareFixSuccess) ? (
+              <Button
+                type="button"
+                disabled={actionLoading || prepareFixLoading}
+                onClick={onPrepareFixClick}
+                className="w-full bg-violet-600 text-white hover:bg-violet-500"
+              >
+                {actionLoading ? (
+                  <Loader2 className="size-4 animate-spin" />
+                ) : (
+                  <Sparkles className="size-4" />
+                )}
+                {primaryLabel}
+              </Button>
+            ) : null
           ) : capability.primaryAction === "CREATE_DRAFT" ? (
             <Button
               type="button"

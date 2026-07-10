@@ -8,7 +8,7 @@ import {
   getWordPressConnection,
   mapWordPressConnectionStatus,
 } from "@/lib/integrations/wordpress-connector";
-import { parseTaskRecommendation } from "@/lib/tasks/recommendation";
+import { parseTaskRecommendationWithFix } from "@/lib/tasks/prepared-fix";
 
 import type { TaskIntegrationsContext, TasksOverviewResponse } from "./types";
 
@@ -109,7 +109,7 @@ export async function getTasksOverview(
     .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
 
   const tasks = [...activeTasks, ...closedTasks].map((task) => {
-    const recommendation = parseTaskRecommendation(task.recommendationJson);
+    const recommendation = parseTaskRecommendationWithFix(task.recommendationJson);
 
     return {
       id: task.id,
@@ -127,6 +127,9 @@ export async function getTasksOverview(
       recommendedAction: recommendation.recommendation,
       estimatedFixMinutes: recommendation.estimatedFixMinutes,
       auditCheckCode: recommendation.auditCheckCode,
+      preparedFixStatus: recommendation.preparedFix?.status ?? null,
+      preparedFixPreview: recommendation.preparedFix?.preview ?? null,
+      preparedFixGeneratedBy: recommendation.preparedFix?.generatedBy ?? null,
     };
   });
 

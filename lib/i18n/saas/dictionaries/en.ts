@@ -880,6 +880,11 @@ export const saasDictionary: SaasDictionary = {
         "Fix prepared and added to your review queue. Nothing was published.",
       openReviewQueue: "Open review",
       prepareFixFailed: "Could not prepare this fix. Please try again.",
+      prepareFixLoading: "RankBoost is preparing your fix…",
+      hermesFallbackWarning:
+        "Hermes is temporarily unavailable. We prepared a basic version that you can edit.",
+      regenerateFix: "Regenerate",
+      existingFixTitle: "Prepared fix ready for review",
     },
   },
   reviewPage: {
@@ -905,6 +910,18 @@ export const saasDictionary: SaasDictionary = {
     saveEdit: "Save changes",
     advancedEditHint: "For full editing, open the dedicated editor:",
     openFullEditor: "Open editor",
+    generatedByHermes: "Prepared by Hermes",
+    generatedByTemplate: "Basic template",
+    approvalRequiredLabel: "Requires your approval",
+    whyItMattersLabel: "Why it matters",
+    implementationNotesLabel: "Implementation notes",
+    summaryLabel: "Summary",
+    riskLevelLabel: "Risk",
+    riskLevels: {
+      low: "Low",
+      medium: "Medium",
+      high: "High",
+    },
     tabs: {
       all: "All",
       seo: "SEO fixes",

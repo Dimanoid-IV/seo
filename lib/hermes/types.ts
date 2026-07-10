@@ -175,3 +175,61 @@ export type HermesConnectionStatus = {
   connectionOk: boolean | null;
   connectionError: string | null;
 };
+
+export type HermesTaskFixIntegrationRequirement =
+  | "none"
+  | "wordpress"
+  | "gsc"
+  | "manual";
+
+export type HermesTaskFixRiskLevel = "low" | "medium" | "high";
+
+export type HermesGenerateTaskFixInput = {
+  locale: "en" | "ru" | "et";
+  website: {
+    url: string;
+    name: string | null;
+    niche: string | null;
+    language: string;
+  };
+  task: {
+    id: string;
+    title: string;
+    description: string | null;
+    category: string;
+    priority: string;
+    source: string;
+    auditCheckCode: string | null;
+    whyItMatters: string | null;
+    recommendation: string | null;
+    pageUrl: string | null;
+  };
+  integrations: {
+    gscConnected: boolean;
+    gscPropertySelected: boolean;
+    wordpressConnected: boolean;
+  };
+  constraints: Record<string, unknown>;
+  systemInstructions: string;
+  model?: string | null;
+};
+
+export type HermesTaskPreparedFixResult = {
+  title: string;
+  summary: string;
+  proposedFix: string;
+  whyItMatters: string;
+  implementationNotes: string;
+  riskLevel: HermesTaskFixRiskLevel;
+  requiresIntegration: HermesTaskFixIntegrationRequirement;
+  approvalRequired: boolean;
+  metadata?: {
+    provider?: string;
+    model?: string;
+    inputTokens?: number;
+    outputTokens?: number;
+    totalTokens?: number;
+    costCents?: number;
+    stub?: boolean;
+  };
+};

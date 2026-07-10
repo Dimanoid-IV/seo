@@ -2,7 +2,9 @@ import "server-only";
 
 import type {
   HermesGenerateRecommendationsInput,
+  HermesGenerateTaskFixInput,
   HermesRecommendationsResult,
+  HermesTaskPreparedFixResult,
 } from "./types";
 
 /**
@@ -153,6 +155,71 @@ export async function generateRecommendationsStub(
         basedOnLimitedData: limited,
       },
     ],
+    metadata: { provider: "hermes-stub", stub: true },
+  };
+}
+
+export async function generateTaskPreparedFixStub(
+  input: HermesGenerateTaskFixInput
+): Promise<HermesTaskPreparedFixResult> {
+  const isMetaTitle = input.task.auditCheckCode?.toLowerCase().startsWith("title_");
+  const isMetaDescription = input.task.auditCheckCode
+    ?.toLowerCase()
+    .startsWith("meta_description_");
+
+  const proposedFix =
+    input.task.recommendation?.trim() ||
+    input.task.description?.trim() ||
+    input.task.title;
+
+  const title =
+    input.locale === "ru"
+      ? isMetaTitle
+        ? "Подготовленный meta title"
+        : isMetaDescription
+          ? "Подготовленное meta description"
+          : `Подготовленное исправление: ${input.task.title}`
+      : input.locale === "et"
+        ? isMetaTitle
+          ? "Ettevalmistatud meta pealkiri"
+          : isMetaDescription
+            ? "Ettevalmistatud meta kirjeldus"
+            : `Ettevalmistatud parandus: ${input.task.title}`
+        : isMetaTitle
+          ? "Prepared meta title"
+          : isMetaDescription
+            ? "Prepared meta description"
+            : `Prepared fix: ${input.task.title}`;
+
+  return {
+    title,
+    summary:
+      input.locale === "ru"
+        ? `Черновик исправления для ${input.website.url}. Требует проверки.`
+        : input.locale === "et"
+          ? `Paranduse mustand saidile ${input.website.url}. Vajab ülevaatust.`
+          : `Draft fix for ${input.website.url}. Needs review.`,
+    proposedFix: isMetaTitle
+      ? input.task.title.replace(/^Fix\s+/i, "").slice(0, 60)
+      : isMetaDescription
+        ? proposedFix.slice(0, 155)
+        : proposedFix,
+    whyItMatters:
+      input.task.whyItMatters?.trim() ||
+      (input.locale === "ru"
+        ? "Это улучшит видимость сайта в поиске."
+        : input.locale === "et"
+          ? "See parandab saidi nähtavust otsingus."
+          : "This improves how your site appears in search."),
+    implementationNotes:
+      input.locale === "ru"
+        ? "Проверьте текст и примените изменение в CMS или на сайте вручную."
+        : input.locale === "et"
+          ? "Kontrolli teksti ja rakenda muudatus CMS-is või saidil käsitsi."
+          : "Review the text and apply the change in your CMS or website manually.",
+    riskLevel: "low",
+    requiresIntegration: "manual",
+    approvalRequired: true,
     metadata: { provider: "hermes-stub", stub: true },
   };
 }

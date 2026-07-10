@@ -73,6 +73,9 @@ export function TasksPage() {
   const [showExecutionFlow, setShowExecutionFlow] = useState(false);
   const [prepareFixPreview, setPrepareFixPreview] = useState<string | null>(null);
   const [prepareFixSuccess, setPrepareFixSuccess] = useState(false);
+  const [prepareFixLoading, setPrepareFixLoading] = useState(false);
+  const [hermesFallbackWarning, setHermesFallbackWarning] = useState(false);
+  const [showExistingPreparedFix, setShowExistingPreparedFix] = useState(false);
 
   async function fetchTasks(): Promise<{
     data: TasksOverviewData | null;
@@ -180,23 +183,42 @@ export function TasksPage() {
     return t.sources[key] ?? source;
   }
 
-  function openTaskDetails(task: TaskListItem) {
-    setSelectedTaskId(task.id);
-    setActionError(null);
+  function resetPrepareFixState() {
     setShowExecutionFlow(false);
     setPrepareFixPreview(null);
     setPrepareFixSuccess(false);
+    setPrepareFixLoading(false);
+    setHermesFallbackWarning(false);
+    setShowExistingPreparedFix(false);
+  }
+
+  function openTaskDetails(task: TaskListItem) {
+    setSelectedTaskId(task.id);
+    setActionError(null);
+    resetPrepareFixState();
+
+    if (task.preparedFixStatus === "AWAITING_REVIEW" && task.preparedFixPreview) {
+      setShowExecutionFlow(true);
+      setPrepareFixPreview(task.preparedFixPreview);
+      setShowExistingPreparedFix(true);
+    }
+
     setSheetOpen(true);
   }
 
-  async function handlePrepareFix(taskId: string) {
-    setActionLoading(true);
+  async function handlePrepareFix(taskId: string, regenerate = false) {
+    setPrepareFixLoading(true);
     setActionError(null);
     setShowExecutionFlow(true);
+    setPrepareFixSuccess(false);
+    setShowExistingPreparedFix(false);
+    setHermesFallbackWarning(false);
 
     try {
       const response = await authFetch(`/api/tasks/${taskId}/prepare-fix`, {
         method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ regenerate }),
       });
 
       if (!response.ok) {
@@ -213,16 +235,23 @@ export function TasksPage() {
           preparedFix: {
             preview: string;
           };
+          alreadyPrepared: boolean;
+          fallbackUsed: boolean;
+          hermesUnavailable: boolean;
         };
       };
 
       setPrepareFixPreview(body.data.preparedFix.preview);
-      setPrepareFixSuccess(true);
+      setPrepareFixSuccess(!body.data.alreadyPrepared);
+      setShowExistingPreparedFix(body.data.alreadyPrepared);
+      setHermesFallbackWarning(
+        body.data.fallbackUsed && body.data.hermesUnavailable
+      );
       await reloadTasks();
     } catch {
       setActionError(t.execution.prepareFixFailed);
     } finally {
-      setActionLoading(false);
+      setPrepareFixLoading(false);
     }
   }
 
@@ -416,14 +445,23 @@ export function TasksPage() {
         showExecutionFlow={showExecutionFlow}
         prepareFixPreview={prepareFixPreview}
         prepareFixSuccess={prepareFixSuccess}
+        prepareFixLoading={prepareFixLoading}
+        hermesFallbackWarning={hermesFallbackWarning}
+        showExistingPreparedFix={showExistingPreparedFix}
         onPrepareFixClick={
           selectedTask &&
           selectedCapability?.primaryAction === "PREPARE_FIX"
-            ? () => void handlePrepareFix(selectedTask.id)
+            ? () => void handlePrepareFix(selectedTask.id, false)
             : selectedTask &&
                 selectedCapability?.primaryAction === "CREATE_DRAFT"
               ? () => setShowExecutionFlow(true)
               : undefined
+        }
+        onRegenerateFixClick={
+          selectedTask &&
+          selectedCapability?.primaryAction === "PREPARE_FIX"
+            ? () => void handlePrepareFix(selectedTask.id, true)
+            : undefined
         }
         onMarkDone={
           selectedTask && isActiveTask(selectedTask.status)

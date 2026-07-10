@@ -274,6 +274,18 @@ export function ReviewPage() {
                       >
                         {statusLabel(item.status)}
                       </span>
+                      {item.preparedFix ? (
+                        <span className="rounded-full border border-slate-200 bg-slate-50 px-2 py-0.5 text-xs text-slate-600">
+                          {item.preparedFix.generatedBy === "HERMES"
+                            ? t.generatedByHermes
+                            : t.generatedByTemplate}
+                        </span>
+                      ) : null}
+                      {item.preparedFix?.approvalRequired ? (
+                        <span className="rounded-full border border-violet-200 bg-violet-50 px-2 py-0.5 text-xs text-violet-700">
+                          {t.approvalRequiredLabel}
+                        </span>
+                      ) : null}
                     </div>
                     <h2 className="text-base font-semibold text-slate-900">
                       {item.title}
@@ -289,7 +301,17 @@ export function ReviewPage() {
                   </div>
                 </div>
 
-                <div className="mt-4">
+                <div className="mt-4 space-y-3">
+                  {item.preparedFix?.summary &&
+                  item.preparedFix.summary !== item.preview ? (
+                    <div>
+                      <p className="mb-1 text-xs font-medium uppercase tracking-wide text-slate-400">
+                        {t.summaryLabel}
+                      </p>
+                      <p className="text-sm text-slate-600">{item.preparedFix.summary}</p>
+                    </div>
+                  ) : null}
+
                   {isEditing ? (
                     <Textarea
                       value={editContent}
@@ -302,6 +324,35 @@ export function ReviewPage() {
                       {item.preview}
                     </p>
                   )}
+
+                  {item.preparedFix?.whyItMatters ? (
+                    <div>
+                      <p className="mb-1 text-xs font-medium uppercase tracking-wide text-slate-400">
+                        {t.whyItMattersLabel}
+                      </p>
+                      <p className="text-sm text-slate-600">
+                        {item.preparedFix.whyItMatters}
+                      </p>
+                    </div>
+                  ) : null}
+
+                  {item.preparedFix?.implementationNotes ? (
+                    <div>
+                      <p className="mb-1 text-xs font-medium uppercase tracking-wide text-slate-400">
+                        {t.implementationNotesLabel}
+                      </p>
+                      <p className="text-sm text-slate-600">
+                        {item.preparedFix.implementationNotes}
+                      </p>
+                    </div>
+                  ) : null}
+
+                  {item.preparedFix?.riskLevel ? (
+                    <p className="text-xs text-slate-500">
+                      {t.riskLevelLabel}:{" "}
+                      {t.riskLevels[item.preparedFix.riskLevel]}
+                    </p>
+                  ) : null}
                 </div>
 
                 {isAdvanced && item.editHref ? (
