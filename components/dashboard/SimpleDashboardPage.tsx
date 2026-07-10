@@ -4,6 +4,8 @@ import { useState } from "react";
 import Link from "next/link";
 import { Globe } from "lucide-react";
 
+import { cn } from "@/lib/utils";
+
 import { OnboardingBanner } from "@/components/onboarding/OnboardingBanner";
 import { DashboardHero } from "@/components/dashboard/DashboardHero";
 import { DashboardMetricCard } from "@/components/dashboard/DashboardMetricCard";
@@ -11,6 +13,7 @@ import { FindingsCard } from "@/components/dashboard/FindingsCard";
 import { NextBestActionCard } from "@/components/dashboard/NextBestActionCard";
 import { PreparedForYouCard } from "@/components/dashboard/PreparedForYouCard";
 import { RecentActivityCompact } from "@/components/dashboard/RecentActivityCompact";
+import { useDashboardMode } from "@/components/dashboard/DashboardModeProvider";
 import { useDashboardOverview } from "@/components/dashboard/DashboardOverviewProvider";
 import { EmptyState } from "@/components/dashboard/EmptyState";
 import { PageErrorState } from "@/components/shared/PageErrorState";
@@ -25,6 +28,8 @@ const DASHBOARD_MAIN =
 export function SimpleDashboardPage() {
   const { dict } = useSaasTranslations();
   const d = dict.dashboard;
+  const modeCopy = dict.dashboardMode;
+  const { isSimple } = useDashboardMode();
   const { overview, simple, loading, error, refetch } = useDashboardOverview();
   const [actionLoading, setActionLoading] = useState(false);
   const [actionError, setActionError] = useState<string | null>(null);
@@ -96,7 +101,11 @@ export function SimpleDashboardPage() {
   if (error || !simple) {
     return (
       <PageErrorState
-        message={error ?? dict.trust.pageErrorFallback}
+        message={
+          isSimple
+            ? modeCopy.calmNoData
+            : error ?? dict.trust.pageErrorFallback
+        }
         onRetry={() => void refetch()}
         retryLabel={dict.common.tryAgain}
       />
@@ -162,7 +171,12 @@ export function SimpleDashboardPage() {
   return (
     <main className={DASHBOARD_MAIN}>
       <OnboardingBanner />
-      <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_min(360px,100%)] lg:items-start">
+      <div
+        className={cn(
+          "grid gap-8 lg:items-start",
+          isSimple ? "" : "lg:grid-cols-[minmax(0,1fr)_min(360px,100%)]"
+        )}
+      >
         <div className="saas-page-stack min-w-0">
           <DashboardHero
             status={simple.status}
@@ -183,8 +197,8 @@ export function SimpleDashboardPage() {
           ) : null}
 
           {actionError ? (
-            <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
-              {actionError}
+            <div className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">
+              {isSimple ? modeCopy.calmActionFailed : actionError}
             </div>
           ) : null}
 
@@ -209,9 +223,9 @@ export function SimpleDashboardPage() {
             />
           </section>
 
-        <FindingsCard findings={simple.findings} />
+        {!isSimple ? <FindingsCard findings={simple.findings} /> : null}
 
-        {simple.gsc && !simple.gsc.connected ? (
+        {!isSimple && simple.gsc && !simple.gsc.connected ? (
           <p className="rounded-xl border border-blue-200 bg-blue-50 px-4 py-3 text-sm text-slate-700">
             {d.gscConnectHint}{" "}
             <Link href={simple.gsc.connectHref} className="font-medium text-blue-600 hover:text-blue-700">
@@ -220,7 +234,7 @@ export function SimpleDashboardPage() {
           </p>
         ) : null}
 
-        <TrustNote variant="ai" />
+        {!isSimple ? <TrustNote variant="ai" /> : null}
 
           {simple.billingNote ? (
             <p className="text-center text-xs text-slate-500 lg:text-left">
@@ -232,10 +246,12 @@ export function SimpleDashboardPage() {
           ) : null}
         </div>
 
-        <aside className="flex min-w-0 flex-col gap-6 self-start">
-          <PreparedForYouCard {...simple.preparedForYou} />
-          <RecentActivityCompact items={simple.recentActivity} />
-        </aside>
+        {!isSimple ? (
+          <aside className="flex min-w-0 flex-col gap-6 self-start">
+            <PreparedForYouCard {...simple.preparedForYou} />
+            <RecentActivityCompact items={simple.recentActivity} />
+          </aside>
+        ) : null}
       </div>
     </main>
   );

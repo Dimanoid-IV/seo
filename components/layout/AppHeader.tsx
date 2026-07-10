@@ -5,6 +5,7 @@ import { useState } from "react";
 
 import { useBillingSubscription } from "@/components/billing/BillingSubscriptionProvider";
 import { LanguageSwitcher } from "@/components/i18n/LanguageSwitcher";
+import { DashboardModeToggle } from "@/components/dashboard/DashboardModeToggle";
 import { PlanBadge } from "@/components/dashboard/PlanBadge";
 import { useAuthSession } from "@/components/auth/AuthSessionProvider";
 import { useDashboardOverview } from "@/components/dashboard/DashboardOverviewProvider";
@@ -85,7 +86,10 @@ function AppHeaderContent() {
           </div>
         </div>
 
-        <div className="flex shrink-0 items-center gap-2">
+        <div className="flex shrink-0 flex-wrap items-center gap-2">
+          <div className="hidden md:block">
+            <DashboardModeToggle compact showHelper={false} className="min-w-[220px]" />
+          </div>
           <LanguageSwitcher className="hidden sm:inline-flex" />
           <Button
             type="button"

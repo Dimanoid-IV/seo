@@ -32,6 +32,23 @@ export const saasDictionary: SaasDictionary = {
     logout: "Logi välja",
     upgradePlan: "Uuenda paketti",
   },
+  dashboardMode: {
+    modeToggleLabel: "Töölaua režiim",
+    simple: "Lihtne režiim",
+    advanced: "Täpsem režiim",
+    simpleHelper:
+      "Näitame ainult põhijaotisi, et töölaud oleks lihtne. Täpsemad tööriistad saab igal ajal sisse lülitada.",
+    advancedHelper:
+      "Täpsem režiim näitab eksperimentaalseid ja tehnilisemaid jaotisi.",
+    switchToAdvanced: "Täpsem režiim",
+    switchToSimple: "Tagasi lihtsasse režiimi",
+    advancedSectionBanner: "See jaotis kuulub täpsemasse režiimi.",
+    enableAdvanced: "Lülita täpsem režiim sisse",
+    calmNoData:
+      "Andmeid pole veel. RankBoost hakkab soovitusi näitama pärast esimest auditit.",
+    calmActionFailed:
+      "Toimingut ei õnnestunud lõpule viia. Proovige uuesti või lülitage sisse täpsem režiim.",
+  },
   common: {
     loading: "Laadimine…",
     tryAgain: "Proovi uuesti",

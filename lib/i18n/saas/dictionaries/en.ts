@@ -32,6 +32,23 @@ export const saasDictionary: SaasDictionary = {
     logout: "Log out",
     upgradePlan: "Upgrade plan",
   },
+  dashboardMode: {
+    modeToggleLabel: "Dashboard mode",
+    simple: "Simple mode",
+    advanced: "Advanced mode",
+    simpleHelper:
+      "We're showing only the core sections to keep the dashboard simple. Advanced tools can be enabled anytime.",
+    advancedHelper:
+      "Advanced mode shows experimental and more technical sections.",
+    switchToAdvanced: "Advanced mode",
+    switchToSimple: "Back to simple mode",
+    advancedSectionBanner: "This section belongs to advanced mode.",
+    enableAdvanced: "Enable advanced mode",
+    calmNoData:
+      "No data yet. RankBoost will start showing recommendations after your first audit.",
+    calmActionFailed:
+      "We couldn't complete that action. Try again or switch to advanced mode for more details.",
+  },
   common: {
     loading: "Loading…",
     tryAgain: "Try again",

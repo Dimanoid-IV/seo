@@ -25,6 +25,19 @@ export type SaasDictionary = {
     logout: string;
     upgradePlan: string;
   };
+  dashboardMode: {
+    modeToggleLabel: string;
+    simple: string;
+    advanced: string;
+    simpleHelper: string;
+    advancedHelper: string;
+    switchToAdvanced: string;
+    switchToSimple: string;
+    advancedSectionBanner: string;
+    enableAdvanced: string;
+    calmNoData: string;
+    calmActionFailed: string;
+  };
   common: {
     loading: string;
     tryAgain: string;

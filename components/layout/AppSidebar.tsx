@@ -2,22 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import {
-  BarChart3,
-  CreditCard,
-  FileText,
-  History,
-  LayoutDashboard,
-  ListTodo,
-  Mail,
-  Menu,
-  Plug,
-  Rocket,
-  Gauge,
-  Settings,
-  Share2,
-  Sparkles,
-} from "lucide-react";
+import { Menu, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
   Sheet,
@@ -28,20 +13,17 @@ import {
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { LanguageSwitcher } from "@/components/i18n/LanguageSwitcher";
+import { DashboardModeToggle } from "@/components/dashboard/DashboardModeToggle";
+import { useDashboardMode } from "@/components/dashboard/DashboardModeProvider";
 import { OnboardingSidebarLink } from "@/components/onboarding/OnboardingSidebarLink";
+import {
+  APP_NAV_ITEMS,
+  filterNavItemsForMode,
+  groupNavItems,
+  NAV_GROUP_ORDER,
+  type AppNavItemConfig,
+} from "@/lib/app/nav-config";
 import { useSaasTranslations } from "@/lib/i18n/saas/SaasLocaleProvider";
-
-type NavItem = {
-  href: string;
-  label: string;
-  icon: typeof LayoutDashboard;
-  enabled: boolean;
-};
-
-type NavGroup = {
-  title: string;
-  items: NavItem[];
-};
 
 function isActive(pathname: string, href: string): boolean {
   if (href === "/app") return pathname === "/app";
@@ -50,12 +32,14 @@ function isActive(pathname: string, href: string): boolean {
 
 function NavLink({
   item,
+  label,
   pathname,
   compact,
   onNavigate,
   comingSoonLabel,
 }: {
-  item: NavItem;
+  item: AppNavItemConfig;
+  label: string;
   pathname: string;
   compact?: boolean;
   onNavigate?: () => void;
@@ -77,7 +61,7 @@ function NavLink({
     return (
       <span className={className} title={comingSoonLabel}>
         <Icon className={cn("size-5 shrink-0", compact && "size-5")} />
-        <span className={cn(compact && "leading-tight")}>{item.label}</span>
+        <span className={cn(compact && "leading-tight")}>{label}</span>
       </span>
     );
   }
@@ -85,7 +69,7 @@ function NavLink({
   return (
     <Link href={item.href} className={className} onClick={onNavigate}>
       <Icon className={cn("size-5 shrink-0", compact && "size-5")} />
-      <span className={cn(compact && "leading-tight")}>{item.label}</span>
+      <span className={cn(compact && "leading-tight")}>{label}</span>
     </Link>
   );
 }
@@ -94,82 +78,27 @@ export function AppSidebar() {
   const pathname = usePathname();
   const { dict } = useSaasTranslations();
   const { nav } = dict;
+  const { mode } = useDashboardMode();
 
-  const navGroups: NavGroup[] = [
-    {
-      title: nav.groups.main,
-      items: [
-        { href: "/app", label: nav.dashboard, icon: LayoutDashboard, enabled: true },
-        {
-          href: "/app/autopilot-control",
-          label: nav.controlCenter,
-          icon: Gauge,
-          enabled: true,
-        },
-        { href: "/app/tasks", label: nav.tasks, icon: ListTodo, enabled: false },
-      ],
-    },
-    {
-      title: nav.groups.growth,
-      items: [
-        {
-          href: "/app/content-plan",
-          label: nav.contentPlan,
-          icon: FileText,
-          enabled: true,
-        },
-        {
-          href: "/app/social-posts",
-          label: nav.socialPosts,
-          icon: Share2,
-          enabled: true,
-        },
-        { href: "/app/reports", label: nav.reports, icon: BarChart3, enabled: true },
-      ],
-    },
-    {
-      title: nav.groups.automation,
-      items: [
-        { href: "/app/timeline", label: nav.timeline, icon: History, enabled: true },
-        {
-          href: "/app/autopilot",
-          label: nav.growthPlan,
-          icon: Rocket,
-          enabled: true,
-        },
-        {
-          href: "/app/email-approvals",
-          label: nav.reviewEmails,
-          icon: Mail,
-          enabled: true,
-        },
-      ],
-    },
-    {
-      title: nav.groups.settings,
-      items: [
-        {
-          href: "/app/integrations",
-          label: nav.integrations,
-          icon: Plug,
-          enabled: true,
-        },
-        { href: "/app/billing", label: nav.billing, icon: CreditCard, enabled: true },
-        { href: "/app/settings", label: nav.settings, icon: Settings, enabled: false },
-      ],
-    },
-  ];
+  const visibleItems = filterNavItemsForMode(APP_NAV_ITEMS, mode);
+  const grouped = groupNavItems(visibleItems);
 
-  const flatNavItems = navGroups.flatMap((group) => group.items);
-  const mobilePrimary = [
-    flatNavItems.find((i) => i.href === "/app")!,
-    flatNavItems.find((i) => i.href === "/app/autopilot-control")!,
-    flatNavItems.find((i) => i.href === "/app/content-plan")!,
-    flatNavItems.find((i) => i.href === "/app/social-posts")!,
+  const mobilePrimaryHrefs = [
+    "/app",
+    "/app/content-plan",
+    "/app/integrations",
+    "/app/billing",
   ];
-  const mobileMore = flatNavItems.filter(
+  const mobilePrimary = mobilePrimaryHrefs
+    .map((href) => visibleItems.find((item) => item.href === href))
+    .filter((item): item is AppNavItemConfig => Boolean(item));
+  const mobileMore = visibleItems.filter(
     (item) => !mobilePrimary.some((primary) => primary.href === item.href)
   );
+
+  function labelFor(item: AppNavItemConfig): string {
+    return nav[item.id];
+  }
 
   return (
     <>
@@ -187,26 +116,35 @@ export function AppSidebar() {
 
           <nav className="flex-1 space-y-8 overflow-y-auto px-4 py-5">
             <OnboardingSidebarLink />
-            {navGroups.map((group) => (
-              <div key={group.title}>
-                <p className="mb-3 px-3.5 text-[10px] font-semibold uppercase tracking-[0.16em] text-slate-400">
-                  {group.title}
-                </p>
-                <div className="space-y-1.5">
-                  {group.items.map((item) => (
-                    <NavLink
-                      key={item.href}
-                      item={item}
-                      pathname={pathname}
-                      comingSoonLabel={nav.comingSoon}
-                    />
-                  ))}
+            {NAV_GROUP_ORDER.map((groupKey) => {
+              const items = grouped.get(groupKey);
+              if (!items?.length) {
+                return null;
+              }
+
+              return (
+                <div key={groupKey}>
+                  <p className="mb-3 px-3.5 text-[10px] font-semibold uppercase tracking-[0.16em] text-slate-400">
+                    {nav.groups[groupKey]}
+                  </p>
+                  <div className="space-y-1.5">
+                    {items.map((item) => (
+                      <NavLink
+                        key={item.href}
+                        item={item}
+                        label={labelFor(item)}
+                        pathname={pathname}
+                        comingSoonLabel={nav.comingSoon}
+                      />
+                    ))}
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </nav>
 
           <div className="space-y-3 border-t border-slate-200 px-5 py-5">
+            <DashboardModeToggle />
             <LanguageSwitcher className="w-full justify-between" />
             <p className="text-xs leading-relaxed text-slate-500">{nav.trustFooter}</p>
           </div>
@@ -220,7 +158,7 @@ export function AppSidebar() {
         {mobilePrimary.map((item) => {
           const active = isActive(pathname, item.href);
           const Icon = item.icon;
-          const shortLabel = item.label.split(" ")[0];
+          const shortLabel = labelFor(item).split(" ")[0];
           const content = (
             <>
               <Icon className="size-5" />
@@ -268,7 +206,8 @@ export function AppSidebar() {
             <SheetHeader>
               <SheetTitle className="text-slate-900">{nav.menu}</SheetTitle>
             </SheetHeader>
-            <div className="mb-4 px-2">
+            <div className="mb-4 space-y-4 px-2">
+              <DashboardModeToggle />
               <LanguageSwitcher className="w-full justify-between" />
             </div>
             <div className="grid gap-1 px-2 pb-6">
@@ -276,6 +215,7 @@ export function AppSidebar() {
                 <NavLink
                   key={item.href}
                   item={item}
+                  label={labelFor(item)}
                   pathname={pathname}
                   comingSoonLabel={nav.comingSoon}
                 />
