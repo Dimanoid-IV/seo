@@ -70,6 +70,9 @@ export function TasksPage() {
   const [sheetOpen, setSheetOpen] = useState(false);
   const [actionLoading, setActionLoading] = useState(false);
   const [actionError, setActionError] = useState<string | null>(null);
+  const [showExecutionFlow, setShowExecutionFlow] = useState(false);
+  const [prepareFixPreview, setPrepareFixPreview] = useState<string | null>(null);
+  const [prepareFixSuccess, setPrepareFixSuccess] = useState(false);
 
   async function fetchTasks(): Promise<{
     data: TasksOverviewData | null;
@@ -180,7 +183,47 @@ export function TasksPage() {
   function openTaskDetails(task: TaskListItem) {
     setSelectedTaskId(task.id);
     setActionError(null);
+    setShowExecutionFlow(false);
+    setPrepareFixPreview(null);
+    setPrepareFixSuccess(false);
     setSheetOpen(true);
+  }
+
+  async function handlePrepareFix(taskId: string) {
+    setActionLoading(true);
+    setActionError(null);
+    setShowExecutionFlow(true);
+
+    try {
+      const response = await authFetch(`/api/tasks/${taskId}/prepare-fix`, {
+        method: "POST",
+      });
+
+      if (!response.ok) {
+        const message = await parseApiErrorMessage(
+          response,
+          t.execution.prepareFixFailed
+        );
+        setActionError(message);
+        return;
+      }
+
+      const body = (await response.json()) as {
+        data: {
+          preparedFix: {
+            preview: string;
+          };
+        };
+      };
+
+      setPrepareFixPreview(body.data.preparedFix.preview);
+      setPrepareFixSuccess(true);
+      await reloadTasks();
+    } catch {
+      setActionError(t.execution.prepareFixFailed);
+    } finally {
+      setActionLoading(false);
+    }
   }
 
   async function updateTaskStatus(
@@ -370,6 +413,18 @@ export function TasksPage() {
         websiteUrl={overview.website.url}
         actionLoading={actionLoading}
         actionError={actionError}
+        showExecutionFlow={showExecutionFlow}
+        prepareFixPreview={prepareFixPreview}
+        prepareFixSuccess={prepareFixSuccess}
+        onPrepareFixClick={
+          selectedTask &&
+          selectedCapability?.primaryAction === "PREPARE_FIX"
+            ? () => void handlePrepareFix(selectedTask.id)
+            : selectedTask &&
+                selectedCapability?.primaryAction === "CREATE_DRAFT"
+              ? () => setShowExecutionFlow(true)
+              : undefined
+        }
         onMarkDone={
           selectedTask && isActiveTask(selectedTask.status)
             ? () => void updateTaskStatus(selectedTask.id, "COMPLETED")

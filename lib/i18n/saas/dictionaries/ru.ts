@@ -12,6 +12,7 @@ export const saasDictionary: SaasDictionary = {
     dashboard: "Обзор",
     controlCenter: "Центр управления",
     tasks: "Задачи",
+    review: "На проверку",
     contentPlan: "Контент-план",
     socialPosts: "Соцсети",
     reports: "Отчёты",
@@ -208,6 +209,16 @@ export const saasDictionary: SaasDictionary = {
       viewAll: "Смотреть все",
       reviewNote: "Проверяйте черновики и подтверждения перед публикацией.",
       openControlCenter: "Открыть центр управления",
+    },
+    reviewQueue: {
+      title: "На проверку",
+      subtitle:
+        "Подготовленные исправления и черновики, которые ждут вашего решения.",
+      countZero: "Пока ничего нет",
+      countMany: "{count} элементов ждут проверки",
+      cta: "Открыть проверку",
+      safetyNote:
+        "Будет опубликовано только после вашего подтверждения.",
     },
     activity: {
       title: "Недавняя активность",
@@ -868,6 +879,56 @@ export const saasDictionary: SaasDictionary = {
         APPROVE: "Одобрить",
         RUN_AUTOMATICALLY: "Выполнить автоматически",
       },
+      prepareFixSuccess:
+        "Исправление подготовлено и добавлено в очередь проверки. Ничего не опубликовано.",
+      openReviewQueue: "Открыть проверку",
+      prepareFixFailed: "Не удалось подготовить исправление. Попробуйте ещё раз.",
+    },
+  },
+  reviewPage: {
+    title: "На проверку",
+    subtitle:
+      "RankBoost подготовил эти исправления. Проверьте и одобрите их.",
+    loading: "Загружаем очередь проверки…",
+    loadFailed:
+      "Не удалось загрузить элементы на проверку. Попробуйте обновить страницу.",
+    updateFailed: "Не удалось обновить элемент. Попробуйте ещё раз.",
+    emptyTitle: "Пока нет подготовленных исправлений",
+    emptyDescription:
+      "Откройте задачу и нажмите «Подготовить исправление».",
+    openTasks: "Открыть задачи",
+    safetyNote:
+      "Будет опубликовано только после вашего подтверждения. Ничего не отправляется и не публикуется автоматически.",
+    fromTask: "Из задачи",
+    updatedLabel: "Обновлено",
+    approve: "Одобрить",
+    edit: "Редактировать",
+    reject: "Отклонить",
+    markDone: "Отметить выполненной",
+    saveEdit: "Сохранить изменения",
+    advancedEditHint: "Для полного редактирования откройте редактор:",
+    openFullEditor: "Открыть редактор",
+    tabs: {
+      all: "Все",
+      seo: "SEO-исправления",
+      content: "Контент",
+      social: "Соцсети",
+      email: "Email",
+    },
+    types: {
+      SOCIAL_POST: "Пост для соцсетей",
+      EMAIL_DRAFT: "Черновик письма",
+      ARTICLE_DRAFT: "Черновик статьи",
+      SEO_FIX: "SEO-исправление",
+      META_FIX: "Meta-исправление",
+      TASK_FIX: "Исправление по задаче",
+    },
+    statuses: {
+      AWAITING_REVIEW: "Ожидает проверки",
+      APPROVED: "Одобрено",
+      REJECTED: "Отклонено",
+      DRAFT: "Черновик",
+      READY_TO_PUBLISH: "Готово к публикации",
     },
   },
   socialPosts: {

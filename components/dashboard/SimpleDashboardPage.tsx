@@ -12,6 +12,7 @@ import { DashboardMetricCard } from "@/components/dashboard/DashboardMetricCard"
 import { FindingsCard } from "@/components/dashboard/FindingsCard";
 import { NextBestActionCard } from "@/components/dashboard/NextBestActionCard";
 import { PreparedForYouCard } from "@/components/dashboard/PreparedForYouCard";
+import { ReviewQueueCard } from "@/components/dashboard/ReviewQueueCard";
 import { RecentActivityCompact } from "@/components/dashboard/RecentActivityCompact";
 import { useDashboardMode } from "@/components/dashboard/DashboardModeProvider";
 import { useDashboardOverview } from "@/components/dashboard/DashboardOverviewProvider";
@@ -222,6 +223,10 @@ export function SimpleDashboardPage() {
               accent="amber"
             />
           </section>
+
+          {isSimple ? (
+            <ReviewQueueCard count={simple.metrics.reviewQueueCount} />
+          ) : null}
 
         {!isSimple ? <FindingsCard findings={simple.findings} /> : null}
 

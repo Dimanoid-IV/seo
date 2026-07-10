@@ -1,7 +1,5 @@
 "use client";
 
-import { useState } from "react";
-
 import { TaskExecutionPanel } from "@/components/tasks/TaskExecutionPanel";
 import {
   Sheet,
@@ -29,10 +27,14 @@ type TaskDetailSheetProps = {
   websiteUrl?: string;
   actionLoading?: boolean;
   actionError?: string | null;
+  prepareFixPreview?: string | null;
+  prepareFixSuccess?: boolean;
+  showExecutionFlow?: boolean;
   onMarkDone?: () => void;
   onMarkInProgress?: () => void;
   onSkip?: () => void;
   onDraftCreated?: (articleId: string) => void;
+  onPrepareFixClick?: () => void;
 };
 
 const priorityStyles = {
@@ -59,14 +61,17 @@ export function TaskDetailSheet({
   websiteUrl,
   actionLoading = false,
   actionError,
+  prepareFixPreview = null,
+  prepareFixSuccess = false,
+  showExecutionFlow = false,
   onMarkDone,
   onMarkInProgress,
   onSkip,
   onDraftCreated,
+  onPrepareFixClick,
 }: TaskDetailSheetProps) {
   const { dict, locale } = useSaasTranslations();
   const t = dict.tasksPage;
-  const [showExecutionFlow, setShowExecutionFlow] = useState(false);
 
   if (!task || !capability) {
     return null;
@@ -105,9 +110,6 @@ export function TaskDetailSheet({
   }
 
   function handleOpenChange(next: boolean) {
-    if (!next) {
-      setShowExecutionFlow(false);
-    }
     onOpenChange(next);
   }
 
@@ -148,7 +150,9 @@ export function TaskDetailSheet({
               websiteId={websiteId}
               actionLoading={actionLoading}
               showPrepareFixNote={showExecutionFlow}
-              onPrepareFixClick={() => setShowExecutionFlow(true)}
+              prepareFixPreview={prepareFixPreview}
+              prepareFixSuccess={prepareFixSuccess}
+              onPrepareFixClick={onPrepareFixClick}
               onMarkDone={onMarkDone}
               onMarkInProgress={onMarkInProgress}
               onSkip={onSkip}

@@ -12,6 +12,7 @@ export const saasDictionary: SaasDictionary = {
     dashboard: "Dashboard",
     controlCenter: "Control Center",
     tasks: "Tasks",
+    review: "Review",
     contentPlan: "Content Plan",
     socialPosts: "Social Posts",
     reports: "Reports",
@@ -208,6 +209,16 @@ export const saasDictionary: SaasDictionary = {
       viewAll: "View all",
       reviewNote: "Review drafts and approvals before anything goes live.",
       openControlCenter: "Open Control Center",
+    },
+    reviewQueue: {
+      title: "Review",
+      subtitle:
+        "Prepared fixes and drafts waiting for your decision.",
+      countZero: "Nothing yet",
+      countMany: "{count} items waiting for review",
+      cta: "Open review",
+      safetyNote:
+        "Will only be published after your approval.",
     },
     activity: {
       title: "Recent activity",
@@ -865,6 +876,56 @@ export const saasDictionary: SaasDictionary = {
         APPROVE: "Approve",
         RUN_AUTOMATICALLY: "Run automatically",
       },
+      prepareFixSuccess:
+        "Fix prepared and added to your review queue. Nothing was published.",
+      openReviewQueue: "Open review",
+      prepareFixFailed: "Could not prepare this fix. Please try again.",
+    },
+  },
+  reviewPage: {
+    title: "Review",
+    subtitle:
+      "RankBoost prepared these fixes. Review and approve them.",
+    loading: "Loading review queue…",
+    loadFailed:
+      "Could not load review items. Please refresh the page.",
+    updateFailed: "Could not update this item. Please try again.",
+    emptyTitle: "No prepared fixes yet",
+    emptyDescription:
+      "Open a task and click “Prepare fix”.",
+    openTasks: "Open tasks",
+    safetyNote:
+      "Will only be published after your approval. Nothing is sent or published automatically.",
+    fromTask: "From task",
+    updatedLabel: "Updated",
+    approve: "Approve",
+    edit: "Edit",
+    reject: "Reject",
+    markDone: "Mark as done",
+    saveEdit: "Save changes",
+    advancedEditHint: "For full editing, open the dedicated editor:",
+    openFullEditor: "Open editor",
+    tabs: {
+      all: "All",
+      seo: "SEO fixes",
+      content: "Content",
+      social: "Social",
+      email: "Email",
+    },
+    types: {
+      SOCIAL_POST: "Social post",
+      EMAIL_DRAFT: "Email draft",
+      ARTICLE_DRAFT: "Article draft",
+      SEO_FIX: "SEO fix",
+      META_FIX: "Meta fix",
+      TASK_FIX: "Task fix",
+    },
+    statuses: {
+      AWAITING_REVIEW: "Awaiting review",
+      APPROVED: "Approved",
+      REJECTED: "Rejected",
+      DRAFT: "Draft",
+      READY_TO_PUBLISH: "Ready to publish",
     },
   },
   socialPosts: {

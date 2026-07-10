@@ -5,6 +5,7 @@ export type SaasDictionary = {
     dashboard: string;
     controlCenter: string;
     tasks: string;
+    review: string;
     contentPlan: string;
     socialPosts: string;
     reports: string;
@@ -164,6 +165,14 @@ export type SaasDictionary = {
       viewAll: string;
       reviewNote: string;
       openControlCenter: string;
+    };
+    reviewQueue: {
+      title: string;
+      subtitle: string;
+      countZero: string;
+      countMany: string;
+      cta: string;
+      safetyNote: string;
     };
     activity: { title: string; empty: string; openTimeline: string };
     billingNote: string;
@@ -707,6 +716,51 @@ export type SaasDictionary = {
         APPROVE: string;
         RUN_AUTOMATICALLY: string;
       };
+      prepareFixSuccess: string;
+      openReviewQueue: string;
+      prepareFixFailed: string;
+    };
+  };
+  reviewPage: {
+    title: string;
+    subtitle: string;
+    loading: string;
+    loadFailed: string;
+    updateFailed: string;
+    emptyTitle: string;
+    emptyDescription: string;
+    openTasks: string;
+    safetyNote: string;
+    fromTask: string;
+    updatedLabel: string;
+    approve: string;
+    edit: string;
+    reject: string;
+    markDone: string;
+    saveEdit: string;
+    advancedEditHint: string;
+    openFullEditor: string;
+    tabs: {
+      all: string;
+      seo: string;
+      content: string;
+      social: string;
+      email: string;
+    };
+    types: {
+      SOCIAL_POST: string;
+      EMAIL_DRAFT: string;
+      ARTICLE_DRAFT: string;
+      SEO_FIX: string;
+      META_FIX: string;
+      TASK_FIX: string;
+    };
+    statuses: {
+      AWAITING_REVIEW: string;
+      APPROVED: string;
+      REJECTED: string;
+      DRAFT: string;
+      READY_TO_PUBLISH: string;
     };
   };
   socialPosts: {

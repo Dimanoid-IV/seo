@@ -18,6 +18,8 @@ type TaskExecutionPanelProps = {
   compact?: boolean;
   actionLoading?: boolean;
   showPrepareFixNote?: boolean;
+  prepareFixPreview?: string | null;
+  prepareFixSuccess?: boolean;
   onPrepareFixClick?: () => void;
   onMarkDone?: () => void;
   onMarkInProgress?: () => void;
@@ -39,6 +41,8 @@ export function TaskExecutionPanel({
   compact = false,
   actionLoading = false,
   showPrepareFixNote = false,
+  prepareFixPreview = null,
+  prepareFixSuccess = false,
   onPrepareFixClick,
   onMarkDone,
   onMarkInProgress,
@@ -105,8 +109,25 @@ export function TaskExecutionPanel({
       ) : null}
 
       {showPrepareFixNote && capability.primaryAction === "PREPARE_FIX" ? (
-        <div className="rounded-lg border border-violet-100 bg-violet-50/70 px-3 py-3 text-sm text-slate-700">
-          {t.prepareFixSafeNote}
+        <div className="space-y-3">
+          <div className="rounded-lg border border-violet-100 bg-violet-50/70 px-3 py-3 text-sm text-slate-700">
+            {prepareFixSuccess ? t.prepareFixSuccess : t.prepareFixSafeNote}
+          </div>
+          {prepareFixPreview ? (
+            <p className="rounded-lg border border-slate-100 bg-slate-50 px-3 py-3 text-sm leading-relaxed text-slate-700">
+              {prepareFixPreview}
+            </p>
+          ) : null}
+          {prepareFixSuccess ? (
+            <Button
+              render={<Link href="/app/review" />}
+              nativeButton={false}
+              variant="outline"
+              className="w-full border-violet-200 text-violet-800"
+            >
+              {t.openReviewQueue}
+            </Button>
+          ) : null}
         </div>
       ) : null}
 

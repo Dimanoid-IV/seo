@@ -1,6 +1,7 @@
 import type { LucideIcon } from "lucide-react";
 import {
   BarChart3,
+  ClipboardCheck,
   CreditCard,
   FileText,
   History,
@@ -21,6 +22,7 @@ export type NavItemId = keyof Pick<
   | "dashboard"
   | "controlCenter"
   | "tasks"
+  | "review"
   | "contentPlan"
   | "socialPosts"
   | "reports"
@@ -65,6 +67,14 @@ export const APP_NAV_ITEMS: AppNavItemConfig[] = [
     href: "/app/tasks",
     group: "main",
     icon: ListTodo,
+    enabled: true,
+    advanced: false,
+  },
+  {
+    id: "review",
+    href: "/app/review",
+    group: "main",
+    icon: ClipboardCheck,
     enabled: true,
     advanced: false,
   },

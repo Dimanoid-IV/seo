@@ -12,6 +12,7 @@ export const saasDictionary: SaasDictionary = {
     dashboard: "Ülevaade",
     controlCenter: "Juhtimiskeskus",
     tasks: "Ülesanded",
+    review: "Ülevaatus",
     contentPlan: "Sisuplaan",
     socialPosts: "Sotsiaalpostitused",
     reports: "Aruanded",
@@ -208,6 +209,16 @@ export const saasDictionary: SaasDictionary = {
       viewAll: "Vaata kõiki",
       reviewNote: "Kontrollige mustandeid ja kinnitamisi enne avaldamist.",
       openControlCenter: "Ava juhtimiskeskus",
+    },
+    reviewQueue: {
+      title: "Ülevaatus",
+      subtitle:
+        "Ettevalmistatud parandused ja mustandid, mis ootavad teie otsust.",
+      countZero: "Pole veel midagi",
+      countMany: "{count} elementi ootab ülevaatust",
+      cta: "Ava ülevaatus",
+      safetyNote:
+        "Avaldatakse ainult pärast teie kinnitust.",
     },
     activity: {
       title: "Hiljutine tegevus",
@@ -871,6 +882,56 @@ export const saasDictionary: SaasDictionary = {
         APPROVE: "Kinnita",
         RUN_AUTOMATICALLY: "Käivita automaatselt",
       },
+      prepareFixSuccess:
+        "Parandus on ette valmistatud ja lisatud ülevaatusjärjekorda. Midagi ei avaldatud.",
+      openReviewQueue: "Ava ülevaatus",
+      prepareFixFailed: "Parandust ei õnnestunud ette valmistada. Proovige uuesti.",
+    },
+  },
+  reviewPage: {
+    title: "Ülevaatus",
+    subtitle:
+      "RankBoost valmistas need parandused ette. Vaadake üle ja kinnitage.",
+    loading: "Ülevaatusjärjekorra laadimine…",
+    loadFailed:
+      "Ülevaatuselemente ei õnnestunud laadida. Värskendage lehte.",
+    updateFailed: "Elementi ei õnnestunud uuendada. Proovige uuesti.",
+    emptyTitle: "Ettevalmistatud parandusi veel pole",
+    emptyDescription:
+      "Avage ülesanne ja valige „Valmista parandus“.",
+    openTasks: "Ava ülesanded",
+    safetyNote:
+      "Avaldatakse ainult pärast teie kinnitust. Midagi ei saadeta ega avaldata automaatselt.",
+    fromTask: "Ülesandest",
+    updatedLabel: "Uuendatud",
+    approve: "Kinnita",
+    edit: "Muuda",
+    reject: "Lükka tagasi",
+    markDone: "Märgi tehtuks",
+    saveEdit: "Salvesta muudatused",
+    advancedEditHint: "Täielikuks muutmiseks avage redaktor:",
+    openFullEditor: "Ava redaktor",
+    tabs: {
+      all: "Kõik",
+      seo: "SEO parandused",
+      content: "Sisu",
+      social: "Sotsiaal",
+      email: "E-kiri",
+    },
+    types: {
+      SOCIAL_POST: "Sotsiaalpostitus",
+      EMAIL_DRAFT: "E-kirja mustand",
+      ARTICLE_DRAFT: "Artikli mustand",
+      SEO_FIX: "SEO parandus",
+      META_FIX: "Meta parandus",
+      TASK_FIX: "Ülesande parandus",
+    },
+    statuses: {
+      AWAITING_REVIEW: "Ootab ülevaatust",
+      APPROVED: "Kinnitatud",
+      REJECTED: "Tagasi lükatud",
+      DRAFT: "Mustand",
+      READY_TO_PUBLISH: "Valmis avaldamiseks",
     },
   },
   socialPosts: {

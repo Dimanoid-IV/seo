@@ -9,6 +9,8 @@ import type {
 } from "@/lib/autopilot-control/types";
 import { getOnboardingSummary } from "@/lib/onboarding/get-onboarding-state";
 import type { OnboardingSummary } from "@/lib/onboarding/types";
+import { getReviewQueueCount } from "@/lib/review-queue/list-review-queue";
+
 import { loadDashboardGoogleSearchConsole } from "./gsc-overview";
 
 import {
@@ -38,6 +40,7 @@ export type SimpleDashboardViewModel = {
     growthScoreLabel: string;
     opportunitiesCount: number;
     needsReviewCount: number;
+    reviewQueueCount: number;
   };
   nextBestAction?: {
     title: string;
@@ -89,6 +92,7 @@ export function buildSimpleDashboardViewModel(input: {
   opportunitiesCount?: number;
   subscriptionPlan?: string;
   locale?: SaasLocale;
+  reviewQueueCount?: number;
 }): SimpleDashboardViewModel {
   const { controlCenter: control, onboarding } = input;
   const locale = input.locale ?? DEFAULT_SAAS_LOCALE;
@@ -129,6 +133,7 @@ export function buildSimpleDashboardViewModel(input: {
         control.metrics.openTasksCount
       ),
       needsReviewCount,
+      reviewQueueCount: input.reviewQueueCount ?? needsReviewCount,
     },
     nextBestAction: localizedNextAction(locale, primaryAction),
     secondaryAction,
@@ -164,9 +169,10 @@ export async function getSimpleDashboardOverview(
   }
 ): Promise<SimpleDashboardViewModel> {
   const locale = options?.locale ?? DEFAULT_SAAS_LOCALE;
-  const [controlCenter, onboarding] = await Promise.all([
+  const [controlCenter, onboarding, reviewQueueCount] = await Promise.all([
     getAutopilotControlCenter({ currentUser, locale }),
     getOnboardingSummary(currentUser.id, locale),
+    getReviewQueueCount(currentUser),
   ]);
 
   let gsc: SimpleDashboardViewModel["gsc"];
@@ -186,6 +192,7 @@ export async function getSimpleDashboardOverview(
     opportunitiesCount: options?.opportunitiesCount,
     subscriptionPlan: options?.subscriptionPlan,
     locale,
+    reviewQueueCount,
   });
 
   return { ...viewModel, gsc };
