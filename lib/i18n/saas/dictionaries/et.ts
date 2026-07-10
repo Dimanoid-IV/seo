@@ -834,6 +834,44 @@ export const saasDictionary: SaasDictionary = {
       user: "Kasutaja",
       admin: "Admin",
     },
+    execution: {
+      canRankBoostYes: "Kas RankBoost saab aidata?",
+      canRankBoostNo: "See ülesanne vajab teie veebisaidil käsitsi tegemist.",
+      defaultModeLabel: "Vaikimisi režiim",
+      auditCheckLabel: "Auditi kontroll",
+      prepareFixSafeNote:
+        "RankBoost valmistab paranduse mustandi teie ülevaatamiseks. Midagi ei avaldata automaatselt.",
+      autopilotDisabledHint:
+        "Automaatne täitmine on vaikimisi väljas. Kontroll jääb ülevaatusrežiimi.",
+      modes: {
+        MANUAL: "Käsitsi",
+        REVIEW: "Ülevaatus",
+        AUTOPILOT: "Autopiloot",
+      },
+      simpleHints: {
+        manualOnly: "Täitke see ülesanne veebisaidil käsitsi.",
+        rankBoostCanPrepare: "RankBoost saab selle teie eest ette valmistada.",
+        needsApproval: "Vajab enne avaldamist teie kinnitust.",
+        connectWordPress: "Ühendage WordPress automaatseks avaldamiseks.",
+        connectGsc: "Ühendage Google Search Console otsinguandmete jaoks.",
+      },
+      requirements: {
+        manual: "Te täidate ülesande otse veebisaidil.",
+        reviewApproval:
+          "RankBoost valmistab mustandi; te kinnitate enne avaldamist.",
+        wordpress: "Automaatseks avaldamiseks on vaja WordPressi ühendust.",
+        gsc: "Otsinguandmete jaoks on vaja Google Search Console'i.",
+      },
+      actions: {
+        MARK_DONE: "Märgi tehtuks",
+        PREPARE_FIX: "Valmista parandus",
+        CREATE_DRAFT: "Loo mustand",
+        CONNECT_WORDPRESS: "Ühenda WordPress",
+        CONNECT_GSC: "Ühenda Search Console",
+        APPROVE: "Kinnita",
+        RUN_AUTOMATICALLY: "Käivita automaatselt",
+      },
+    },
   },
   socialPosts: {
     title: "Sotsiaalpostitused",

@@ -829,6 +829,43 @@ export const saasDictionary: SaasDictionary = {
       user: "User",
       admin: "Admin",
     },
+    execution: {
+      canRankBoostYes: "Can RankBoost help?",
+      canRankBoostNo: "This task needs manual work on your site.",
+      defaultModeLabel: "Default mode",
+      auditCheckLabel: "Audit check",
+      prepareFixSafeNote:
+        "RankBoost will prepare a draft fix for your review. Nothing is published automatically.",
+      autopilotDisabledHint:
+        "Automatic execution is off by default. Review mode stays in control.",
+      modes: {
+        MANUAL: "Manual",
+        REVIEW: "Review",
+        AUTOPILOT: "Autopilot",
+      },
+      simpleHints: {
+        manualOnly: "Complete this task manually on your website.",
+        rankBoostCanPrepare: "RankBoost can prepare this for you.",
+        needsApproval: "Needs your approval before anything goes live.",
+        connectWordPress: "Connect WordPress to publish automatically.",
+        connectGsc: "Connect Google Search Console to unlock search data.",
+      },
+      requirements: {
+        manual: "You complete this directly on the website.",
+        reviewApproval: "RankBoost prepares a draft; you approve before publishing.",
+        wordpress: "WordPress connection required for automatic publishing.",
+        gsc: "Google Search Console connection required for search insights.",
+      },
+      actions: {
+        MARK_DONE: "Mark as done",
+        PREPARE_FIX: "Prepare fix",
+        CREATE_DRAFT: "Create draft",
+        CONNECT_WORDPRESS: "Connect WordPress",
+        CONNECT_GSC: "Connect Search Console",
+        APPROVE: "Approve",
+        RUN_AUTOMATICALLY: "Run automatically",
+      },
+    },
   },
   socialPosts: {
     title: "Social Posts",

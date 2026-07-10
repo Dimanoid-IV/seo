@@ -673,6 +673,41 @@ export type SaasDictionary = {
       user: string;
       admin: string;
     };
+    execution: {
+      canRankBoostYes: string;
+      canRankBoostNo: string;
+      defaultModeLabel: string;
+      auditCheckLabel: string;
+      prepareFixSafeNote: string;
+      autopilotDisabledHint: string;
+      modes: {
+        MANUAL: string;
+        REVIEW: string;
+        AUTOPILOT: string;
+      };
+      simpleHints: {
+        manualOnly: string;
+        rankBoostCanPrepare: string;
+        needsApproval: string;
+        connectWordPress: string;
+        connectGsc: string;
+      };
+      requirements: {
+        manual: string;
+        reviewApproval: string;
+        wordpress: string;
+        gsc: string;
+      };
+      actions: {
+        MARK_DONE: string;
+        PREPARE_FIX: string;
+        CREATE_DRAFT: string;
+        CONNECT_WORDPRESS: string;
+        CONNECT_GSC: string;
+        APPROVE: string;
+        RUN_AUTOMATICALLY: string;
+      };
+    };
   };
   socialPosts: {
     title: string;

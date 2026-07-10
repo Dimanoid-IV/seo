@@ -1,12 +1,16 @@
-import { TaskStatus, WebsiteStatus } from "@prisma/client";
+import { IntegrationProvider, IntegrationStatus, TaskStatus, WebsiteStatus } from "@prisma/client";
 
 import { resolveOwnedOrganization } from "@/lib/auth/queries";
 import type { CurrentUser } from "@/lib/auth/types";
 import { sortDashboardTasks } from "@/lib/audit/generate-tasks";
 import { getPrisma } from "@/lib/db";
+import {
+  getWordPressConnection,
+  mapWordPressConnectionStatus,
+} from "@/lib/integrations/wordpress-connector";
 import { parseTaskRecommendation } from "@/lib/tasks/recommendation";
 
-import type { TasksOverviewResponse } from "./types";
+import type { TaskIntegrationsContext, TasksOverviewResponse } from "./types";
 
 const ACTIVE_STATUSES: TaskStatus[] = [TaskStatus.OPEN, TaskStatus.IN_PROGRESS];
 const CLOSED_STATUSES: TaskStatus[] = [
@@ -45,9 +49,36 @@ export async function getTasksOverview(
       data: {
         website: null,
         tasks: [],
+        integrations: {
+          gscConnected: false,
+          gscPropertySelected: false,
+          wordpressConnected: false,
+        },
       },
     };
   }
+
+  const [gscIntegration, wordpressConnection] = await Promise.all([
+    prisma.integration.findFirst({
+      where: {
+        websiteId: website.id,
+        provider: IntegrationProvider.GOOGLE_SEARCH_CONSOLE,
+      },
+      select: {
+        status: true,
+        googleData: { select: { searchConsoleSiteUrl: true } },
+      },
+    }),
+    getWordPressConnection({ websiteId: website.id }),
+  ]);
+
+  const integrations: TaskIntegrationsContext = {
+    gscConnected: gscIntegration?.status === IntegrationStatus.CONNECTED,
+    gscPropertySelected: Boolean(gscIntegration?.googleData?.searchConsoleSiteUrl),
+    wordpressConnected: wordpressConnection
+      ? mapWordPressConnectionStatus(wordpressConnection.status).connected
+      : false,
+  };
 
   const tasksRaw = await prisma.task.findMany({
     where: {
@@ -103,6 +134,7 @@ export async function getTasksOverview(
     data: {
       website: { id: website.id, url: website.url },
       tasks,
+      integrations,
     },
   };
 }

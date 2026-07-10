@@ -831,6 +831,44 @@ export const saasDictionary: SaasDictionary = {
       user: "Пользователь",
       admin: "Админ",
     },
+    execution: {
+      canRankBoostYes: "RankBoost может помочь?",
+      canRankBoostNo: "Эту задачу нужно выполнить вручную на сайте.",
+      defaultModeLabel: "Режим по умолчанию",
+      auditCheckLabel: "Проверка аудита",
+      prepareFixSafeNote:
+        "RankBoost подготовит черновик исправления для вашей проверки. Ничего не публикуется автоматически.",
+      autopilotDisabledHint:
+        "Автоматическое выполнение выключено по умолчанию. Контроль остаётся в режиме проверки.",
+      modes: {
+        MANUAL: "Вручную",
+        REVIEW: "Проверка",
+        AUTOPILOT: "Автопилот",
+      },
+      simpleHints: {
+        manualOnly: "Выполните эту задачу вручную на сайте.",
+        rankBoostCanPrepare: "RankBoost может подготовить это за вас.",
+        needsApproval: "Нужно ваше одобрение перед публикацией.",
+        connectWordPress: "Подключите WordPress для автоматической публикации.",
+        connectGsc: "Подключите Google Search Console для данных поиска.",
+      },
+      requirements: {
+        manual: "Вы выполняете задачу напрямую на сайте.",
+        reviewApproval:
+          "RankBoost готовит черновик; вы одобряете перед публикацией.",
+        wordpress: "Для автопубликации нужно подключить WordPress.",
+        gsc: "Для данных поиска нужен Google Search Console.",
+      },
+      actions: {
+        MARK_DONE: "Отметить выполненной",
+        PREPARE_FIX: "Подготовить исправление",
+        CREATE_DRAFT: "Создать черновик",
+        CONNECT_WORDPRESS: "Подключить WordPress",
+        CONNECT_GSC: "Подключить Search Console",
+        APPROVE: "Одобрить",
+        RUN_AUTOMATICALLY: "Выполнить автоматически",
+      },
+    },
   },
   socialPosts: {
     title: "Соцсети",

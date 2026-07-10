@@ -16,9 +16,16 @@ export type TaskListItem = {
   auditCheckCode: string | null;
 };
 
+export type TaskIntegrationsContext = {
+  gscConnected: boolean;
+  gscPropertySelected: boolean;
+  wordpressConnected: boolean;
+};
+
 export type TasksOverviewData = {
   website: { id: string; url: string } | null;
   tasks: TaskListItem[];
+  integrations: TaskIntegrationsContext;
 };
 
 export type TasksOverviewResponse = {

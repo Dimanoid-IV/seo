@@ -1,13 +1,12 @@
 "use client";
 
-import { Loader2 } from "lucide-react";
+import { useState } from "react";
 
-import { Button } from "@/components/ui/button";
+import { TaskExecutionPanel } from "@/components/tasks/TaskExecutionPanel";
 import {
   Sheet,
   SheetContent,
   SheetDescription,
-  SheetFooter,
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
@@ -17,19 +16,23 @@ import {
   taskStatusToCardStatus,
 } from "@/lib/dashboard/display";
 import { useSaasTranslations } from "@/lib/i18n/saas/SaasLocaleProvider";
+import type { TaskExecutionCapability } from "@/lib/tasks/execution-capability";
 import type { TaskListItem } from "@/lib/tasks/types";
 import { cn } from "@/lib/utils";
 
 type TaskDetailSheetProps = {
   task: TaskListItem | null;
+  capability: TaskExecutionCapability | null;
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  websiteId?: string;
   websiteUrl?: string;
   actionLoading?: boolean;
   actionError?: string | null;
   onMarkDone?: () => void;
   onMarkInProgress?: () => void;
   onSkip?: () => void;
+  onDraftCreated?: (articleId: string) => void;
 };
 
 const priorityStyles = {
@@ -49,19 +52,23 @@ function formatDate(iso: string, locale: string): string {
 
 export function TaskDetailSheet({
   task,
+  capability,
   open,
   onOpenChange,
+  websiteId,
   websiteUrl,
   actionLoading = false,
   actionError,
   onMarkDone,
   onMarkInProgress,
   onSkip,
+  onDraftCreated,
 }: TaskDetailSheetProps) {
   const { dict, locale } = useSaasTranslations();
   const t = dict.tasksPage;
+  const [showExecutionFlow, setShowExecutionFlow] = useState(false);
 
-  if (!task) {
+  if (!task || !capability) {
     return null;
   }
 
@@ -97,8 +104,15 @@ export function TaskDetailSheet({
     return t.priorityLabels.low;
   }
 
+  function handleOpenChange(next: boolean) {
+    if (!next) {
+      setShowExecutionFlow(false);
+    }
+    onOpenChange(next);
+  }
+
   return (
-    <Sheet open={open} onOpenChange={onOpenChange}>
+    <Sheet open={open} onOpenChange={handleOpenChange}>
       <SheetContent
         side="right"
         className="max-h-[100dvh] w-full overflow-y-auto border-slate-200 bg-white text-slate-700 sm:max-w-lg"
@@ -127,6 +141,21 @@ export function TaskDetailSheet({
         </SheetHeader>
 
         <div className="space-y-6 px-4 py-2">
+          {isActive ? (
+            <TaskExecutionPanel
+              task={task}
+              capability={capability}
+              websiteId={websiteId}
+              actionLoading={actionLoading}
+              showPrepareFixNote={showExecutionFlow}
+              onPrepareFixClick={() => setShowExecutionFlow(true)}
+              onMarkDone={onMarkDone}
+              onMarkInProgress={onMarkInProgress}
+              onSkip={onSkip}
+              onDraftCreated={onDraftCreated}
+            />
+          ) : null}
+
           <section className="space-y-2">
             <h3 className="text-sm font-semibold text-slate-900">
               {t.detailDescriptionLabel}
@@ -201,46 +230,6 @@ export function TaskDetailSheet({
             </p>
           ) : null}
         </div>
-
-        {isActive ? (
-          <SheetFooter className="border-t border-slate-200">
-            <div className="flex w-full flex-col gap-2">
-              <Button
-                type="button"
-                disabled={actionLoading}
-                onClick={onMarkDone}
-                className="w-full bg-emerald-600 text-white hover:bg-emerald-500"
-              >
-                {actionLoading ? (
-                  <Loader2 className="size-4 animate-spin" />
-                ) : null}
-                {t.markDone}
-              </Button>
-              {cardStatus === "open" && onMarkInProgress ? (
-                <Button
-                  type="button"
-                  variant="outline"
-                  disabled={actionLoading}
-                  onClick={onMarkInProgress}
-                  className="w-full border-slate-200 bg-white text-slate-700"
-                >
-                  {t.markInProgress}
-                </Button>
-              ) : null}
-              {onSkip ? (
-                <Button
-                  type="button"
-                  variant="ghost"
-                  disabled={actionLoading}
-                  onClick={onSkip}
-                  className="w-full text-slate-500 hover:text-slate-700"
-                >
-                  {t.skipTask}
-                </Button>
-              ) : null}
-            </div>
-          </SheetFooter>
-        ) : null}
       </SheetContent>
     </Sheet>
   );

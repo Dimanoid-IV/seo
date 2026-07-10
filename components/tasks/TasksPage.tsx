@@ -1,8 +1,10 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 import { Globe, ListTodo } from "lucide-react";
 
+import { useDashboardMode } from "@/components/dashboard/DashboardModeProvider";
 import { EmptyState } from "@/components/dashboard/EmptyState";
 import { TaskCard } from "@/components/dashboard/TaskCard";
 import { PageErrorState } from "@/components/shared/PageErrorState";
@@ -18,8 +20,10 @@ import {
   taskStatusToCardStatus,
 } from "@/lib/dashboard/display";
 import { useSaasTranslations } from "@/lib/i18n/saas/SaasLocaleProvider";
+import { resolveTaskExecutionCapability } from "@/lib/tasks/execution-capability";
 import type { SerializedTask } from "@/lib/tasks/task-actions";
 import type { TaskListItem, TasksOverviewData } from "@/lib/tasks/types";
+import { cn } from "@/lib/utils";
 
 function formatCreatedDate(iso: string, locale: string): string {
   return new Date(iso).toLocaleDateString(locale, {
@@ -55,7 +59,9 @@ function mapSerializedTaskToListItem(task: SerializedTask): TaskListItem {
 }
 
 export function TasksPage() {
+  const router = useRouter();
   const { dict, locale } = useSaasTranslations();
+  const { isAdvanced } = useDashboardMode();
   const t = dict.tasksPage;
   const [overview, setOverview] = useState<TasksOverviewData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -113,6 +119,22 @@ export function TasksPage() {
     () => overview?.tasks.find((task) => task.id === selectedTaskId) ?? null,
     [overview?.tasks, selectedTaskId]
   );
+
+  const selectedCapability = useMemo(() => {
+    if (!selectedTask || !overview) {
+      return null;
+    }
+    return resolveTaskExecutionCapability(
+      selectedTask,
+      overview.integrations
+    );
+  }, [overview, selectedTask]);
+
+  const integrations = overview?.integrations ?? {
+    gscConnected: false,
+    gscPropertySelected: false,
+    wordpressConnected: false,
+  };
 
   const groupedTasks = useMemo(() => {
     if (!overview?.tasks.length) {
@@ -267,9 +289,41 @@ export function TasksPage() {
               <div className="grid gap-3 lg:grid-cols-2">
                 {group.tasks.map((task) => {
                   const active = isActiveTask(task.status);
+                  const capability = resolveTaskExecutionCapability(
+                    task,
+                    integrations
+                  );
+                  const execution = t.execution;
 
                   return (
                     <div key={task.id} className="space-y-2">
+                      {active ? (
+                        <div className="flex flex-wrap items-center gap-2 px-1">
+                          <span
+                            className={cn(
+                              "rounded-full border px-2 py-0.5 text-[11px] font-medium",
+                              capability.mode === "REVIEW"
+                                ? "border-violet-200 bg-violet-50 text-violet-700"
+                                : "border-slate-200 bg-slate-50 text-slate-600"
+                            )}
+                          >
+                            {execution.modes[capability.mode]}
+                          </span>
+                          <span className="text-xs text-slate-500">
+                            {isAdvanced
+                              ? execution.requirements[
+                                  capability.integrationRequired === "WORDPRESS"
+                                    ? "wordpress"
+                                    : capability.integrationRequired === "GSC"
+                                      ? "gsc"
+                                      : capability.canRankBoostHelp
+                                        ? "reviewApproval"
+                                        : "manual"
+                                ]
+                              : execution.simpleHints[capability.simpleHintKey]}
+                          </span>
+                        </div>
+                      ) : null}
                       <TaskCard
                         title={task.title}
                         description={task.description ?? undefined}
@@ -309,8 +363,10 @@ export function TasksPage() {
 
       <TaskDetailSheet
         task={selectedTask}
+        capability={selectedCapability}
         open={sheetOpen}
         onOpenChange={setSheetOpen}
+        websiteId={overview.website.id}
         websiteUrl={overview.website.url}
         actionLoading={actionLoading}
         actionError={actionError}
@@ -329,6 +385,10 @@ export function TasksPage() {
             ? () => void updateTaskStatus(selectedTask.id, "DISMISSED")
             : undefined
         }
+        onDraftCreated={(articleId) => {
+          void reloadTasks();
+          router.push(`/app/articles/${articleId}`);
+        }}
       />
     </main>
   );
