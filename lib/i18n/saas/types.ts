@@ -581,6 +581,9 @@ export type SaasDictionary = {
     loading: string;
     loadFailed: string;
     loadNetworkError: string;
+    loadTimeoutTitle: string;
+    loadTimeoutDescription: string;
+    retry: string;
     topTasks: string;
     topTasksDescription: string;
     articleIdeas: string;

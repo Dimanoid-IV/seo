@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { CalendarDays, Globe } from "lucide-react";
+import { CalendarDays, Clock, Globe } from "lucide-react";
 
 import { GenerateArticleForm } from "@/components/content-plan/GenerateArticleForm";
 
@@ -29,59 +29,113 @@ import { Button } from "@/components/ui/button";
 import { useSaasTranslations } from "@/lib/i18n/saas/SaasLocaleProvider";
 import { translateContentStatus } from "@/lib/i18n/saas/statuses";
 
+const CONTENT_PLAN_LOAD_TIMEOUT_MS = 12_000;
+
 export function ContentPlanPage() {
   const router = useRouter();
   const { dict, locale } = useSaasTranslations();
   const cp = dict.contentPlan;
   const [plan, setPlan] = useState<ContentPlanOverviewData | null>(null);
   const [loading, setLoading] = useState(true);
+  const [loadTimedOut, setLoadTimedOut] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showGenerateForm, setShowGenerateForm] = useState(false);
   const [expandedTaskId, setExpandedTaskId] = useState<string | null>(null);
+  const [reloadKey, setReloadKey] = useState(0);
+  const loadRequestRef = useRef(0);
 
-  async function fetchContentPlan(): Promise<{
-    data: ContentPlanOverviewData | null;
-    error: string | null;
-  }> {
+  async function refreshPlan() {
     try {
       const response = await authFetch("/api/content-plan/overview");
-
       if (!response.ok) {
-        return { data: null, error: cp.loadFailed };
+        return;
       }
-
       const body = (await response.json()) as { data: ContentPlanOverviewData };
-      return { data: body.data, error: null };
+      setPlan(body.data);
+      setError(null);
     } catch {
-      return { data: null, error: cp.loadNetworkError };
+      // Keep the current plan visible if a background refresh fails.
     }
   }
 
-  async function reloadPlan() {
-    const result = await fetchContentPlan();
-    setPlan(result.data);
-    setError(result.error);
+  function requestReload() {
+    loadRequestRef.current += 1;
+    setReloadKey((current) => current + 1);
   }
 
   useEffect(() => {
     let cancelled = false;
+    const requestId = ++loadRequestRef.current;
+    let timeoutId: number | null = null;
 
     async function loadInitialPlan() {
-      const result = await fetchContentPlan();
-      if (cancelled) {
+      setLoading(true);
+      setLoadTimedOut(false);
+      setError(null);
+
+      timeoutId = window.setTimeout(() => {
+        if (!cancelled && requestId === loadRequestRef.current) {
+          setLoadTimedOut(true);
+        }
+      }, CONTENT_PLAN_LOAD_TIMEOUT_MS);
+
+      let result: {
+        data: ContentPlanOverviewData | null;
+        error: string | null;
+      };
+
+      try {
+        const response = await authFetch("/api/content-plan/overview");
+
+        if (!response.ok) {
+          result = { data: null, error: cp.loadFailed };
+        } else {
+          const body = (await response.json()) as {
+            data: ContentPlanOverviewData;
+          };
+          result = { data: body.data, error: null };
+        }
+      } catch {
+        result = { data: null, error: cp.loadNetworkError };
+      }
+
+      if (cancelled || requestId !== loadRequestRef.current) {
         return;
       }
+
       setPlan(result.data);
       setError(result.error);
       setLoading(false);
+      setLoadTimedOut(false);
     }
 
     void loadInitialPlan();
 
     return () => {
       cancelled = true;
+      if (timeoutId) {
+        window.clearTimeout(timeoutId);
+      }
     };
-  }, [locale, cp.loadFailed, cp.loadNetworkError]);
+  }, [locale, cp.loadFailed, cp.loadNetworkError, reloadKey]);
+
+  if (loading && loadTimedOut) {
+    return (
+      <main className="app-content mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
+        <PageHeader title={cp.title} subtitle={cp.subtitle} />
+        <EmptyState
+          icon={Clock}
+          title={cp.loadTimeoutTitle}
+          description={cp.loadTimeoutDescription}
+          action={
+            <Button type="button" onClick={requestReload}>
+              {cp.retry}
+            </Button>
+          }
+        />
+      </main>
+    );
+  }
 
   if (loading) {
     return <PageLoadingState message={cp.loading} />;
@@ -91,7 +145,8 @@ export function ContentPlanPage() {
     return (
       <PageErrorState
         message={error ?? PAGE_ERROR_FALLBACK}
-        onRetry={() => void reloadPlan()}
+        onRetry={requestReload}
+        retryLabel={cp.retry}
       />
     );
   }
@@ -167,7 +222,7 @@ export function ContentPlanPage() {
                             defaultTopic={task.title}
                             submitLabel={cp.createArticle}
                             onSuccess={(articleId) => {
-                              void reloadPlan();
+                              void refreshPlan();
                               router.push(`/app/articles/${articleId}`);
                             }}
                           />
@@ -219,7 +274,7 @@ export function ContentPlanPage() {
               submitLabel={cp.generateLabel}
               className="mb-6"
               onSuccess={(articleId) => {
-                void reloadPlan();
+                void refreshPlan();
                 router.push(`/app/articles/${articleId}`);
               }}
             />
