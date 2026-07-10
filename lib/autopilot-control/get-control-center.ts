@@ -33,6 +33,8 @@ import type {
   ControlCenterIntegration,
   ControlCenterRecentActivity,
 } from "./types";
+import { getAutopilotStatusSnapshot } from "@/lib/autopilot/autopilot-status";
+import { getAutopilotSettings, autopilotModeToClient } from "@/lib/autopilot/autopilot-settings";
 
 const IMPORTANT_SEVERITIES = new Set<TimelineEventSeverity>([
   TimelineEventSeverity.OPPORTUNITY,
@@ -126,6 +128,8 @@ export async function getAutopilotControlCenter(input: {
     wpConnection,
     hasAnyTasks,
     hasAnyArticles,
+    autopilotStatus,
+    autopilotSettings,
   ] = await Promise.all([
     prisma.monthlyAutopilotPlan.findFirst({
       where: {
@@ -235,6 +239,15 @@ export async function getAutopilotControlCenter(input: {
     }),
     prisma.article.count({
       where: { websiteId: website.id, deletedAt: null },
+    }),
+    getAutopilotStatusSnapshot({
+      currentUser: input.currentUser,
+      websiteId: website.id,
+    }),
+    getAutopilotSettings({
+      userId,
+      organizationId: input.currentUser.organizationId,
+      websiteId: website.id,
     }),
   ]);
 
@@ -536,5 +549,11 @@ export async function getAutopilotControlCenter(input: {
     recommendedActions,
     recentActivity,
     integrations,
+    autopilotStatus,
+    autopilotSettings: {
+      mode: autopilotModeToClient(autopilotSettings.mode),
+      websiteId: autopilotSettings.websiteId,
+      autopublishAvailable: autopilotSettings.autopublishAvailable,
+    },
   };
 }

@@ -1182,6 +1182,91 @@ export const saasDictionary: SaasDictionary = {
       "Looge plaan, et RankBoost korraldaks selle kuu SEO, sisu ja sotsiaalmeedia toimingud.",
     reviewNote:
       "See plaan on ette valmistatud ülevaatusrežiimis. Midagi ei avaldata automaatselt.",
+    loadPlanFailed:
+      "Autopiloodi plaani laadimine ebaõnnestus. Värskenda lehte.",
+    statusBlock: {
+      title: "Autopiloot",
+      approvalHint:
+        "Kinnita plaan üks kord — RankBoost täidab valitud tegevused graafiku järgi.",
+      currentMode: "Praegune režiim",
+      nextAction: "Järgmine tegevus",
+      noApprovedActions: "Kinnitatud tegevusi pole",
+      planApprovalStatus: "Plaani kinnitus",
+      openReviewQueue: "Ava ülevaate järjekord",
+      comingSoon: "Peagi",
+      modeChangeFailed: "Autopiloodi režiimi ei saanud uuendada.",
+      modeChangeNetworkError: "Võrguviga režiimi uuendamisel.",
+      modes: {
+        off: "Väljas",
+        review_first: "Esmalt ülevaatus",
+        approved_plan_autopilot: "Kinnitatud plaan",
+        autopublish: "Automaatne avaldamine",
+      },
+      planApprovalStatuses: {
+        none: "Plaani pole veel",
+        draft: "Mustand",
+        ready: "Kinnitamiseks valmis",
+        partial: "Osaliselt kinnitatud",
+        approved: "Kinnitatud",
+      },
+      blockedReasons: {
+        wordpressNotConnected: "WordPress pole ühendatud",
+        noApprovedItems: "Kinnitatud tegevusi pole",
+        planLimitReached: "Plaani limiit on täis",
+        needsReviewQueueApproval: "Vajab ülevaate järjekorra kinnitust",
+        gscNotConnected: "Google Search Console pole ühendatud",
+        planNotApproved: "Plaani pole veel kinnitatud",
+        autopilotOff: "Autopiloot on väljas",
+      },
+    },
+    planApproval: {
+      title: "Plaani kinnitamine",
+      subtitle:
+        "Vali graafikusse lisatavad punktid. Ilma turvaliste integratsioonideta midagi ei avaldata.",
+      periods: {
+        monthly: "Kuu",
+        weekly: "Nädal",
+      },
+      selectAll: "Vali kõik",
+      clearAll: "Tühjenda valik",
+      approveSelected: "Kinnita valitud plaan",
+      approveFailed: "Valitud plaani punkte ei saanud kinnitada.",
+      approveNetworkError: "Võrguviga plaani kinnitamisel.",
+      selectAtLeastOne: "Vali kinnitamiseks vähemalt üks punkt.",
+      emptyItems: "Plaani punkte pole veel. Genereeri või värskenda kuuplaani.",
+      riskLabel: "Risk",
+      integrationLabel: "Integratsioon",
+      integrationRequired: "Vajalik",
+      integrationNotRequired: "Pole vajalik",
+      scheduledLabel: "Graafikus",
+      openInReviewQueue: "Ava ülevaate järjekorras",
+      approveSuccess: (count: number) =>
+        `${count} punkt${count === 1 ? "" : "i"} kinnitatud ja graafikusse lisatud.`,
+      approvePartialSuccess: (approved: number, blocked: number) =>
+        `${approved} graafikus. ${blocked} blokeeritud (puudub integratsioon või ebaturvaline tegevus).`,
+      itemTypes: {
+        ARTICLE: "Artikkel",
+        SEO_FIX: "SEO parandus",
+        SOCIAL_POST: "Sotsiaal",
+        EMAIL: "E-post",
+        TASK_FIX: "Ülesande parandus",
+      },
+      itemStatuses: {
+        proposed: "Pakutud",
+        approved: "Kinnitatud",
+        scheduled: "Graafikus",
+        prepared: "Ette valmistatud",
+        published: "Avaldatud",
+        executed: "Täidetud",
+        skipped: "Vahele jäetud",
+        blocked: "Blokeeritud",
+      },
+      riskLevels: {
+        low: "Madal",
+        medium: "Keskmine",
+        high: "Kõrge",
+      },
+    },
     planContent: {
       monthlyGrowthPlanTitle: "Kuu kasvuplaan — {month}",
       summaryTeaser:

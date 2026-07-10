@@ -73,6 +73,7 @@ export type MonthlyAutopilotPlanViewModel = {
   updatedAt: string;
   approvedAt?: string;
   hermesSummaryUsed?: boolean;
+  planItems?: import("./plan-item-types").AutopilotPlanItemsDocument | null;
 };
 
 export type MonthlyAutopilotSourceSummary = {
@@ -93,4 +94,7 @@ export type MonthlyAutopilotGetResponse = {
   websiteUrl: string | null;
   sourceSummary: MonthlyAutopilotSourceSummary | null;
   hermesSummaryUnavailable?: boolean;
+  planItems?: import("./plan-item-types").AutopilotPlanItemsDocument | null;
+  autopilotStatus?: import("./autopilot-status").AutopilotStatusSnapshot;
+  autopilotSettings?: import("./autopilot-settings").AutopilotSettingsView;
 };

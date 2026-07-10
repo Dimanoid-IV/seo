@@ -990,6 +990,64 @@ export type SaasDictionary = {
     emptyNoPlanTitle: string;
     emptyNoPlanDescription: string;
     reviewNote: string;
+    loadPlanFailed: string;
+    statusBlock: {
+      title: string;
+      approvalHint: string;
+      currentMode: string;
+      nextAction: string;
+      noApprovedActions: string;
+      planApprovalStatus: string;
+      openReviewQueue: string;
+      comingSoon: string;
+      modeChangeFailed: string;
+      modeChangeNetworkError: string;
+      modes: {
+        off: string;
+        review_first: string;
+        approved_plan_autopilot: string;
+        autopublish: string;
+      };
+      planApprovalStatuses: {
+        none: string;
+        draft: string;
+        ready: string;
+        partial: string;
+        approved: string;
+      };
+      blockedReasons: {
+        wordpressNotConnected: string;
+        noApprovedItems: string;
+        planLimitReached: string;
+        needsReviewQueueApproval: string;
+        gscNotConnected: string;
+        planNotApproved: string;
+        autopilotOff: string;
+      };
+    };
+    planApproval: {
+      title: string;
+      subtitle: string;
+      periods: { monthly: string; weekly: string };
+      selectAll: string;
+      clearAll: string;
+      approveSelected: string;
+      approveFailed: string;
+      approveNetworkError: string;
+      selectAtLeastOne: string;
+      emptyItems: string;
+      riskLabel: string;
+      integrationLabel: string;
+      integrationRequired: string;
+      integrationNotRequired: string;
+      scheduledLabel: string;
+      openInReviewQueue: string;
+      approveSuccess: (count: number) => string;
+      approvePartialSuccess: (approved: number, blocked: number) => string;
+      itemTypes: Record<string, string>;
+      itemStatuses: Record<string, string>;
+      riskLevels: { low: string; medium: string; high: string };
+    };
     planContent: {
       monthlyGrowthPlanTitle: string;
       summaryTeaser: string;

@@ -26,6 +26,7 @@ import type {
   MonthlyAutopilotMetrics,
   MonthlyAutopilotPlanViewModel,
 } from "./types";
+import { buildPlanItemsFromSource, planItemsToJson } from "./plan-items";
 
 let actionCounter = 0;
 
@@ -607,6 +608,7 @@ export async function generateMonthlyAutopilotPlan(input: {
   });
 
   const payload = buildPlanPayload(sourceData, month);
+  const planItemsDoc = buildPlanItemsFromSource(sourceData, "monthly");
 
   const planData = {
     userId: input.userId,
@@ -623,6 +625,7 @@ export async function generateMonthlyAutopilotPlan(input: {
     socialPostIds: payload.relatedIds.socialPostIds,
     timelineEventIds: payload.relatedIds.timelineEventIds,
     recommendationsJson: payload.recommendedActions as Prisma.InputJsonValue,
+    planItemsJson: planItemsToJson(planItemsDoc),
     risksJson: payload.risks as Prisma.InputJsonValue,
     nextActionsJson: payload.nextSteps as Prisma.InputJsonValue,
     generatedBy: "system",

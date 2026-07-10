@@ -1179,6 +1179,91 @@ export const saasDictionary: SaasDictionary = {
       "Создайте план, чтобы RankBoost организовал SEO, контент и соцсети на этот месяц.",
     reviewNote:
       "Этот план подготовлен в режиме проверки. Ничего не публикуется автоматически.",
+    loadPlanFailed:
+      "Не удалось загрузить план автопилота. Попробуйте обновить страницу.",
+    statusBlock: {
+      title: "Автопилот",
+      approvalHint:
+        "Подтвердите план один раз — RankBoost будет выполнять выбранные действия по расписанию.",
+      currentMode: "Текущий режим",
+      nextAction: "Следующее действие",
+      noApprovedActions: "Нет одобренных действий",
+      planApprovalStatus: "Статус плана",
+      openReviewQueue: "Открыть очередь проверки",
+      comingSoon: "Скоро",
+      modeChangeFailed: "Не удалось обновить режим автопилота.",
+      modeChangeNetworkError: "Сетевая ошибка при обновлении режима.",
+      modes: {
+        off: "Выкл.",
+        review_first: "Режим проверки",
+        approved_plan_autopilot: "Одобренный план",
+        autopublish: "Публиковать автоматически",
+      },
+      planApprovalStatuses: {
+        none: "Плана пока нет",
+        draft: "Черновик",
+        ready: "Готов к одобрению",
+        partial: "Частично одобрен",
+        approved: "Одобрен",
+      },
+      blockedReasons: {
+        wordpressNotConnected: "WordPress не подключён",
+        noApprovedItems: "Нет одобренных действий",
+        planLimitReached: "Достигнут лимит плана",
+        needsReviewQueueApproval: "Нужно одобрение в очереди проверки",
+        gscNotConnected: "Google Search Console не подключён",
+        planNotApproved: "План ещё не одобрен",
+        autopilotOff: "Автопилот выключен",
+      },
+    },
+    planApproval: {
+      title: "Одобрение плана",
+      subtitle:
+        "Выберите пункты для расписания. Без безопасных интеграций публикация не выполняется.",
+      periods: {
+        monthly: "Месяц",
+        weekly: "Неделя",
+      },
+      selectAll: "Выбрать все",
+      clearAll: "Снять выбор",
+      approveSelected: "Одобрить выбранный план",
+      approveFailed: "Не удалось одобрить выбранные пункты плана.",
+      approveNetworkError: "Сетевая ошибка при одобрении плана.",
+      selectAtLeastOne: "Выберите хотя бы один пункт для одобрения.",
+      emptyItems: "Пунктов плана пока нет. Сгенерируйте или обновите месячный план.",
+      riskLabel: "Риск",
+      integrationLabel: "Интеграция",
+      integrationRequired: "Нужна",
+      integrationNotRequired: "Не нужна",
+      scheduledLabel: "По расписанию",
+      openInReviewQueue: "Открыть в очереди проверки",
+      approveSuccess: (count: number) =>
+        `Одобрено и запланировано: ${count} ${count === 1 ? "пункт" : count < 5 ? "пункта" : "пунктов"}.`,
+      approvePartialSuccess: (approved: number, blocked: number) =>
+        `${approved} запланировано. ${blocked} заблокировано (нет интеграции или небезопасное действие).`,
+      itemTypes: {
+        ARTICLE: "Статья",
+        SEO_FIX: "SEO-исправление",
+        SOCIAL_POST: "Соцсеть",
+        EMAIL: "Email",
+        TASK_FIX: "Исправление задачи",
+      },
+      itemStatuses: {
+        proposed: "Предложено",
+        approved: "Одобрено",
+        scheduled: "Запланировано",
+        prepared: "Подготовлено",
+        published: "Опубликовано",
+        executed: "Выполнено",
+        skipped: "Пропущено",
+        blocked: "Заблокировано",
+      },
+      riskLevels: {
+        low: "Низкий",
+        medium: "Средний",
+        high: "Высокий",
+      },
+    },
     planContent: {
       monthlyGrowthPlanTitle: "Месячный план роста — {month}",
       summaryTeaser:

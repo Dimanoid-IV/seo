@@ -8,6 +8,8 @@ import type {
   MonthlyAutopilotMetrics,
   MonthlyAutopilotPlanViewModel,
 } from "./types";
+import { parsePlanItemsDocument } from "./plan-items";
+import type { AutopilotPlanItemsDocument } from "./plan-item-types";
 
 function parseJsonArray<T>(value: unknown): T[] {
   if (!Array.isArray(value)) {
@@ -49,5 +51,12 @@ export function formatMonthlyAutopilotPlan(
     createdAt: plan.createdAt.toISOString(),
     updatedAt: plan.updatedAt.toISOString(),
     approvedAt: plan.approvedAt?.toISOString(),
+    planItems: parsePlanItemsDocument(plan.planItemsJson),
   };
+}
+
+export function extractPlanItemsFromRecord(
+  plan: Pick<MonthlyAutopilotPlan, "planItemsJson">
+): AutopilotPlanItemsDocument | null {
+  return parsePlanItemsDocument(plan.planItemsJson);
 }

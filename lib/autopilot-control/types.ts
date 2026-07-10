@@ -1,3 +1,5 @@
+import type { AutopilotStatusSnapshot } from "@/lib/autopilot/autopilot-status";
+
 export type ControlCenterOverallStatus =
   | "READY"
   | "NEEDS_REVIEW"
@@ -100,6 +102,12 @@ export type AutopilotControlCenterViewModel = {
   recommendedActions: ControlCenterRecommendedAction[];
   recentActivity: ControlCenterRecentActivity[];
   integrations: ControlCenterIntegration[];
+  autopilotStatus?: AutopilotStatusSnapshot;
+  autopilotSettings?: {
+    mode: string;
+    websiteId: string;
+    autopublishAvailable: boolean;
+  };
 };
 
 export type AutopilotControlCenterResponse = {

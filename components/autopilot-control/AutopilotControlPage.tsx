@@ -18,6 +18,7 @@ import { IntegrationStatusPanel } from "./IntegrationStatusPanel";
 import { MonthlyPlanPanel } from "./MonthlyPlanPanel";
 import { RecentActivityPanel } from "./RecentActivityPanel";
 import { RecommendedActionsPanel } from "./RecommendedActionsPanel";
+import { AutopilotStatusBlock } from "@/components/autopilot/AutopilotStatusBlock";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { PageLoadingState } from "@/components/shared/PageLoadingState";
 
@@ -215,6 +216,17 @@ export function AutopilotControlPage() {
       ) : null}
 
       <div className="saas-page-stack">
+        {data.autopilotStatus && data.autopilotSettings ? (
+          <AutopilotStatusBlock
+            status={data.autopilotStatus}
+            settingsMode={data.autopilotSettings.mode}
+            autopublishAvailable={data.autopilotSettings.autopublishAvailable}
+            websiteId={data.website.id}
+            onModeChange={() => void loadControlCenter()}
+            compact
+          />
+        ) : null}
+
         <ControlStatusHero
           status={data.status}
           hasWebsite

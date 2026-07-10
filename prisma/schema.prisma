@@ -307,6 +307,14 @@ enum MonthlyAutopilotStatus {
   ARCHIVED
 }
 
+/// Per-website autopilot execution mode (stored on WebsiteUserState).
+enum AutopilotMode {
+  OFF
+  REVIEW_FIRST
+  APPROVED_PLAN_AUTOPILOT
+  AUTOPUBLISH
+}
+
 enum EmailApprovalType {
   MONTHLY_PLAN_REVIEW
   CONTENT_REVIEW
@@ -978,6 +986,8 @@ model MonthlyAutopilotPlan {
   socialPostIds       String[]               @default([])
   timelineEventIds    String[]               @default([])
   recommendationsJson Json?
+  /// Typed AutopilotPlanItemsDocument — approvable items with schedule metadata.
+  planItemsJson       Json?
   risksJson           Json?
   nextActionsJson     Json?
   generatedBy         String?                @default("system")
@@ -1468,12 +1478,13 @@ model TimelineEvent {
 }
 
 model WebsiteUserState {
-  id                 String    @id @default(uuid()) @db.Uuid
-  userId             String    @db.Uuid
-  websiteId          String    @db.Uuid
+  id                 String        @id @default(uuid()) @db.Uuid
+  userId             String        @db.Uuid
+  websiteId          String        @db.Uuid
+  autopilotMode      AutopilotMode @default(REVIEW_FIRST)
   timelineLastSeenAt DateTime?
-  createdAt          DateTime  @default(now())
-  updatedAt          DateTime  @updatedAt
+  createdAt          DateTime      @default(now())
+  updatedAt          DateTime      @updatedAt
 
   user    User    @relation(fields: [userId], references: [id])
   website Website @relation(fields: [websiteId], references: [id])

@@ -17,8 +17,10 @@ import { AutopilotGenerateButton } from "./AutopilotGenerateButton";
 import { AutopilotMetricsGrid } from "./AutopilotMetricsGrid";
 import { AutopilotNextSteps } from "./AutopilotNextSteps";
 import { AutopilotRisksCard } from "./AutopilotRisksCard";
+import { AutopilotStatusBlock } from "./AutopilotStatusBlock";
 import { AutopilotSummaryCard } from "./AutopilotSummaryCard";
 import { FocusAreaCard } from "./FocusAreaCard";
+import { PlanApprovalPanel } from "./PlanApprovalPanel";
 import { RecommendedActionCard } from "./RecommendedActionCard";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { PageLoadingState } from "@/components/shared/PageLoadingState";
@@ -81,7 +83,7 @@ export function MonthlyAutopilotPage() {
 
       if (!response.ok) {
         setError(
-          await parseApiErrorMessage(response, a.loadFailed)
+          await parseApiErrorMessage(response, a.loadPlanFailed)
         );
         return;
       }
@@ -93,7 +95,7 @@ export function MonthlyAutopilotPage() {
     } finally {
       setLoading(false);
     }
-  }, [a.loadFailed, a.loadNetworkError]);
+  }, [a.loadPlanFailed, a.loadNetworkError]);
 
   useEffect(() => {
     let cancelled = false;
@@ -110,7 +112,7 @@ export function MonthlyAutopilotPage() {
         if (!response.ok) {
           if (!cancelled) {
             setError(
-              await parseApiErrorMessage(response, a.loadFailed)
+              await parseApiErrorMessage(response, a.loadPlanFailed)
             );
             setLoading(false);
           }
@@ -135,7 +137,7 @@ export function MonthlyAutopilotPage() {
     return () => {
       cancelled = true;
     };
-  }, [month, locale, a.loadFailed, a.loadNetworkError]);
+  }, [month, locale, a.loadPlanFailed, a.loadNetworkError]);
 
   const emptyVariant = useMemo(() => {
     if (!data?.websiteId) {
@@ -178,42 +180,13 @@ export function MonthlyAutopilotPage() {
         websiteId: prev?.websiteId ?? null,
         websiteUrl: prev?.websiteUrl ?? null,
         sourceSummary: prev?.sourceSummary ?? null,
+        planItems: body.data.plan?.planItems ?? prev?.planItems ?? null,
+        autopilotStatus: prev?.autopilotStatus,
+        autopilotSettings: prev?.autopilotSettings,
       }));
-    } catch {
-      setError(a.generateNetworkError);
-    } finally {
-      setGenerating(false);
-    }
-  }
-
-  async function handleApprove() {
-    if (!data?.plan) {
-      return;
-    }
-
-    setGenerating(true);
-    setError(null);
-
-    try {
-      const response = await authFetch(
-        `/api/autopilot/monthly/${data.plan.id}`,
-        {
-          method: "PATCH",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ status: "APPROVED" }),
-        }
-      );
-
-      if (!response.ok) {
-        setError(
-          await parseApiErrorMessage(response, a.approveFailed)
-        );
-        return;
-      }
-
       await loadPlan(month);
     } catch {
-      setError(a.approveNetworkError);
+      setError(a.generateNetworkError);
     } finally {
       setGenerating(false);
     }
@@ -308,20 +281,24 @@ export function MonthlyAutopilotPage() {
         </div>
       ) : data?.plan ? (
         <div className="space-y-8">
+          {data.autopilotStatus && data.autopilotSettings ? (
+            <AutopilotStatusBlock
+              status={data.autopilotStatus}
+              settingsMode={data.autopilotSettings.mode}
+              autopublishAvailable={data.autopilotSettings.autopublishAvailable}
+              websiteId={data.websiteId}
+              onModeChange={() => void loadPlan(month)}
+            />
+          ) : null}
+
           <AutopilotSummaryCard plan={data.plan} monthLabel={monthLabel} />
 
-          {data.plan.status !== "approved" ? (
-            <div className="flex flex-wrap gap-2">
-              <Button
-                type="button"
-                variant="outline"
-                disabled={generating}
-                onClick={() => void handleApprove()}
-                className="border-emerald-500/30 text-emerald-300 hover:bg-emerald-500/10"
-              >
-                {a.approvePlan}
-              </Button>
-            </div>
+          {data.planItems && data.planItems.items.length > 0 ? (
+            <PlanApprovalPanel
+              planId={data.plan.id}
+              planItems={data.planItems}
+              onApproved={() => void loadPlan(month)}
+            />
           ) : null}
 
           <AutopilotMetricsGrid metrics={data.plan.metrics} />
