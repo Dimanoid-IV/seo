@@ -9,14 +9,22 @@ import {
 
 const COOKIE_MAX_AGE = 60 * 60 * 24 * 365;
 
-export function readStoredLocale(): SaasLocale | null {
-  if (typeof window === "undefined") {
-    return null;
-  }
+const localeListeners = new Set<() => void>();
 
-  const fromStorage = window.localStorage.getItem(SAAS_LOCALE_STORAGE_KEY);
-  if (fromStorage && isSaasLocale(fromStorage)) {
-    return fromStorage;
+export function subscribeLocale(listener: () => void): () => void {
+  localeListeners.add(listener);
+  return () => {
+    localeListeners.delete(listener);
+  };
+}
+
+function notifyLocaleChange(): void {
+  localeListeners.forEach((listener) => listener());
+}
+
+function readLocaleFromDocumentCookie(): SaasLocale | null {
+  if (typeof document === "undefined") {
+    return null;
   }
 
   const cookieMatch = document.cookie
@@ -30,6 +38,38 @@ export function readStoredLocale(): SaasLocale | null {
   return null;
 }
 
+export function readStoredLocale(): SaasLocale | null {
+  if (typeof window === "undefined") {
+    return null;
+  }
+
+  const fromStorage = window.localStorage.getItem(SAAS_LOCALE_STORAGE_KEY);
+  if (fromStorage && isSaasLocale(fromStorage)) {
+    return fromStorage;
+  }
+
+  return readLocaleFromDocumentCookie();
+}
+
+/** Keeps the locale cookie aligned with localStorage for SSR on soft navigations. */
+export function syncLocaleCookieFromStorage(): void {
+  if (typeof window === "undefined") {
+    return;
+  }
+
+  const fromStorage = window.localStorage.getItem(SAAS_LOCALE_STORAGE_KEY);
+  if (!fromStorage || !isSaasLocale(fromStorage)) {
+    return;
+  }
+
+  const fromCookie = readLocaleFromDocumentCookie();
+  if (fromCookie === fromStorage) {
+    return;
+  }
+
+  document.cookie = `${SAAS_LOCALE_COOKIE}=${fromStorage}; path=/; max-age=${COOKIE_MAX_AGE}; SameSite=Lax`;
+}
+
 export function persistLocale(locale: SaasLocale): void {
   if (typeof window === "undefined") {
     return;
@@ -37,10 +77,16 @@ export function persistLocale(locale: SaasLocale): void {
 
   window.localStorage.setItem(SAAS_LOCALE_STORAGE_KEY, locale);
   document.cookie = `${SAAS_LOCALE_COOKIE}=${locale}; path=/; max-age=${COOKIE_MAX_AGE}; SameSite=Lax`;
+  notifyLocaleChange();
+}
+
+export function readClientLocaleSnapshot(): SaasLocale {
+  syncLocaleCookieFromStorage();
+  return readStoredLocale() ?? resolveBrowserLocale() ?? DEFAULT_SAAS_LOCALE;
 }
 
 export function resolveInitialLocale(): SaasLocale {
-  return readStoredLocale() ?? resolveBrowserLocale() ?? DEFAULT_SAAS_LOCALE;
+  return readClientLocaleSnapshot();
 }
 
 export function readLocaleFromCookieHeader(
@@ -61,4 +107,19 @@ export function readLocaleFromCookieHeader(
   }
 
   return DEFAULT_SAAS_LOCALE;
+}
+
+export function readLocaleFromCookieStore(
+  getCookie: (name: string) => { value: string } | undefined
+): SaasLocale {
+  const value = getCookie(SAAS_LOCALE_COOKIE)?.value;
+  if (value && isSaasLocale(value)) {
+    return value;
+  }
+
+  return DEFAULT_SAAS_LOCALE;
+}
+
+if (typeof window !== "undefined") {
+  syncLocaleCookieFromStorage();
 }

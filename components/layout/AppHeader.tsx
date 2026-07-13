@@ -29,7 +29,7 @@ function AppHeaderContent() {
   const headerTitle = overview?.website
     ? overview.website.displayName ?? formatWebsiteLabel(overview.website.url)
     : overviewLoading
-      ? "…"
+      ? dict.common.loading
       : "RankBoost";
 
   async function handleLogout() {

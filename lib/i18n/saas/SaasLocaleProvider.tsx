@@ -4,8 +4,9 @@ import {
   createContext,
   useCallback,
   useContext,
+  useEffect,
   useMemo,
-  useState,
+  useSyncExternalStore,
 } from "react";
 
 import {
@@ -13,8 +14,13 @@ import {
   type SaasDictionary,
   type SaasLocale,
 } from "@/lib/i18n/saas";
+import { DEFAULT_SAAS_LOCALE } from "@/lib/i18n/saas/locales";
 import { setClientLocale } from "@/lib/i18n/saas/locale-state";
-import { persistLocale, resolveInitialLocale } from "@/lib/i18n/saas/storage";
+import {
+  persistLocale,
+  readClientLocaleSnapshot,
+  subscribeLocale,
+} from "@/lib/i18n/saas/storage";
 
 type SaasLocaleContextValue = {
   locale: SaasLocale;
@@ -24,25 +30,24 @@ type SaasLocaleContextValue = {
 
 const SaasLocaleContext = createContext<SaasLocaleContextValue | null>(null);
 
-function useInitialLocale(): SaasLocale {
-  const [locale] = useState<SaasLocale>(() => {
-    const initial = resolveInitialLocale();
-    setClientLocale(initial);
-    return initial;
-  });
-  return locale;
-}
-
 export function SaasLocaleProvider({
   children,
+  initialLocale = DEFAULT_SAAS_LOCALE,
 }: {
   children: React.ReactNode;
+  initialLocale?: SaasLocale;
 }) {
-  const initialLocale = useInitialLocale();
-  const [locale, setLocaleState] = useState<SaasLocale>(initialLocale);
+  const locale = useSyncExternalStore(
+    subscribeLocale,
+    readClientLocaleSnapshot,
+    () => initialLocale
+  );
+
+  useEffect(() => {
+    setClientLocale(locale);
+  }, [locale]);
 
   const setLocale = useCallback((next: SaasLocale) => {
-    setLocaleState(next);
     setClientLocale(next);
     persistLocale(next);
   }, []);

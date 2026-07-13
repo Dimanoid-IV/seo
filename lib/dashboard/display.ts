@@ -63,11 +63,18 @@ export function severityToTaskPriority(severity: string): TaskPriority {
   return "low";
 }
 
-export function formatRelativeTime(isoDate: string): string {
+const RELATIVE_TIME_LOCALE = "ru-RU";
+
+export function formatRelativeTime(
+  isoDate: string,
+  nowMs: number = Date.now()
+): string {
   const date = new Date(isoDate);
-  const diffMs = date.getTime() - Date.now();
+  const diffMs = date.getTime() - nowMs;
   const diffMinutes = Math.round(diffMs / 60_000);
-  const rtf = new Intl.RelativeTimeFormat("ru", { numeric: "auto" });
+  const rtf = new Intl.RelativeTimeFormat(RELATIVE_TIME_LOCALE, {
+    numeric: "auto",
+  });
 
   if (Math.abs(diffMinutes) < 60) {
     return rtf.format(diffMinutes, "minute");
