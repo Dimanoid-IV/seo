@@ -42,6 +42,9 @@ export function friendlyApiErrorMessageForLocale(
     case "CHECKOUT_FAILED":
       return errors.checkoutFailed;
     case "HERMES_UNAVAILABLE":
+      if (rawMessage?.trim() && !looksTechnicalErrorMessage(rawMessage)) {
+        return rawMessage.trim();
+      }
       return errors.hermesUnavailable;
     case "PLAN_LIMIT_EXCEEDED":
       return errors.planLimitExceeded;

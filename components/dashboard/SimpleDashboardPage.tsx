@@ -100,13 +100,22 @@ export function SimpleDashboardPage() {
   }
 
   if (error || !simple) {
+    const hasExistingWork = Boolean(
+      overview?.website &&
+        (overview.tasks.length > 0 || overview.growthOpportunityCount > 0)
+    );
+
+    const message = error
+      ? error
+      : hasExistingWork
+        ? dict.dashboard.loadFailed
+        : isSimple
+          ? modeCopy.calmNoData
+          : dict.trust.pageErrorFallback;
+
     return (
       <PageErrorState
-        message={
-          isSimple
-            ? modeCopy.calmNoData
-            : error ?? dict.trust.pageErrorFallback
-        }
+        message={message}
         onRetry={() => void refetch()}
         retryLabel={dict.common.tryAgain}
       />

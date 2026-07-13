@@ -382,6 +382,10 @@ export async function getReviewQueue(
 export async function getReviewQueueCount(
   currentUser: CurrentUser
 ): Promise<number> {
-  const queue = await getReviewQueue(currentUser);
-  return queue.counts.total;
+  try {
+    const queue = await getReviewQueue(currentUser);
+    return queue.counts.total;
+  } catch {
+    return 0;
+  }
 }

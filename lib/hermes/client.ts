@@ -4,6 +4,7 @@ import { assertServerOnly } from "@/lib/security";
 
 import {
   canUseHermesStub,
+  getHermesAvailability,
   getHermesEnvConfig,
   isHermesConfigured,
 } from "./config";
@@ -42,14 +43,20 @@ export { isHermesConfigured } from "./config";
 function requireHermesConfig() {
   assertServerOnly();
   const config = getHermesEnvConfig();
+  const availability = getHermesAvailability();
 
-  if (!config.apiUrl || !config.apiSecret) {
-    throw new AppError(ErrorCode.HERMES_UNAVAILABLE, SAFE_HERMES_UNAVAILABLE);
+  if (!availability.generationConfigured) {
+    const message = !availability.hasApiUrl
+      ? "AI generation endpoint is not configured. Ask your administrator to set HERMES_API_URL."
+      : !availability.hasApiSecret
+        ? "AI generation credentials are not configured. Ask your administrator to set HERMES_API_SECRET."
+        : SAFE_HERMES_UNAVAILABLE;
+    throw new AppError(ErrorCode.HERMES_UNAVAILABLE, message);
   }
 
   return {
-    apiUrl: config.apiUrl,
-    apiSecret: config.apiSecret,
+    apiUrl: config.apiUrl!,
+    apiSecret: config.apiSecret!,
     timeoutMs: config.timeoutMs,
     maxRetries: config.maxRetries,
     model: config.model,

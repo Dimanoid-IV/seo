@@ -58,27 +58,35 @@ export async function getAutopilotSettings(input: {
 
   const prisma = getPrisma();
 
-  const state = await prisma.websiteUserState.upsert({
-    where: {
-      userId_websiteId: {
+  try {
+    const state = await prisma.websiteUserState.upsert({
+      where: {
+        userId_websiteId: {
+          userId: input.userId,
+          websiteId: website.id,
+        },
+      },
+      create: {
         userId: input.userId,
         websiteId: website.id,
+        autopilotMode: AutopilotMode.REVIEW_FIRST,
       },
-    },
-    create: {
-      userId: input.userId,
-      websiteId: website.id,
-      autopilotMode: AutopilotMode.REVIEW_FIRST,
-    },
-    update: {},
-    select: { autopilotMode: true },
-  });
+      update: {},
+      select: { autopilotMode: true },
+    });
 
-  return {
-    mode: state.autopilotMode,
-    websiteId: website.id,
-    autopublishAvailable: false,
-  };
+    return {
+      mode: state.autopilotMode,
+      websiteId: website.id,
+      autopublishAvailable: false,
+    };
+  } catch {
+    return {
+      mode: AutopilotMode.REVIEW_FIRST,
+      websiteId: website.id,
+      autopublishAvailable: false,
+    };
+  }
 }
 
 export async function updateAutopilotSettings(input: {

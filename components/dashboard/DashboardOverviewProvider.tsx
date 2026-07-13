@@ -48,10 +48,24 @@ async function fetchOverview(): Promise<{
     const response = await authFetch("/api/dashboard/overview");
 
     if (!response.ok) {
+      let apiMessage: string | null = null;
+      try {
+        const errorBody = (await response.json()) as {
+          error?: { message?: string };
+          message?: string;
+        };
+        apiMessage =
+          errorBody.error?.message?.trim() ||
+          errorBody.message?.trim() ||
+          null;
+      } catch {
+        apiMessage = null;
+      }
+
       return {
         overview: null,
         simple: null,
-        error: "loadFailed",
+        error: apiMessage ?? "loadFailed",
       };
     }
 
@@ -87,7 +101,9 @@ export function DashboardOverviewProvider({
   const error = errorKey
     ? errorKey === "loadNetworkError"
       ? dict.dashboard.loadNetworkError
-      : dict.dashboard.loadFailed
+      : errorKey === "loadFailed"
+        ? dict.dashboard.loadFailed
+        : errorKey
     : null;
 
   const refetch = useCallback(async (options?: RefetchOptions) => {

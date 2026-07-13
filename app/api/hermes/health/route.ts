@@ -1,18 +1,25 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from "next/server";
 
-export async function GET(req: NextRequest) {
+import { getHermesAvailability } from "@/lib/hermes/config";
+
+export async function GET() {
+  const availability = getHermesAvailability();
+
   return NextResponse.json({
-    service: 'Hermes Agent API',
-    version: '1.0.0',
+    service: "Hermes Agent API",
+    version: "1.0.0",
     endpoints: {
-      '/api/hermes': 'Chat with Hermes (POST)',
-      '/api/hermes/health': 'Health check (GET)',
+      "/api/hermes": "Chat with Hermes (POST)",
+      "/api/hermes/health": "Health check (GET)",
     },
-    environment: {
-      hasApiKey: !!process.env.HERMES_API_KEY,
-      hasApiSecret: !!process.env.HERMES_API_SECRET,
-      apiUrl: process.env.HERMES_API_URL || 'not set',
-      nodeEnv: process.env.NODE_ENV,
+    generation: {
+      configured: availability.generationConfigured,
+      hasApiUrl: availability.hasApiUrl,
+      hasApiSecret: availability.hasApiSecret,
     },
+    chat: {
+      hasApiKey: availability.hasApiKey,
+    },
+    nodeEnv: process.env.NODE_ENV ?? "unknown",
   });
 }

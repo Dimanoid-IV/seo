@@ -56,6 +56,26 @@ export function isHermesConfigured(): boolean {
   return Boolean(apiUrl && apiSecret);
 }
 
+export type HermesAvailability = {
+  generationConfigured: boolean;
+  hasApiUrl: boolean;
+  hasApiSecret: boolean;
+  hasApiKey: boolean;
+};
+
+/** Presence-only Hermes env flags shared by health checks and generation gates. */
+export function getHermesAvailability(): HermesAvailability {
+  assertServerOnly();
+  const { apiUrl, apiSecret } = getHermesEnvConfig();
+
+  return {
+    generationConfigured: Boolean(apiUrl && apiSecret),
+    hasApiUrl: Boolean(apiUrl),
+    hasApiSecret: Boolean(apiSecret),
+    hasApiKey: Boolean(process.env.HERMES_API_KEY?.trim()),
+  };
+}
+
 /**
  * Dev-only stub gate. Never active in production.
  * Requires HERMES_STUB_ENABLED=1 and NODE_ENV development|test.

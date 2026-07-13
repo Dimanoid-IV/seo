@@ -802,7 +802,7 @@ export const saasDictionary: SaasDictionary = {
     openTask: "Open",
     details: "Details",
     markDone: "Mark as done",
-    markInProgress: "In progress",
+    markInProgress: "Mark as in progress",
     skipTask: "Skip",
     updateFailed: "Could not update this task. Please try again.",
     taskNotFound: "Task not found",

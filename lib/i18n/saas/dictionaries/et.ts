@@ -807,7 +807,7 @@ export const saasDictionary: SaasDictionary = {
     openTask: "Ava",
     details: "Detailid",
     markDone: "Märgi tehtuks",
-    markInProgress: "Töös",
+    markInProgress: "Märgi töös",
     skipTask: "Jäta vahele",
     updateFailed: "Ülesande uuendamine ebaõnnestus. Proovi uuesti.",
     taskNotFound: "Ülesannet ei leitud",
