@@ -6,14 +6,19 @@ import { getPrisma } from "@/lib/db";
 import { AppError, ErrorCode } from "@/lib/errors";
 import { resolveWebsiteForAutopilot } from "@/lib/autopilot/resolve-website";
 import {
-  parsePlanItemsDocument,
   planItemsToJson,
+  resolvePlanItemsDocumentFromPlan,
 } from "@/lib/autopilot/plan-items";
 import { parseContentResearchBrief } from "@/lib/content-research/parse";
 import {
   generateArticleFromResearchBrief,
   type GenerateArticleFromResearchResult,
 } from "@/lib/articles/generate-from-research";
+import {
+  isWordPressConnectedForWebsite,
+  serializeArticleRecord,
+} from "@/lib/articles/article-serialize";
+import { RESEARCH_QUALITY_PASS_THRESHOLD } from "@/lib/articles/research-generation-types";
 
 export type GeneratePlanArticleDraftResult = GenerateArticleFromResearchResult & {
   planItem: {
@@ -61,9 +66,13 @@ export async function generatePlanItemArticleDraft(input: {
     throw new AppError(ErrorCode.FORBIDDEN, "Plan access denied.");
   }
 
-  const document = plan.planItemsJson
-    ? parsePlanItemsDocument(plan.planItemsJson)
-    : null;
+  const document = resolvePlanItemsDocumentFromPlan({
+    planItemsJson: plan.planItemsJson,
+    recommendationsJson: plan.recommendationsJson,
+    taskIds: plan.taskIds,
+    articleIds: plan.articleIds,
+    socialPostIds: plan.socialPostIds,
+  });
 
   if (!document) {
     throw new AppError(ErrorCode.NOT_FOUND, "Plan items not found.");
@@ -110,6 +119,52 @@ export async function generatePlanItemArticleDraft(input: {
       ErrorCode.VALIDATION_ERROR,
       "This plan item cannot generate a draft in its current status."
     );
+  }
+
+  if (item.generatedArticleId) {
+    const existingArticle = await prisma.article.findFirst({
+      where: {
+        id: item.generatedArticleId,
+        websiteId: plan.websiteId,
+        organizationId: plan.organizationId,
+        deletedAt: null,
+      },
+    });
+
+    if (existingArticle) {
+      const wordpressConnected = await isWordPressConnectedForWebsite(
+        plan.websiteId
+      );
+      const reviewQueueHref = `/app/review`;
+      const serialized = serializeArticleRecord(
+        existingArticle,
+        wordpressConnected
+      );
+
+      return {
+        article: serialized,
+        qualityReport: {
+          score: existingArticle.qualityScore ?? item.articleQualityScore ?? 0,
+          passed:
+            existingArticle.qualityPassed ?? item.articleQualityPassed ?? false,
+          checks: [],
+          revisionNotes: [],
+          validatedAt: existingArticle.updatedAt.toISOString(),
+          threshold: RESEARCH_QUALITY_PASS_THRESHOLD,
+        },
+        planItemId: item.id,
+        planItem: {
+          id: item.id,
+          status: item.status,
+          generatedArticleId: existingArticle.id,
+          articleQualityScore:
+            existingArticle.qualityScore ?? item.articleQualityScore ?? 0,
+          articleQualityPassed:
+            existingArticle.qualityPassed ?? item.articleQualityPassed ?? false,
+          reviewQueueHref,
+        },
+      };
+    }
   }
 
   const result = await generateArticleFromResearchBrief({

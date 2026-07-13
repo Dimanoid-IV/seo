@@ -22,6 +22,8 @@ import { timelineAfterAutopilotPlanItemExecuted } from "./hooks";
 import {
   parsePlanItemsDocument,
   planItemsToJson,
+  repairApprovedPlanItemsDocument,
+  resolvePlanItemsDocumentFromPlan,
 } from "./plan-items";
 import type { AutopilotPlanItem } from "./plan-item-types";
 import { getAutopilotSettings } from "./autopilot-settings";
@@ -145,12 +147,30 @@ export async function runScheduledAutopilotPlans(input: {
   report.plansScanned = plans.length;
 
   for (const plan of plans) {
-    const document = plan.planItemsJson
-      ? parsePlanItemsDocument(plan.planItemsJson)
-      : null;
+    let document = resolvePlanItemsDocumentFromPlan(plan);
 
     if (!document?.items.length) {
       continue;
+    }
+
+    const hadPersistedItems = Boolean(
+      plan.planItemsJson && parsePlanItemsDocument(plan.planItemsJson)?.items.length
+    );
+
+    if (!hadPersistedItems && plan.status === MonthlyAutopilotStatus.APPROVED) {
+      document = repairApprovedPlanItemsDocument({
+        document,
+        planStatus: plan.status,
+        approvedAt: plan.approvedAt,
+        wordpressConnected,
+      });
+
+      if (!dryRun) {
+        await prisma.monthlyAutopilotPlan.update({
+          where: { id: plan.id },
+          data: { planItemsJson: planItemsToJson(document) },
+        });
+      }
     }
 
     const dueItems = findDuePlanItems(document.items, now);

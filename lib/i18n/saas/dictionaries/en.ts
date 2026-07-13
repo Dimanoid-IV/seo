@@ -1238,8 +1238,8 @@ export const saasDictionary: SaasDictionary = {
       runDueNowSuccess: (executed: number, skipped: number) =>
         `Processed ${executed} item${executed === 1 ? "" : "s"}. ${skipped} skipped.`,
       dryRunLabel: "Preview due items",
-      dryRunSuccess: (due: number) =>
-        `${due} due item${due === 1 ? "" : "s"} ready (preview only, nothing executed).`,
+      dryRunSuccess: (eligible: number, skipped: number, blocked: number) =>
+        `${eligible} item${eligible === 1 ? "" : "s"} would run, ${skipped} skipped, ${blocked} blocked (preview only).`,
       dueItemsCount: (count: number) =>
         `${count} item${count === 1 ? "" : "s"} due now`,
     },

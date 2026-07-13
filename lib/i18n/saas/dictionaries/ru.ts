@@ -1241,8 +1241,8 @@ export const saasDictionary: SaasDictionary = {
       runDueNowSuccess: (executed: number, skipped: number) =>
         `Обработано: ${executed}. Пропущено: ${skipped}.`,
       dryRunLabel: "Предпросмотр просроченных",
-      dryRunSuccess: (due: number) =>
-        `${due} просроченных пунктов (только предпросмотр, без выполнения).`,
+      dryRunSuccess: (eligible: number, skipped: number, blocked: number) =>
+        `${eligible} пункт${eligible === 1 ? "" : eligible < 5 ? "а" : "ов"} будет выполнено, ${skipped} пропущено, ${blocked} заблокировано (только предпросмотр).`,
       dueItemsCount: (count: number) =>
         `${count} пункт${count === 1 ? "" : count < 5 ? "а" : "ов"} пора выполнить`,
     },

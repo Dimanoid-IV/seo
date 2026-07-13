@@ -136,11 +136,18 @@ export function AutopilotStatusBlock({
           dueItemsFound: number;
           executedCount: number;
           skippedCount: number;
+          blockedCount: number;
         };
       };
 
       if (body.data.dryRun) {
-        setRunMessage(t.dryRunSuccess(body.data.dueItemsFound));
+        setRunMessage(
+          t.dryRunSuccess(
+            body.data.executedCount,
+            body.data.skippedCount,
+            body.data.blockedCount
+          )
+        );
       } else {
         setRunMessage(
           t.runDueNowSuccess(body.data.executedCount, body.data.skippedCount)

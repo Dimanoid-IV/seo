@@ -1046,7 +1046,7 @@ export type SaasDictionary = {
       runDueNowNetworkError: string;
       runDueNowSuccess: (executed: number, skipped: number) => string;
       dryRunLabel: string;
-      dryRunSuccess: (due: number) => string;
+      dryRunSuccess: (eligible: number, skipped: number, blocked: number) => string;
       dueItemsCount: (count: number) => string;
     };
     planApproval: {

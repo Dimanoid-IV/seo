@@ -25,6 +25,7 @@ export type ExecutionReasonKey =
   | "articleQualityFailed"
   | "waitingForReviewApproval"
   | "articleNotApproved"
+  | "readyForWordPressDraft"
   | "wordpressNotConnected"
   | "wordpressDraftAlreadyCreated"
   | "nonArticleNoop"
@@ -220,7 +221,7 @@ export function resolvePlanItemExecutionEligibility(
   }
 
   if (isArticleDraftOnly(article.status)) {
-    return skip("articleNotApproved", "qualityFailed");
+    return skip("articleNotApproved", "articleNotApproved");
   }
 
   if (article.wordpressPostId || article.status === ArticleStatus.WORDPRESS_DRAFT_CREATED) {
@@ -250,7 +251,7 @@ export function resolvePlanItemExecutionEligibility(
 
   return eligibleAction(
     "PUBLISH_APPROVED_ARTICLE",
-    "articleNotApproved",
+    "readyForWordPressDraft",
     "wordpressDraftCreated",
     "executed"
   );

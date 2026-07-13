@@ -13,7 +13,7 @@ import { formatMonthlyAutopilotPlan } from "./format";
 import {
   buildPlanItemsFromRecommendedActions,
   enrichPlanItemsFromEntities,
-  parsePlanItemsDocument,
+  resolvePlanItemsDocumentFromPlan,
 } from "./plan-items";
 import { currentMonthKey, normalizeMonthKey } from "./month-utils";
 import { resolveWebsiteForAutopilot } from "./resolve-website";
@@ -80,9 +80,13 @@ export async function getMonthlyAutopilotPlan(input: {
     const formattedPlan =
       plan && !plan.archivedAt ? formatMonthlyAutopilotPlan(plan) : null;
 
-    let planItems = plan?.planItemsJson
-      ? parsePlanItemsDocument(plan.planItemsJson)
-      : null;
+    let planItems = resolvePlanItemsDocumentFromPlan({
+      planItemsJson: plan?.planItemsJson,
+      recommendationsJson: plan?.recommendationsJson,
+      taskIds: plan?.taskIds ?? [],
+      articleIds: plan?.articleIds ?? [],
+      socialPostIds: plan?.socialPostIds ?? [],
+    });
 
     if (!planItems && formattedPlan && formattedPlan.recommendedActions.length > 0) {
       planItems = buildPlanItemsFromRecommendedActions({

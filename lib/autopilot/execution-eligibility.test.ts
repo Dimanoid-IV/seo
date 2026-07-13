@@ -25,7 +25,7 @@ function baseArticleItem(
     needsIntegration: true,
     integrationType: "wordpress",
     status: "scheduled",
-    scheduledFor: new Date(Date.now() - 60_000).toISOString(),
+    scheduledFor: "2026-07-11T11:00:00.000Z",
     researchBrief: { version: 1 },
     ...overrides,
   };
@@ -132,7 +132,7 @@ function runExecutionEligibilityChecks(): void {
       baseArticleItem(),
       baseArticleItem({
         id: "future",
-        scheduledFor: new Date(Date.now() + 86_400_000).toISOString(),
+        scheduledFor: "2026-07-15T10:00:00.000Z",
       }),
     ],
     now

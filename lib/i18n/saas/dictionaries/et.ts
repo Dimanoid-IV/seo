@@ -1244,8 +1244,8 @@ export const saasDictionary: SaasDictionary = {
       runDueNowSuccess: (executed: number, skipped: number) =>
         `Töödeldud: ${executed}. Vahele jäetud: ${skipped}.`,
       dryRunLabel: "Eelvaade tähtaja saanud punktidest",
-      dryRunSuccess: (due: number) =>
-        `${due} tähtaja saanud punkti (ainult eelvaade, midagi ei käivitatud).`,
+      dryRunSuccess: (eligible: number, skipped: number, blocked: number) =>
+        `${eligible} punkti käivitataks, ${skipped} vahele jäetud, ${blocked} blokeeritud (ainult eelvaade).`,
       dueItemsCount: (count: number) =>
         `${count} punkt${count === 1 ? "" : "i"} on tähtaja saabunud`,
     },

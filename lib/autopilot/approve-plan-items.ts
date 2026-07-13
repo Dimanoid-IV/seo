@@ -13,12 +13,11 @@ import { AppError, ErrorCode } from "@/lib/errors";
 
 import { timelineAfterMonthlyAutopilotPlanApproved } from "./hooks";
 import {
-  buildPlanItemsFromRecommendedActions,
   enrichPlanItemsFromEntities,
   parsePlanItemsDocument,
   planItemsToJson,
+  resolvePlanItemsDocumentFromPlan,
 } from "./plan-items";
-import type { AutopilotRecommendedAction } from "./types";
 import type { AutopilotPlanPeriod } from "./plan-item-types";
 import { findAutopilotPlanForUser } from "./resolve-website";
 import { assignEveryOtherDaySlots } from "./scheduling";
@@ -66,27 +65,13 @@ export async function approveSelectedPlanItems(input: {
     wpConnection?.status === WordPressConnectionStatus.CONNECTED;
   const gscConnected = gscIntegration?.status === IntegrationStatus.CONNECTED;
 
-  let document = existing.planItemsJson
-    ? parsePlanItemsDocument(existing.planItemsJson)
-    : null;
-
-  if (!document || document.items.length === 0) {
-    const recommendedActions = Array.isArray(existing.recommendationsJson)
-      ? (existing.recommendationsJson as AutopilotRecommendedAction[])
-      : [];
-    if (recommendedActions.length === 0) {
-      throw new AppError(
-        ErrorCode.VALIDATION_ERROR,
-        "This plan has no approvable items yet. Regenerate the plan first."
-      );
-    }
-    document = buildPlanItemsFromRecommendedActions({
-      recommendedActions,
-      taskIds: existing.taskIds,
-      articleIds: existing.articleIds,
-      socialPostIds: existing.socialPostIds,
-    });
-  }
+  let document = resolvePlanItemsDocumentFromPlan({
+    planItemsJson: existing.planItemsJson,
+    recommendationsJson: existing.recommendationsJson,
+    taskIds: existing.taskIds,
+    articleIds: existing.articleIds,
+    socialPostIds: existing.socialPostIds,
+  });
 
   if (!document || document.items.length === 0) {
     throw new AppError(

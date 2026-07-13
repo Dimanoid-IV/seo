@@ -1,10 +1,12 @@
 import "server-only";
 
-import type { Prisma } from "@prisma/client";
+import type { MonthlyAutopilotStatus, Prisma } from "@prisma/client";
 
 import { parsePreparedFix } from "@/lib/tasks/prepared-fix";
 
 import type { MonthlyAutopilotSourceData } from "./source-data";
+import { assignEveryOtherDaySlots } from "./scheduling";
+import type { AutopilotRecommendedAction } from "./types";
 import {
   AUTOPILOT_PLAN_ITEMS_VERSION,
   type AutopilotPlanItem,
@@ -79,7 +81,7 @@ export function buildPlanItemsFromRecommendedActions(input: {
     }
 
     items.push({
-      id: nextItemId(),
+      id: action.id ? `plan-item-${action.id}` : nextItemId(),
       type,
       title: action.title,
       reason: action.description,
@@ -433,6 +435,89 @@ export function countPlanItemsByStatus(
   }
 
   return counts;
+}
+
+export function resolvePlanItemsDocumentFromPlan(input: {
+  planItemsJson: unknown;
+  recommendationsJson: unknown;
+  taskIds: string[];
+  articleIds: string[];
+  socialPostIds: string[];
+}): AutopilotPlanItemsDocument | null {
+  const existing = input.planItemsJson
+    ? parsePlanItemsDocument(input.planItemsJson)
+    : null;
+
+  if (existing?.items.length) {
+    return existing;
+  }
+
+  const recommendedActions = Array.isArray(input.recommendationsJson)
+    ? (input.recommendationsJson as AutopilotRecommendedAction[])
+    : [];
+
+  if (recommendedActions.length === 0) {
+    return null;
+  }
+
+  return buildPlanItemsFromRecommendedActions({
+    recommendedActions,
+    taskIds: input.taskIds,
+    articleIds: input.articleIds,
+    socialPostIds: input.socialPostIds,
+  });
+}
+
+/** Backfills scheduled states for legacy APPROVED plans that never persisted planItemsJson. */
+export function repairApprovedPlanItemsDocument(input: {
+  document: AutopilotPlanItemsDocument;
+  planStatus: MonthlyAutopilotStatus;
+  approvedAt: Date | null;
+  wordpressConnected: boolean;
+}): AutopilotPlanItemsDocument {
+  if (input.planStatus !== "APPROVED") {
+    return input.document;
+  }
+
+  const hasScheduled = input.document.items.some((item) =>
+    ["scheduled", "prepared", "executed", "published"].includes(item.status)
+  );
+
+  if (hasScheduled) {
+    return input.document;
+  }
+
+  let items = input.document.items.map((item) => {
+    if (item.status !== "proposed") {
+      return item;
+    }
+
+    if (item.type === "ARTICLE" && !input.wordpressConnected) {
+      return {
+        ...item,
+        status: "blocked" as const,
+        blockedReasonKey: "wordpressNotConnected" as const,
+      };
+    }
+
+    return { ...item, status: "approved" as const };
+  });
+
+  const approvedIds = new Set(
+    items.filter((item) => item.status === "approved").map((item) => item.id)
+  );
+
+  items = assignEveryOtherDaySlots({
+    items,
+    approvedItemIds: approvedIds,
+    now: input.approvedAt ?? new Date(),
+  });
+
+  return {
+    ...input.document,
+    items,
+    itemsApprovedAt: input.approvedAt?.toISOString(),
+  };
 }
 
 export function findNextScheduledItem(
