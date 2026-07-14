@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import {
   __contentResearchKeywordInternals,
   extractKeywordCandidates,
+  isUnsafeArticleTopic,
   pickPrimaryKeyword,
 } from "./keywords";
 
@@ -18,6 +19,14 @@ assert.equal(
 );
 assert.equal(isAuditSymptomPhrase("Page has too little text"), true);
 assert.equal(isAuditSymptomPhrase("Missing meta description"), true);
+assert.equal(
+  isUnsafeArticleTopic("На странице слишком мало текста для продвижения"),
+  true
+);
+assert.equal(
+  isUnsafeArticleTopic("SEO audit Tallinn for small businesses"),
+  false
+);
 
 const auditOnlyCandidates = extractKeywordCandidates({
   planItemTitle: "На странице слишком мало текста для продвижения",

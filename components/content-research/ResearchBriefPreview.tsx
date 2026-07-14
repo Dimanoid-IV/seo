@@ -129,8 +129,16 @@ export function ResearchBriefPreview({
         </div>
       </dl>
 
+      {statusKey === "blocked" ? (
+        <p className="mt-2 text-xs leading-relaxed text-red-800">
+          {parsed.blockedReason ?? t.blockedHint}
+        </p>
+      ) : null}
+
       {!compact ? (
-        <p className="mt-2 text-[10px] leading-relaxed text-slate-500">{t.hint}</p>
+        <p className="mt-2 text-[10px] leading-relaxed text-slate-500">
+          {statusKey === "blocked" ? t.blockedPageFixHint : t.hint}
+        </p>
       ) : null}
 
       {error ? <p className="mt-1.5 text-xs text-red-600">{error}</p> : null}

@@ -859,6 +859,8 @@ export const saasDictionary: SaasDictionary = {
       simpleHints: {
         manualOnly: "Выполните эту задачу вручную на сайте.",
         rankBoostCanPrepare: "RankBoost может подготовить это за вас.",
+        pageContentFix:
+          "Это задача улучшения страницы — RankBoost предложит правки на странице, а не отдельную статью.",
         needsApproval: "Нужно ваше одобрение перед публикацией.",
         connectWordPress: "Подключите WordPress для автоматической публикации.",
         connectGsc: "Подключите Google Search Console для данных поиска.",
@@ -888,6 +890,8 @@ export const saasDictionary: SaasDictionary = {
         "Hermes временно недоступен, поэтому мы подготовили базовый вариант. Его можно отредактировать перед одобрением.",
       regenerateFix: "Перегенерировать",
       existingFixTitle: "Подготовленное исправление ждёт проверки",
+      pageContentFixHint:
+        "Улучшите существующую страницу: блоки текста, FAQ и CTA — без отдельной статьи в блоге.",
     },
   },
   reviewPage: {
@@ -1226,6 +1230,7 @@ export const saasDictionary: SaasDictionary = {
         planNotApproved: "План ещё не одобрен",
         autopilotOff: "Автопилот выключен",
         articleNeedsRevision: "Черновик статьи требует доработки перед публикацией",
+        researchBriefBlocked: "Нужен бизнес-ключ — симптом аудита не является темой статьи",
       },
       dueNow: "Пора выполнить",
       nextScheduled: "Следующее по расписанию",
@@ -1233,6 +1238,7 @@ export const saasDictionary: SaasDictionary = {
       qualityFailed: "Статья не прошла проверку качества",
       wordpressRequired: "Требуется подключение WordPress",
       draftWillBePrepared: "Автопилот подготовит черновик для проверки",
+      researchBriefBlocked: "Исследование заблокировано — добавьте ключевое слово",
       wordpressDraftCreated: "Черновик WordPress создан — проверьте перед публикацией",
       publishedExecuted: "Пункт плана выполнен",
       runDueNow: "Запустить просроченные пункты",
@@ -1300,6 +1306,8 @@ export const saasDictionary: SaasDictionary = {
       generateDraftFailed: "Не удалось создать черновик статьи",
       generateDraftNetworkError: "Сетевая ошибка при создании черновика",
       researchBriefMissing: "Исследование отсутствует",
+      researchBriefBlocked:
+        "Генерация статьи заблокирована — сначала добавьте ключевое слово или контент-возможность.",
       articleGeneratedSuccess: "Статья создана и добавлена на проверку",
       articleGeneratedNeedsRevision:
         "Черновик создан, но требует доработки перед проверкой",
@@ -1563,6 +1571,9 @@ export const saasDictionary: SaasDictionary = {
     competitors: "Конкуренты",
     competitorsUnavailable: "Недостаточно данных о конкурентах",
     hint: "RankBoost использует задачи, аудит и Search Console, чтобы подготовить статью перед генерацией.",
+    blockedHint: "Не найдено подходящего бизнес-ключевого слова для этой задачи.",
+    blockedPageFixHint:
+      "Симптомы аудита описывают правку страницы, а не тему статьи. Добавьте ключевое слово или используйте «Подготовить исправление».",
     refresh: "Обновить исследование",
     refreshFailed: "Не удалось обновить исследование.",
     refreshNetworkError: "Сетевая ошибка при обновлении исследования.",

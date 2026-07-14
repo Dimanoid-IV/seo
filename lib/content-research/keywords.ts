@@ -209,7 +209,25 @@ export function extractKeywordCandidates(
 export const __contentResearchKeywordInternals = {
   isAuditSymptomPhrase,
   isTechnicalInstructionPhrase,
+  isUnsafeAutopilotKeyword,
 };
+
+/** Audit symptom or technical instruction — not a valid article topic/keyword. */
+export function isUnsafeArticleTopic(value: string): boolean {
+  return isUnsafeAutopilotKeyword(value);
+}
+
+/** Audit codes that describe on-page content gaps, not standalone article topics. */
+export function isPageContentFixAuditCode(code: string | null | undefined): boolean {
+  if (!code?.trim()) {
+    return false;
+  }
+
+  const normalized = code.trim().toLowerCase();
+  return (
+    normalized.startsWith("word_count") || normalized.includes("thin_content")
+  );
+}
 
 export function pickPrimaryKeyword(candidates: KeywordCandidate[]): KeywordCandidate | null {
   if (candidates.length === 0) {

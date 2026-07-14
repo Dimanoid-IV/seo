@@ -857,6 +857,8 @@ export const saasDictionary: SaasDictionary = {
       simpleHints: {
         manualOnly: "Complete this task manually on your website.",
         rankBoostCanPrepare: "RankBoost can prepare this for you.",
+        pageContentFix:
+          "This is a page improvement task — RankBoost will suggest on-page content, not a new article.",
         needsApproval: "Needs your approval before anything goes live.",
         connectWordPress: "Connect WordPress to publish automatically.",
         connectGsc: "Connect Google Search Console to unlock search data.",
@@ -885,6 +887,8 @@ export const saasDictionary: SaasDictionary = {
         "Hermes is temporarily unavailable. We prepared a basic version that you can edit.",
       regenerateFix: "Regenerate",
       existingFixTitle: "Prepared fix ready for review",
+      pageContentFixHint:
+        "Improve the existing page with suggested blocks, FAQ, and CTA — not a separate blog article.",
     },
   },
   reviewPage: {
@@ -1223,6 +1227,7 @@ export const saasDictionary: SaasDictionary = {
         planNotApproved: "Plan not approved yet",
         autopilotOff: "Autopilot is off",
         articleNeedsRevision: "Article draft needs revision before publishing",
+        researchBriefBlocked: "Need a business keyword — audit issue is not an article topic",
       },
       dueNow: "Due now",
       nextScheduled: "Next scheduled",
@@ -1230,6 +1235,7 @@ export const saasDictionary: SaasDictionary = {
       qualityFailed: "Article did not pass quality gates",
       wordpressRequired: "WordPress connection required",
       draftWillBePrepared: "Autopilot will prepare a draft for review",
+      researchBriefBlocked: "Research blocked — add a content opportunity keyword",
       wordpressDraftCreated: "WordPress draft created — review before publishing",
       publishedExecuted: "Plan item completed",
       runDueNow: "Run due items now",
@@ -1296,6 +1302,8 @@ export const saasDictionary: SaasDictionary = {
       generateDraftFailed: "Could not generate article draft",
       generateDraftNetworkError: "Network error while generating article draft",
       researchBriefMissing: "Research brief missing",
+      researchBriefBlocked:
+        "Article generation blocked — add a business keyword or content opportunity first.",
       articleGeneratedSuccess: "Article generated and added to review",
       articleGeneratedNeedsRevision:
         "Article draft created but needs revision before review",
@@ -1559,6 +1567,9 @@ export const saasDictionary: SaasDictionary = {
     competitors: "Competitors",
     competitorsUnavailable: "Insufficient competitor data",
     hint: "RankBoost uses tasks, audit, and Search Console to prepare an article before generation.",
+    blockedHint: "No valid business keyword found for this item.",
+    blockedPageFixHint:
+      "Audit symptoms describe a page fix, not an article topic. Add a keyword or use a task fix instead.",
     refresh: "Refresh research",
     refreshFailed: "Could not refresh research brief.",
     refreshNetworkError: "Network error while refreshing research.",

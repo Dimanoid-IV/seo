@@ -697,6 +697,7 @@ export type SaasDictionary = {
       simpleHints: {
         manualOnly: string;
         rankBoostCanPrepare: string;
+        pageContentFix: string;
         needsApproval: string;
         connectWordPress: string;
         connectGsc: string;
@@ -723,6 +724,7 @@ export type SaasDictionary = {
       hermesFallbackWarning: string;
       regenerateFix: string;
       existingFixTitle: string;
+      pageContentFixHint: string;
     };
   };
   reviewPage: {
@@ -1032,6 +1034,7 @@ export type SaasDictionary = {
         planNotApproved: string;
         autopilotOff: string;
         articleNeedsRevision: string;
+        researchBriefBlocked: string;
       };
       dueNow: string;
       nextScheduled: string;
@@ -1039,6 +1042,7 @@ export type SaasDictionary = {
       qualityFailed: string;
       wordpressRequired: string;
       draftWillBePrepared: string;
+      researchBriefBlocked: string;
       wordpressDraftCreated: string;
       publishedExecuted: string;
       runDueNow: string;
@@ -1078,6 +1082,7 @@ export type SaasDictionary = {
       generateDraftFailed: string;
       generateDraftNetworkError: string;
       researchBriefMissing: string;
+      researchBriefBlocked: string;
       articleGeneratedSuccess: string;
       articleGeneratedNeedsRevision: string;
       openArticleDraft: string;
@@ -1252,6 +1257,8 @@ export type SaasDictionary = {
     competitors: string;
     competitorsUnavailable: string;
     hint: string;
+    blockedHint: string;
+    blockedPageFixHint: string;
     refresh: string;
     refreshFailed: string;
     refreshNetworkError: string;

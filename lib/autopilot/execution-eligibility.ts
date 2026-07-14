@@ -1,5 +1,7 @@
 import { ArticleStatus, AutopilotMode } from "@prisma/client";
 
+import { isResearchBriefReadyForArticleGeneration } from "@/lib/content-research/readiness";
+
 import type { AutopilotPlanItem } from "./plan-item-types";
 
 export type ExecutionActionType =
@@ -18,6 +20,8 @@ export type ExecutionReasonKey =
   | "preparationDisabled"
   | "publishDisabled"
   | "researchBriefMissing"
+  | "researchBriefBlocked"
+  | "notAContentOpportunity"
   | "readyForDraftPreparation"
   | "generatedArticleMissing"
   | "articleNotFound"
@@ -186,6 +190,10 @@ export function resolvePlanItemExecutionEligibility(
   if (!item.generatedArticleId) {
     if (!item.researchBrief) {
       return blocked("researchBriefMissing", "researchBriefMissing");
+    }
+
+    if (!isResearchBriefReadyForArticleGeneration(item.researchBrief)) {
+      return blocked("researchBriefBlocked", "researchBriefBlocked");
     }
 
     if (!PREPARATION_MODES.has(autopilotMode)) {

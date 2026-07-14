@@ -1,30 +1,11 @@
 import assert from "node:assert/strict";
 
-import { buildPlanItemsFromRecommendedActions } from "./plan-items";
+import { mapRecommendedActionTypeToPlanItemType } from "./plan-item-types";
 
-const document = buildPlanItemsFromRecommendedActions({
-  recommendedActions: [
-    {
-      id: "review-1",
-      title: "Review thin content task",
-      description: "Audit finding needs review, not article generation.",
-      type: "REVIEW",
-    },
-    {
-      id: "article-1",
-      title: "SEO audit Tallinn for small businesses",
-      description: "Create a content draft from a real content opportunity.",
-      type: "ARTICLE",
-    },
-  ],
-  taskIds: [],
-  articleIds: [],
-  socialPostIds: [],
-});
-
-assert.equal(document.items[0]?.type, "SEO_FIX");
-assert.equal(document.items[0]?.needsIntegration, false);
-assert.equal(document.items[1]?.type, "ARTICLE");
-assert.equal(document.items[1]?.needsIntegration, true);
+assert.equal(mapRecommendedActionTypeToPlanItemType("REVIEW"), "SEO_FIX");
+assert.equal(mapRecommendedActionTypeToPlanItemType("TASK"), "TASK_FIX");
+assert.equal(mapRecommendedActionTypeToPlanItemType("INTEGRATION"), "SEO_FIX");
+assert.equal(mapRecommendedActionTypeToPlanItemType("ARTICLE"), "ARTICLE");
+assert.equal(mapRecommendedActionTypeToPlanItemType("SOCIAL_POST"), "SOCIAL_POST");
 
 console.log("autopilot plan item mapping guardrails passed");

@@ -7,6 +7,7 @@ import { GenerateArticleForm } from "@/components/content-plan/GenerateArticleFo
 import { useDashboardMode } from "@/components/dashboard/DashboardModeProvider";
 import { Button } from "@/components/ui/button";
 import { useSaasTranslations } from "@/lib/i18n/saas/SaasLocaleProvider";
+import { isPageContentFixAuditCode } from "@/lib/content-research/keywords";
 import type { TaskExecutionCapability } from "@/lib/tasks/execution-capability";
 import type { TaskListItem } from "@/lib/tasks/types";
 import { cn } from "@/lib/utils";
@@ -79,6 +80,10 @@ export function TaskExecutionPanel({
     showPrepareFixNote &&
     websiteId;
 
+  const isPageContentFix =
+    capability.primaryAction === "PREPARE_FIX" &&
+    isPageContentFixAuditCode(task.auditCheckCode);
+
   return (
     <section
       className={cn(
@@ -107,7 +112,13 @@ export function TaskExecutionPanel({
         <p className="text-sm font-medium text-slate-900">
           {capability.canRankBoostHelp ? t.canRankBoostYes : t.canRankBoostNo}
         </p>
-        <p className="text-sm text-slate-600">{isAdvanced ? requirementLabel : simpleHint}</p>
+        <p className="text-sm text-slate-600">
+          {isPageContentFix
+            ? t.pageContentFixHint
+            : isAdvanced
+              ? requirementLabel
+              : simpleHint}
+        </p>
       </div>
 
       {isAdvanced && task.auditCheckCode ? (
@@ -176,7 +187,7 @@ export function TaskExecutionPanel({
         <GenerateArticleForm
           websiteId={websiteId}
           taskId={task.id}
-          defaultTopic={task.title}
+          defaultTopic=""
           submitLabel={t.actions.CREATE_DRAFT}
           onSuccess={onDraftCreated}
         />

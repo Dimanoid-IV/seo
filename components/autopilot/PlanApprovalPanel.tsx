@@ -6,6 +6,7 @@ import { useMemo, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { ResearchBriefPreview } from "@/components/content-research/ResearchBriefPreview";
+import { researchSummaryFromBrief } from "@/components/content-research/ResearchBriefPreview";
 import { authFetch, parseApiErrorMessage } from "@/lib/auth/client-session";
 import type {
   AutopilotPlanItem,
@@ -341,6 +342,11 @@ export function PlanApprovalPanel({
           const dueNow = isPlanItemDueNow(item);
           const schedulerHint = getSchedulerHint(item, t);
           const articleApprovalState = getArticleApprovalStateLabel(item, t);
+          const briefSummary =
+            item.type === "ARTICLE" && item.researchBrief
+              ? researchSummaryFromBrief(item.researchBrief)
+              : null;
+          const briefReady = briefSummary?.displayStatus === "ready";
 
           return (
             <li
@@ -403,18 +409,25 @@ export function PlanApprovalPanel({
                   ["approved", "scheduled", "prepared", "proposed"].includes(
                     item.status
                   ) ? (
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      className="rounded-xl"
-                      disabled={
-                        generatingItemId !== null ||
-                        submitting ||
-                        item.status === "blocked"
-                      }
-                      onClick={() => void handleGenerateDraft(item)}
-                    >
+                    <>
+                      {!briefReady ? (
+                        <p className="text-xs text-amber-800">
+                          {t.researchBriefBlocked}
+                        </p>
+                      ) : null}
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        className="rounded-xl"
+                        disabled={
+                          generatingItemId !== null ||
+                          submitting ||
+                          item.status === "blocked" ||
+                          !briefReady
+                        }
+                        onClick={() => void handleGenerateDraft(item)}
+                      >
                       {generatingItemId === item.id ? (
                         <Loader2 className="size-4 animate-spin" />
                       ) : (
@@ -422,6 +435,7 @@ export function PlanApprovalPanel({
                       )}
                       {t.generateDraftFromResearch}
                     </Button>
+                    </>
                   ) : null}
 
                   {item.generatedArticleId ? (

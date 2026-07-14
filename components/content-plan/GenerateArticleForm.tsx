@@ -112,21 +112,23 @@ export function GenerateArticleForm({
         <p className="text-xs text-violet-100/90">{AI_DRAFT_SAFETY_COPY}</p>
       </div>
 
-      {!taskId ? (
-        <div className="space-y-2">
-          <label htmlFor="generate-topic" className="text-sm font-medium text-white">
-            Topic
-          </label>
-          <input
-            id="generate-topic"
-            type="text"
-            value={topic}
-            onChange={(event) => setTopic(event.target.value)}
-            className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none focus:border-violet-500/50"
-            placeholder="Например: локальное SEO для малого бизнеса"
-          />
-        </div>
-      ) : null}
+      <div className="space-y-2">
+        <label htmlFor="generate-topic" className="text-sm font-medium text-white">
+          {taskId ? "Content topic (business keyword)" : "Topic"}
+        </label>
+        <input
+          id="generate-topic"
+          type="text"
+          value={topic}
+          onChange={(event) => setTopic(event.target.value)}
+          className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none focus:border-violet-500/50"
+          placeholder={
+            taskId
+              ? "Например: SEO-аудит для малого бизнеса в Таллинне"
+              : "Например: локальное SEO для малого бизнеса"
+          }
+        />
+      </div>
 
       <div className="space-y-2">
         <label
@@ -171,7 +173,9 @@ export function GenerateArticleForm({
           type="button"
           onClick={() => void handleGenerate()}
           disabled={
-            loading || generationBlocked || (!taskId && !topic.trim())
+            loading ||
+            generationBlocked ||
+            (!topic.trim() && !targetKeyword.trim())
           }
           className="w-full bg-gradient-to-r from-violet-600 to-indigo-600 text-white hover:from-violet-500 hover:to-indigo-500"
         >

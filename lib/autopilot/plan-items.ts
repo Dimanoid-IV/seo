@@ -9,6 +9,7 @@ import { assignEveryOtherDaySlots } from "./scheduling";
 import type { AutopilotRecommendedAction } from "./types";
 import {
   AUTOPILOT_PLAN_ITEMS_VERSION,
+  mapRecommendedActionTypeToPlanItemType,
   type AutopilotPlanItem,
   type AutopilotPlanItemIntegration,
   type AutopilotPlanItemStatus,
@@ -71,14 +72,7 @@ export function buildPlanItemsFromRecommendedActions(input: {
   const items: AutopilotPlanItem[] = [];
 
   for (const action of input.recommendedActions.slice(0, 8)) {
-    let type: AutopilotPlanItem["type"] = "TASK_FIX";
-    if (action.type === "ARTICLE") {
-      type = "ARTICLE";
-    } else if (action.type === "SOCIAL_POST") {
-      type = "SOCIAL_POST";
-    } else if (action.type === "INTEGRATION" || action.type === "REVIEW") {
-      type = "SEO_FIX";
-    }
+    const type = mapRecommendedActionTypeToPlanItemType(action.type);
 
     items.push({
       id: action.id ? `plan-item-${action.id}` : nextItemId(),

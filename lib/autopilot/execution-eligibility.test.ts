@@ -26,7 +26,35 @@ function baseArticleItem(
     integrationType: "wordpress",
     status: "scheduled",
     scheduledFor: "2026-07-11T11:00:00.000Z",
-    researchBrief: { version: 1 },
+    researchBrief: {
+      id: "brief-1",
+      websiteId: "website-1",
+      organizationId: "org-1",
+      source: "AUTOPILOT_PLAN",
+      primaryKeyword: "SEO audit Tallinn",
+      secondaryKeywords: [],
+      searchIntent: "COMMERCIAL",
+      buyerQuestion: "How much does an SEO audit cost?",
+      geoPrompts: [
+        {
+          prompt: "Best SEO audit in Tallinn",
+          platform: "CHATGPT",
+          desiredMentionAngle: "Local expertise",
+        },
+      ],
+      competitors: [],
+      contentGapSummary: "Gap summary",
+      recommendedArticleTitle: "SEO audit Tallinn guide",
+      outline: ["Intro"],
+      faq: ["How long?"],
+      internalLinkSuggestions: ["/"],
+      schemaSuggestions: ["FAQPage"],
+      evidence: [],
+      qualityRequirements: ["Local context"],
+      riskLevel: "LOW",
+      status: "READY_FOR_GENERATION",
+      generatedAt: "2026-07-11T10:00:00.000Z",
+    },
     ...overrides,
   };
 }
@@ -57,6 +85,62 @@ function runExecutionEligibilityChecks(): void {
   });
   assert.equal(prepare.eligible, true);
   assert.equal(prepare.action, "PREPARE_ARTICLE_DRAFT");
+
+  const blockedBrief = resolvePlanItemExecutionEligibility({
+    item: baseArticleItem({
+      researchBrief: {
+        id: "brief-blocked",
+        websiteId: "website-1",
+        organizationId: "org-1",
+        source: "AUTOPILOT_PLAN",
+        primaryKeyword: "",
+        secondaryKeywords: [],
+        searchIntent: "INFORMATIONAL",
+        buyerQuestion: "",
+        geoPrompts: [],
+        competitors: [],
+        contentGapSummary: "",
+        recommendedArticleTitle: "",
+        outline: [],
+        faq: [],
+        internalLinkSuggestions: [],
+        schemaSuggestions: [],
+        evidence: [],
+        qualityRequirements: [],
+        riskLevel: "LOW",
+        status: "BLOCKED",
+        blockedReason: "Need keyword or content opportunity",
+        generatedAt: "2026-07-11T10:00:00.000Z",
+      },
+    }),
+    now,
+    autopilotMode: AutopilotMode.APPROVED_PLAN_AUTOPILOT,
+    wordpressConnected: true,
+    websiteId,
+    organizationId,
+  });
+  assert.equal(blockedBrief.eligible, false);
+  assert.equal(blockedBrief.action, "BLOCKED");
+  assert.equal(blockedBrief.reasonKey, "researchBriefBlocked");
+
+  const seoFixNoop = resolvePlanItemExecutionEligibility({
+    item: {
+      ...baseArticleItem(),
+      id: "fix-1",
+      type: "SEO_FIX",
+      title: "Expand thin page content",
+      needsIntegration: false,
+      integrationType: "manual",
+    },
+    now,
+    autopilotMode: AutopilotMode.APPROVED_PLAN_AUTOPILOT,
+    wordpressConnected: true,
+    websiteId,
+    organizationId,
+  });
+  assert.equal(seoFixNoop.eligible, true);
+  assert.equal(seoFixNoop.action, "NOOP_INTERNAL");
+  assert.equal(seoFixNoop.reasonKey, "nonArticleNoop");
 
   const waitingReview = resolvePlanItemExecutionEligibility({
     item: baseArticleItem({

@@ -1,4 +1,8 @@
 import type { TaskListItem, TaskIntegrationsContext } from "./types";
+import {
+  isPageContentFixAuditCode,
+  isUnsafeArticleTopic,
+} from "@/lib/content-research/keywords";
 
 export type TaskExecutionMode = "MANUAL" | "REVIEW" | "AUTOPILOT";
 
@@ -24,6 +28,7 @@ export type TaskExecutionCapability = {
   simpleHintKey:
     | "manualOnly"
     | "rankBoostCanPrepare"
+    | "pageContentFix"
     | "needsApproval"
     | "connectWordPress"
     | "connectGsc";
@@ -113,6 +118,18 @@ function resolveBaseMode(task: TaskListItem): TaskExecutionMode {
   return "MANUAL";
 }
 
+function isAuditPageContentFixTask(task: TaskListItem): boolean {
+  if (isPageContentFixAuditCode(task.auditCheckCode)) {
+    return true;
+  }
+
+  if (task.source === "AUDIT" && isUnsafeArticleTopic(task.title)) {
+    return true;
+  }
+
+  return false;
+}
+
 export function resolveTaskExecutionCapability(
   task: TaskListItem,
   integrations: TaskIntegrationsContext
@@ -153,6 +170,19 @@ export function resolveTaskExecutionCapability(
   }
 
   if (task.category === "CONTENT") {
+    if (isAuditPageContentFixTask(task)) {
+      return {
+        mode: "REVIEW",
+        defaultMode: "REVIEW",
+        autopilotAvailable: false,
+        autopilotEnabled: false,
+        integrationRequired: "NONE",
+        canRankBoostHelp: true,
+        primaryAction: "PREPARE_FIX",
+        simpleHintKey: "pageContentFix",
+      };
+    }
+
     return {
       mode: "REVIEW",
       defaultMode: "REVIEW",

@@ -70,3 +70,19 @@ export type AutopilotPlanItemsDocument = {
 };
 
 export const AUTOPILOT_PLAN_ITEMS_VERSION = 1 as const;
+
+/** Maps legacy recommended action types to safe autopilot plan item types. */
+export function mapRecommendedActionTypeToPlanItemType(
+  actionType: string
+): AutopilotPlanItemType {
+  if (actionType === "ARTICLE") {
+    return "ARTICLE";
+  }
+  if (actionType === "SOCIAL_POST") {
+    return "SOCIAL_POST";
+  }
+  if (actionType === "INTEGRATION" || actionType === "REVIEW") {
+    return "SEO_FIX";
+  }
+  return "TASK_FIX";
+}

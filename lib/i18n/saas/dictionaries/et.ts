@@ -862,6 +862,8 @@ export const saasDictionary: SaasDictionary = {
       simpleHints: {
         manualOnly: "Täitke see ülesanne veebisaidil käsitsi.",
         rankBoostCanPrepare: "RankBoost saab selle teie eest ette valmistada.",
+        pageContentFix:
+          "See on lehe parandamise ülesanne — RankBoost soovitab lehe sisu, mitte eraldi artiklit.",
         needsApproval: "Vajab enne avaldamist teie kinnitust.",
         connectWordPress: "Ühendage WordPress automaatseks avaldamiseks.",
         connectGsc: "Ühendage Google Search Console otsinguandmete jaoks.",
@@ -891,6 +893,8 @@ export const saasDictionary: SaasDictionary = {
         "Hermes pole ajutiselt saadaval. Valmistasime põhiversiooni, mida saad muuta.",
       regenerateFix: "Genereeri uuesti",
       existingFixTitle: "Ettevalmistatud parandus ootab ülevaatust",
+      pageContentFixHint:
+        "Paranda olemasolevat lehte: tekstiplokid, KKK ja CTA — mitte eraldi blogiartiklit.",
     },
   },
   reviewPage: {
@@ -1229,6 +1233,7 @@ export const saasDictionary: SaasDictionary = {
         planNotApproved: "Plaani pole veel kinnitatud",
         autopilotOff: "Autopiloot on väljas",
         articleNeedsRevision: "Artikli mustand vajab enne avaldamist parandamist",
+        researchBriefBlocked: "Vaja ärilist märksõna — auditisümptom pole artikli teema",
       },
       dueNow: "Tähtaeg on saabunud",
       nextScheduled: "Järgmine graafikus",
@@ -1236,6 +1241,7 @@ export const saasDictionary: SaasDictionary = {
       qualityFailed: "Artikkel ei läbinud kvaliteedikontrolli",
       wordpressRequired: "WordPressi ühendus on vajalik",
       draftWillBePrepared: "Autopiloot valmistab mustandi ülevaatuseks",
+      researchBriefBlocked: "Uuring blokeeritud — lisa sisuvõimaluse märksõna",
       wordpressDraftCreated: "WordPressi mustand loodud — vaata enne avaldamist üle",
       publishedExecuted: "Plaani punkt täidetud",
       runDueNow: "Käivita tähtaja saanud punktid",
@@ -1303,6 +1309,8 @@ export const saasDictionary: SaasDictionary = {
       generateDraftFailed: "Artikli mustandi loomine ebaõnnestus",
       generateDraftNetworkError: "Võrguviga mustandi loomisel",
       researchBriefMissing: "Uuring puudub",
+      researchBriefBlocked:
+        "Artikli genereerimine blokeeritud — lisa esmalt märksõna või sisuvõimalus.",
       articleGeneratedSuccess: "Artikkel loodud ja lisatud ülevaatusse",
       articleGeneratedNeedsRevision:
         "Mustand loodud, kuid vajab enne ülevaatust parandamist",
@@ -1566,6 +1574,9 @@ export const saasDictionary: SaasDictionary = {
     competitors: "Konkurendid",
     competitorsUnavailable: "Konkurentide andmed puuduvad",
     hint: "RankBoost kasutab ülesandeid, auditit ja Search Console'i, et valmistada artikkel enne genereerimist ette.",
+    blockedHint: "Selle ülesande jaoks ei leitud sobivat ärilist märksõna.",
+    blockedPageFixHint:
+      "Auditisümptomid kirjeldavad lehe parandust, mitte artikli teemat. Lisa märksõna või kasuta «Valmista parandus».",
     refresh: "Värskenda uurimist",
     refreshFailed: "Uurimust ei saanud värskendada.",
     refreshNetworkError: "Võrguviga uurimuse värskendamisel.",

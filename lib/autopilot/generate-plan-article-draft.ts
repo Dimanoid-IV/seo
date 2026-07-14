@@ -10,6 +10,7 @@ import {
   resolvePlanItemsDocumentFromPlan,
 } from "@/lib/autopilot/plan-items";
 import { parseContentResearchBrief } from "@/lib/content-research/parse";
+import { isResearchBriefReadyForArticleGeneration } from "@/lib/content-research/readiness";
 import {
   generateArticleFromResearchBrief,
   type GenerateArticleFromResearchResult,
@@ -104,6 +105,15 @@ export async function generatePlanItemArticleDraft(input: {
     throw new AppError(
       ErrorCode.VALIDATION_ERROR,
       "Research brief is invalid. Refresh research first."
+    );
+  }
+
+  if (!isResearchBriefReadyForArticleGeneration(item.researchBrief)) {
+    throw new AppError(
+      ErrorCode.VALIDATION_ERROR,
+      brief.status === "BLOCKED"
+        ? "Research brief is blocked — add a business keyword or content opportunity before generating an article."
+        : "Research brief is incomplete. Refresh research or add a valid keyword first."
     );
   }
 

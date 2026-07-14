@@ -14,6 +14,7 @@ import { getPrisma } from "@/lib/db";
 import { AppError, ErrorCode } from "@/lib/errors";
 import { generateArticleDraft } from "@/lib/hermes/client";
 import { runArticleQualityPipeline } from "@/lib/hermes/article-quality";
+import { isUnsafeArticleTopic } from "@/lib/content-research/keywords";
 
 import {
   isWordPressConnectedForWebsite,
@@ -163,16 +164,36 @@ export async function generateArticleDraftForWebsite(
     }
   }
 
-  const topic = input.topic?.trim() || task?.title?.trim();
-  if (!topic) {
+  const explicitTopic = input.topic?.trim() || null;
+  const explicitKeyword = input.targetKeyword?.trim() || null;
+
+  if (task) {
+    const taskTitleUnsafe = isUnsafeArticleTopic(task.title);
+    const topicUnsafe = explicitTopic ? isUnsafeArticleTopic(explicitTopic) : false;
+
+    if (taskTitleUnsafe && !explicitKeyword && (!explicitTopic || topicUnsafe)) {
+      throw new AppError(
+        ErrorCode.VALIDATION_ERROR,
+        "Эта задача описывает проблему страницы, а не тему статьи. Используйте «Подготовить исправление» или укажите бизнес-ключевое слово."
+      );
+    }
+  }
+
+  const topic =
+    explicitTopic ||
+    (task?.title?.trim() && !isUnsafeArticleTopic(task.title)
+      ? task.title.trim()
+      : null);
+
+  if (!topic && !explicitKeyword) {
     throw new AppError(
       ErrorCode.VALIDATION_ERROR,
-      "Укажите topic или выберите задачу с названием."
+      "Укажите topic, ключевое слово или выберите задачу с безопасной темой."
     );
   }
 
-  const targetKeyword =
-    input.targetKeyword?.trim() || null;
+  const targetKeyword = explicitKeyword;
+  const resolvedTopic = topic ?? explicitKeyword!;
   const language =
     input.language ?? website.primaryLanguage ?? WebsiteLanguage.RU;
 
@@ -186,7 +207,7 @@ export async function generateArticleDraftForWebsite(
       status: AIJobStatus.QUEUED,
       inputJson: {
         taskId: task?.id ?? null,
-        topic,
+        topic: resolvedTopic,
         targetKeyword,
         language,
       },
@@ -214,7 +235,7 @@ export async function generateArticleDraftForWebsite(
           }
         : undefined,
       article: {
-        topic,
+        topic: resolvedTopic,
         targetKeyword,
         language: language.toLowerCase(),
       },
@@ -230,7 +251,7 @@ export async function generateArticleDraftForWebsite(
     const pipeline = await runArticleQualityPipeline({
       article: hermesResult,
       targetKeyword,
-      topic,
+      topic: resolvedTopic,
       website: {
         url: website.url,
         niche: website.niche,
