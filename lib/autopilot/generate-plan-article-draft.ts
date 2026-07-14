@@ -1,5 +1,6 @@
 import "server-only";
 
+import { ArticleStatus } from "@prisma/client";
 import type { Prisma } from "@prisma/client";
 
 import { getPrisma } from "@/lib/db";
@@ -10,7 +11,10 @@ import {
   resolvePlanItemsDocumentFromPlan,
 } from "@/lib/autopilot/plan-items";
 import { parseContentResearchBrief } from "@/lib/content-research/parse";
-import { isResearchBriefReadyForArticleGeneration } from "@/lib/content-research/readiness";
+import {
+  analyzeResearchBriefReadiness,
+  isResearchBriefReadyForArticleGeneration,
+} from "@/lib/content-research/readiness";
 import {
   generateArticleFromResearchBrief,
   type GenerateArticleFromResearchResult,
@@ -109,11 +113,25 @@ export async function generatePlanItemArticleDraft(input: {
   }
 
   if (!isResearchBriefReadyForArticleGeneration(item.researchBrief)) {
+    const readiness = analyzeResearchBriefReadiness(item.researchBrief);
+    const messageByReason: Partial<Record<string, string>> = {
+      unsafePrimaryKeyword:
+        "This looks like a site issue, not an article topic. Regenerate topic/research or choose a business keyword.",
+      unsafeRecommendedTitle:
+        "This looks like a site issue, not an article topic. Regenerate topic/research or choose a business keyword.",
+      archivedLinkedArticle:
+        "The linked article draft is archived. Regenerate topic/research before creating a new draft.",
+      linkedArticleQualityFailed:
+        "The linked article draft failed quality checks. Regenerate topic/research before trying again.",
+      notReadyForGeneration:
+        "Research brief is blocked or incomplete. Refresh research or add a valid keyword first.",
+    };
+
     throw new AppError(
       ErrorCode.VALIDATION_ERROR,
-      brief.status === "BLOCKED"
-        ? "Research brief is blocked — add a business keyword or content opportunity before generating an article."
-        : "Research brief is incomplete. Refresh research or add a valid keyword first."
+      (readiness.reasonKey && messageByReason[readiness.reasonKey]) ||
+        brief.blockedReason ||
+        "Research brief is incomplete. Refresh research or add a valid keyword first."
     );
   }
 
@@ -142,6 +160,20 @@ export async function generatePlanItemArticleDraft(input: {
     });
 
     if (existingArticle) {
+      if (existingArticle.status === ArticleStatus.ARCHIVED) {
+        throw new AppError(
+          ErrorCode.VALIDATION_ERROR,
+          "The linked article draft is archived. Regenerate topic/research before creating a new draft."
+        );
+      }
+
+      if (existingArticle.qualityPassed === false) {
+        throw new AppError(
+          ErrorCode.VALIDATION_ERROR,
+          "The linked article draft failed quality checks. Regenerate topic/research before trying again."
+        );
+      }
+
       const wordpressConnected = await isWordPressConnectedForWebsite(
         plan.websiteId
       );

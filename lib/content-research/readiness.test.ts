@@ -1,6 +1,9 @@
 import assert from "node:assert/strict";
 
-import { isResearchBriefReadyForArticleGeneration } from "./readiness";
+import {
+  analyzeResearchBriefReadiness,
+  isResearchBriefReadyForArticleGeneration,
+} from "./readiness";
 
 function readyBrief(overrides: Record<string, unknown> = {}) {
   return {
@@ -35,6 +38,12 @@ function readyBrief(overrides: Record<string, unknown> = {}) {
   };
 }
 
+const pollutedBrief = readyBrief({
+  primaryKeyword: "На странице слишком мало текста для продвижения",
+  recommendedArticleTitle:
+    "Полное руководство: На странице слишком мало текста для продвижения",
+});
+
 assert.equal(isResearchBriefReadyForArticleGeneration(null), false);
 assert.equal(isResearchBriefReadyForArticleGeneration({ version: 1 }), false);
 assert.equal(
@@ -47,9 +56,20 @@ assert.equal(
   isResearchBriefReadyForArticleGeneration(readyBrief({ status: "DRAFT" })),
   false
 );
+assert.equal(isResearchBriefReadyForArticleGeneration(readyBrief()), true);
+assert.equal(isResearchBriefReadyForArticleGeneration(pollutedBrief), false);
 assert.equal(
-  isResearchBriefReadyForArticleGeneration(readyBrief()),
-  true
+  analyzeResearchBriefReadiness(pollutedBrief).reasonKey,
+  "unsafePrimaryKeyword"
+);
+assert.equal(
+  analyzeResearchBriefReadiness(
+    readyBrief({
+      primaryKeyword: "SEO audit Tallinn",
+      recommendedArticleTitle: "Missing meta description on homepage",
+    })
+  ).reasonKey,
+  "unsafeRecommendedTitle"
 );
 
 console.log("content research readiness checks passed");

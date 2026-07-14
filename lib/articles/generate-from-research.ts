@@ -13,6 +13,9 @@ import {
 import { assertUsageLimit, recordUsage } from "@/lib/billing/feature-gates";
 import { parseContentResearchBrief } from "@/lib/content-research/parse";
 import type { ContentResearchBrief } from "@/lib/content-research/types";
+import {
+  analyzeResearchBriefReadiness,
+} from "@/lib/content-research/readiness";
 import { getPrisma } from "@/lib/db";
 import { AppError, ErrorCode } from "@/lib/errors";
 import { generateArticleDraft } from "@/lib/hermes/client";
@@ -104,19 +107,32 @@ async function resolveWebsiteForResearchGeneration(
 }
 
 function assertResearchBriefReady(brief: ContentResearchBrief): void {
-  if (brief.status === "BLOCKED" || !brief.primaryKeyword.trim()) {
-    throw new AppError(
-      ErrorCode.VALIDATION_ERROR,
-      "Research brief is blocked or incomplete. Refresh research first."
-    );
+  const readiness = analyzeResearchBriefReadiness(brief);
+  if (readiness.ready) {
+    return;
   }
 
-  if (!brief.buyerQuestion.trim() || brief.geoPrompts.length < 1) {
-    throw new AppError(
-      ErrorCode.VALIDATION_ERROR,
-      "Research brief is missing buyer question or GEO prompts."
-    );
-  }
+  const messageByReason: Partial<Record<string, string>> = {
+    unsafePrimaryKeyword:
+      "This looks like a site issue, not an article topic. Regenerate topic/research or choose a business keyword.",
+    unsafeRecommendedTitle:
+      "This looks like a site issue, not an article topic. Regenerate topic/research or choose a business keyword.",
+    notReadyForGeneration:
+      "Research brief is blocked or incomplete. Refresh research first.",
+    missingPrimaryKeyword:
+      "Research brief is blocked or incomplete. Refresh research first.",
+    missingBuyerQuestion:
+      "Research brief is missing buyer question or GEO prompts.",
+    missingGeoPrompts:
+      "Research brief is missing buyer question or GEO prompts.",
+  };
+
+  throw new AppError(
+    ErrorCode.VALIDATION_ERROR,
+    (readiness.reasonKey && messageByReason[readiness.reasonKey]) ||
+      brief.blockedReason ||
+      "Research brief is blocked or incomplete. Refresh research first."
+  );
 }
 
 /**

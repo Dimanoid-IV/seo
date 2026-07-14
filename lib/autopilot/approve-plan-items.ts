@@ -11,6 +11,7 @@ import {
 import { getPrisma } from "@/lib/db";
 import { AppError, ErrorCode } from "@/lib/errors";
 
+import { analyzeResearchBriefReadiness } from "@/lib/content-research/readiness";
 import { timelineAfterMonthlyAutopilotPlanApproved } from "./hooks";
 import {
   enrichPlanItemsFromEntities,
@@ -104,6 +105,16 @@ export async function approveSelectedPlanItems(input: {
     } else if (item.needsIntegration && item.integrationType === "gsc" && !gscConnected) {
       status = "blocked";
       blockedReasonKey = "gscNotConnected";
+    } else if (item.type === "ARTICLE" && item.researchBrief) {
+      const readiness = analyzeResearchBriefReadiness(item.researchBrief);
+      if (!readiness.ready) {
+        status = "blocked";
+        blockedReasonKey =
+          readiness.reasonKey === "unsafePrimaryKeyword" ||
+          readiness.reasonKey === "unsafeRecommendedTitle"
+            ? "unsafeArticleTopic"
+            : "researchBriefBlocked";
+      }
     }
 
     return {

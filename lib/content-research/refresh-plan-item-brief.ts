@@ -12,7 +12,29 @@ import {
 import type { AutopilotFocusArea } from "@/lib/autopilot/types";
 import { briefToJson } from "@/lib/content-research/parse";
 import { refreshPlanItemResearchBrief } from "@/lib/content-research/plan-integration";
+import { analyzeResearchBriefReadiness } from "@/lib/content-research/readiness";
 import { toResearchBriefSummary } from "@/lib/content-research/types";
+
+function blockedReasonKeyForBrief(
+  reasonKey: ReturnType<typeof analyzeResearchBriefReadiness>["reasonKey"]
+): string | undefined {
+  if (!reasonKey) {
+    return undefined;
+  }
+
+  if (
+    reasonKey === "unsafePrimaryKeyword" ||
+    reasonKey === "unsafeRecommendedTitle"
+  ) {
+    return "unsafeArticleTopic";
+  }
+
+  if (reasonKey === "notReadyForGeneration" || reasonKey === "missingPrimaryKeyword") {
+    return "researchBriefBlocked";
+  }
+
+  return "researchBriefBlocked";
+}
 
 export async function refreshAutopilotPlanItemResearchBrief(input: {
   planId: string;
@@ -70,17 +92,43 @@ export async function refreshAutopilotPlanItemResearchBrief(input: {
     : [];
 
   const brief = await refreshPlanItemResearchBrief({
-    item,
+    item: {
+      ...item,
+      sourceRef:
+        item.sourceRef?.type === "article"
+          ? undefined
+          : item.sourceRef,
+    },
     websiteId: plan.websiteId,
     organizationId: plan.organizationId,
     userId: input.userId,
     focusAreaTitles: focusAreas.map((a) => a.title),
   });
 
+  const readiness = analyzeResearchBriefReadiness(brief);
+  const blockedReasonKey = readiness.ready
+    ? undefined
+    : blockedReasonKeyForBrief(readiness.reasonKey);
+
   const updatedItems = [...document.items];
   updatedItems[itemIndex] = {
     ...item,
     researchBrief: briefToJson(brief),
+    generatedArticleId: undefined,
+    articleQualityScore: undefined,
+    articleQualityPassed: undefined,
+    linkedArticleApprovedAt: undefined,
+    sourceRef:
+      item.sourceRef?.type === "article" ? undefined : item.sourceRef,
+    blockedReasonKey,
+    status:
+      item.status === "executed" || item.status === "published"
+        ? item.status
+        : blockedReasonKey
+          ? "blocked"
+          : item.status === "blocked"
+            ? "proposed"
+            : item.status,
   };
 
   await prisma.monthlyAutopilotPlan.update({
@@ -97,5 +145,7 @@ export async function refreshAutopilotPlanItemResearchBrief(input: {
     brief,
     summary: toResearchBriefSummary(brief),
     planItemId: item.id,
+    blockedReasonKey,
+    ready: readiness.ready,
   };
 }

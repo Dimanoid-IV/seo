@@ -1228,6 +1228,8 @@ export const saasDictionary: SaasDictionary = {
         autopilotOff: "Autopilot is off",
         articleNeedsRevision: "Article draft needs revision before publishing",
         researchBriefBlocked: "Need a business keyword — audit issue is not an article topic",
+        unsafeArticleTopic: "This looks like a site issue, not an article topic",
+        archivedArticleLinked: "Linked article draft is archived — regenerate topic/research",
       },
       dueNow: "Due now",
       nextScheduled: "Next scheduled",
@@ -1236,6 +1238,7 @@ export const saasDictionary: SaasDictionary = {
       wordpressRequired: "WordPress connection required",
       draftWillBePrepared: "Autopilot will prepare a draft for review",
       researchBriefBlocked: "Research blocked — add a content opportunity keyword",
+      archivedArticleLinked: "Linked article draft is archived — regenerate topic/research",
       wordpressDraftCreated: "WordPress draft created — review before publishing",
       publishedExecuted: "Plan item completed",
       runDueNow: "Run due items now",
@@ -1322,6 +1325,18 @@ export const saasDictionary: SaasDictionary = {
         wordpressDraft: "WordPress draft created",
         qualityFailed: "Quality failed — needs revision",
       },
+      approvalSafetyNote:
+        "After you approve, RankBoost runs selected actions on schedule. Nothing is published without your final approval.",
+      itemTypeHints: {
+        TASK_FIX: "RankBoost will prepare a page fix in your Review Queue.",
+        SEO_FIX: "RankBoost will prepare an SEO fix in your Review Queue.",
+        ARTICLE:
+          "RankBoost will prepare an article draft. You can review it before any WordPress draft.",
+      },
+      regenerateTopic: "Regenerate topic / research",
+      regenerateTopicSuccess: "Topic and research refreshed for this article item.",
+      regenerateTopicFailed: "Could not regenerate topic for this item.",
+      regenerateTopicNetworkError: "Network error while regenerating topic.",
     },
     planContent: {
       monthlyGrowthPlanTitle: "Monthly growth plan — {month}",

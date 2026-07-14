@@ -1234,6 +1234,8 @@ export const saasDictionary: SaasDictionary = {
         autopilotOff: "Autopiloot on väljas",
         articleNeedsRevision: "Artikli mustand vajab enne avaldamist parandamist",
         researchBriefBlocked: "Vaja ärilist märksõna — auditisümptom pole artikli teema",
+        unsafeArticleTopic: "See on lehe probleem, mitte artikli teema",
+        archivedArticleLinked: "Seotud mustand on arhiveeritud — genereeri teema/uuring uuesti",
       },
       dueNow: "Tähtaeg on saabunud",
       nextScheduled: "Järgmine graafikus",
@@ -1242,6 +1244,7 @@ export const saasDictionary: SaasDictionary = {
       wordpressRequired: "WordPressi ühendus on vajalik",
       draftWillBePrepared: "Autopiloot valmistab mustandi ülevaatuseks",
       researchBriefBlocked: "Uuring blokeeritud — lisa sisuvõimaluse märksõna",
+      archivedArticleLinked: "Seotud mustand on arhiveeritud — genereeri teema/uuring uuesti",
       wordpressDraftCreated: "WordPressi mustand loodud — vaata enne avaldamist üle",
       publishedExecuted: "Plaani punkt täidetud",
       runDueNow: "Käivita tähtaja saanud punktid",
@@ -1329,6 +1332,18 @@ export const saasDictionary: SaasDictionary = {
         wordpressDraft: "WordPressi mustand loodud",
         qualityFailed: "Kvaliteet ebaõnnestus — vajab parandamist",
       },
+      approvalSafetyNote:
+        "Pärast kinnitamist käivitab RankBoost valitud tegevused graafiku järgi. Ilma sinu lõpliku kinnituseta midagi ei avaldata.",
+      itemTypeHints: {
+        TASK_FIX: "RankBoost valmistab lehe paranduse ülevaate järjekorda.",
+        SEO_FIX: "RankBoost valmistab SEO paranduse ülevaate järjekorda.",
+        ARTICLE:
+          "RankBoost valmistab artikli mustandi. Saad seda enne WordPressi mustandit üle vaadata.",
+      },
+      regenerateTopic: "Genereeri teema / uuring uuesti",
+      regenerateTopicSuccess: "Teema ja uuring on selle artiklipunkti jaoks värskendatud.",
+      regenerateTopicFailed: "Teema uuesti genereerimine ebaõnnestus.",
+      regenerateTopicNetworkError: "Võrguviga teema uuesti genereerimisel.",
     },
     planContent: {
       monthlyGrowthPlanTitle: "Kuu kasvuplaan — {month}",

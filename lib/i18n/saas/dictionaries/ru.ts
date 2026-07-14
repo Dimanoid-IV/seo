@@ -1231,6 +1231,8 @@ export const saasDictionary: SaasDictionary = {
         autopilotOff: "Автопилот выключен",
         articleNeedsRevision: "Черновик статьи требует доработки перед публикацией",
         researchBriefBlocked: "Нужен бизнес-ключ — симптом аудита не является темой статьи",
+        unsafeArticleTopic: "Это проблема страницы, а не тема статьи",
+        archivedArticleLinked: "Связанный черновик в архиве — перегенерируйте тему/исследование",
       },
       dueNow: "Пора выполнить",
       nextScheduled: "Следующее по расписанию",
@@ -1239,6 +1241,7 @@ export const saasDictionary: SaasDictionary = {
       wordpressRequired: "Требуется подключение WordPress",
       draftWillBePrepared: "Автопилот подготовит черновик для проверки",
       researchBriefBlocked: "Исследование заблокировано — добавьте ключевое слово",
+      archivedArticleLinked: "Связанный черновик в архиве — перегенерируйте тему/исследование",
       wordpressDraftCreated: "Черновик WordPress создан — проверьте перед публикацией",
       publishedExecuted: "Пункт плана выполнен",
       runDueNow: "Запустить просроченные пункты",
@@ -1326,6 +1329,18 @@ export const saasDictionary: SaasDictionary = {
         wordpressDraft: "Черновик WordPress создан",
         qualityFailed: "Качество не пройдено — нужна доработка",
       },
+      approvalSafetyNote:
+        "После подтверждения RankBoost выполняет выбранные действия по расписанию. Публикации без вашего финального одобрения не будет.",
+      itemTypeHints: {
+        TASK_FIX: "RankBoost подготовит исправление страницы в очереди проверки.",
+        SEO_FIX: "RankBoost подготовит SEO-исправление в очереди проверки.",
+        ARTICLE:
+          "RankBoost подготовит черновик статьи. Вы сможете проверить его перед WordPress draft.",
+      },
+      regenerateTopic: "Перегенерировать тему / исследование",
+      regenerateTopicSuccess: "Тема и исследование обновлены для этого пункта.",
+      regenerateTopicFailed: "Не удалось перегенерировать тему для этого пункта.",
+      regenerateTopicNetworkError: "Сетевая ошибка при перегенерации темы.",
     },
     planContent: {
       monthlyGrowthPlanTitle: "Месячный план роста — {month}",

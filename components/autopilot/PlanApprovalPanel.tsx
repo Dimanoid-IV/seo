@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Check, ExternalLink, Loader2, Sparkles } from "lucide-react";
+import { Check, ExternalLink, Loader2, RefreshCw, Sparkles } from "lucide-react";
 import { useMemo, useState } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -116,6 +116,7 @@ export function PlanApprovalPanel({
   });
   const [submitting, setSubmitting] = useState(false);
   const [generatingItemId, setGeneratingItemId] = useState<string | null>(null);
+  const [refreshingItemId, setRefreshingItemId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [itemOverrides, setItemOverrides] = useState<
@@ -203,6 +204,57 @@ export function PlanApprovalPanel({
       setError(t.approveNetworkError);
     } finally {
       setSubmitting(false);
+    }
+  }
+
+  async function handleRegenerateTopic(item: AutopilotPlanItem) {
+    setRefreshingItemId(item.id);
+    setError(null);
+    setSuccess(null);
+
+    try {
+      const response = await authFetch(
+        `/api/autopilot/monthly/${planId}/research-brief`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ itemId: item.id }),
+        }
+      );
+
+      if (!response.ok) {
+        setError(await parseApiErrorMessage(response, t.regenerateTopicFailed));
+        return;
+      }
+
+      const body = (await response.json()) as {
+        data: {
+          brief?: Record<string, unknown>;
+          summary: ReturnType<typeof researchSummaryFromBrief>;
+          blockedReasonKey?: string;
+          ready?: boolean;
+        };
+      };
+
+      setItemOverrides((prev) => ({
+        ...prev,
+        [item.id]: {
+          ...(body.data.brief ? { researchBrief: body.data.brief } : {}),
+          generatedArticleId: undefined,
+          articleQualityScore: undefined,
+          articleQualityPassed: undefined,
+          linkedArticleApprovedAt: undefined,
+          blockedReasonKey: body.data.blockedReasonKey,
+          status: body.data.ready ? item.status : "blocked",
+        },
+      }));
+
+      setSuccess(t.regenerateTopicSuccess);
+      onApproved?.();
+    } catch {
+      setError(t.regenerateTopicNetworkError);
+    } finally {
+      setRefreshingItemId(null);
     }
   }
 
@@ -300,6 +352,7 @@ export function PlanApprovalPanel({
         <div>
           <h3 className="text-lg font-semibold text-slate-900">{t.title}</h3>
           <p className="text-sm text-slate-500">{t.subtitle}</p>
+          <p className="mt-2 text-sm text-slate-600">{t.approvalSafetyNote}</p>
         </div>
         <div className="flex rounded-xl border border-slate-200 bg-white p-1">
           {(["monthly", "weekly"] as const).map((value) => (
@@ -394,6 +447,16 @@ export function PlanApprovalPanel({
 
                   <p className="text-sm text-slate-600">{item.reason}</p>
 
+                  {item.type === "TASK_FIX" || item.type === "SEO_FIX" ? (
+                    <p className="text-xs text-violet-700">
+                      {t.itemTypeHints[item.type]}
+                    </p>
+                  ) : null}
+
+                  {item.type === "ARTICLE" ? (
+                    <p className="text-xs text-violet-700">{t.itemTypeHints.ARTICLE}</p>
+                  ) : null}
+
                   {item.type === "ARTICLE" && item.researchBrief ? (
                     <ResearchBriefPreview
                       researchBrief={item.researchBrief}
@@ -401,6 +464,32 @@ export function PlanApprovalPanel({
                       planItemId={item.id}
                       compact
                     />
+                  ) : null}
+
+                  {item.type === "ARTICLE" &&
+                  item.researchBrief &&
+                  ["approved", "scheduled", "prepared", "proposed", "blocked"].includes(
+                    item.status
+                  ) ? (
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      className="rounded-xl"
+                      disabled={
+                        refreshingItemId !== null ||
+                        generatingItemId !== null ||
+                        submitting
+                      }
+                      onClick={() => void handleRegenerateTopic(item)}
+                    >
+                      {refreshingItemId === item.id ? (
+                        <Loader2 className="size-4 animate-spin" />
+                      ) : (
+                        <RefreshCw className="size-4" />
+                      )}
+                      {t.regenerateTopic}
+                    </Button>
                   ) : null}
 
                   {item.type === "ARTICLE" &&

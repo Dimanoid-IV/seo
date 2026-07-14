@@ -1035,6 +1035,8 @@ export type SaasDictionary = {
         autopilotOff: string;
         articleNeedsRevision: string;
         researchBriefBlocked: string;
+        unsafeArticleTopic: string;
+        archivedArticleLinked: string;
       };
       dueNow: string;
       nextScheduled: string;
@@ -1043,6 +1045,7 @@ export type SaasDictionary = {
       wordpressRequired: string;
       draftWillBePrepared: string;
       researchBriefBlocked: string;
+      archivedArticleLinked: string;
       wordpressDraftCreated: string;
       publishedExecuted: string;
       runDueNow: string;
@@ -1099,6 +1102,16 @@ export type SaasDictionary = {
         wordpressDraft: string;
         qualityFailed: string;
       };
+      approvalSafetyNote: string;
+      itemTypeHints: {
+        TASK_FIX: string;
+        SEO_FIX: string;
+        ARTICLE: string;
+      };
+      regenerateTopic: string;
+      regenerateTopicSuccess: string;
+      regenerateTopicFailed: string;
+      regenerateTopicNetworkError: string;
     };
     planContent: {
       monthlyGrowthPlanTitle: string;

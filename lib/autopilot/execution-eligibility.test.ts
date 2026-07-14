@@ -123,6 +123,70 @@ function runExecutionEligibilityChecks(): void {
   assert.equal(blockedBrief.action, "BLOCKED");
   assert.equal(blockedBrief.reasonKey, "researchBriefBlocked");
 
+  const pollutedReadyBrief = resolvePlanItemExecutionEligibility({
+    item: baseArticleItem({
+      researchBrief: {
+        id: "brief-polluted",
+        websiteId: "website-1",
+        organizationId: "org-1",
+        source: "AUTOPILOT_PLAN",
+        primaryKeyword: "На странице слишком мало текста для продвижения",
+        secondaryKeywords: [],
+        searchIntent: "INFORMATIONAL",
+        buyerQuestion: "Question?",
+        geoPrompts: [
+          {
+            prompt: "Test prompt",
+            platform: "CHATGPT",
+            desiredMentionAngle: "Angle",
+          },
+        ],
+        competitors: [],
+        contentGapSummary: "",
+        recommendedArticleTitle: "На странице слишком мало текста для продвижения",
+        outline: ["Intro"],
+        faq: ["FAQ"],
+        internalLinkSuggestions: ["/"],
+        schemaSuggestions: [],
+        evidence: [],
+        qualityRequirements: [],
+        riskLevel: "LOW",
+        status: "READY_FOR_GENERATION",
+        generatedAt: "2026-07-11T10:00:00.000Z",
+      },
+    }),
+    now,
+    autopilotMode: AutopilotMode.APPROVED_PLAN_AUTOPILOT,
+    wordpressConnected: true,
+    websiteId,
+    organizationId,
+  });
+  assert.equal(pollutedReadyBrief.action, "BLOCKED");
+  assert.equal(pollutedReadyBrief.reasonKey, "researchBriefBlocked");
+
+  const archivedLinked = resolvePlanItemExecutionEligibility({
+    item: baseArticleItem({
+      status: "prepared",
+      generatedArticleId: "article-archived",
+      articleQualityPassed: false,
+    }),
+    now,
+    autopilotMode: AutopilotMode.APPROVED_PLAN_AUTOPILOT,
+    wordpressConnected: true,
+    websiteId,
+    organizationId,
+    article: {
+      id: "article-archived",
+      status: ArticleStatus.ARCHIVED,
+      qualityPassed: false,
+      websiteId,
+      organizationId,
+      wordpressPostId: null,
+    },
+  });
+  assert.equal(archivedLinked.action, "BLOCKED");
+  assert.equal(archivedLinked.reasonKey, "archivedArticleLinked");
+
   const seoFixNoop = resolvePlanItemExecutionEligibility({
     item: {
       ...baseArticleItem(),

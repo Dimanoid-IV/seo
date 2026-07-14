@@ -1,5 +1,3 @@
-import "server-only";
-
 import type { AutopilotPlanItem } from "./plan-item-types";
 
 const DEFAULT_TIMEZONE = "UTC";

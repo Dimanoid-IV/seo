@@ -5,6 +5,8 @@
  * No separate Prisma model — avoids conflicting content models.
  */
 
+import { isUnsafeArticleTopic } from "./keywords";
+
 export type ContentResearchSource =
   | "AUTOPILOT_PLAN"
   | "MANUAL_ARTICLE"
@@ -108,10 +110,18 @@ export type ContentResearchBriefSummary = {
 export function getResearchDisplayStatus(
   brief: Pick<
     ContentResearchBrief,
-    "status" | "primaryKeyword" | "buyerQuestion" | "geoPrompts" | "blockedReason"
+    "status" | "primaryKeyword" | "buyerQuestion" | "geoPrompts" | "blockedReason" | "recommendedArticleTitle"
   >
 ): ResearchDisplayStatus {
   if (brief.status === "BLOCKED" || !brief.primaryKeyword.trim()) {
+    return "blocked";
+  }
+
+  if (
+    isUnsafeArticleTopic(brief.primaryKeyword) ||
+    (brief.recommendedArticleTitle?.trim() &&
+      isUnsafeArticleTopic(brief.recommendedArticleTitle))
+  ) {
     return "blocked";
   }
 

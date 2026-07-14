@@ -22,6 +22,8 @@ export type ExecutionReasonKey =
   | "researchBriefMissing"
   | "researchBriefBlocked"
   | "notAContentOpportunity"
+  | "unsafeArticleTopic"
+  | "archivedArticleLinked"
   | "readyForDraftPreparation"
   | "generatedArticleMissing"
   | "articleNotFound"
@@ -187,12 +189,26 @@ export function resolvePlanItemExecutionEligibility(
     return eligibleAction("NOOP_INTERNAL", "nonArticleNoop", "nonArticleNoop", item.status);
   }
 
+  const readinessContext = article
+    ? {
+        linkedArticle: {
+          status: article.status,
+          qualityPassed: article.qualityPassed,
+        },
+      }
+    : undefined;
+
   if (!item.generatedArticleId) {
     if (!item.researchBrief) {
       return blocked("researchBriefMissing", "researchBriefMissing");
     }
 
-    if (!isResearchBriefReadyForArticleGeneration(item.researchBrief)) {
+    if (
+      !isResearchBriefReadyForArticleGeneration(
+        item.researchBrief,
+        readinessContext
+      )
+    ) {
       return blocked("researchBriefBlocked", "researchBriefBlocked");
     }
 
@@ -218,6 +234,10 @@ export function resolvePlanItemExecutionEligibility(
 
   if (article.websiteId !== websiteId || article.organizationId !== organizationId) {
     return blocked("articleOwnershipMismatch", "articleOwnershipMismatch");
+  }
+
+  if (article.status === ArticleStatus.ARCHIVED) {
+    return blocked("archivedArticleLinked", "archivedArticleLinked");
   }
 
   if (item.articleQualityPassed === false || article.qualityPassed === false) {
