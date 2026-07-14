@@ -690,7 +690,8 @@ export const saasDictionary: SaasDictionary = {
       description:
         "Мы можем помочь настроить Search Console безопасно. Мы не просим ваш пароль от Google.",
       requestButton: "Заказать помощь",
-      pricingHint: "Помощь с настройкой — от €29",
+      pricingBasic: "Помощь с подключением — от €9 единоразово",
+      pricingFull: "GSC + базовая проверка — €19 единоразово",
       nameLabel: "Имя",
       emailLabel: "Email",
       websiteLabel: "URL сайта",

@@ -692,7 +692,8 @@ export const saasDictionary: SaasDictionary = {
       description:
         "Aitame teil Search Console'i turvaliselt seadistada. Me ei küsi kunagi teie parooli.",
       requestButton: "Tellida seadistamise abi",
-      pricingHint: "Abiga seadistamine alates €29",
+      pricingBasic: "Seadistamise abi alates €9 ühekordselt",
+      pricingFull: "GSC + põhikontroll — €19 ühekordselt",
       nameLabel: "Nimi",
       emailLabel: "E-post",
       websiteLabel: "Veebisaidi URL",

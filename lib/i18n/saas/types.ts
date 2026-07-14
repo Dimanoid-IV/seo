@@ -543,7 +543,8 @@ export type SaasDictionary = {
       title: string;
       description: string;
       requestButton: string;
-      pricingHint: string;
+      pricingBasic: string;
+      pricingFull: string;
       nameLabel: string;
       emailLabel: string;
       websiteLabel: string;

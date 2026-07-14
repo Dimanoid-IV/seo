@@ -690,7 +690,8 @@ export const saasDictionary: SaasDictionary = {
       description:
         "We can help you set up Search Console safely. We never ask for your password.",
       requestButton: "Request setup help",
-      pricingHint: "Assisted setup from €29",
+      pricingBasic: "Setup help from €9 one-time",
+      pricingFull: "GSC + basic check — €19 one-time",
       nameLabel: "Name",
       emailLabel: "Email",
       websiteLabel: "Website URL",

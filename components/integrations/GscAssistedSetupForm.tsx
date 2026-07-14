@@ -68,7 +68,10 @@ export function GscAssistedSetupPanel({
               locale={locale}
             />
           )}
-          <p className="text-xs text-slate-500">{a.pricingHint}</p>
+          <ul className="space-y-0.5 text-xs text-slate-500">
+            <li>{a.pricingBasic}</li>
+            <li>{a.pricingFull}</li>
+          </ul>
         </div>
       </div>
     </div>
