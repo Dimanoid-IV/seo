@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { ExternalLink, Loader2 } from "lucide-react";
+import { Archive, ExternalLink, Loader2 } from "lucide-react";
 
 import { ArticleMetaPreview } from "@/components/articles/ArticleMetaPreview";
 import { ArticleQualityPanel } from "@/components/articles/ArticleQualityPanel";
@@ -45,6 +45,7 @@ export function ArticleEditorForm({ article, onUpdated }: ArticleEditorFormProps
   const [form, setForm] = useState<FormState>(() => toFormState(article));
   const [saving, setSaving] = useState(false);
   const [approving, setApproving] = useState(false);
+  const [archiving, setArchiving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
 
@@ -56,7 +57,11 @@ export function ArticleEditorForm({ article, onUpdated }: ArticleEditorFormProps
   );
 
   const canApprove =
-    article.status !== "APPROVED" &&
+    article.qualityPassed !== false &&
+    (article.status === "WAITING_REVIEW" || article.status === "DRAFT");
+
+  const canArchive =
+    article.status !== "ARCHIVED" &&
     article.status !== "WORDPRESS_DRAFT_CREATED" &&
     article.status !== "PUBLISHED";
 
@@ -67,12 +72,14 @@ export function ArticleEditorForm({ article, onUpdated }: ArticleEditorFormProps
 
   async function patchArticle(
     payload: Record<string, string | null | undefined>,
-    mode: "save" | "approve"
+    mode: "save" | "approve" | "archive"
   ) {
     if (mode === "save") {
       setSaving(true);
-    } else {
+    } else if (mode === "approve") {
       setApproving(true);
+    } else {
+      setArchiving(true);
     }
     setError(null);
     setSuccess(null);
@@ -94,12 +101,19 @@ export function ArticleEditorForm({ article, onUpdated }: ArticleEditorFormProps
       const body = (await response.json()) as ArticleResponse;
       onUpdated(body.data);
       setForm(toFormState(body.data));
-      setSuccess(mode === "approve" ? "Статья одобрена" : "Изменения сохранены");
+      setSuccess(
+        mode === "approve"
+          ? "Статья одобрена"
+          : mode === "archive"
+            ? "Черновик отправлен в архив"
+            : "Изменения сохранены"
+      );
     } catch {
       setError("Сетевая ошибка при сохранении статьи");
     } finally {
       setSaving(false);
       setApproving(false);
+      setArchiving(false);
     }
   }
 
@@ -128,6 +142,10 @@ export function ArticleEditorForm({ article, onUpdated }: ArticleEditorFormProps
       },
       "approve"
     );
+  }
+
+  function handleArchive() {
+    void patchArticle({ status: "ARCHIVED" }, "archive");
   }
 
   return (
@@ -318,7 +336,7 @@ export function ArticleEditorForm({ article, onUpdated }: ArticleEditorFormProps
             <Button
               type="button"
               onClick={handleSave}
-              disabled={saving || approving}
+              disabled={saving || approving || archiving}
               className="w-full bg-gradient-to-r from-blue-600 to-violet-600 text-white hover:from-blue-500 hover:to-violet-500"
             >
               {saving ? (
@@ -336,7 +354,7 @@ export function ArticleEditorForm({ article, onUpdated }: ArticleEditorFormProps
                 type="button"
                 variant="outline"
                 onClick={handleApprove}
-                disabled={saving || approving}
+                disabled={saving || approving || archiving}
                 className="w-full border-emerald-500/30 bg-emerald-500/10 text-emerald-200 hover:bg-emerald-500/20"
               >
                 {approving ? (
@@ -346,6 +364,34 @@ export function ArticleEditorForm({ article, onUpdated }: ArticleEditorFormProps
                   </>
                 ) : (
                   "Mark as approved"
+                )}
+              </Button>
+            ) : null}
+
+            {article.qualityPassed === false ? (
+              <p className="rounded-lg border border-amber-500/20 bg-amber-500/10 px-3 py-2 text-xs text-amber-100">
+                Черновик нельзя одобрить, пока он не пройдёт проверку качества.
+              </p>
+            ) : null}
+
+            {canArchive ? (
+              <Button
+                type="button"
+                variant="outline"
+                onClick={handleArchive}
+                disabled={saving || approving || archiving}
+                className="w-full border-slate-500/30 bg-slate-500/10 text-slate-200 hover:bg-slate-500/20"
+              >
+                {archiving ? (
+                  <>
+                    <Loader2 className="size-4 animate-spin" />
+                    Отправляем в архив…
+                  </>
+                ) : (
+                  <>
+                    <Archive className="size-4" />
+                    В архив
+                  </>
                 )}
               </Button>
             ) : null}

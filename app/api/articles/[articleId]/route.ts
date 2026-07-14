@@ -22,7 +22,7 @@ const updateArticleSchema = z
     metaDescription: z.string().max(500).nullable().optional(),
     contentHtml: z.string().nullable().optional(),
     status: z
-      .enum(["IDEA", "DRAFT", "WAITING_REVIEW", "APPROVED"])
+      .enum(["IDEA", "DRAFT", "WAITING_REVIEW", "APPROVED", "ARCHIVED"])
       .optional(),
   })
   .refine((value) => Object.keys(value).length > 0, {

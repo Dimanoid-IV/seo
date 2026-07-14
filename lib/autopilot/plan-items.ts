@@ -72,11 +72,11 @@ export function buildPlanItemsFromRecommendedActions(input: {
 
   for (const action of input.recommendedActions.slice(0, 8)) {
     let type: AutopilotPlanItem["type"] = "TASK_FIX";
-    if (action.type === "ARTICLE" || action.type === "REVIEW") {
+    if (action.type === "ARTICLE") {
       type = "ARTICLE";
     } else if (action.type === "SOCIAL_POST") {
       type = "SOCIAL_POST";
-    } else if (action.type === "INTEGRATION") {
+    } else if (action.type === "INTEGRATION" || action.type === "REVIEW") {
       type = "SEO_FIX";
     }
 

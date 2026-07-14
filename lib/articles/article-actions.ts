@@ -45,6 +45,7 @@ const EDITABLE_STATUSES: ArticleStatus[] = [
   ArticleStatus.DRAFT,
   ArticleStatus.WAITING_REVIEW,
   ArticleStatus.APPROVED,
+  ArticleStatus.ARCHIVED,
 ];
 
 async function findArticleForUser(articleId: string, userId: string) {
@@ -168,6 +169,16 @@ export async function updateArticleForUser({
   let approved = false;
   if (data.status !== undefined) {
     const nextStatus = parseEditableStatus(data.status);
+    if (
+      nextStatus === ArticleStatus.APPROVED &&
+      existing.generatedByAIJobId &&
+      existing.qualityPassed === false
+    ) {
+      throw new AppError(
+        ErrorCode.VALIDATION_ERROR,
+        "Черновик не прошёл проверку качества. Доработайте его перед одобрением."
+      );
+    }
     updateData.status = nextStatus;
 
     if (nextStatus === ArticleStatus.APPROVED && existing.status !== ArticleStatus.APPROVED) {
