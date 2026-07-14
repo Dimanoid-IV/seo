@@ -92,6 +92,9 @@ function resolveAction(
   if (integration.connected) {
     return { label: labels.manage, variant: "secondary" };
   }
+  if (integration.provider === "google_search_console") {
+    return { label: labels.connectGsc, variant: "primary" };
+  }
   return { label: labels.connect, variant: "primary" };
 }
 
@@ -107,6 +110,7 @@ export function IntegrationCard({
   const Icon = visual.icon;
   const action = resolveAction(integration, {
     connect: i.connect,
+    connectGsc: i.connectGscButton,
     manage: i.manage,
     comingSoon: i.comingSoon,
     platformManaged: i.hermesPlatformManaged,
