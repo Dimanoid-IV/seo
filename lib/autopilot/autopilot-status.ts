@@ -139,7 +139,15 @@ export async function getAutopilotStatusSnapshot(input: {
     blockedReasonKeys.push("autopilotOff");
   }
 
-  if (!wordpressConnected && items.some((i) => i.type === "ARTICLE")) {
+  const articleAwaitingWordPress = items.some(
+    (item) =>
+      item.type === "ARTICLE" &&
+      Boolean(item.generatedArticleId) &&
+      item.articleQualityPassed !== false &&
+      !["executed", "published", "skipped"].includes(item.status)
+  );
+
+  if (!wordpressConnected && articleAwaitingWordPress) {
     blockedReasonKeys.push("wordpressNotConnected");
   }
 

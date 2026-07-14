@@ -22,6 +22,7 @@ import { timelineAfterAutopilotPlanItemExecuted } from "./hooks";
 import {
   parsePlanItemsDocument,
   planItemsToJson,
+  reconcileArticleDraftSchedulingBlocks,
   repairApprovedPlanItemsDocument,
   resolvePlanItemsDocumentFromPlan,
 } from "./plan-items";
@@ -162,9 +163,23 @@ export async function runScheduledAutopilotPlans(input: {
         document,
         planStatus: plan.status,
         approvedAt: plan.approvedAt,
-        wordpressConnected,
       });
+    }
 
+    const reconciled = reconcileArticleDraftSchedulingBlocks({
+      document,
+      approvedAt: plan.approvedAt,
+    });
+
+    if (reconciled !== document) {
+      document = reconciled;
+      if (!dryRun) {
+        await prisma.monthlyAutopilotPlan.update({
+          where: { id: plan.id },
+          data: { planItemsJson: planItemsToJson(document) },
+        });
+      }
+    } else if (!hadPersistedItems && plan.status === MonthlyAutopilotStatus.APPROVED) {
       if (!dryRun) {
         await prisma.monthlyAutopilotPlan.update({
           where: { id: plan.id },

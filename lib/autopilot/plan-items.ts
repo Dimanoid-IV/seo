@@ -373,16 +373,6 @@ export function enrichPlanItemsFromEntities(input: {
   const items = input.document.items.map((item) => {
     let next = { ...item };
 
-    if (item.type === "ARTICLE" && !input.wordpressConnected) {
-      if (next.status === "scheduled" || next.status === "approved") {
-        next = {
-          ...next,
-          status: "blocked",
-          blockedReasonKey: "wordpressNotConnected",
-        };
-      }
-    }
-
     if (item.sourceRef?.type === "task") {
       const task = taskById.get(item.sourceRef.id);
       const preparedFix = task
@@ -473,7 +463,6 @@ export function repairApprovedPlanItemsDocument(input: {
   document: AutopilotPlanItemsDocument;
   planStatus: MonthlyAutopilotStatus;
   approvedAt: Date | null;
-  wordpressConnected: boolean;
 }): AutopilotPlanItemsDocument {
   if (input.planStatus !== "APPROVED") {
     return input.document;
@@ -487,17 +476,9 @@ export function repairApprovedPlanItemsDocument(input: {
     return input.document;
   }
 
-  let items = input.document.items.map((item) => {
+  const items = input.document.items.map((item) => {
     if (item.status !== "proposed") {
       return item;
-    }
-
-    if (item.type === "ARTICLE" && !input.wordpressConnected) {
-      return {
-        ...item,
-        status: "blocked" as const,
-        blockedReasonKey: "wordpressNotConnected" as const,
-      };
     }
 
     return { ...item, status: "approved" as const };
@@ -507,7 +488,7 @@ export function repairApprovedPlanItemsDocument(input: {
     items.filter((item) => item.status === "approved").map((item) => item.id)
   );
 
-  items = assignEveryOtherDaySlots({
+  const scheduledItems = assignEveryOtherDaySlots({
     items,
     approvedItemIds: approvedIds,
     now: input.approvedAt ?? new Date(),
@@ -515,9 +496,61 @@ export function repairApprovedPlanItemsDocument(input: {
 
   return {
     ...input.document,
-    items,
+    items: scheduledItems,
     itemsApprovedAt: input.approvedAt?.toISOString(),
   };
+}
+
+/**
+ * WordPress is required only for publish/draft push, not internal article draft prep.
+ * Unblocks ARTICLE items that were blocked solely for missing WordPress at approval/repair.
+ */
+export function reconcileArticleDraftSchedulingBlocks(input: {
+  document: AutopilotPlanItemsDocument;
+  approvedAt: Date | null;
+}): AutopilotPlanItemsDocument {
+  let changed = false;
+  let items = input.document.items.map((item) => {
+    if (
+      item.type === "ARTICLE" &&
+      item.status === "blocked" &&
+      item.blockedReasonKey === "wordpressNotConnected" &&
+      !item.generatedArticleId
+    ) {
+      changed = true;
+      return {
+        ...item,
+        status: "approved" as const,
+        blockedReasonKey: undefined,
+      };
+    }
+    return item;
+  });
+
+  if (!changed) {
+    return input.document;
+  }
+
+  const approvedIds = new Set(
+    items
+      .filter(
+        (item) =>
+          item.type === "ARTICLE" &&
+          item.status === "approved" &&
+          !item.scheduledFor
+      )
+      .map((item) => item.id)
+  );
+
+  if (approvedIds.size > 0) {
+    items = assignEveryOtherDaySlots({
+      items,
+      approvedItemIds: approvedIds,
+      now: input.approvedAt ?? new Date(),
+    });
+  }
+
+  return { ...input.document, items };
 }
 
 export function findNextScheduledItem(
