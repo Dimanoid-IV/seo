@@ -1,5 +1,3 @@
-import { z } from "zod";
-
 import { requireUser } from "@/lib/auth/current-user";
 import {
   authErrorResponse,
@@ -9,18 +7,14 @@ import {
 } from "@/lib/auth/responses";
 import { getServerEnv } from "@/lib/env";
 import { AppError, ErrorCode } from "@/lib/errors";
-import { selectGscSearchConsoleSite } from "@/lib/integrations/gsc-property";
-
-const selectSiteSchema = z.object({
-  siteUrl: z.string().min(1, "Укажите siteUrl"),
-  confirmMismatch: z.boolean().optional(),
-});
+import { createAssistedSetupRequest } from "@/lib/integrations/assisted-setup";
+import { assistedSetupFormSchema } from "@/lib/validators";
 
 function assertDatabaseConfigured(): void {
   if (!getServerEnv().DATABASE_URL) {
     throw new AppError(
       ErrorCode.INTERNAL_ERROR,
-      "База данных не настроена. Установите DATABASE_URL.",
+      "Database is not configured.",
       { statusCode: 503 }
     );
   }
@@ -32,19 +26,28 @@ export async function POST(request: Request) {
 
     const currentUser = await requireUser(request);
     const body = await parseJsonBody(request);
-    const parsed = selectSiteSchema.safeParse(body);
+    const parsed = assistedSetupFormSchema.safeParse(body);
 
     if (!parsed.success) {
       throw validationErrorFromZod(parsed.error);
     }
 
-    const result = await selectGscSearchConsoleSite(
-      currentUser,
-      parsed.data.siteUrl,
-      { confirmMismatch: parsed.data.confirmMismatch }
-    );
+    if (parsed.data.honeypot?.trim()) {
+      return authJsonResponse({ data: { success: true } });
+    }
 
-    return authJsonResponse({ data: result });
+    const result = await createAssistedSetupRequest({
+      data: parsed.data,
+      userId: currentUser.id,
+      websiteId: parsed.data.websiteId ?? null,
+    });
+
+    return authJsonResponse({
+      data: {
+        success: true,
+        requestId: result.id,
+      },
+    });
   } catch (error) {
     return authErrorResponse(request, error);
   }

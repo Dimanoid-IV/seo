@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   AlertCircle,
   CheckCircle2,
@@ -10,6 +10,7 @@ import {
   Loader2,
 } from "lucide-react";
 
+import { GscAssistedSetupPanel } from "@/components/integrations/GscAssistedSetupForm";
 import { GscSyncButton } from "@/components/integrations/GoogleSearchConsoleDashboardCard";
 import { GscMetricsSummaryDisplay } from "@/components/integrations/GscMetricsSummary";
 import { GscInsightsList } from "@/components/integrations/GscInsightsList";
@@ -29,10 +30,23 @@ import { cn } from "@/lib/utils";
 type GoogleSearchConsolePropertyPickerProps = {
   selectedSiteUrl?: string | null;
   websiteId?: string | null;
+  websiteUrl?: string | null;
+  userEmail?: string | null;
+  userName?: string | null;
+  autoOpen?: boolean;
   onSiteSelected: (siteUrl: string) => void;
   onIntegrationUpdated?: () => void;
   onContinueWithoutGsc?: () => void;
   className?: string;
+};
+
+type ApiErrorBody = {
+  error?: {
+    message?: string;
+    details?: {
+      requiresMismatchConfirmation?: boolean;
+    };
+  };
 };
 
 function GscPropertyActions({
@@ -90,6 +104,10 @@ function GscPropertyActions({
 export function GoogleSearchConsolePropertyPicker({
   selectedSiteUrl,
   websiteId,
+  websiteUrl,
+  userEmail,
+  userName,
+  autoOpen = false,
   onSiteSelected,
   onIntegrationUpdated,
   onContinueWithoutGsc,
@@ -97,7 +115,7 @@ export function GoogleSearchConsolePropertyPicker({
 }: GoogleSearchConsolePropertyPickerProps) {
   const { dict } = useSaasTranslations();
   const p = dict.integrations.gscPropertyPicker;
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(autoOpen);
   const [loading, setLoading] = useState(false);
   const [syncing, setSyncing] = useState(false);
   const [submittingSiteUrl, setSubmittingSiteUrl] = useState<string | null>(
@@ -107,7 +125,17 @@ export function GoogleSearchConsolePropertyPicker({
   const [syncError, setSyncError] = useState<string | null>(null);
   const [sites, setSites] = useState<SearchConsoleSite[]>([]);
   const [websiteDomain, setWebsiteDomain] = useState<string | null>(null);
+  const [loadedWebsiteUrl, setLoadedWebsiteUrl] = useState<string | null>(
+    websiteUrl ?? null
+  );
   const [hasMatchingProperty, setHasMatchingProperty] = useState<boolean | null>(
+    null
+  );
+  const [autoSelectCandidateUrl, setAutoSelectCandidateUrl] = useState<
+    string | null
+  >(null);
+  const [dismissedAutoSelect, setDismissedAutoSelect] = useState(false);
+  const [pendingMismatchSite, setPendingMismatchSite] = useState<string | null>(
     null
   );
   const [showOtherProperties, setShowOtherProperties] = useState(false);
@@ -120,12 +148,26 @@ export function GoogleSearchConsolePropertyPicker({
     GscSyncResponse["data"]["summary"] | null
   >(null);
   const [syncTasksCreated, setSyncTasksCreated] = useState<number | null>(null);
+  const autoLoadedRef = useRef(false);
+
+  useEffect(() => {
+    if (!autoOpen || autoLoadedRef.current) {
+      return;
+    }
+    autoLoadedRef.current = true;
+    setOpen(true);
+    void loadSites();
+    // Intentionally run once when autoOpen is enabled from OAuth redirect.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [autoOpen]);
 
   async function loadSites() {
     setLoading(true);
     setError(null);
     setSuccessSiteUrl(null);
     setShowOtherProperties(false);
+    setDismissedAutoSelect(false);
+    setPendingMismatchSite(null);
 
     try {
       const response = await authFetch(
@@ -142,7 +184,9 @@ export function GoogleSearchConsolePropertyPicker({
       setSites(body.data.sites);
       setLoadedSelectedSiteUrl(body.data.selectedSiteUrl);
       setWebsiteDomain(body.data.websiteDomain);
+      setLoadedWebsiteUrl(body.data.websiteUrl);
       setHasMatchingProperty(body.data.hasMatchingProperty);
+      setAutoSelectCandidateUrl(body.data.autoSelectCandidateUrl ?? null);
     } catch {
       setError(p.loadNetworkError);
     } finally {
@@ -197,7 +241,7 @@ export function GoogleSearchConsolePropertyPicker({
     }
   }
 
-  async function handleSelectSite(siteUrl: string) {
+  async function handleSelectSite(siteUrl: string, confirmMismatch = false) {
     setSubmittingSiteUrl(siteUrl);
     setError(null);
     setSuccessSiteUrl(null);
@@ -210,21 +254,33 @@ export function GoogleSearchConsolePropertyPicker({
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ siteUrl }),
+          body: JSON.stringify({ siteUrl, confirmMismatch }),
         }
       );
 
+      const body = (await response.json()) as
+        | GscSelectSiteResponse
+        | ApiErrorBody;
+
       if (!response.ok) {
-        const message = await parseApiErrorMessage(response, p.selectSiteFailed);
-        setError(message);
+        const errorBody = body as ApiErrorBody;
+        if (errorBody.error?.details?.requiresMismatchConfirmation) {
+          setPendingMismatchSite(siteUrl);
+          return;
+        }
+
+        setError(errorBody.error?.message ?? p.selectSiteFailed);
         return;
       }
 
-      const body = (await response.json()) as GscSelectSiteResponse;
-      setLoadedSelectedSiteUrl(body.data.siteUrl);
-      setSuccessSiteUrl(body.data.siteUrl);
-      onSiteSelected(body.data.siteUrl);
+      const successBody = body as GscSelectSiteResponse;
+      setLoadedSelectedSiteUrl(successBody.data.siteUrl);
+      setSuccessSiteUrl(successBody.data.siteUrl);
+      setPendingMismatchSite(null);
+      setAutoSelectCandidateUrl(null);
+      onSiteSelected(successBody.data.siteUrl);
       onIntegrationUpdated?.();
+      await handleSync();
     } catch {
       setError(p.loadNetworkError);
     } finally {
@@ -249,17 +305,33 @@ export function GoogleSearchConsolePropertyPicker({
   }
 
   const activeSelected = loadedSelectedSiteUrl ?? selectedSiteUrl ?? null;
+  const showAutoSelectConfirm =
+    !loading &&
+    !error &&
+    !activeSelected &&
+    !dismissedAutoSelect &&
+    Boolean(autoSelectCandidateUrl);
   const showMismatchState =
     !loading &&
     !error &&
     sites.length > 0 &&
     hasMatchingProperty === false &&
-    !activeSelected;
+    !activeSelected &&
+    !showAutoSelectConfirm;
   const showNoPropertiesState =
     !loading && !error && sites.length === 0 && hasMatchingProperty !== null;
   const showPropertyList =
     sites.length > 0 &&
-    (!showMismatchState || showOtherProperties || Boolean(activeSelected));
+    (!showMismatchState || showOtherProperties || Boolean(activeSelected)) &&
+    !showAutoSelectConfirm;
+
+  const assistedSetupDefaults = {
+    defaultEmail: userEmail,
+    defaultName: userName,
+    defaultWebsiteUrl: loadedWebsiteUrl ?? websiteUrl,
+    websiteId,
+    sourcePage: "/app/integrations",
+  };
 
   return (
     <section
@@ -276,7 +348,7 @@ export function GoogleSearchConsolePropertyPicker({
         <div>
           <p className="text-sm font-medium text-slate-900">{p.title}</p>
           {activeSelected ? (
-            <p className="mt-1 text-xs text-cyan-700">
+            <p className="mt-1 break-all text-xs text-cyan-700">
               {p.currentSite} {activeSelected}
             </p>
           ) : (
@@ -347,6 +419,10 @@ export function GoogleSearchConsolePropertyPicker({
                 continueLabel={p.continueWithoutGsc}
                 openSearchConsoleLabel={p.openSearchConsole}
               />
+              <GscAssistedSetupPanel
+                {...assistedSetupDefaults}
+                defaultIssueType="NO_ACCESS"
+              />
             </div>
           ) : null}
 
@@ -355,8 +431,90 @@ export function GoogleSearchConsolePropertyPicker({
               <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-emerald-600" />
               <p>
                 {p.siteSelected}{" "}
-                <span className="font-medium">{successSiteUrl}</span>
+                <span className="break-all font-medium">{successSiteUrl}</span>
               </p>
+            </div>
+          ) : null}
+
+          {pendingMismatchSite && websiteDomain ? (
+            <div className="space-y-3 rounded-lg border border-amber-500/30 bg-amber-500/10 p-4">
+              <div>
+                <p className="text-sm font-medium text-slate-900">
+                  {p.mismatchWarningTitle}
+                </p>
+                <p className="mt-2 text-sm text-slate-600">
+                  {p.mismatchWarningText(websiteDomain, pendingMismatchSite)}
+                </p>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                <Button
+                  type="button"
+                  size="sm"
+                  disabled={Boolean(submittingSiteUrl)}
+                  onClick={() =>
+                    void handleSelectSite(pendingMismatchSite, true)
+                  }
+                >
+                  {submittingSiteUrl === pendingMismatchSite ? (
+                    <>
+                      <Loader2 className="size-4 animate-spin" />
+                      {p.saving}
+                    </>
+                  ) : (
+                    p.mismatchConfirm
+                  )}
+                </Button>
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="outline"
+                  className="border-slate-200 bg-white text-slate-700"
+                  onClick={() => setPendingMismatchSite(null)}
+                >
+                  {p.mismatchCancel}
+                </Button>
+              </div>
+            </div>
+          ) : null}
+
+          {showAutoSelectConfirm && autoSelectCandidateUrl ? (
+            <div className="space-y-3 rounded-lg border border-cyan-500/30 bg-cyan-500/10 p-4">
+              <div>
+                <p className="text-sm font-medium text-slate-900">
+                  {p.autoSelectTitle}
+                </p>
+                <p className="mt-2 break-all text-sm text-slate-600">
+                  {p.autoSelectText(autoSelectCandidateUrl)}
+                </p>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                <Button
+                  type="button"
+                  size="sm"
+                  disabled={Boolean(submittingSiteUrl)}
+                  onClick={() =>
+                    void handleSelectSite(autoSelectCandidateUrl)
+                  }
+                >
+                  {submittingSiteUrl === autoSelectCandidateUrl ? (
+                    <>
+                      <Loader2 className="size-4 animate-spin" />
+                      {p.selectingProperty}
+                    </>
+                  ) : (
+                    p.autoSelectConfirm
+                  )}
+                </Button>
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="outline"
+                  className="border-slate-200 bg-white text-slate-700"
+                  onClick={() => setDismissedAutoSelect(true)}
+                >
+                  {p.autoSelectDecline}
+                </Button>
+              </div>
             </div>
           ) : null}
 
@@ -374,6 +532,10 @@ export function GoogleSearchConsolePropertyPicker({
                 retryLabel={p.retry}
                 continueLabel={p.continueWithoutGsc}
                 openSearchConsoleLabel={p.openSearchConsole}
+              />
+              <GscAssistedSetupPanel
+                {...assistedSetupDefaults}
+                defaultIssueType="NO_ACCESS"
               />
             </div>
           ) : null}
@@ -406,6 +568,10 @@ export function GoogleSearchConsolePropertyPicker({
                   {p.chooseOtherPropertyAnyway}
                 </Button>
               ) : null}
+              <GscAssistedSetupPanel
+                {...assistedSetupDefaults}
+                defaultIssueType="NO_PROPERTY_FOUND"
+              />
             </div>
           ) : null}
 
@@ -433,18 +599,25 @@ export function GoogleSearchConsolePropertyPicker({
                     >
                       <div className="flex items-start justify-between gap-3">
                         <div className="min-w-0 flex-1">
-                          <p className="truncate text-sm font-medium text-slate-900">
+                          <p className="break-all text-sm font-medium text-slate-900">
                             {site.siteUrl}
                           </p>
                           <p className="mt-1 text-xs text-slate-400">
                             {permissionLabel(site.permissionLevel)}
                           </p>
                         </div>
-                        {isSelected ? (
-                          <span className="shrink-0 rounded-full border border-cyan-500/30 bg-cyan-500/20 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-cyan-700">
-                            {p.selected}
-                          </span>
-                        ) : null}
+                        <div className="flex shrink-0 flex-col items-end gap-1">
+                          {site.recommended ? (
+                            <span className="rounded-full border border-emerald-500/30 bg-emerald-500/20 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-emerald-700">
+                              {p.recommendedBadge}
+                            </span>
+                          ) : null}
+                          {isSelected ? (
+                            <span className="rounded-full border border-cyan-500/30 bg-cyan-500/20 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-cyan-700">
+                              {p.selected}
+                            </span>
+                          ) : null}
+                        </div>
                       </div>
                       <Button
                         type="button"

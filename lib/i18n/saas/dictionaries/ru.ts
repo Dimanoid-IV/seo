@@ -373,6 +373,10 @@ export const saasDictionary: SaasDictionary = {
     goToControlCenter: "Перейти в Центр управления",
     gscSkipHint:
       "Можно пропустить этот шаг и подключить Search Console позже в разделе Интеграции.",
+    gscNeverAskPassword:
+      "RankBoost никогда не запрашивает пароль от Google — только безопасный OAuth-доступ.",
+    gscHelpHint:
+      "Не получается подключить? Мы поможем настроить Search Console без пароля.",
     sidebarNextTitle: "Что RankBoost сделает дальше",
     sidebarNextItems: [
       "Превратит находки аудита в приоритетные задачи",
@@ -622,6 +626,14 @@ export const saasDictionary: SaasDictionary = {
     whatRankBoostCanDo: "Что сможет делать RankBoost",
     close: "Закрыть",
     connectGoogle: "Подключить Google",
+    connectGscButton: "Подключить Google Search Console",
+    gscAutoSelected:
+      "Мы автоматически подключили подходящее свойство Search Console.",
+    gscChooseProperty:
+      "Google подключён. Выберите свойство Search Console для вашего сайта.",
+    gscInitialSyncFailed:
+      "Свойство подключено, но первую синхронизацию не удалось выполнить. Попробуйте обновить данные.",
+    gscConnectedState: "Google Search Console подключён",
     gscSyncFailed: "Не удалось обновить данные Search Console",
     gscSyncNetworkError: "Сетевая ошибка при обновлении данных Search Console",
     searchConsoleSite: "Сайт Search Console:",
@@ -654,12 +666,50 @@ export const saasDictionary: SaasDictionary = {
       selectSiteFailed: "Не удалось сохранить выбранный сайт",
       syncTasksCreated: (count: number) =>
         `Создано ${count} новых задач — они появятся в разделе Задачи.`,
+      recommendedBadge: "Рекомендуем",
+      autoSelectTitle: "Мы нашли подходящее свойство",
+      autoSelectText: (property: string) =>
+        `Свойство ${property} соответствует вашему сайту. Подключить его?`,
+      autoSelectConfirm: "Подключить",
+      autoSelectDecline: "Выбрать другое",
+      mismatchWarningTitle: "Это свойство не похоже на ваш сайт",
+      mismatchWarningText: (domain: string, property: string) =>
+        `Свойство ${property} не совпадает с ${domain}. Вы уверены, что хотите его использовать?`,
+      mismatchConfirm: "Да, использовать",
+      mismatchCancel: "Отмена",
+      selectingProperty: "Выбираем свойство…",
       permissions: {
         siteOwner: "Владелец",
         siteFullUser: "Полный доступ",
         siteRestrictedUser: "Ограниченный доступ",
         siteUnverifiedUser: "Не подтверждён",
       },
+    },
+    gscAssistedSetup: {
+      title: "Нужна помощь с подключением?",
+      description:
+        "Мы можем помочь настроить Search Console безопасно. Мы не просим ваш пароль от Google.",
+      requestButton: "Заказать помощь",
+      pricingHint: "Помощь с настройкой — от €29",
+      nameLabel: "Имя",
+      emailLabel: "Email",
+      websiteLabel: "URL сайта",
+      issueLabel: "Что произошло",
+      commentLabel: "Комментарий (необязательно)",
+      consentLabel:
+        "Я понимаю, что RankBoost не запрашивает пароль от Google. Поддержка объяснит, как безопасно выдать доступ.",
+      consentRequired: "Подтвердите согласие, чтобы отправить запрос",
+      submitButton: "Заказать помощь",
+      submitting: "Отправляем…",
+      submitFailed: "Не удалось отправить запрос",
+      submitNetworkError: "Сетевая ошибка при отправке запроса",
+      successMessage:
+        "Запрос отправлен. Мы свяжемся с вами по email и поможем безопасно настроить доступ.",
+      issueNoProperty: "Сайт не найден среди свойств",
+      issueNoAccess: "Нет доступа к Search Console",
+      issueNotVerified: "Сайт не подтверждён",
+      issueNotSure: "Не уверен(а), что делать",
+      issueOther: "Другое",
     },
     wordpress: {
       setupSteps: [

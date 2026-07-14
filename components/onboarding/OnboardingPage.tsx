@@ -14,6 +14,7 @@ import { OnboardingResultsStep } from "@/components/onboarding/OnboardingResults
 import { OnboardingStepCard } from "@/components/onboarding/OnboardingStepCard";
 import { OnboardingWebsiteStep } from "@/components/onboarding/OnboardingWebsiteStep";
 import { useOnboarding } from "@/components/onboarding/useOnboarding";
+import { useAuthSession } from "@/components/auth/AuthSessionProvider";
 import { Button } from "@/components/ui/button";
 import { authFetch, parseApiErrorMessage } from "@/lib/auth/client-session";
 import { useSaasTranslations } from "@/lib/i18n/saas/SaasLocaleProvider";
@@ -23,6 +24,9 @@ function renderStepContent(
   step: OnboardingStepViewModel,
   input: {
     websiteId?: string;
+    websiteUrl?: string;
+    userEmail?: string | null;
+    userName?: string | null;
     results?: OnboardingViewModel["results"];
     reload: () => Promise<OnboardingViewModel | null>;
     setActionError: (message: string) => void;
@@ -56,6 +60,10 @@ function renderStepContent(
       return step.status === "DONE" || step.status === "SKIPPED" ? null : (
         <OnboardingGscStep
           disabled={disabled}
+          websiteId={input.websiteId}
+          websiteUrl={input.websiteUrl}
+          userEmail={input.userEmail}
+          userName={input.userName}
           onSkip={async () => {
             await input.reload();
           }}
@@ -90,6 +98,7 @@ function renderStepContent(
 export function OnboardingPage() {
   const { dict } = useSaasTranslations();
   const o = dict.onboarding;
+  const { user } = useAuthSession();
   const { data, loading, error, reload } = useOnboarding();
   const [actionError, setActionError] = useState<string | null>(null);
   const [skippingAll, setSkippingAll] = useState(false);
@@ -186,6 +195,11 @@ export function OnboardingPage() {
               <OnboardingStepCard key={step.key} step={step}>
                 {renderStepContent(step, {
                   websiteId: data.website?.id,
+                  websiteUrl: data.website?.domain
+                    ? `https://${data.website.domain}`
+                    : undefined,
+                  userEmail: user?.email,
+                  userName: user?.name,
                   results: data.results,
                   reload,
                   setActionError,

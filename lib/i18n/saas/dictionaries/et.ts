@@ -373,6 +373,10 @@ export const saasDictionary: SaasDictionary = {
     goToControlCenter: "Mine juhtimiskeskusesse",
     gscSkipHint:
       "Saate selle sammu vahele jätta ja Search Console hiljem Integratsioonide alt ühendada.",
+    gscNeverAskPassword:
+      "RankBoost ei küsi kunagi teie Google'i parooli — ainult turvaline OAuth-juurdepääs.",
+    gscHelpHint:
+      "Ühendamine ei õnnestu? Aitame Search Console'i seadistada ilma paroolita.",
     sidebarNextTitle: "Mida RankBoost edasi teeb",
     sidebarNextItems: [
       "Muudab auditi leiud prioriteetseteks ülesanneteks",
@@ -622,6 +626,14 @@ export const saasDictionary: SaasDictionary = {
     whatRankBoostCanDo: "Mida RankBoost tead teha",
     close: "Sulge",
     connectGoogle: "Ühenda Google",
+    connectGscButton: "Ühenda Google Search Console",
+    gscAutoSelected:
+      "Ühendasime automaatselt sobiva Search Console'i omaduse.",
+    gscChooseProperty:
+      "Google on ühendatud. Valige oma veebisaidi Search Console'i omadus.",
+    gscInitialSyncFailed:
+      "Omadus on ühendatud, kuid esimene sünkroniseerimine ebaõnnestus. Proovige andmeid värskendada.",
+    gscConnectedState: "Google Search Console ühendatud",
     gscSyncFailed: "Search Console'i andmeid ei õnnestunud värskendada",
     gscSyncNetworkError: "Võrguviga Search Console'i andmete värskendamisel",
     searchConsoleSite: "Search Console'i sait:",
@@ -656,12 +668,50 @@ export const saasDictionary: SaasDictionary = {
       selectSiteFailed: "Valitud saiti ei õnnestunud salvestada",
       syncTasksCreated: (count: number) =>
         `Loodi ${count} uut ülesannet — need ilmuvad jaotises Ülesanded.`,
+      recommendedBadge: "Soovitatav",
+      autoSelectTitle: "Leidsime sobiva omaduse",
+      autoSelectText: (property: string) =>
+        `Omadus ${property} vastab teie veebisaidile. Kas ühendada?`,
+      autoSelectConfirm: "Ühenda",
+      autoSelectDecline: "Vali teine",
+      mismatchWarningTitle: "See omadus ei vasta teie veebisaidile",
+      mismatchWarningText: (domain: string, property: string) =>
+        `Omadus ${property} ei vasta domeenile ${domain}. Kas olete kindel, et soovite seda kasutada?`,
+      mismatchConfirm: "Jah, kasuta seda",
+      mismatchCancel: "Tühista",
+      selectingProperty: "Valime omadust…",
       permissions: {
         siteOwner: "Omanik",
         siteFullUser: "Täielik juurdepääs",
         siteRestrictedUser: "Piiratud juurdepääs",
         siteUnverifiedUser: "Kinnitamata",
       },
+    },
+    gscAssistedSetup: {
+      title: "Vajate ühendamise abi?",
+      description:
+        "Aitame teil Search Console'i turvaliselt seadistada. Me ei küsi kunagi teie parooli.",
+      requestButton: "Tellida seadistamise abi",
+      pricingHint: "Abiga seadistamine alates €29",
+      nameLabel: "Nimi",
+      emailLabel: "E-post",
+      websiteLabel: "Veebisaidi URL",
+      issueLabel: "Mis juhtus",
+      commentLabel: "Kommentaar (valikuline)",
+      consentLabel:
+        "Mõistan, et RankBoost ei küsi Google'i parooli. Tugi selgitab, kuidas juurdepääsu turvaliselt anda.",
+      consentRequired: "Palun kinnitage nõusolek enne päringu saatmist",
+      submitButton: "Tellida seadistamise abi",
+      submitting: "Saadan…",
+      submitFailed: "Päringu saatmine ebaõnnestus",
+      submitNetworkError: "Võrguviga päringu saatmisel",
+      successMessage:
+        "Päring saadetud. Võtame teiega e-posti teel ühendust ja aitame juurdepääsu turvaliselt seadistada.",
+      issueNoProperty: "Omadust ei leitud",
+      issueNoAccess: "Puudub juurdepääs Search Console'ile",
+      issueNotVerified: "Sait pole kinnitatud",
+      issueNotSure: "Ei ole kindel, mida teha",
+      issueOther: "Muu",
     },
     wordpress: {
       setupSteps: [

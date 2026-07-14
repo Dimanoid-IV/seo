@@ -40,7 +40,10 @@ type IntegrationActionSheetProps = {
   onOpenChange: (open: boolean) => void;
   integration: IntegrationOverviewItem | null;
   websiteId?: string | null;
+  websiteUrl?: string | null;
   userEmail?: string | null;
+  userName?: string | null;
+  gscPickerAutoOpen?: boolean;
   onIntegrationUpdated?: () => void;
 };
 
@@ -89,7 +92,10 @@ export function IntegrationActionSheet({
   onOpenChange,
   integration,
   websiteId,
+  websiteUrl,
   userEmail,
+  userName,
+  gscPickerAutoOpen = false,
   onIntegrationUpdated,
 }: IntegrationActionSheetProps) {
   return (
@@ -98,7 +104,10 @@ export function IntegrationActionSheet({
         <IntegrationActionSheetContent
           integration={integration}
           websiteId={websiteId}
+          websiteUrl={websiteUrl}
           userEmail={userEmail}
+          userName={userName}
+          gscPickerAutoOpen={gscPickerAutoOpen}
           onIntegrationUpdated={onIntegrationUpdated}
           onOpenChange={onOpenChange}
         />
@@ -121,13 +130,19 @@ function formatConnectedAt(iso: string, locale: SaasLocale): string {
 function IntegrationActionSheetContent({
   integration,
   websiteId,
+  websiteUrl,
   userEmail,
+  userName,
+  gscPickerAutoOpen = false,
   onIntegrationUpdated,
   onOpenChange,
 }: {
   integration: IntegrationOverviewItem;
   websiteId?: string | null;
+  websiteUrl?: string | null;
   userEmail?: string | null;
+  userName?: string | null;
+  gscPickerAutoOpen?: boolean;
   onIntegrationUpdated?: () => void;
   onOpenChange: (open: boolean) => void;
 }) {
@@ -294,6 +309,10 @@ function IntegrationActionSheetContent({
             <GoogleSearchConsolePropertyPicker
               selectedSiteUrl={integration.selectedProperty}
               websiteId={websiteId}
+              websiteUrl={websiteUrl}
+              userEmail={userEmail}
+              userName={userName}
+              autoOpen={gscPickerAutoOpen || !gscPropertySelected}
               onSiteSelected={() => onIntegrationUpdated?.()}
               onIntegrationUpdated={onIntegrationUpdated}
               onContinueWithoutGsc={() => onOpenChange(false)}
@@ -373,7 +392,7 @@ function IntegrationActionSheetContent({
                     disabled={!canConnectGsc}
                     className="w-full bg-gradient-to-r from-blue-600 to-violet-600 text-white hover:from-blue-500 hover:to-violet-500"
                   >
-                    {i.connectGoogle}
+                    {i.connectGscButton}
                   </Button>
                   {!websiteId ? (
                     <p className="text-center text-xs text-amber-400/90">

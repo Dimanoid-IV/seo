@@ -78,7 +78,35 @@ export async function GET(request: Request) {
       googleUser,
     });
 
-    return redirectToIntegrations({ connected: "gsc" });
+    let autoConnectParams: Record<string, string> = { connected: "gsc" };
+
+    try {
+      const { tryAutoConnectGscProperty } = await import(
+        "@/lib/integrations/gsc-auto-connect"
+      );
+      const autoResult = await tryAutoConnectGscProperty({
+        currentUser,
+        triggerSync: true,
+      });
+
+      if (autoResult.autoSelected) {
+        autoConnectParams = {
+          connected: "gsc",
+          gscAutoSelected: "1",
+          ...(autoResult.syncTriggered ? { gscSynced: "1" } : {}),
+          ...(autoResult.syncError ? { gscSyncFailed: "1" } : {}),
+        };
+      } else if (autoResult.highConfidenceCount > 1) {
+        autoConnectParams = {
+          connected: "gsc",
+          gscChooseProperty: "1",
+        };
+      }
+    } catch {
+      // Auto-connect must not block OAuth success.
+    }
+
+    return redirectToIntegrations(autoConnectParams);
   } catch {
     return redirectToIntegrations({ error: "gsc_connection_failed" });
   }

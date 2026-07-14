@@ -373,6 +373,10 @@ export const saasDictionary: SaasDictionary = {
     goToControlCenter: "Go to Control Center",
     gscSkipHint:
       "You can skip this step now and connect Search Console later from Integrations.",
+    gscNeverAskPassword:
+      "RankBoost never asks for your Google password — only secure OAuth access.",
+    gscHelpHint:
+      "Having trouble connecting? We can help set up Search Console without your password.",
     sidebarNextTitle: "What RankBoost will do next",
     sidebarNextItems: [
       "Turn audit findings into prioritized tasks",
@@ -622,6 +626,14 @@ export const saasDictionary: SaasDictionary = {
     whatRankBoostCanDo: "What RankBoost can do",
     close: "Close",
     connectGoogle: "Connect Google",
+    connectGscButton: "Connect Google Search Console",
+    gscAutoSelected:
+      "We automatically connected the matching Search Console property.",
+    gscChooseProperty:
+      "Google is connected. Choose the Search Console property for your website.",
+    gscInitialSyncFailed:
+      "Property connected, but the first sync failed. Try refreshing data.",
+    gscConnectedState: "Google Search Console connected",
     gscSyncFailed: "Could not refresh Search Console data",
     gscSyncNetworkError: "Network error while refreshing Search Console data",
     searchConsoleSite: "Search Console site:",
@@ -654,12 +666,50 @@ export const saasDictionary: SaasDictionary = {
       selectSiteFailed: "Could not save the selected site",
       syncTasksCreated: (count: number) =>
         `${count} new tasks created — they will appear in Tasks.`,
+      recommendedBadge: "Recommended",
+      autoSelectTitle: "We found a matching property",
+      autoSelectText: (property: string) =>
+        `Property ${property} matches your website. Connect it?`,
+      autoSelectConfirm: "Connect",
+      autoSelectDecline: "Choose another",
+      mismatchWarningTitle: "This property does not match your website",
+      mismatchWarningText: (domain: string, property: string) =>
+        `Property ${property} does not match ${domain}. Are you sure you want to use it?`,
+      mismatchConfirm: "Yes, use it",
+      mismatchCancel: "Cancel",
+      selectingProperty: "Selecting property…",
       permissions: {
         siteOwner: "Owner",
         siteFullUser: "Full access",
         siteRestrictedUser: "Restricted access",
         siteUnverifiedUser: "Unverified",
       },
+    },
+    gscAssistedSetup: {
+      title: "Need help connecting?",
+      description:
+        "We can help you set up Search Console safely. We never ask for your password.",
+      requestButton: "Request setup help",
+      pricingHint: "Assisted setup from €29",
+      nameLabel: "Name",
+      emailLabel: "Email",
+      websiteLabel: "Website URL",
+      issueLabel: "What happened",
+      commentLabel: "Comment (optional)",
+      consentLabel:
+        "I understand RankBoost never asks for my Google password. Support will explain how to grant access safely.",
+      consentRequired: "Please confirm consent to submit the request",
+      submitButton: "Request setup help",
+      submitting: "Sending…",
+      submitFailed: "Could not submit the request",
+      submitNetworkError: "Network error while submitting the request",
+      successMessage:
+        "Request sent. We will email you and help set up access safely.",
+      issueNoProperty: "No property found",
+      issueNoAccess: "No access to Search Console",
+      issueNotVerified: "Site not verified",
+      issueNotSure: "Not sure what to do",
+      issueOther: "Other",
     },
     wordpress: {
       setupSteps: [

@@ -42,11 +42,20 @@ async function fetchIntegrationsOverview(
 
 function clearOauthQueryParams(): void {
   const url = new URL(window.location.href);
-  if (!url.searchParams.has("connected") && !url.searchParams.has("error")) {
+  const keys = [
+    "connected",
+    "error",
+    "gscAutoSelected",
+    "gscChooseProperty",
+    "gscSynced",
+    "gscSyncFailed",
+  ];
+  if (!keys.some((key) => url.searchParams.has(key))) {
     return;
   }
-  url.searchParams.delete("connected");
-  url.searchParams.delete("error");
+  for (const key of keys) {
+    url.searchParams.delete(key);
+  }
   window.history.replaceState({}, "", url.pathname + url.search);
 }
 
@@ -66,9 +75,24 @@ export function IntegrationsPage() {
 
   const connectedParam = searchParams.get("connected");
   const oauthErrorParam = searchParams.get("error");
+  const gscAutoSelectedParam = searchParams.get("gscAutoSelected");
+  const gscChoosePropertyParam = searchParams.get("gscChooseProperty");
+  const gscSyncFailedParam = searchParams.get("gscSyncFailed");
 
   const oauthBanner = useMemo(() => {
     if (connectedParam === "gsc") {
+      if (gscAutoSelectedParam === "1") {
+        return {
+          type: "success" as const,
+          message: i.gscAutoSelected,
+        };
+      }
+      if (gscChoosePropertyParam === "1") {
+        return {
+          type: "success" as const,
+          message: i.gscChooseProperty,
+        };
+      }
       return {
         type: "success" as const,
         message: i.gscConnected,
@@ -86,8 +110,24 @@ export function IntegrationsPage() {
         message: i.gscOauthNotConfigured,
       };
     }
+    if (gscSyncFailedParam === "1") {
+      return {
+        type: "error" as const,
+        message: i.gscInitialSyncFailed,
+      };
+    }
     return null;
-  }, [connectedParam, oauthErrorParam, i]);
+  }, [
+    connectedParam,
+    oauthErrorParam,
+    gscAutoSelectedParam,
+    gscChoosePropertyParam,
+    gscSyncFailedParam,
+    i,
+  ]);
+
+  const gscPickerAutoOpen =
+    gscChoosePropertyParam === "1" || gscAutoSelectedParam === "1";
 
   const banner = bannerDismissed ? null : oauthBanner;
 
@@ -234,7 +274,10 @@ export function IntegrationsPage() {
         onOpenChange={setSheetOpen}
         integration={selectedIntegration}
         websiteId={data.website?.id}
+        websiteUrl={data.website?.url}
         userEmail={user?.email}
+        userName={user?.name}
+        gscPickerAutoOpen={gscPickerAutoOpen}
         onIntegrationUpdated={() => void refetchIntegrations()}
       />
     </main>

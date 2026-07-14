@@ -1,6 +1,8 @@
 export type SearchConsoleSite = {
   siteUrl: string;
   permissionLevel: string;
+  matchConfidence?: "high" | "medium" | "none";
+  recommended?: boolean;
 };
 
 export type GscSitesData = {
@@ -10,6 +12,8 @@ export type GscSitesData = {
   websiteDomain: string;
   hasMatchingProperty: boolean;
   matchingSiteUrl: string | null;
+  highConfidenceCount?: number;
+  autoSelectCandidateUrl?: string | null;
 };
 
 export type GscSitesResponse = {

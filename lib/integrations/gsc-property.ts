@@ -11,7 +11,8 @@ import { withGscAccessToken } from "./gsc-access";
  */
 export async function selectGscSearchConsoleSite(
   currentUser: CurrentUser,
-  siteUrl: string
+  siteUrl: string,
+  options?: { confirmMismatch?: boolean }
 ) {
   const context = await resolveConnectedGscContext(currentUser);
   const trimmedSiteUrl = siteUrl.trim();
@@ -32,6 +33,26 @@ export async function selectGscSearchConsoleSite(
       ErrorCode.VALIDATION_ERROR,
       "Указанный сайт не найден в вашем Google Search Console",
       { details: { siteUrl: trimmedSiteUrl } }
+    );
+  }
+
+  const { gscPropertyMatchesWebsite } = await import("./gsc-domain-match");
+  const domainMatches = gscPropertyMatchesWebsite(
+    matchedSite.siteUrl,
+    context.website.url
+  );
+
+  if (!domainMatches && !options?.confirmMismatch) {
+    throw new AppError(
+      ErrorCode.VALIDATION_ERROR,
+      "This property does not match your website domain. Confirm to continue.",
+      {
+        details: {
+          siteUrl: trimmedSiteUrl,
+          websiteUrl: context.website.url,
+          requiresMismatchConfirmation: true,
+        },
+      }
     );
   }
 

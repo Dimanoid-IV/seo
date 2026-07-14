@@ -516,6 +516,24 @@ enum ErrorSeverity {
   CRITICAL
 }
 
+enum AssistedSetupIntegrationType {
+  GOOGLE_SEARCH_CONSOLE
+}
+
+enum AssistedSetupIssueType {
+  NO_PROPERTY_FOUND
+  NO_ACCESS
+  NOT_VERIFIED
+  NOT_SURE
+  OTHER
+}
+
+enum AssistedSetupRequestStatus {
+  PENDING
+  CONTACTED
+  CLOSED
+}
+
 // ---------------------------------------------------------------------------
 // Models
 // ---------------------------------------------------------------------------
@@ -558,6 +576,7 @@ model User {
   emailApprovals        EmailApproval[]
   usageCounters         UsageCounter[]
   onboardingState       OnboardingState?
+  assistedSetupRequests AssistedSetupRequest[]
 
   @@index([stripeCustomerId])
   @@index([googleAuthId])
@@ -651,6 +670,7 @@ model Website {
   timelineEvents          TimelineEvent[]
   websiteUserStates       WebsiteUserState[]
   onboardingStates        OnboardingState[]
+  assistedSetupRequests   AssistedSetupRequest[]
 
   @@unique([organizationId, url])
   @@index([organizationId])
@@ -1515,6 +1535,33 @@ model AuditPreviewToken {
   @@index([expiresAt])
   @@index([usedAt])
   @@map("audit_preview_tokens")
+}
+
+model AssistedSetupRequest {
+  id              String                       @id @default(uuid()) @db.Uuid
+  userId          String?                      @db.Uuid
+  websiteId       String?                      @db.Uuid
+  name            String
+  email           String
+  websiteUrl      String
+  integrationType AssistedSetupIntegrationType @default(GOOGLE_SEARCH_CONSOLE)
+  issueType       AssistedSetupIssueType
+  comment         String?
+  consentGiven    Boolean
+  locale          Locale                       @default(RU)
+  sourcePage      String?
+  status          AssistedSetupRequestStatus   @default(PENDING)
+  createdAt       DateTime                     @default(now())
+  updatedAt       DateTime                     @updatedAt
+
+  user    User?    @relation(fields: [userId], references: [id])
+  website Website? @relation(fields: [websiteId], references: [id])
+
+  @@index([email])
+  @@index([status])
+  @@index([integrationType])
+  @@index([createdAt])
+  @@map("assisted_setup_requests")
 }
 
 model OnboardingState {

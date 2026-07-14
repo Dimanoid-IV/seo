@@ -3,12 +3,17 @@
 import Link from "next/link";
 import { Loader2 } from "lucide-react";
 
+import { GscAssistedSetupPanel } from "@/components/integrations/GscAssistedSetupForm";
 import { Button } from "@/components/ui/button";
 import { authFetch } from "@/lib/auth/client-session";
 import { useSaasTranslations } from "@/lib/i18n/saas/SaasLocaleProvider";
 
 type OnboardingGscStepProps = {
   disabled?: boolean;
+  websiteUrl?: string | null;
+  websiteId?: string | null;
+  userEmail?: string | null;
+  userName?: string | null;
   onSkip: () => void | Promise<void>;
   onError: (message: string) => void;
   skipping?: boolean;
@@ -16,6 +21,10 @@ type OnboardingGscStepProps = {
 
 export function OnboardingGscStep({
   disabled,
+  websiteUrl,
+  websiteId,
+  userEmail,
+  userName,
   onSkip,
   onError,
   skipping = false,
@@ -38,12 +47,13 @@ export function OnboardingGscStep({
   }
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-4">
       <p className="text-sm text-slate-400">{o.gscSkipHint}</p>
+      <p className="text-sm text-slate-500">{o.gscNeverAskPassword}</p>
       <div className="flex flex-wrap gap-2">
         <Link href="/app/integrations">
           <Button type="button" disabled={disabled}>
-            {o.connectGsc}
+            {dict.integrations.connectGscButton}
           </Button>
         </Link>
         <Button
@@ -57,6 +67,14 @@ export function OnboardingGscStep({
           {o.skipGsc}
         </Button>
       </div>
+      <GscAssistedSetupPanel
+        defaultEmail={userEmail}
+        defaultName={userName}
+        defaultWebsiteUrl={websiteUrl}
+        websiteId={websiteId}
+        defaultIssueType="NOT_SURE"
+        sourcePage="/app/onboarding"
+      />
     </div>
   );
 }

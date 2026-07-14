@@ -310,6 +310,8 @@ export type SaasDictionary = {
     skipSetupForNow: string;
     goToControlCenter: string;
     gscSkipHint: string;
+    gscNeverAskPassword: string;
+    gscHelpHint: string;
     sidebarNextTitle: string;
     sidebarNextItems: string[];
     sidebarResultsTitle: string;
@@ -486,6 +488,11 @@ export type SaasDictionary = {
     whatRankBoostCanDo: string;
     close: string;
     connectGoogle: string;
+    connectGscButton: string;
+    gscAutoSelected: string;
+    gscChooseProperty: string;
+    gscInitialSyncFailed: string;
+    gscConnectedState: string;
     gscSyncFailed: string;
     gscSyncNetworkError: string;
     searchConsoleSite: string;
@@ -515,12 +522,45 @@ export type SaasDictionary = {
       otherPropertiesTitle: string;
       selectSiteFailed: string;
       syncTasksCreated: (count: number) => string;
+      recommendedBadge: string;
+      autoSelectTitle: string;
+      autoSelectText: (property: string) => string;
+      autoSelectConfirm: string;
+      autoSelectDecline: string;
+      mismatchWarningTitle: string;
+      mismatchWarningText: (domain: string, property: string) => string;
+      mismatchConfirm: string;
+      mismatchCancel: string;
+      selectingProperty: string;
       permissions: {
         siteOwner: string;
         siteFullUser: string;
         siteRestrictedUser: string;
         siteUnverifiedUser: string;
       };
+    };
+    gscAssistedSetup: {
+      title: string;
+      description: string;
+      requestButton: string;
+      pricingHint: string;
+      nameLabel: string;
+      emailLabel: string;
+      websiteLabel: string;
+      issueLabel: string;
+      commentLabel: string;
+      consentLabel: string;
+      consentRequired: string;
+      submitButton: string;
+      submitting: string;
+      submitFailed: string;
+      submitNetworkError: string;
+      successMessage: string;
+      issueNoProperty: string;
+      issueNoAccess: string;
+      issueNotVerified: string;
+      issueNotSure: string;
+      issueOther: string;
     };
     wordpress: {
       setupSteps: string[];

@@ -51,6 +51,48 @@ export const contactFormSchema = z
 
 export type ContactFormData = z.infer<typeof contactFormSchema>;
 
+export const assistedSetupIssueTypeSchema = z.enum([
+  "NO_PROPERTY_FOUND",
+  "NO_ACCESS",
+  "NOT_VERIFIED",
+  "NOT_SURE",
+  "OTHER",
+]);
+
+export const assistedSetupFormSchema = z
+  .object({
+    name: z
+      .string()
+      .trim()
+      .min(2, "Name must be at least 2 characters")
+      .max(100),
+    email: z.string().trim().email("Invalid email address").max(254),
+    websiteUrl: z.string().trim().min(1, "Website URL is required").max(500),
+    integrationType: z
+      .enum(["GOOGLE_SEARCH_CONSOLE"])
+      .default("GOOGLE_SEARCH_CONSOLE"),
+    issueType: assistedSetupIssueTypeSchema,
+    comment: optionalString(2000),
+    consentGiven: z.literal(true, {
+      message: "Consent is required",
+    }),
+    locale: localeSchema,
+    sourcePage: optionalString(200),
+    websiteId: z.string().uuid().optional(),
+    honeypot: optionalString(200),
+  })
+  .superRefine((data, ctx) => {
+    if (!isValidWebsite(data.websiteUrl)) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Invalid website URL",
+        path: ["websiteUrl"],
+      });
+    }
+  });
+
+export type AssistedSetupFormData = z.infer<typeof assistedSetupFormSchema>;
+
 export function escapeHtml(text: string): string {
   return text
     .replace(/&/g, "&amp;")

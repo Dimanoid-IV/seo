@@ -5,9 +5,10 @@ import { AppError, ErrorCode } from "@/lib/errors";
 import { getSearchConsoleSites } from "@/lib/google/search-console";
 import { resolveConnectedGscContext } from "@/lib/integrations/gsc-context";
 import {
-  findMatchingGscProperty,
+  findHighConfidenceGscProperties,
   hasMatchingGscProperty,
   normalizeWebsiteDomain,
+  rankGscPropertiesForWebsite,
 } from "@/lib/integrations/gsc-domain-match";
 
 function assertDatabaseConfigured(): void {
@@ -34,16 +35,21 @@ export async function GET(request: Request) {
     );
 
     const websiteUrl = context.website.url;
-    const matchingSite = findMatchingGscProperty(sites, websiteUrl);
+    const rankedSites = rankGscPropertiesForWebsite(sites, websiteUrl);
+    const highConfidence = findHighConfidenceGscProperties(sites, websiteUrl);
+    const matchingSite = rankedSites.find((site) => site.matchConfidence !== "none");
 
     return authJsonResponse({
       data: {
-        sites,
+        sites: rankedSites,
         selectedSiteUrl: context.selectedSiteUrl,
         websiteUrl,
         websiteDomain: normalizeWebsiteDomain(websiteUrl),
         hasMatchingProperty: hasMatchingGscProperty(sites, websiteUrl),
         matchingSiteUrl: matchingSite?.siteUrl ?? null,
+        highConfidenceCount: highConfidence.length,
+        autoSelectCandidateUrl:
+          highConfidence.length === 1 ? highConfidence[0]!.siteUrl : null,
       },
     });
   } catch (error) {
