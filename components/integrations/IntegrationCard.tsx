@@ -68,6 +68,7 @@ function resolveAction(
   integration: IntegrationOverviewItem,
   labels: {
     connect: string;
+    connectGsc: string;
     manage: string;
     comingSoon: string;
     platformManaged: string;
