@@ -16,6 +16,8 @@ export async function GET() {
       configured: availability.generationConfigured,
       hasApiUrl: availability.hasApiUrl,
       hasApiSecret: availability.hasApiSecret,
+      /** Env presence only — does not verify the external Hermes worker is reachable. */
+      envOnly: true,
     },
     chat: {
       hasApiKey: availability.hasApiKey,
