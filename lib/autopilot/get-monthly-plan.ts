@@ -15,6 +15,7 @@ import {
   enrichPlanItemsFromEntities,
   resolvePlanItemsDocumentFromPlan,
 } from "./plan-items";
+import { reconcileMonthlyPlanMetrics } from "./plan-metrics-reconcile";
 import { currentMonthKey, normalizeMonthKey } from "./month-utils";
 import { resolveWebsiteForAutopilot } from "./resolve-website";
 import { getMonthlyAutopilotSourceData } from "./source-data";
@@ -77,8 +78,18 @@ export async function getMonthlyAutopilotPlan(input: {
     const wordpressConnected =
       wpConnection?.status === WordPressConnectionStatus.CONNECTED;
 
-    const formattedPlan =
+    const baseFormattedPlan =
       plan && !plan.archivedAt ? formatMonthlyAutopilotPlan(plan) : null;
+
+    // Live-derive current-plan task counts so a stale metricsJson snapshot can
+    // never make the Autopilot UI show phantom open tasks. Historical snapshot
+    // counts (opportunities/warnings/drafts) are preserved.
+    const formattedPlan = baseFormattedPlan
+      ? {
+          ...baseFormattedPlan,
+          metrics: reconcileMonthlyPlanMetrics(baseFormattedPlan.metrics, tasks),
+        }
+      : null;
 
     let planItems = resolvePlanItemsDocumentFromPlan({
       planItemsJson: plan?.planItemsJson,
