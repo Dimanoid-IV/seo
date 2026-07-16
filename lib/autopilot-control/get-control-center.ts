@@ -18,6 +18,8 @@ import type { CurrentUser } from "@/lib/auth/types";
 import { formatMonthlyAutopilotPlan } from "@/lib/autopilot/format";
 import { currentMonthKey } from "@/lib/autopilot/month-utils";
 import { getPrisma } from "@/lib/db";
+import { resolveGscConnectionState } from "@/lib/integrations/gsc-state";
+import { getSaasDictionary } from "@/lib/i18n/saas";
 import { formatTimelineEvent } from "@/lib/timeline/format";
 
 import {
@@ -228,7 +230,11 @@ export async function getAutopilotControlCenter(input: {
         websiteId: website.id,
         provider: IntegrationProvider.GOOGLE_SEARCH_CONSOLE,
       },
-      select: { status: true, lastErrorMessage: true },
+      select: {
+        status: true,
+        lastErrorMessage: true,
+        googleData: { select: { searchConsoleSiteUrl: true } },
+      },
     }),
     prisma.wordPressConnection.findFirst({
       where: { websiteId: website.id },
@@ -257,10 +263,18 @@ export async function getAutopilotControlCenter(input: {
   const monthlyPlanApproved =
     monthlyPlanRecord?.status === MonthlyAutopilotStatus.APPROVED;
 
+  const gscSelectedProperty =
+    gscIntegration?.googleData?.searchConsoleSiteUrl ?? null;
+  const gscState = resolveGscConnectionState({
+    integrationStatus: gscIntegration?.status,
+    selectedProperty: gscSelectedProperty,
+    hasError: Boolean(gscIntegration?.lastErrorMessage),
+  });
+  // "gscConnected" for recommendations/data means Google OAuth exists.
   const gscConnected = gscIntegration?.status === IntegrationStatus.CONNECTED;
-  const gscError =
-    gscIntegration?.status === IntegrationStatus.ERROR ||
-    Boolean(gscIntegration?.lastErrorMessage);
+  const gscFullyConnected = gscState === "CONNECTED";
+  const gscNeedsProperty = gscState === "GOOGLE_CONNECTED_NO_PROPERTY";
+  const gscError = gscState === "ERROR";
 
   const wordpressConnected =
     wpConnection?.status === WordPressConnectionStatus.CONNECTED;
@@ -292,16 +306,28 @@ export async function getAutopilotControlCenter(input: {
   if (!wordpressConnected) integrationIssuesCount += 1;
   if (wordpressError) integrationIssuesCount += 1;
 
+  const dict = getSaasDictionary(locale);
+  const integrationStrings = dict.controlCenter.integrations;
+  const queueStrings = dict.controlCenter.approvalQueue;
+
   const integrations: ControlCenterIntegration[] = [
     {
       key: "google_search_console",
       name: "Google Search Console",
-      status: gscError ? "ERROR" : gscConnected ? "CONNECTED" : "MISSING",
+      status: gscError
+        ? "ERROR"
+        : gscNeedsProperty
+          ? "NEEDS_SETUP"
+          : gscFullyConnected
+            ? "CONNECTED"
+            : "MISSING",
       description: gscError
-        ? "Search Console needs attention"
-        : gscConnected
-          ? "Connected and syncing"
-          : "Not connected",
+        ? integrationStrings.gscErrorDesc
+        : gscNeedsProperty
+          ? integrationStrings.gscNeedsPropertyDesc
+          : gscFullyConnected
+            ? integrationStrings.gscConnectedDesc
+            : integrationStrings.gscNotConnectedDesc,
       href: "/app/integrations",
     },
     {
@@ -313,10 +339,10 @@ export async function getAutopilotControlCenter(input: {
           ? "CONNECTED"
           : "MISSING",
       description: wordpressError
-        ? "WordPress connection needs attention"
+        ? integrationStrings.wpErrorDesc
         : wordpressConnected
-          ? "Connected"
-          : "Not connected",
+          ? integrationStrings.wpConnectedDesc
+          : integrationStrings.wpNotConnectedDesc,
       href: "/app/integrations",
     },
   ];
@@ -332,11 +358,11 @@ export async function getAutopilotControlCenter(input: {
       id: monthlyPlan.id,
       type: "MONTHLY_PLAN",
       title: monthlyPlan.title,
-      description: `Monthly plan for ${month} is ready for review.`,
+      description: queueStrings.descriptions.monthlyPlan(month),
       status: monthlyPlan.status,
       priority: "HIGH",
       href: "/app/autopilot",
-      actionLabel: "Open Autopilot",
+      actionLabel: queueStrings.actions.openAutopilot,
       actionType: "link",
     });
   }
@@ -346,11 +372,11 @@ export async function getAutopilotControlCenter(input: {
       id: email.id,
       type: "EMAIL",
       title: email.subject,
-      description: "Review email draft before sending.",
+      description: queueStrings.descriptions.email,
       status: email.status.toLowerCase(),
       priority: "HIGH",
       href: "/app/email-approvals",
-      actionLabel: "Review email",
+      actionLabel: queueStrings.actions.reviewEmail,
       actionType: "link",
     });
   }
@@ -360,11 +386,11 @@ export async function getAutopilotControlCenter(input: {
       id: article.id,
       type: "ARTICLE",
       title: article.title,
-      description: "Article draft is waiting for your review.",
+      description: queueStrings.descriptions.articleWaiting,
       status: article.status.toLowerCase(),
       priority: "HIGH",
       href: `/app/articles/${article.id}`,
-      actionLabel: "Open article",
+      actionLabel: queueStrings.actions.openArticle,
       actionType: "link",
     });
   }
@@ -374,11 +400,11 @@ export async function getAutopilotControlCenter(input: {
       id: article.id,
       type: "WORDPRESS_DRAFT",
       title: article.title,
-      description: "WordPress draft created — review before publishing.",
+      description: queueStrings.descriptions.wordpressDraft,
       status: "wordpress_draft",
       priority: "MEDIUM",
       href: `/app/articles/${article.id}`,
-      actionLabel: "Open article",
+      actionLabel: queueStrings.actions.openArticle,
       actionType: "link",
     });
   }
@@ -389,11 +415,11 @@ export async function getAutopilotControlCenter(input: {
       id: article.id,
       type: "ARTICLE",
       title: article.title,
-      description: "Draft article needs progress or review.",
+      description: queueStrings.descriptions.articleDraft,
       status: article.status.toLowerCase(),
       priority: "MEDIUM",
       href: `/app/articles/${article.id}`,
-      actionLabel: "Open article",
+      actionLabel: queueStrings.actions.openArticle,
       actionType: "link",
     });
   }
@@ -403,11 +429,11 @@ export async function getAutopilotControlCenter(input: {
       id: post.id,
       type: "SOCIAL_POST",
       title: post.title ?? `${post.platform} post draft`,
-      description: "Social post draft is ready to copy or edit.",
+      description: queueStrings.descriptions.social,
       status: post.status.toLowerCase(),
       priority: "MEDIUM",
       href: "/app/social-posts",
-      actionLabel: "Open social posts",
+      actionLabel: queueStrings.actions.openSocialPosts,
       actionType: "link",
     });
   }
@@ -417,11 +443,11 @@ export async function getAutopilotControlCenter(input: {
       id: task.id,
       type: "TASK",
       title: task.title,
-      description: task.description ?? "High-priority SEO task.",
+      description: task.description ?? queueStrings.descriptions.taskFallback,
       status: task.status.toLowerCase(),
       priority: "HIGH",
       href: "/app/tasks",
-      actionLabel: "Open tasks",
+      actionLabel: queueStrings.actions.openTasks,
       actionType: "link",
     });
   }
@@ -430,26 +456,25 @@ export async function getAutopilotControlCenter(input: {
     approvalQueue.push({
       id: "integration-gsc",
       type: "INTEGRATION",
-      title: "Google Search Console issue",
+      title: queueStrings.itemTitles.gscIssue,
       description:
-        gscIntegration?.lastErrorMessage ??
-        "Search Console integration needs attention.",
+        gscIntegration?.lastErrorMessage ?? queueStrings.descriptions.gscIssue,
       status: "error",
       priority: "HIGH",
       href: "/app/integrations",
-      actionLabel: "Open integrations",
+      actionLabel: queueStrings.actions.openIntegrations,
       actionType: "link",
     });
   } else if (!gscConnected) {
     approvalQueue.push({
       id: "integration-gsc-missing",
       type: "INTEGRATION",
-      title: "Connect Google Search Console",
-      description: "Unlock search performance data and opportunities.",
+      title: queueStrings.itemTitles.gscMissing,
+      description: queueStrings.descriptions.gscMissing,
       status: "missing",
       priority: "MEDIUM",
       href: "/app/integrations",
-      actionLabel: "Connect",
+      actionLabel: queueStrings.actions.connect,
       actionType: "link",
     });
   }

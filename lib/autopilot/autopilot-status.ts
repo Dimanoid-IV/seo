@@ -108,7 +108,7 @@ export async function getAutopilotStatusSnapshot(input: {
     }),
     prisma.task.findMany({
       where: { websiteId, deletedAt: null },
-      select: { id: true, recommendationJson: true },
+      select: { id: true, recommendationJson: true, status: true },
       take: 50,
     }),
   ]);

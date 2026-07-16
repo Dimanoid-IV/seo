@@ -15,7 +15,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "https://rankboost.eu"),
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_SITE_URL || "https://rankboost.eu"
+  ),
   title: {
     default: "RankBoost.eu",
     template: "%s | RankBoost.eu",

@@ -10,6 +10,89 @@ import { getPrisma } from "@/lib/db";
 
 import type { ReportsOverviewResponse } from "./types";
 
+const ARTICLE_ACTIVITY_TYPES = new Set([
+  "ARTICLE_CREATED",
+  "ARTICLE_DRAFT_CREATED",
+  "ARTICLE_VALIDATED",
+  "ARTICLE_REPAIRED",
+]);
+
+type ActivityWithMetadata = {
+  id: string;
+  type: string;
+  metadataJson: unknown;
+};
+
+function extractArticleId(metadataJson: unknown): string | null {
+  if (
+    metadataJson &&
+    typeof metadataJson === "object" &&
+    "articleId" in metadataJson
+  ) {
+    const value = (metadataJson as { articleId?: unknown }).articleId;
+    return typeof value === "string" && value.length > 0 ? value : null;
+  }
+  return null;
+}
+
+/**
+ * Returns the set of activity ids that reference an article which is no longer
+ * active (archived, failed or soft-deleted). These should not be surfaced as
+ * current/recommended activity even though we keep the historical row.
+ */
+async function resolveArchivedActivityIds(
+  prisma: ReturnType<typeof getPrisma>,
+  activities: ActivityWithMetadata[]
+): Promise<Set<string>> {
+  const articleIdByActivity = new Map<string, string>();
+  for (const activity of activities) {
+    if (!ARTICLE_ACTIVITY_TYPES.has(activity.type)) {
+      continue;
+    }
+    const articleId = extractArticleId(activity.metadataJson);
+    if (articleId) {
+      articleIdByActivity.set(activity.id, articleId);
+    }
+  }
+
+  const articleIds = [...new Set(articleIdByActivity.values())];
+  if (articleIds.length === 0) {
+    return new Set();
+  }
+
+  const articles = await prisma.article.findMany({
+    where: { id: { in: articleIds } },
+    select: { id: true, status: true, deletedAt: true },
+  });
+
+  const inactiveArticleIds = new Set(
+    articles
+      .filter(
+        (article) =>
+          article.deletedAt !== null ||
+          article.status === "ARCHIVED" ||
+          article.status === "FAILED"
+      )
+      .map((article) => article.id)
+  );
+
+  // Also treat activities whose referenced article no longer exists as archived,
+  // so deleted drafts don't look like current activity.
+  const existingArticleIds = new Set(articles.map((article) => article.id));
+
+  const archivedActivityIds = new Set<string>();
+  for (const [activityId, articleId] of articleIdByActivity) {
+    if (
+      inactiveArticleIds.has(articleId) ||
+      !existingArticleIds.has(articleId)
+    ) {
+      archivedActivityIds.add(activityId);
+    }
+  }
+
+  return archivedActivityIds;
+}
+
 /**
  * Loads reports overview for the authenticated user's primary website.
  */
@@ -65,8 +148,14 @@ export async function getReportsOverview(
       title: true,
       description: true,
       createdAt: true,
+      metadataJson: true,
     },
   });
+
+  const archivedActivityIds = await resolveArchivedActivityIds(
+    prisma,
+    lastActivities
+  );
 
   if (!website) {
     return {
@@ -81,6 +170,7 @@ export async function getReportsOverview(
           title: activity.title,
           description: activity.description,
           createdAt: activity.createdAt.toISOString(),
+          archived: archivedActivityIds.has(activity.id),
         })),
         reports: [],
       },
@@ -195,6 +285,7 @@ export async function getReportsOverview(
         title: activity.title,
         description: activity.description,
         createdAt: activity.createdAt.toISOString(),
+        archived: archivedActivityIds.has(activity.id),
       })),
       reports: reports.map((report) => ({
         id: report.id,

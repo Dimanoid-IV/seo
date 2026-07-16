@@ -1,10 +1,19 @@
 import { cn } from "@/lib/utils";
-import { CheckCircle2, Clock, Sparkles, Unplug, XCircle } from "lucide-react";
+import {
+  AlertTriangle,
+  CheckCircle2,
+  Clock,
+  Sparkles,
+  Unplug,
+  XCircle,
+} from "lucide-react";
 
 type IntegrationStatusBadgeProps = {
   status: string;
   comingSoon?: boolean;
   className?: string;
+  /** Overrides the displayed label (e.g. localized partial-state text). */
+  label?: string;
 };
 
 const STATUS_STYLES: Record<
@@ -36,12 +45,18 @@ const STATUS_STYLES: Record<
     className: "border-amber-500/30 bg-amber-500/10 text-amber-300",
     icon: Unplug,
   },
+  NeedsProperty: {
+    label: "Select a site",
+    className: "border-amber-500/30 bg-amber-500/10 text-amber-300",
+    icon: AlertTriangle,
+  },
 };
 
 export function IntegrationStatusBadge({
   status,
   comingSoon = false,
   className,
+  label,
 }: IntegrationStatusBadgeProps) {
   if (comingSoon) {
     return (
@@ -69,7 +84,7 @@ export function IntegrationStatusBadge({
       )}
     >
       <Icon className="size-3" aria-hidden />
-      {config.label}
+      {label ?? config.label}
     </span>
   );
 }

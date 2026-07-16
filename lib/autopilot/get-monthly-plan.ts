@@ -69,7 +69,7 @@ export async function getMonthlyAutopilotPlan(input: {
         }),
         getPrisma().task.findMany({
           where: { websiteId: website.id, deletedAt: null },
-          select: { id: true, recommendationJson: true },
+          select: { id: true, recommendationJson: true, status: true },
           take: 50,
         }),
       ]);

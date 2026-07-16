@@ -1,3 +1,4 @@
+import type { GscConnectionState } from "./gsc-state";
 import type { GscMetricsSummary } from "./gsc-types";
 import type { WordPressConnectionMetadata } from "./wordpress-types";
 
@@ -16,6 +17,10 @@ export type IntegrationOverviewItem = {
   lastSuccessAt: string | null;
   lastErrorAt: string | null;
   lastErrorMessage: string | null;
+  /** GSC only: canonical connection state (partial vs fully connected) */
+  gscState?: GscConnectionState;
+  /** GSC only: Google OAuth token exists (even if no property selected yet) */
+  googleConnected?: boolean;
   /** GSC only: selected Search Console property URL */
   selectedProperty?: string | null;
   /** GSC only: last 28-day metrics summary */

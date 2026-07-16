@@ -262,6 +262,7 @@ export type SaasDictionary = {
     trialEnds: string;
     usageTitle: string;
     usagePeriod: string;
+    usageMonthLabel: string;
     websites: string;
     audits: string;
     articles: string;
@@ -392,6 +393,30 @@ export type SaasDictionary = {
         task: string;
         integration: string;
       };
+      descriptions: {
+        monthlyPlan: (month: string) => string;
+        email: string;
+        articleWaiting: string;
+        wordpressDraft: string;
+        articleDraft: string;
+        social: string;
+        taskFallback: string;
+        gscIssue: string;
+        gscMissing: string;
+      };
+      itemTitles: {
+        gscIssue: string;
+        gscMissing: string;
+      };
+      actions: {
+        openAutopilot: string;
+        reviewEmail: string;
+        openArticle: string;
+        openSocialPosts: string;
+        openTasks: string;
+        openIntegrations: string;
+        connect: string;
+      };
     };
     recommended: {
       title: string;
@@ -411,6 +436,14 @@ export type SaasDictionary = {
       connected: string;
       notConnected: string;
       needsAttention: string;
+      needsProperty: string;
+      gscConnectedDesc: string;
+      gscNeedsPropertyDesc: string;
+      gscErrorDesc: string;
+      gscNotConnectedDesc: string;
+      wpConnectedDesc: string;
+      wpErrorDesc: string;
+      wpNotConnectedDesc: string;
       manageIntegrations: string;
     };
     activity: {
@@ -467,6 +500,8 @@ export type SaasDictionary = {
     last28Days: string;
     sync: string;
     gscSiteNotSelected: string;
+    gscSelectPropertyCta: string;
+    gscPartialBadge: string;
     refreshData: string;
     manageConnection: string;
     disconnectLater: string;
@@ -604,6 +639,10 @@ export type SaasDictionary = {
     progress: string;
     tasks: string;
     recentEvents: string;
+    activityTitles: Record<string, string>;
+    activityArchivedBadge: string;
+    activityEmptyTitle: string;
+    activityEmptyDescription: string;
     savedReports: string;
     completedAt: string;
     auditType: string;
@@ -1078,6 +1117,7 @@ export type SaasDictionary = {
         researchBriefBlocked: string;
         unsafeArticleTopic: string;
         archivedArticleLinked: string;
+        resolvedOrMissingTask: string;
       };
       dueNow: string;
       nextScheduled: string;

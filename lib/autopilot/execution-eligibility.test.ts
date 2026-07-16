@@ -7,6 +7,7 @@ import assert from "node:assert/strict";
 import { ArticleStatus, AutopilotMode } from "@prisma/client";
 
 import {
+  classifyDryRunOutcome,
   findDuePlanItems,
   isPlanItemDueNow,
   resolvePlanItemExecutionEligibility,
@@ -287,6 +288,71 @@ function runExecutionEligibilityChecks(): void {
   );
   assert.equal(dueItems.length, 1);
   assert.equal(isPlanItemDueNow(baseArticleItem(), now), true);
+
+  // Dry-run honesty: archived linked article is blocked, not "will run".
+  assert.equal(classifyDryRunOutcome(archivedLinked), "blocked");
+
+  // Failed-quality article skips (does not run).
+  const failedQuality = resolvePlanItemExecutionEligibility({
+    item: baseArticleItem({
+      status: "prepared",
+      generatedArticleId: "article-failed",
+      articleQualityPassed: false,
+    }),
+    now,
+    autopilotMode: AutopilotMode.APPROVED_PLAN_AUTOPILOT,
+    wordpressConnected: true,
+    websiteId,
+    organizationId,
+    article: {
+      id: "article-failed",
+      status: ArticleStatus.DRAFT,
+      qualityPassed: false,
+      websiteId,
+      organizationId,
+      wordpressPostId: null,
+    },
+  });
+  assert.equal(failedQuality.action, "SKIP");
+  assert.equal(failedQuality.reasonKey, "articleQualityFailed");
+  assert.equal(classifyDryRunOutcome(failedQuality), "skipped");
+
+  // TASK_FIX / SEO_FIX no-op must NOT be counted as an executed action in dry-run.
+  assert.equal(classifyDryRunOutcome(seoFixNoop), "skipped");
+
+  // A real preparable draft would run.
+  assert.equal(classifyDryRunOutcome(prepare), "wouldRun");
+
+  // A publishable article would run.
+  assert.equal(classifyDryRunOutcome(publish), "wouldRun");
+
+  // WordPress-blocked publish is blocked, not run.
+  assert.equal(classifyDryRunOutcome(blockedWp), "blocked");
+
+  // Already-created WordPress draft is a real state transition → wouldRun.
+  const alreadyDraft = resolvePlanItemExecutionEligibility({
+    item: baseArticleItem({
+      status: "prepared",
+      generatedArticleId: "article-wp",
+      articleQualityPassed: true,
+    }),
+    now,
+    autopilotMode: AutopilotMode.APPROVED_PLAN_AUTOPILOT,
+    wordpressConnected: true,
+    websiteId,
+    organizationId,
+    article: {
+      id: "article-wp",
+      status: ArticleStatus.WORDPRESS_DRAFT_CREATED,
+      qualityPassed: true,
+      websiteId,
+      organizationId,
+      wordpressPostId: "wp-1",
+    },
+  });
+  assert.equal(alreadyDraft.action, "NOOP_INTERNAL");
+  assert.equal(alreadyDraft.suggestedStatus, "executed");
+  assert.equal(classifyDryRunOutcome(alreadyDraft), "wouldRun");
 }
 
 if (require.main === module) {

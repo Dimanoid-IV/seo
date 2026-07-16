@@ -1,3 +1,6 @@
+"use client";
+
+import { useSaasTranslations } from "@/lib/i18n/saas/SaasLocaleProvider";
 import type { UsageSummaryViewModel } from "@/lib/billing/types";
 
 type UsageLimitsCardProps = {
@@ -5,10 +8,15 @@ type UsageLimitsCardProps = {
 };
 
 export function UsageLimitsCard({ usage }: UsageLimitsCardProps) {
+  const { dict } = useSaasTranslations();
+  const { billing } = dict;
+
   return (
     <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-      <h2 className="text-lg font-semibold text-slate-900">Usage this month</h2>
-      <p className="mt-1 text-sm text-slate-600">Period: {usage.month}</p>
+      <h2 className="text-lg font-semibold text-slate-900">{billing.usageTitle}</h2>
+      <p className="mt-1 text-sm text-slate-600">
+        {billing.usageMonthLabel}: {usage.month}
+      </p>
 
       <div className="mt-4 grid gap-3 sm:grid-cols-2">
         {usage.items.map((item) => {

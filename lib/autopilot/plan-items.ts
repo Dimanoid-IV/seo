@@ -2,7 +2,10 @@ import "server-only";
 
 import type { MonthlyAutopilotStatus, Prisma } from "@prisma/client";
 
-import { parsePreparedFix } from "@/lib/tasks/prepared-fix";
+import {
+  reconcileTaskLinkedPlanItem,
+  type ReconcileTaskRow,
+} from "./plan-item-reconcile";
 
 import type { MonthlyAutopilotSourceData } from "./source-data";
 import { assignEveryOtherDaySlots } from "./scheduling";
@@ -351,10 +354,7 @@ export function planItemsToJson(
   return document as unknown as Prisma.InputJsonValue;
 }
 
-type TaskRecommendationRow = {
-  id: string;
-  recommendationJson: unknown;
-};
+type TaskRecommendationRow = ReconcileTaskRow;
 
 /** Refresh item statuses from linked tasks/articles (prepared fixes, etc.). */
 export function enrichPlanItemsFromEntities(input: {
@@ -363,39 +363,13 @@ export function enrichPlanItemsFromEntities(input: {
   wordpressConnected: boolean;
 }): AutopilotPlanItemsDocument {
   const taskById = new Map(input.tasks.map((t) => [t.id, t]));
+  // Only reconcile against "missing" tasks when we actually know the task
+  // status field was selected; otherwise a partial select would falsely skip.
+  const taskStatusKnown = input.tasks.some((t) => t.status !== undefined);
 
-  const items = input.document.items.map((item) => {
-    let next = { ...item };
-
-    if (item.sourceRef?.type === "task") {
-      const task = taskById.get(item.sourceRef.id);
-      const preparedFix = task
-        ? parsePreparedFix(
-            (task.recommendationJson as Record<string, unknown> | null)
-              ?.preparedFix
-          )
-        : null;
-
-      if (preparedFix?.status === "AWAITING_REVIEW") {
-        next = {
-          ...next,
-          status:
-            next.status === "proposed" ? next.status : ("prepared" as const),
-          reviewQueueHref: "/app/review",
-        };
-      } else if (preparedFix?.status === "APPROVED") {
-        next = {
-          ...next,
-          status: ["published", "executed"].includes(next.status)
-            ? next.status
-            : ("prepared" as const),
-          reviewQueueHref: "/app/review",
-        };
-      }
-    }
-
-    return next;
-  });
+  const items = input.document.items.map((item) =>
+    reconcileTaskLinkedPlanItem(item, taskById, taskStatusKnown)
+  );
 
   return { ...input.document, items };
 }

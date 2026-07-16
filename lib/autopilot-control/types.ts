@@ -84,7 +84,7 @@ export type ControlCenterRecentActivity = {
 export type ControlCenterIntegration = {
   key: string;
   name: string;
-  status: "CONNECTED" | "MISSING" | "ERROR";
+  status: "CONNECTED" | "MISSING" | "ERROR" | "NEEDS_SETUP";
   description?: string;
   href?: string;
 };

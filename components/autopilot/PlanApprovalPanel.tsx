@@ -594,9 +594,7 @@ export function PlanApprovalPanel({
                   ) : null}
 
                   {item.reviewQueueHref &&
-                  (item.status === "prepared" ||
-                    item.type === "TASK_FIX" ||
-                    item.generatedArticleId) ? (
+                  (item.status === "prepared" || item.generatedArticleId) ? (
                     <Link
                       href={item.reviewQueueHref}
                       className="inline-flex items-center gap-1 text-xs font-medium text-violet-600 hover:text-violet-800"

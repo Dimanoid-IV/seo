@@ -9,6 +9,7 @@ import {
   mapIntegrationDbStatus,
 } from "./catalog";
 import { extractGscMetricsSummary } from "./gsc-metrics";
+import { resolveGscConnectionState } from "./gsc-state";
 import type { IntegrationsOverviewResponse } from "./types";
 import {
   getWordPressConnection,
@@ -192,6 +193,49 @@ export async function getIntegrationsOverview(
       };
     }
 
+    if (item.provider === "google_search_console") {
+      const selectedProperty = mapped.connected
+        ? (record?.googleData?.searchConsoleSiteUrl ?? null)
+        : null;
+      const gscState = resolveGscConnectionState({
+        integrationStatus: record?.status,
+        selectedProperty,
+        hasError: Boolean(record?.lastErrorMessage),
+      });
+      const awaitingProperty = gscState === "GOOGLE_CONNECTED_NO_PROPERTY";
+
+      return {
+        provider: item.provider,
+        title: item.title,
+        description: item.description,
+        // Partial connection is not a "fully connected" integration.
+        connected: gscState === "CONNECTED",
+        status: awaitingProperty ? "NeedsProperty" : mapped.status,
+        available: item.available,
+        comingSoon: item.comingSoon,
+        connectedAt:
+          mapped.connected && record ? record.updatedAt.toISOString() : null,
+        // Do not imply a property sync happened when none is selected.
+        lastSyncAt: awaitingProperty
+          ? null
+          : (record?.lastSyncAt?.toISOString() ?? null),
+        lastSuccessAt: record?.lastSuccessAt?.toISOString() ?? null,
+        lastErrorAt: record?.lastErrorAt?.toISOString() ?? null,
+        lastErrorMessage: record?.lastErrorMessage ?? null,
+        gscState,
+        googleConnected: mapped.connected,
+        selectedProperty,
+        metricsSummary: awaitingProperty
+          ? null
+          : mapped.connected
+            ? extractGscMetricsSummary(record?.googleData?.metricsJson)
+            : null,
+        lastFetchedAt: awaitingProperty
+          ? null
+          : (record?.googleData?.lastFetchedAt?.toISOString() ?? null),
+      };
+    }
+
     return {
       provider: item.provider,
       title: item.title,
@@ -208,18 +252,6 @@ export async function getIntegrationsOverview(
       lastSuccessAt: record?.lastSuccessAt?.toISOString() ?? null,
       lastErrorAt: record?.lastErrorAt?.toISOString() ?? null,
       lastErrorMessage: record?.lastErrorMessage ?? null,
-      ...(item.provider === "google_search_console"
-        ? {
-            selectedProperty: mapped.connected
-              ? (record?.googleData?.searchConsoleSiteUrl ?? null)
-              : null,
-            metricsSummary: mapped.connected
-              ? extractGscMetricsSummary(record?.googleData?.metricsJson)
-              : null,
-            lastFetchedAt:
-              record?.googleData?.lastFetchedAt?.toISOString() ?? null,
-          }
-        : {}),
     };
   });
 

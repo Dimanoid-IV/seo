@@ -57,7 +57,7 @@ export async function approveSelectedPlanItems(input: {
     }),
     prisma.task.findMany({
       where: { websiteId: existing.websiteId, deletedAt: null },
-      select: { id: true, recommendationJson: true },
+      select: { id: true, recommendationJson: true, status: true },
       take: 50,
     }),
   ]);

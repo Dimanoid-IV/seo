@@ -14,6 +14,7 @@ export type ReportsActivityEntry = {
   title: string;
   description: string | null;
   createdAt: string;
+  archived?: boolean;
 };
 
 export type ReportsSavedReport = {

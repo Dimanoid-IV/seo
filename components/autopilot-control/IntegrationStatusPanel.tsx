@@ -25,6 +25,8 @@ export function IntegrationStatusPanel({
         return i.connected;
       case "ERROR":
         return i.needsAttention;
+      case "NEEDS_SETUP":
+        return i.needsProperty;
       default:
         return i.notConnected;
     }
@@ -34,6 +36,7 @@ export function IntegrationStatusPanel({
     CONNECTED: "text-emerald-400",
     MISSING: "text-slate-400",
     ERROR: "text-amber-400",
+    NEEDS_SETUP: "text-amber-400",
   };
 
   return (

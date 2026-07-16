@@ -285,6 +285,39 @@ export function resolvePlanItemExecutionEligibility(
   );
 }
 
+export type DryRunOutcome = "wouldRun" | "skipped" | "blocked";
+
+/**
+ * Honest dry-run classification: an item only counts as "wouldRun" when the
+ * runner would perform a real action. NOOP_INTERNAL items that merely keep the
+ * current status (e.g. non-article TASK_FIX/SEO_FIX) do nothing, so they must be
+ * reported as skipped, not executed.
+ */
+export function classifyDryRunOutcome(
+  result: ExecutionEligibilityResult
+): DryRunOutcome {
+  if (result.action === "BLOCKED") {
+    return "blocked";
+  }
+
+  if (!result.eligible) {
+    return "skipped";
+  }
+
+  if (
+    result.action === "PREPARE_ARTICLE_DRAFT" ||
+    result.action === "PUBLISH_APPROVED_ARTICLE"
+  ) {
+    return "wouldRun";
+  }
+
+  if (result.action === "NOOP_INTERNAL") {
+    return result.suggestedStatus === "executed" ? "wouldRun" : "skipped";
+  }
+
+  return "skipped";
+}
+
 export function isPlanItemDueNow(
   item: AutopilotPlanItem,
   now: Date = new Date()

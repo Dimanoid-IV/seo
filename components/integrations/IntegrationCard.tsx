@@ -69,6 +69,7 @@ function resolveAction(
   labels: {
     connect: string;
     connectGsc: string;
+    selectGscProperty: string;
     manage: string;
     comingSoon: string;
     platformManaged: string;
@@ -89,11 +90,17 @@ function resolveAction(
   if (integration.comingSoon || !integration.available) {
     return { label: labels.comingSoon, variant: "muted" };
   }
+  if (integration.provider === "google_search_console") {
+    if (integration.gscState === "GOOGLE_CONNECTED_NO_PROPERTY") {
+      return { label: labels.selectGscProperty, variant: "primary" };
+    }
+    if (integration.connected) {
+      return { label: labels.manage, variant: "secondary" };
+    }
+    return { label: labels.connectGsc, variant: "primary" };
+  }
   if (integration.connected) {
     return { label: labels.manage, variant: "secondary" };
-  }
-  if (integration.provider === "google_search_console") {
-    return { label: labels.connectGsc, variant: "primary" };
   }
   return { label: labels.connect, variant: "primary" };
 }
@@ -111,11 +118,15 @@ export function IntegrationCard({
   const action = resolveAction(integration, {
     connect: i.connect,
     connectGsc: i.connectGscButton,
+    selectGscProperty: i.gscSelectPropertyCta,
     manage: i.manage,
     comingSoon: i.comingSoon,
     platformManaged: i.hermesPlatformManaged,
     notConfigured: i.hermesNotConfigured,
   });
+  const gscAwaitingProperty =
+    integration.provider === "google_search_console" &&
+    integration.gscState === "GOOGLE_CONNECTED_NO_PROPERTY";
   const dateLocale = locale === "ru" ? "ru-RU" : locale === "et" ? "et-EE" : "en-US";
   const numberLocale = dateLocale;
 
@@ -140,6 +151,7 @@ export function IntegrationCard({
         <IntegrationStatusBadge
           status={integration.status}
           comingSoon={integration.comingSoon}
+          label={gscAwaitingProperty ? i.gscPartialBadge : undefined}
         />
       </div>
 
@@ -150,9 +162,7 @@ export function IntegrationCard({
         </p>
 
         <div className="mt-4 border-t border-slate-200 pt-4">
-          {integration.provider === "google_search_console" &&
-          integration.connected &&
-          !integration.selectedProperty ? (
+          {gscAwaitingProperty ? (
             <p className="mb-3 text-xs text-amber-400/90">
               {i.gscSiteNotSelected}
             </p>

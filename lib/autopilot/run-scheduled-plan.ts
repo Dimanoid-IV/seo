@@ -12,6 +12,7 @@ import { AppError, ErrorCode } from "@/lib/errors";
 import { createWordPressDraftForArticle } from "@/lib/integrations/wordpress-drafts";
 
 import {
+  classifyDryRunOutcome,
   findDuePlanItems,
   resolvePlanItemExecutionEligibility,
   type ExecutionActionType,
@@ -252,8 +253,18 @@ export async function runScheduledAutopilotPlans(input: {
         }
 
         if (dryRun) {
-          report.executedCount += 1;
+          // Mirror the real-run classification so preview counts stay honest:
+          // no-op internal items (non-article TASK_FIX/SEO_FIX) do nothing and
+          // must be reported as skipped rather than "will run".
+          const outcome = classifyDryRunOutcome(eligibility);
           itemResult.executed = false;
+          if (outcome === "wouldRun") {
+            report.executedCount += 1;
+          } else {
+            report.skippedCount += 1;
+            itemResult.eligible = false;
+            itemResult.action = "SKIP";
+          }
           report.results.push(itemResult);
           continue;
         }

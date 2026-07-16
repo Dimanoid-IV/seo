@@ -151,8 +151,14 @@ function IntegrationActionSheetContent({
   const details = INTEGRATION_PROVIDER_DETAILS[integration.provider];
   const risk = details ? RISK_LEVEL_LABELS[details.riskLevel] : null;
   const isComingSoon = integration.comingSoon || !integration.available;
-  const isConnected = integration.connected && !isComingSoon;
   const isGsc = integration.provider === GSC_PROVIDER;
+  // For GSC, "connected" means Google OAuth exists (even without a selected
+  // property), so the property picker / manage UI still renders in the partial
+  // GOOGLE_CONNECTED_NO_PROPERTY state.
+  const isConnected =
+    (isGsc
+      ? Boolean(integration.googleConnected)
+      : integration.connected) && !isComingSoon;
   const isWordPress = integration.provider === WORDPRESS_PROVIDER;
   const canConnectGsc = isGsc && !isComingSoon && !isConnected && Boolean(websiteId);
   const gscPropertySelected = Boolean(integration.selectedProperty);
