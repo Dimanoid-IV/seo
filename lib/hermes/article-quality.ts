@@ -47,20 +47,27 @@ export type ArticleQualityPipelineResult = {
 export const QUALITY_PASS_THRESHOLD = 80;
 export const MAX_QUALITY_REPAIR_ATTEMPTS = 2;
 
+// NOTE: JavaScript's \b only recognizes ASCII word chars, so \b around
+// Cyrillic/Estonian words never matches. Cyrillic/Estonian CTA terms therefore
+// use plain substring patterns (case-insensitive).
 const CTA_PATTERNS = [
   /\bcontact us\b/i,
   /\bget in touch\b/i,
   /\bcall us\b/i,
   /\blearn more\b/i,
   /\bbook a\b/i,
-  /\bзаказать\b/i,
-  /\bсвязаться\b/i,
-  /\bузнать больше\b/i,
-  /\bзапишитесь\b/i,
-  /\bоставить заявку\b/i,
+  /заказать/i,
+  /оформить заказ/i,
+  /связаться/i,
+  /свяжитесь/i,
+  /узнать больше/i,
+  /запишитесь/i,
+  /оставить заявку/i,
+  /telli(?:da|ge)?/i,
+  /võ(?:t|ta) meiega ühendust/i,
   /\bcta\b/i,
   /class=["'][^"']*btn/i,
-  /<a[^>]+href=["'][^"']+["'][^>]*>[^<]{0,40}(contact|связ|заказ|узнать|запис)/i,
+  /<a[^>]+href=["'][^"']+["'][^>]*>[^<]{0,40}(contact|связ|заказ|узнать|запис|telli)/i,
 ];
 
 function stripHtml(html: string): string {

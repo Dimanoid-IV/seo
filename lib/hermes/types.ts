@@ -4,6 +4,18 @@ export type HermesArticleConstraints = {
   writeForSmallBusinessOwner: boolean;
   includeFaq: boolean;
   includeMeta: boolean;
+  /** Minimum article length the quality gate enforces. */
+  minWordCount?: number;
+  /** Preferred article length so drafts clear the minimum with margin. */
+  targetWordCount?: number;
+  /** Require a natural, non-aggressive call-to-action section. */
+  includeCallToAction?: boolean;
+  /** Optional CTA guidance grounded in the business/topic. */
+  ctaGuidance?: string;
+  /** Minimum number of H2 sections requested. */
+  minSections?: number;
+  /** Internal links the article may reference. */
+  internalLinkSuggestions?: string[];
 };
 
 export type HermesGenerateArticleInput = {

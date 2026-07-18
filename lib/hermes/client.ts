@@ -33,6 +33,10 @@ const DEFAULT_CONSTRAINTS = {
   writeForSmallBusinessOwner: true,
   includeFaq: true,
   includeMeta: true,
+  minWordCount: 1000,
+  targetWordCount: 1200,
+  includeCallToAction: true,
+  minSections: 5,
 } as const;
 
 const SAFE_HERMES_UNAVAILABLE =

@@ -32,6 +32,11 @@ import {
 } from "./build-research-context";
 import { humanizeArticleDraft } from "./humanize-article";
 import {
+  analyzeQualityRepairability,
+  guardHumanizedArticle,
+  repairArticleForQuality,
+} from "./repair-article-content";
+import {
   isWordPressConnectedForWebsite,
   serializeArticleRecord,
 } from "./article-serialize";
@@ -235,6 +240,12 @@ export async function generateArticleFromResearchBrief(
         writeForSmallBusinessOwner: true,
         includeFaq: true,
         includeMeta: true,
+        minWordCount: 1000,
+        targetWordCount: 1200,
+        minSections: 5,
+        includeCallToAction: true,
+        ctaGuidance: `End with a natural, non-aggressive call-to-action inviting the reader to order or request "${topic}" or contact the business at ${website.url}. Make it relevant to the topic.`,
+        internalLinkSuggestions: brief.internalLinkSuggestions.slice(0, 5),
       },
     });
 
@@ -249,7 +260,15 @@ export async function generateArticleFromResearchBrief(
       targetKeyword,
     });
 
-    let currentArticle = humanized.article;
+    let currentArticle = guardHumanizedArticle(hermesResult, humanized.article, {
+      brief,
+      website: {
+        url: website.url,
+        niche: website.niche,
+        language: language.toLowerCase(),
+      },
+      targetKeyword,
+    });
     let repairAttempts = 0;
     let qualityReport = validateResearchAwareArticle(currentArticle, {
       targetKeyword,
@@ -321,7 +340,37 @@ export async function generateArticleFromResearchBrief(
         targetKeyword,
       });
 
-      currentArticle = rehumanized.article;
+      currentArticle = guardHumanizedArticle(currentArticle, rehumanized.article, {
+        brief,
+        website: {
+          url: website.url,
+          niche: website.niche,
+          language: language.toLowerCase(),
+        },
+        targetKeyword,
+      });
+      qualityReport = validateResearchAwareArticle(currentArticle, {
+        targetKeyword,
+        brief,
+        evidenceNotesCount: evidenceNotes.length,
+      });
+    }
+
+    // Deterministic safety net: if the article is only blocked by repairable
+    // structural issues (length, CTA, headings, FAQ), expand/add a real CTA and
+    // re-validate. Unsafe/policy/keyword failures stay honestly blocked.
+    if (!qualityReport.passed && analyzeQualityRepairability(qualityReport).repairable) {
+      currentArticle = repairArticleForQuality(currentArticle, {
+        brief,
+        website: {
+          url: website.url,
+          niche: website.niche,
+          language: language.toLowerCase(),
+        },
+        targetKeyword,
+        minWords: 900,
+        targetWords: 1150,
+      });
       qualityReport = validateResearchAwareArticle(currentArticle, {
         targetKeyword,
         brief,
