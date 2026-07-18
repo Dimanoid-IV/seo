@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { Archive, ExternalLink, Loader2 } from "lucide-react";
 
 import { ArticleMetaPreview } from "@/components/articles/ArticleMetaPreview";
+import { ArticlePublishPanel } from "@/components/articles/ArticlePublishPanel";
 import { ArticleQualityPanel } from "@/components/articles/ArticleQualityPanel";
 import { ArticleStatusBadge } from "@/components/articles/ArticleStatusBadge";
 import { WordPressDraftButton } from "@/components/dashboard/WordPressDraftButton";
@@ -190,7 +191,7 @@ export function ArticleEditorForm({ article, onUpdated }: ArticleEditorFormProps
                   "border-white/15 bg-white/5 text-slate-200 hover:bg-white/10",
               })}
             >
-              Open in WordPress
+              Открыть в WordPress
               <ExternalLink className="size-4" />
             </a>
           ) : null}
@@ -219,7 +220,7 @@ export function ArticleEditorForm({ article, onUpdated }: ArticleEditorFormProps
         <div className="space-y-6">
           <div className="space-y-2">
             <label htmlFor="article-title" className="text-sm font-medium text-white">
-              Title
+              Заголовок
             </label>
             <input
               id="article-title"
@@ -234,7 +235,7 @@ export function ArticleEditorForm({ article, onUpdated }: ArticleEditorFormProps
 
           <div className="space-y-2">
             <label htmlFor="article-slug" className="text-sm font-medium text-white">
-              Slug
+              Адрес страницы (slug)
             </label>
             <input
               id="article-slug"
@@ -253,7 +254,7 @@ export function ArticleEditorForm({ article, onUpdated }: ArticleEditorFormProps
               htmlFor="article-meta-title"
               className="text-sm font-medium text-white"
             >
-              Meta Title
+              SEO-заголовок (meta title)
             </label>
             <input
               id="article-meta-title"
@@ -274,7 +275,7 @@ export function ArticleEditorForm({ article, onUpdated }: ArticleEditorFormProps
               htmlFor="article-meta-description"
               className="text-sm font-medium text-white"
             >
-              Meta Description
+              SEO-описание (meta description)
             </label>
             <textarea
               id="article-meta-description"
@@ -295,7 +296,7 @@ export function ArticleEditorForm({ article, onUpdated }: ArticleEditorFormProps
               htmlFor="article-content-html"
               className="text-sm font-medium text-white"
             >
-              Content HTML
+              Текст статьи (HTML)
             </label>
             <textarea
               id="article-content-html"
@@ -345,7 +346,7 @@ export function ArticleEditorForm({ article, onUpdated }: ArticleEditorFormProps
                   Сохраняем…
                 </>
               ) : (
-                "Save"
+                "Сохранить"
               )}
             </Button>
 
@@ -363,7 +364,7 @@ export function ArticleEditorForm({ article, onUpdated }: ArticleEditorFormProps
                     Одобряем…
                   </>
                 ) : (
-                  "Mark as approved"
+                  "Одобрить"
                 )}
               </Button>
             ) : null}
@@ -399,6 +400,11 @@ export function ArticleEditorForm({ article, onUpdated }: ArticleEditorFormProps
             {error ? <p className="text-xs text-red-300">{error}</p> : null}
             {success ? <p className="text-xs text-emerald-300">{success}</p> : null}
           </div>
+
+          <ArticlePublishPanel
+            articleId={article.id}
+            wordpressConnected={article.wordpressConnected}
+          />
         </div>
       </div>
     </div>

@@ -134,6 +134,11 @@ export type SaasDictionary = {
     generatePlanNetworkError: string;
     auditFailed: string;
     auditNetworkError: string;
+    notCheckedTitle: string;
+    notCheckedDescription: string;
+    checkSiteNow: string;
+    checkingSite: string;
+    reLogin: string;
     status: {
       setup: { label: string; description: string };
       noData: { label: string; description: string };
@@ -1154,6 +1159,21 @@ export type SaasDictionary = {
       integrationNotRequired: string;
       scheduledLabel: string;
       openInReviewQueue: string;
+      viewTopicDetails: string;
+      briefDrawer: {
+        title: string;
+        whyTopic: string;
+        targetKeyword: string;
+        searchIntent: string;
+        competitorAngle: string;
+        outline: string;
+        internalLinks: string;
+        publishDate: string;
+        noData: string;
+        keep: string;
+        remove: string;
+        removed: string;
+      };
       approveSuccess: (count: number) => string;
       approvePartialSuccess: (approved: number, blocked: number) => string;
       itemTypes: Record<string, string>;

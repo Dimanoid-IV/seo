@@ -35,6 +35,8 @@ export type SimpleDashboardViewModel = {
     description: string;
     tone: SimpleDashboardTone;
   };
+  /** True once the site has at least one completed audit (growth score exists). */
+  hasAudit: boolean;
   metrics: {
     growthScore?: number;
     growthScoreLabel: string;
@@ -121,6 +123,7 @@ export function buildSimpleDashboardViewModel(input: {
   return {
     website: control.website ?? undefined,
     status,
+    hasAudit,
     metrics: {
       growthScore: control.metrics.growthScore,
       growthScoreLabel: localizedGrowthScoreLabel(

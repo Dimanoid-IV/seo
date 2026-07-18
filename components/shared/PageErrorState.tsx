@@ -13,6 +13,8 @@ type PageErrorStateProps = {
   onRetry?: () => void;
   retryLabel?: string;
   className?: string;
+  secondaryHref?: string;
+  secondaryLabel?: string;
 };
 
 export function PageErrorState({
@@ -20,6 +22,8 @@ export function PageErrorState({
   onRetry,
   retryLabel,
   className,
+  secondaryHref,
+  secondaryLabel,
 }: PageErrorStateProps) {
   const { dict } = useSaasTranslations();
 
@@ -39,6 +43,18 @@ export function PageErrorState({
             {onRetry ? (
               <Button type="button" size="sm" onClick={onRetry}>
                 {retryLabel ?? dict.common.tryAgain}
+              </Button>
+            ) : null}
+            {secondaryHref && secondaryLabel ? (
+              <Button
+                render={<Link href={secondaryHref} />}
+                nativeButton={false}
+                type="button"
+                variant="outline"
+                size="sm"
+                className="border-slate-200 bg-transparent text-slate-600"
+              >
+                {secondaryLabel}
               </Button>
             ) : null}
             <Button

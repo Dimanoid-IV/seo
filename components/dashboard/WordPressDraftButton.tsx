@@ -50,7 +50,7 @@ export function WordPressDraftButton({
         setError(
           await parseApiErrorMessage(
             response,
-            "Could not create WordPress draft"
+            "Не удалось создать черновик в WordPress"
           )
         );
         return;
@@ -60,7 +60,7 @@ export function WordPressDraftButton({
       setEditUrl(body.data.editUrl);
       onSuccess?.();
     } catch {
-      setError("Network error while creating WordPress draft");
+      setError("Сетевая ошибка при создании черновика в WordPress");
     } finally {
       setLoading(false);
     }
@@ -69,14 +69,14 @@ export function WordPressDraftButton({
   if (editUrl) {
     return (
       <div className="space-y-2">
-        <p className="text-xs text-emerald-300">WordPress draft created</p>
+        <p className="text-xs text-emerald-300">Черновик создан в WordPress</p>
         <a
           href={editUrl}
           target="_blank"
           rel="noopener noreferrer"
           className="inline-flex items-center gap-1.5 text-xs text-cyan-300 hover:text-cyan-200"
         >
-          Open in WordPress
+          Открыть в WordPress
           <ExternalLink className="size-3.5" />
         </a>
       </div>
@@ -97,10 +97,10 @@ export function WordPressDraftButton({
           {loading ? (
             <>
               <Loader2 className="size-4 animate-spin" />
-              Creating draft…
+              Создаём черновик…
             </>
           ) : (
-            "Create WordPress draft"
+            "Создать черновик в WordPress"
           )}
         </Button>
       </FeatureGate>

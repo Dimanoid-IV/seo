@@ -162,6 +162,12 @@ export const saasDictionary: SaasDictionary = {
     generatePlanNetworkError: "Network error while generating the plan.",
     auditFailed: "Could not run the audit.",
     auditNetworkError: "Network error while running the audit.",
+    notCheckedTitle: "RankBoost hasn't checked your site yet",
+    notCheckedDescription:
+      "Press the button to find your first tasks and article ideas.",
+    checkSiteNow: "Check my site now",
+    checkingSite: "Checking your site…",
+    reLogin: "Sign in again",
     status: {
       setup: {
         label: "Setup in progress",
@@ -1385,6 +1391,21 @@ export const saasDictionary: SaasDictionary = {
       integrationNotRequired: "Not required",
       scheduledLabel: "Scheduled",
       openInReviewQueue: "Open in Review Queue",
+      viewTopicDetails: "Topic details",
+      briefDrawer: {
+        title: "Article topic details",
+        whyTopic: "Why this topic",
+        targetKeyword: "Target keyword",
+        searchIntent: "Search intent",
+        competitorAngle: "What competitors do",
+        outline: "Article outline",
+        internalLinks: "Internal links",
+        publishDate: "Publish date",
+        noData: "Topic details are still being prepared.",
+        keep: "Keep",
+        remove: "Remove from plan",
+        removed: "Topic removed from the selection.",
+      },
       approveSuccess: (count: number) =>
         `${count} item${count === 1 ? "" : "s"} approved and scheduled.`,
       approvePartialSuccess: (approved: number, blocked: number) =>

@@ -7,6 +7,7 @@ import { useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ResearchBriefPreview } from "@/components/content-research/ResearchBriefPreview";
 import { researchSummaryFromBrief } from "@/components/content-research/ResearchBriefPreview";
+import { TopicBriefDrawer } from "@/components/autopilot/TopicBriefDrawer";
 import { authFetch, parseApiErrorMessage } from "@/lib/auth/client-session";
 import type {
   AutopilotPlanItem,
@@ -122,6 +123,7 @@ export function PlanApprovalPanel({
   const [itemOverrides, setItemOverrides] = useState<
     Record<string, Partial<AutopilotPlanItem>>
   >({});
+  const [detailsItemId, setDetailsItemId] = useState<string | null>(null);
 
   const displayItems = useMemo(
     () =>
@@ -136,6 +138,35 @@ export function PlanApprovalPanel({
     () => displayItems.filter(isSelectable),
     [displayItems]
   );
+
+  const detailsItem = useMemo(
+    () => displayItems.find((item) => item.id === detailsItemId) ?? null,
+    [detailsItemId, displayItems]
+  );
+
+  const detailsBriefReady =
+    detailsItem?.researchBrief
+      ? researchSummaryFromBrief(detailsItem.researchBrief)?.displayStatus === "ready"
+      : false;
+
+  const detailsCanGenerate = Boolean(
+    detailsItem &&
+      detailsItem.type === "ARTICLE" &&
+      detailsItem.researchBrief &&
+      !detailsItem.generatedArticleId &&
+      ["approved", "scheduled", "prepared", "proposed"].includes(detailsItem.status) &&
+      detailsBriefReady
+  );
+
+  function handleRemoveFromPlan(item: AutopilotPlanItem) {
+    setSelected((prev) => {
+      const next = new Set(prev);
+      next.delete(item.id);
+      return next;
+    });
+    setDetailsItemId(null);
+    setSuccess(t.briefDrawer.removed);
+  }
 
   const allSelected =
     selectableItems.length > 0 &&
@@ -424,7 +455,17 @@ export function PlanApprovalPanel({
                       <p className="text-xs font-medium uppercase tracking-wide text-violet-600">
                         {t.itemTypes[item.type as keyof typeof t.itemTypes] ?? item.type}
                       </p>
-                      <h4 className="font-medium text-slate-900">{item.title}</h4>
+                      {item.type === "ARTICLE" ? (
+                        <button
+                          type="button"
+                          onClick={() => setDetailsItemId(item.id)}
+                          className="text-left font-medium text-slate-900 hover:text-violet-700 hover:underline"
+                        >
+                          {item.title}
+                        </button>
+                      ) : (
+                        <h4 className="font-medium text-slate-900">{item.title}</h4>
+                      )}
                     </div>
                     <span
                       className={cn(
@@ -458,12 +499,21 @@ export function PlanApprovalPanel({
                   ) : null}
 
                   {item.type === "ARTICLE" && item.researchBrief ? (
-                    <ResearchBriefPreview
-                      researchBrief={item.researchBrief}
-                      planId={planId}
-                      planItemId={item.id}
-                      compact
-                    />
+                    <>
+                      <ResearchBriefPreview
+                        researchBrief={item.researchBrief}
+                        planId={planId}
+                        planItemId={item.id}
+                        compact
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setDetailsItemId(item.id)}
+                        className="text-xs font-medium text-violet-600 hover:text-violet-800 hover:underline"
+                      >
+                        {t.viewTopicDetails}
+                      </button>
+                    </>
                   ) : null}
 
                   {item.type === "ARTICLE" &&
@@ -634,6 +684,22 @@ export function PlanApprovalPanel({
           )}
         </Button>
       ) : null}
+
+      <TopicBriefDrawer
+        open={detailsItemId !== null}
+        onOpenChange={(open) => {
+          if (!open) setDetailsItemId(null);
+        }}
+        item={detailsItem}
+        locale={locale}
+        t={t}
+        refreshing={detailsItem ? refreshingItemId === detailsItem.id : false}
+        generating={detailsItem ? generatingItemId === detailsItem.id : false}
+        canGenerateDraft={detailsCanGenerate}
+        onRegenerate={(item) => void handleRegenerateTopic(item)}
+        onGenerateDraft={(item) => void handleGenerateDraft(item)}
+        onRemove={handleRemoveFromPlan}
+      />
     </section>
   );
 }

@@ -80,7 +80,19 @@ export function AuthSessionProvider({
   const [loading, setLoading] = useState(true);
 
   const loadSession = useCallback(async (): Promise<boolean> => {
-    const response = await authFetch("/api/auth/me");
+    let response: Response;
+    try {
+      response = await authFetch("/api/auth/me", {
+        signal: AbortSignal.timeout(15_000),
+      });
+    } catch {
+      // Network error or timeout: fail closed so the app never hangs on the
+      // session spinner.
+      setUser(null);
+      setOrganization(null);
+      setSubscription(null);
+      return false;
+    }
 
     if (!response.ok) {
       setUser(null);

@@ -174,6 +174,21 @@ export const serverStringsRu: SaasServerStrings = {
         `${count} ${count === 1 ? "выполненную задачу" : count < 5 ? "выполненные задачи" : "выполненных задач"}`,
       scoreChange: (delta) => `Оценка роста ${delta}`,
     },
+    eventSummaries: {
+      auditCompleted: (findings, tasks) => {
+        const parts = ["RankBoost проверил ваш сайт и обновил рекомендации."];
+        if (findings > 0) parts.push(`${findings} находок требуют внимания.`);
+        if (tasks > 0) parts.push(`Создано новых задач: ${tasks}.`);
+        return parts.join(" ");
+      },
+      scoreChanged: (from, to, delta) =>
+        `Growth Score ${delta > 0 ? "вырос" : "снизился"} с ${from} до ${to} (${delta > 0 ? "+" : ""}${delta}).`,
+      qualityPassed: "Черновик статьи прошёл проверку качества.",
+      qualityNeedsReview: "Черновик статьи нужно проверить перед публикацией.",
+      wordpressDraftCreated: "В WordPress создан черновик — он ждёт вашей проверки.",
+      socialPostDraftCreated: (platform) => `Создан черновик поста для ${platform}.`,
+      socialPostCopied: "Черновик поста скопирован для публикации.",
+    },
     actions: {
       openArticle: "Открыть статью",
       openReport: "Открыть отчёт",

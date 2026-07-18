@@ -162,6 +162,12 @@ export const saasDictionary: SaasDictionary = {
     generatePlanNetworkError: "Сетевая ошибка при создании плана.",
     auditFailed: "Не удалось запустить аудит.",
     auditNetworkError: "Сетевая ошибка при запуске аудита.",
+    notCheckedTitle: "RankBoost ещё не проверил сайт",
+    notCheckedDescription:
+      "Нажмите кнопку, чтобы найти первые задачи и идеи статей.",
+    checkSiteNow: "Проверить сайт сейчас",
+    checkingSite: "Проверяем сайт…",
+    reLogin: "Войти заново",
     status: {
       setup: {
         label: "Настройка в процессе",
@@ -1389,6 +1395,21 @@ export const saasDictionary: SaasDictionary = {
       integrationNotRequired: "Не нужна",
       scheduledLabel: "По расписанию",
       openInReviewQueue: "Открыть в очереди проверки",
+      viewTopicDetails: "Подробнее о теме",
+      briefDrawer: {
+        title: "О теме статьи",
+        whyTopic: "Почему эта тема",
+        targetKeyword: "Целевой запрос",
+        searchIntent: "Тип запроса",
+        competitorAngle: "Что делают конкуренты",
+        outline: "План статьи",
+        internalLinks: "Внутренние ссылки",
+        publishDate: "Дата публикации",
+        noData: "Данные по теме пока готовятся.",
+        keep: "Оставить",
+        remove: "Убрать из плана",
+        removed: "Тема убрана из выбранных.",
+      },
       approveSuccess: (count: number) =>
         `Одобрено и запланировано: ${count} ${count === 1 ? "пункт" : count < 5 ? "пункта" : "пунктов"}.`,
       approvePartialSuccess: (approved: number, blocked: number) =>

@@ -8,6 +8,7 @@ import { useAuthSession } from "@/components/auth/AuthSessionProvider";
 import { EmptyState } from "@/components/dashboard/EmptyState";
 import { IntegrationActionSheet } from "@/components/integrations/IntegrationActionSheet";
 import { IntegrationGrid } from "@/components/integrations/IntegrationGrid";
+import { SiteTechHint } from "@/components/integrations/SiteTechHint";
 import { PageErrorState } from "@/components/shared/PageErrorState";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { PageLoadingState } from "@/components/shared/PageLoadingState";
@@ -217,6 +218,12 @@ export function IntegrationsPage() {
       ) : (
         <p className="-mt-4 mb-6 text-sm text-amber-300/90">{i.emptyDescription}</p>
       )}
+
+      {data.website?.id ? (
+        <div className="mb-6">
+          <SiteTechHint websiteId={data.website.id} />
+        </div>
+      ) : null}
 
       {banner ? (
         <div

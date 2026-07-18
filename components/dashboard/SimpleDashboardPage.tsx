@@ -31,9 +31,29 @@ export function SimpleDashboardPage() {
   const d = dict.dashboard;
   const modeCopy = dict.dashboardMode;
   const { isSimple } = useDashboardMode();
-  const { overview, simple, loading, error, refetch } = useDashboardOverview();
+  const { overview, simple, loading, error, isAuthError, refetch } =
+    useDashboardOverview();
   const [actionLoading, setActionLoading] = useState(false);
   const [actionError, setActionError] = useState<string | null>(null);
+
+  async function runAudit(websiteId: string) {
+    setActionLoading(true);
+    setActionError(null);
+    try {
+      const response = await authFetch(`/api/websites/${websiteId}/audits/run`, {
+        method: "POST",
+      });
+      if (!response.ok) {
+        setActionError(await parseApiErrorMessage(response, d.auditFailed));
+        return;
+      }
+      await refetch({ silent: true });
+    } catch {
+      setActionError(d.auditNetworkError);
+    } finally {
+      setActionLoading(false);
+    }
+  }
 
   async function handlePrimaryAction() {
     const action = simple?.nextBestAction;
@@ -75,23 +95,7 @@ export function SimpleDashboardPage() {
     }
 
     if (overview?.website && action.label.toLowerCase().includes("audit")) {
-      setActionLoading(true);
-      setActionError(null);
-      try {
-        const response = await authFetch(
-          `/api/websites/${overview.website.id}/audits/run`,
-          { method: "POST" }
-        );
-        if (!response.ok) {
-          setActionError(await parseApiErrorMessage(response, d.auditFailed));
-          return;
-        }
-        await refetch({ silent: true });
-      } catch {
-        setActionError(d.auditNetworkError);
-      } finally {
-        setActionLoading(false);
-      }
+      await runAudit(overview.website.id);
     }
   }
 
@@ -118,6 +122,8 @@ export function SimpleDashboardPage() {
         message={message}
         onRetry={() => void refetch()}
         retryLabel={dict.common.tryAgain}
+        secondaryHref={isAuthError ? "/login" : undefined}
+        secondaryLabel={isAuthError ? d.reLogin : undefined}
       />
     );
   }
@@ -193,7 +199,29 @@ export function SimpleDashboardPage() {
             websiteDomain={simple.website.domain ?? simple.website.name}
           />
 
-          {nextAction ? (
+          {!simple.hasAudit ? (
+            <section className="rounded-2xl border border-blue-200 bg-blue-50/60 p-6 text-center sm:p-8">
+              <h2 className="text-lg font-semibold text-slate-900 sm:text-xl">
+                {d.notCheckedTitle}
+              </h2>
+              <p className="mx-auto mt-2 max-w-md text-sm text-slate-600">
+                {d.notCheckedDescription}
+              </p>
+              <button
+                type="button"
+                disabled={actionLoading}
+                onClick={() => void runAudit(simple.website!.id)}
+                className="mt-5 inline-flex items-center justify-center rounded-lg bg-blue-600 px-6 py-3 text-sm font-semibold text-white transition hover:bg-blue-700 disabled:opacity-60"
+              >
+                {actionLoading ? d.checkingSite : d.checkSiteNow}
+              </button>
+              {actionError ? (
+                <p className="mt-3 text-sm text-amber-700">{actionError}</p>
+              ) : null}
+            </section>
+          ) : null}
+
+          {simple.hasAudit && nextAction ? (
             <NextBestActionCard
               title={nextAction.title}
               description={nextAction.description}
@@ -206,7 +234,7 @@ export function SimpleDashboardPage() {
             />
           ) : null}
 
-          {actionError ? (
+          {actionError && simple.hasAudit ? (
             <div className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">
               {isSimple ? modeCopy.calmActionFailed : actionError}
             </div>

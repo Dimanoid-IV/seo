@@ -97,6 +97,70 @@ function localizedTimelineTitle(
   return copy.eventTitles[event.type] ?? event.title;
 }
 
+function readNumber(details: unknown, key: string): number {
+  if (details && typeof details === "object" && key in details) {
+    const value = (details as Record<string, unknown>)[key];
+    if (typeof value === "number" && Number.isFinite(value)) {
+      return value;
+    }
+  }
+  return 0;
+}
+
+/**
+ * Localizes summaries that were stored as generated English text, using the
+ * event's `details` for dynamic values. User-content summaries (article/task/
+ * report titles, GSC insights, provider messages) fall back to the stored value.
+ */
+function localizedTimelineSummary(
+  event: TimelineEvent,
+  locale: SaasLocale
+): string | undefined {
+  const copy = getServerStrings(locale).timeline.eventSummaries;
+  const details = event.details;
+
+  switch (event.type) {
+    case TimelineEventType.AUDIT_COMPLETED:
+      return copy.auditCompleted(
+        readNumber(details, "findingsCount"),
+        readNumber(details, "tasksCreated")
+      );
+    case TimelineEventType.SCORE_CHANGED: {
+      const previous = details && typeof details === "object" && "previousScore" in details
+        ? (details as Record<string, unknown>).previousScore
+        : null;
+      return copy.scoreChanged(
+        previous == null ? "—" : String(previous),
+        readNumber(details, "newScore"),
+        readNumber(details, "delta")
+      );
+    }
+    case TimelineEventType.AI_RECOMMENDATION_CREATED: {
+      const passed =
+        details && typeof details === "object" && "qualityPassed" in details
+          ? Boolean((details as Record<string, unknown>).qualityPassed)
+          : true;
+      return passed ? copy.qualityPassed : copy.qualityNeedsReview;
+    }
+    case TimelineEventType.WORDPRESS_DRAFT_CREATED:
+      return copy.wordpressDraftCreated;
+    case TimelineEventType.SOCIAL_POST_DRAFT_CREATED: {
+      const platform =
+        details && typeof details === "object" && "platform" in details
+          ? String((details as Record<string, unknown>).platform ?? "")
+          : "";
+      return copy.socialPostDraftCreated(platform || "social");
+    }
+    case TimelineEventType.SYSTEM_NOTE:
+      if (event.title === "Social post copied") {
+        return copy.socialPostCopied;
+      }
+      return event.summary ?? undefined;
+    default:
+      return event.summary ?? undefined;
+  }
+}
+
 export function formatTimelineSeverityLabel(
   severity: string,
   locale: SaasLocale = "en"
@@ -118,7 +182,7 @@ export function formatTimelineEvent(
     source: sources[event.source] ?? event.source,
     severity: event.severity,
     title: localizedTimelineTitle(event, locale),
-    summary: event.summary ?? undefined,
+    summary: localizedTimelineSummary(event, locale),
     createdAt,
     relativeTime: formatRelativeTime(createdAt),
     isRead: event.isRead,

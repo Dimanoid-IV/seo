@@ -162,6 +162,12 @@ export const saasDictionary: SaasDictionary = {
     generatePlanNetworkError: "Võrguviga plaani genereerimisel.",
     auditFailed: "Auditi käivitamine ebaõnnestus.",
     auditNetworkError: "Võrguviga auditi käivitamisel.",
+    notCheckedTitle: "RankBoost pole teie saiti veel kontrollinud",
+    notCheckedDescription:
+      "Vajutage nuppu, et leida esimesed ülesanded ja artikliideed.",
+    checkSiteNow: "Kontrolli saiti kohe",
+    checkingSite: "Kontrollime saiti…",
+    reLogin: "Logi uuesti sisse",
     status: {
       setup: {
         label: "Seadistamine pooleli",
@@ -1392,6 +1398,21 @@ export const saasDictionary: SaasDictionary = {
       integrationNotRequired: "Pole vajalik",
       scheduledLabel: "Graafikus",
       openInReviewQueue: "Ava ülevaate järjekorras",
+      viewTopicDetails: "Teema üksikasjad",
+      briefDrawer: {
+        title: "Artikli teema üksikasjad",
+        whyTopic: "Miks see teema",
+        targetKeyword: "Sihtmärksõna",
+        searchIntent: "Otsingu kavatsus",
+        competitorAngle: "Mida konkurendid teevad",
+        outline: "Artikli struktuur",
+        internalLinks: "Siselingid",
+        publishDate: "Avaldamise kuupäev",
+        noData: "Teema üksikasjad on veel ettevalmistamisel.",
+        keep: "Jäta alles",
+        remove: "Eemalda plaanist",
+        removed: "Teema eemaldati valikust.",
+      },
       approveSuccess: (count: number) =>
         `${count} punkt${count === 1 ? "" : "i"} kinnitatud ja graafikusse lisatud.`,
       approvePartialSuccess: (approved: number, blocked: number) =>

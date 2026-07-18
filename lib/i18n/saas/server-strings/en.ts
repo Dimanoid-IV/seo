@@ -173,6 +173,21 @@ export const serverStringsEn: SaasServerStrings = {
         `${count} completed ${count === 1 ? "task" : "tasks"}`,
       scoreChange: (delta) => `Growth Score ${delta}`,
     },
+    eventSummaries: {
+      auditCompleted: (findings, tasks) => {
+        const parts = ["RankBoost scanned your website and updated its recommendations."];
+        if (findings > 0) parts.push(`${findings} findings need attention.`);
+        if (tasks > 0) parts.push(`${tasks} new tasks were created.`);
+        return parts.join(" ");
+      },
+      scoreChanged: (from, to, delta) =>
+        `Your Growth Score ${delta > 0 ? "increased" : "decreased"} from ${from} to ${to} (${delta > 0 ? "+" : ""}${delta}).`,
+      qualityPassed: "The article draft passed quality checks.",
+      qualityNeedsReview: "The article draft needs your review before publishing.",
+      wordpressDraftCreated: "A draft was created in WordPress and is waiting for review.",
+      socialPostDraftCreated: (platform) => `A new ${platform} post draft was created.`,
+      socialPostCopied: "A social post draft was copied for publishing.",
+    },
     actions: {
       openArticle: "Open article",
       openReport: "Open report",

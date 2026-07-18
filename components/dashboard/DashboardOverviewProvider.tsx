@@ -23,6 +23,7 @@ type DashboardOverviewContextValue = {
   simple: SimpleDashboardViewModel | null;
   loading: boolean;
   error: string | null;
+  isAuthError: boolean;
   refetch: (options?: RefetchOptions) => Promise<void>;
 };
 
@@ -39,15 +40,24 @@ export function useDashboardOverview(): DashboardOverviewContextValue {
   return context;
 }
 
+/** Hard cap so the dashboard never sits on an infinite loader if the network hangs. */
+const OVERVIEW_FETCH_TIMEOUT_MS = 15_000;
+
 async function fetchOverview(): Promise<{
   overview: DashboardOverviewData | null;
   simple: SimpleDashboardViewModel | null;
   error: string | null;
 }> {
   try {
-    const response = await authFetch("/api/dashboard/overview");
+    const response = await authFetch("/api/dashboard/overview", {
+      signal: AbortSignal.timeout(OVERVIEW_FETCH_TIMEOUT_MS),
+    });
 
     if (!response.ok) {
+      if (response.status === 401) {
+        return { overview: null, simple: null, error: "authExpired" };
+      }
+
       let apiMessage: string | null = null;
       try {
         const errorBody = (await response.json()) as {
@@ -98,10 +108,12 @@ export function DashboardOverviewProvider({
   const [loading, setLoading] = useState(true);
   const [errorKey, setErrorKey] = useState<string | null>(null);
 
+  const isAuthError = errorKey === "authExpired";
+
   const error = errorKey
     ? errorKey === "loadNetworkError"
       ? dict.dashboard.loadNetworkError
-      : errorKey === "loadFailed"
+      : errorKey === "loadFailed" || errorKey === "authExpired"
         ? dict.dashboard.loadFailed
         : errorKey
     : null;
@@ -150,9 +162,10 @@ export function DashboardOverviewProvider({
       simple,
       loading,
       error,
+      isAuthError,
       refetch,
     }),
-    [overview, simple, loading, error, refetch]
+    [overview, simple, loading, error, isAuthError, refetch]
   );
 
   return (

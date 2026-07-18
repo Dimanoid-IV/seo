@@ -174,6 +174,21 @@ export const serverStringsEt: SaasServerStrings = {
         `${count} lõpetatud ${count === 1 ? "ülesanne" : "ülesannet"}`,
       scoreChange: (delta) => `Kasvuskoor ${delta}`,
     },
+    eventSummaries: {
+      auditCompleted: (findings, tasks) => {
+        const parts = ["RankBoost skannis teie saidi ja uuendas soovitusi."];
+        if (findings > 0) parts.push(`${findings} leidu vajab tähelepanu.`);
+        if (tasks > 0) parts.push(`Loodi uusi ülesandeid: ${tasks}.`);
+        return parts.join(" ");
+      },
+      scoreChanged: (from, to, delta) =>
+        `Growth Score ${delta > 0 ? "tõusis" : "langes"} ${from} → ${to} (${delta > 0 ? "+" : ""}${delta}).`,
+      qualityPassed: "Artikli mustand läbis kvaliteedikontrolli.",
+      qualityNeedsReview: "Artikli mustand vajab enne avaldamist teie ülevaatust.",
+      wordpressDraftCreated: "WordPressis loodi mustand — see ootab ülevaatust.",
+      socialPostDraftCreated: (platform) => `Loodi ${platform} postituse mustand.`,
+      socialPostCopied: "Sotsiaalmeedia postituse mustand kopeeriti avaldamiseks.",
+    },
     actions: {
       openArticle: "Ava artikkel",
       openReport: "Ava aruanne",

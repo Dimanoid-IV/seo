@@ -102,6 +102,15 @@ export type SaasServerStrings = {
       completedTasks: (count: number) => string;
       scoreChange: (delta: string) => string;
     };
+    eventSummaries: {
+      auditCompleted: (findings: number, tasks: number) => string;
+      scoreChanged: (from: string, to: number, delta: number) => string;
+      qualityPassed: string;
+      qualityNeedsReview: string;
+      wordpressDraftCreated: string;
+      socialPostDraftCreated: (platform: string) => string;
+      socialPostCopied: string;
+    };
     actions: {
       openArticle: string;
       openReport: string;
