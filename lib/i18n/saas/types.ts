@@ -873,6 +873,11 @@ export type SaasDictionary = {
     autopilotUnlockHint: string;
     autopilotAlreadyApprovedHint: string;
     approveBlockedQuality: string;
+    approveArticle: string;
+    articleReadyHint: string;
+    qualityOutOf: (score: number) => string;
+    publishManually: string;
+    downloadForSite: string;
   };
   socialPosts: {
     title: string;

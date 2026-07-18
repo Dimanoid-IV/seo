@@ -27,7 +27,7 @@ export const serverStringsEt: SaasServerStrings = {
       reviewPlanTitle: "Vaadake kuine kasvuplaan üle",
       reviewPlanDesc:
         "RankBoost koostas selle kuu SEO, sisu ja sotsiaalmeedia toimingute plaani.",
-      runAuditTitle: "Käivitage esimene audit",
+      runAuditTitle: "Kontrolli saiti kohe",
       runAuditDesc:
         "RankBoost peab teie veebisaidi skaneerima enne toimingute ettevalmistamist.",
       connectGscTitle: "Ühendage Google Search Console",
@@ -35,6 +35,21 @@ export const serverStringsEt: SaasServerStrings = {
       reviewEmailTitle: "Vaadake ettevalmistatud e-kiri üle",
       reviewEmailDesc:
         "Kinnitamise e-kiri on valmis. Seda ei saadeta enne, kui saadate selle käsitsi.",
+      openReviewTitle: "Kontrolli valmis materjale",
+      openReviewDesc:
+        "RankBoost valmistas artikli või paranduse. Midagi ei avaldata ilma teie kinnituseta.",
+      openPlanTitle: "Ava avaldamisplaan",
+      openPlanDesc:
+        "Plaanis on artikliteemad — avage ja otsustage, mida järgmiseks ette valmistada.",
+      selectGscTitle: "Vali Google Search Console'i sait",
+      selectGscDesc:
+        "Google on ühendatud — valige saidi omadus, et avada otsinguandmed.",
+      setupPublishingTitle: "Seadista avaldamine",
+      setupPublishingDesc:
+        "Ühendage WordPress või kasutage käsitsi avaldamist (eksport / arendaja üleandmine).",
+      openControlTitle: "Ava juhtimiskeskus",
+      openControlDesc:
+        "Vaadake plaani olekut, ülesandeid ja järgmisi samme ühes kohas.",
     },
     actionLabels: {
       openGrowthPlan: "Ava kasvuplaan",
@@ -42,10 +57,16 @@ export const serverStringsEt: SaasServerStrings = {
       viewDrafts: "Vaata mustandeid",
       viewPosts: "Vaata postitusi",
       connectGsc: "Ühenda GSC",
-      runAudit: "Käivita audit",
+      runAudit: "Kontrolli saiti kohe",
       viewTasks: "Vaata ülesandeid",
       openTimeline: "Ava ajalugu",
       open: "Ava",
+      openReview: "Ava ülevaatus",
+      openPlan: "Ava plaan",
+      selectGsc: "Vali sait",
+      setupPublishing: "Seadista avaldamine",
+      openControl: "Ava juhtimiskeskus",
+      checkSiteNow: "Kontrolli saiti kohe",
     },
     findings: {
       seoTasksWaiting: (count) =>

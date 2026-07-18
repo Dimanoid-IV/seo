@@ -54,7 +54,8 @@ export function buildRecommendedActions(
       id: nextId("email-gen"),
       title: r.prepareEmailTitle,
       description: r.prepareEmailDesc,
-      priority: "MEDIUM",
+      // Never the primary dashboard CTA (Prompt 11.42 sales polish).
+      priority: "LOW",
       type: "GENERATE_EMAIL_APPROVAL",
       apiAction: "generate_email_approval",
     });
@@ -80,7 +81,7 @@ export function buildRecommendedActions(
       ),
       priority: "HIGH",
       type: "REVIEW_ARTICLE",
-      href: "/app/content-plan",
+      href: "/app/review",
     });
   }
 

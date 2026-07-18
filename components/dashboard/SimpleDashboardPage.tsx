@@ -94,8 +94,15 @@ export function SimpleDashboardPage() {
       return;
     }
 
-    if (overview?.website && action.label.toLowerCase().includes("audit")) {
-      await runAudit(overview.website.id);
+    if (
+      action.apiAction === "run_audit" ||
+      (overview?.website &&
+        (action.label.toLowerCase().includes("audit") ||
+          action.label.toLowerCase().includes("проверить сайт")))
+    ) {
+      if (overview?.website) {
+        await runAudit(overview.website.id);
+      }
     }
   }
 

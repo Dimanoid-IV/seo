@@ -18,9 +18,13 @@ import {
   localizedFindings,
   localizedGrowthScoreLabel,
   localizedHeroStatus,
-  localizedNextAction,
+  localizedPrimaryCta,
   localizedSecondaryAction,
 } from "./simple-overview-i18n";
+import {
+  planHasApprovedArticleTopics,
+  resolveDashboardPrimaryCta,
+} from "./primary-cta";
 
 export type SimpleDashboardTone = "GOOD" | "NEEDS_REVIEW" | "SETUP" | "NO_DATA";
 
@@ -110,9 +114,30 @@ export function buildSimpleDashboardViewModel(input: {
     (control.monthlyPlan && control.monthlyPlan.status !== "approved" ? 1 : 0);
 
   const hasAudit = Boolean(control.metrics.growthScore != null);
-  const primaryAction = control.recommendedActions[0];
+  const gscIntegration = control.integrations.find(
+    (i) => i.key === "google_search_console"
+  );
+  const wordpressIntegration = control.integrations.find(
+    (i) => i.key === "wordpress"
+  );
+  const gscNeedsProperty = gscIntegration?.status === "NEEDS_SETUP";
+  const publishingConfigured = wordpressIntegration?.status === "CONNECTED";
+
+  const primaryDecision = resolveDashboardPrimaryCta({
+    hasAudit,
+    reviewQueueCount: input.reviewQueueCount ?? 0,
+    hasApprovedPlanWithArticleTopics: planHasApprovedArticleTopics({
+      monthlyPlanStatus: control.monthlyPlan?.status,
+      planItemTypes: control.monthlyPlan?.hasArticleTopics
+        ? ["ARTICLE"]
+        : [],
+    }),
+    gscNeedsProperty,
+    publishingConfigured,
+  });
+
   const secondaryAction = localizedSecondaryAction(locale, {
-    primaryType: primaryAction?.type,
+    primaryType: primaryDecision.kind,
     onboardingStatus: onboarding.status,
   });
 
@@ -138,7 +163,7 @@ export function buildSimpleDashboardViewModel(input: {
       needsReviewCount,
       reviewQueueCount: input.reviewQueueCount ?? needsReviewCount,
     },
-    nextBestAction: localizedNextAction(locale, primaryAction),
+    nextBestAction: localizedPrimaryCta(locale, primaryDecision),
     secondaryAction,
     findings: localizedFindings(
       locale,

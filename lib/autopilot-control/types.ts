@@ -31,6 +31,8 @@ export type ControlCenterMonthlyPlan = {
   title: string;
   summary?: string;
   href: string;
+  /** True when the plan includes at least one ARTICLE topic. */
+  hasArticleTopics?: boolean;
 };
 
 export type ApprovalQueueItem = {

@@ -1080,6 +1080,12 @@ export const saasDictionary: SaasDictionary = {
       "Уже одобрено — Autopilot продолжит на следующем запланированном запуске.",
     approveBlockedQuality:
       "Черновик нельзя одобрить, пока не пройдены проверки качества.",
+    approveArticle: "Одобрить статью",
+    articleReadyHint:
+      "Вы можете отредактировать статью, отклонить её или использовать материалы для публикации на сайте. RankBoost ничего не публикует без вашего подтверждения.",
+    qualityOutOf: (score) => `Качество ${score}/100`,
+    publishManually: "Опубликовать вручную",
+    downloadForSite: "Скачать / скопировать для сайта",
   },
   socialPosts: {
     title: "Соцсети",

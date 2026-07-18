@@ -1083,6 +1083,12 @@ export const saasDictionary: SaasDictionary = {
       "Juba kinnitatud — Autopilot jätkab järgmisel tähtajal.",
     approveBlockedQuality:
       "Seda mustandit ei saa kinnitada enne, kui kvaliteedikontroll on läbitud.",
+    approveArticle: "Kinnita artikkel",
+    articleReadyHint:
+      "Saate artiklit redigeerida, tagasi lükata või kasutada materjale saidile avaldamiseks. RankBoost ei avalda midagi ilma teie kinnituseta.",
+    qualityOutOf: (score) => `Kvaliteet ${score}/100`,
+    publishManually: "Avalda käsitsi",
+    downloadForSite: "Laadi alla / kopeeri saidile",
   },
   socialPosts: {
     title: "Sotsiaalpostitused",

@@ -1077,6 +1077,12 @@ export const saasDictionary: SaasDictionary = {
       "Already approved — Autopilot will continue on the next due run.",
     approveBlockedQuality:
       "This draft cannot be approved until quality checks pass.",
+    approveArticle: "Approve article",
+    articleReadyHint:
+      "You can edit the article, reject it, or use the materials to publish on your site. RankBoost never publishes without your confirmation.",
+    qualityOutOf: (score) => `Quality ${score}/100`,
+    publishManually: "Publish manually",
+    downloadForSite: "Download / copy for your site",
   },
   socialPosts: {
     title: "Social Posts",

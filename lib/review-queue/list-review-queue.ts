@@ -36,11 +36,17 @@ function mapEmailStatus(status: EmailApprovalStatus): ReviewItemStatus {
   return "DRAFT";
 }
 
-function mapArticleStatus(status: ArticleStatus): ReviewItemStatus {
+function mapArticleStatus(
+  status: ArticleStatus,
+  qualityPassed?: boolean | null
+): ReviewItemStatus {
   if (status === ArticleStatus.APPROVED) {
     return "APPROVED";
   }
   if (status === ArticleStatus.WORDPRESS_DRAFT_CREATED) {
+    return "READY_TO_PUBLISH";
+  }
+  if (status === ArticleStatus.WAITING_REVIEW && qualityPassed === true) {
     return "READY_TO_PUBLISH";
   }
   if (status === ArticleStatus.WAITING_REVIEW) {
@@ -293,7 +299,7 @@ export async function getReviewQueue(
       group: "CONTENT",
       title: article.title,
       preview: truncatePreview(previewSource),
-      status: mapArticleStatus(article.status),
+      status: mapArticleStatus(article.status, article.qualityPassed),
       createdAt: article.createdAt.toISOString(),
       updatedAt: article.updatedAt.toISOString(),
       editHref: `/app/articles/${article.id}`,

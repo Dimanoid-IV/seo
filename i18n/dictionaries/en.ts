@@ -94,7 +94,7 @@ export const dictionary: Dictionary = {
   solution: {
     title: "RankBoost is your SEO Autopilot",
     subtitle:
-      "The platform finds opportunities and prepares actions automatically — you decide what goes live in Review Mode.",
+      "The platform finds opportunities and prepares plans, tasks, and articles for review — you decide what to publish.",
     items: [
       {
         title: "Find opportunities",
@@ -102,14 +102,14 @@ export const dictionary: Dictionary = {
           "Website audit, growth tasks, and SEO priorities based on your site signals.",
       },
       {
-        title: "Prepare actions",
+        title: "Prepare plans and articles",
         description:
-          "Monthly plan, SEO tasks, content ideas, and social drafts — prepared for you.",
+          "Monthly plan, SEO tasks, and article drafts — ready for your review.",
       },
       {
-        title: "Review-ready drafts",
+        title: "Review first, then publish",
         description:
-          "Articles, posts, and emails prepared in Review Mode — you approve before anything goes live.",
+          "Nothing is published without your confirmation. For custom sites — export, copy, and developer handoff.",
       },
       {
         title: "Track progress",
@@ -120,17 +120,19 @@ export const dictionary: Dictionary = {
   },
   outputs: {
     title: "What your SEO Autopilot can prepare",
-    subtitle: "Review-ready actions in Review Mode — you stay in control.",
+    subtitle:
+      "Plans, tasks, and articles in review mode — publishing only after you approve.",
     items: [
       "SEO tasks",
       "Monthly growth plan",
       "Article drafts",
       "Social post drafts",
       "Review emails",
-      "WordPress drafts",
+      "Export for your site",
       "AI search readiness checks",
     ],
-    trustNote: "Start with review-ready actions. Automate selected actions later when you enable rules.",
+    trustNote:
+      "Start with review. Auto-publishing only after you explicitly enable it and connect integrations. For custom sites, RankBoost provides export and developer handoff.",
   },
   aiSearch: {
     eyebrow: "Google + AI search",
@@ -255,7 +257,7 @@ export const dictionary: Dictionary = {
     popular: "Popular",
     pageTitle: "Start your SEO autopilot",
     pageSubtitle:
-      "Start free, then upgrade when you need more growth actions, drafts, and review workflows. No long-term contracts. Cancel anytime. Start safely in Review Mode.",
+      "Start free, then upgrade when you need more growth actions and drafts. Publishing is review-first. No guaranteed Google rankings.",
     comparisonTitle: "Plan comparison",
     customNote: "Paid checkout will be available when billing is configured.",
   },

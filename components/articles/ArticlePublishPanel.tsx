@@ -169,7 +169,7 @@ export function ArticlePublishPanel({
         <p className="mt-1 text-xs text-slate-400">
           {wordpressConnected
             ? "WordPress подключён — можно создать черновик. Либо возьмите готовые материалы для любого сайта ниже."
-            : "Ваш сайт можно опубликовать вручную — возьмите готовые материалы ниже."}
+            : "Ваш сайт не подключён к WordPress. Используйте готовые материалы ниже."}
         </p>
       </div>
 
@@ -178,8 +178,8 @@ export function ArticlePublishPanel({
           Скопировать
         </p>
         <div className="grid gap-2">
-          {copyRow("html", "Скопировать статью (HTML)", pkg.copy.articleHtml)}
-          {copyRow("markdown", "Скопировать статью (Markdown)", pkg.copy.articleMarkdown)}
+          {copyRow("html", "Скопировать HTML", pkg.copy.articleHtml)}
+          {copyRow("markdown", "Скопировать Markdown", pkg.copy.articleMarkdown)}
           {copyRow("metaTitle", "Скопировать SEO title", pkg.copy.metaTitle)}
           {copyRow("metaDescription", "Скопировать meta description", pkg.copy.metaDescription)}
         </div>
@@ -203,7 +203,7 @@ export function ArticlePublishPanel({
             ) : (
               <Download className="size-4" />
             )}
-            HTML
+            Скачать HTML
           </Button>
           <Button
             type="button"
@@ -218,7 +218,7 @@ export function ArticlePublishPanel({
             ) : (
               <Download className="size-4" />
             )}
-            Markdown
+            Скачать Markdown
           </Button>
         </div>
       </div>
@@ -228,13 +228,13 @@ export function ArticlePublishPanel({
           Отправить разработчику
         </p>
         <div className="flex flex-wrap gap-2">
-          {copyRow("email", "Скопировать письмо", developerEmailText)}
+          {copyRow("email", "Скопировать письмо разработчику", developerEmailText)}
           <a
             href={mailtoHref}
             className="inline-flex items-center gap-2 rounded-md border border-white/15 bg-white/5 px-3 py-1.5 text-sm text-slate-200 hover:bg-white/10"
           >
             <Mail className="size-4" />
-            Открыть в почте
+            Открыть письмо
           </a>
         </div>
         <p className="text-xs text-slate-500">

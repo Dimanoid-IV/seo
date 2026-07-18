@@ -50,6 +50,68 @@ export function localizedActionButtonLabel(
   }
 }
 
+export function localizedPrimaryCta(
+  locale: SaasLocale,
+  decision: import("./primary-cta").DashboardPrimaryCtaDecision
+): SimpleDashboardViewModel["nextBestAction"] {
+  const copy = getServerStrings(locale).dashboard;
+  const labels = copy.actionLabels;
+  const next = copy.nextAction;
+
+  switch (decision.kind) {
+    case "RUN_AUDIT":
+      return {
+        title: next.runAuditTitle,
+        description: next.runAuditDesc,
+        label: labels.checkSiteNow,
+        href: decision.href,
+        apiAction: decision.apiAction,
+        tone: "PRIMARY",
+      };
+    case "OPEN_REVIEW":
+      return {
+        title: next.openReviewTitle,
+        description: next.openReviewDesc,
+        label: labels.openReview,
+        href: decision.href,
+        tone: "PRIMARY",
+      };
+    case "OPEN_PLAN":
+      return {
+        title: next.openPlanTitle,
+        description: next.openPlanDesc,
+        label: labels.openPlan,
+        href: decision.href,
+        tone: "PRIMARY",
+      };
+    case "SELECT_GSC":
+      return {
+        title: next.selectGscTitle,
+        description: next.selectGscDesc,
+        label: labels.selectGsc,
+        href: decision.href,
+        tone: "PRIMARY",
+      };
+    case "SETUP_PUBLISHING":
+      return {
+        title: next.setupPublishingTitle,
+        description: next.setupPublishingDesc,
+        label: labels.setupPublishing,
+        href: decision.href,
+        tone: "PRIMARY",
+      };
+    case "OPEN_CONTROL_CENTER":
+    default:
+      return {
+        title: next.openControlTitle,
+        description: next.openControlDesc,
+        label: labels.openControl,
+        href: decision.href,
+        tone: "PRIMARY",
+      };
+  }
+}
+
 export function localizedNextAction(
   locale: SaasLocale,
   action: ControlCenterRecommendedAction | undefined

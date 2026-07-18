@@ -27,7 +27,7 @@ export const serverStringsEn: SaasServerStrings = {
       reviewPlanTitle: "Review your monthly growth plan",
       reviewPlanDesc:
         "RankBoost prepared a plan with SEO, content, and social actions for this month.",
-      runAuditTitle: "Run your first audit",
+      runAuditTitle: "Check my site now",
       runAuditDesc:
         "RankBoost needs to scan your website before it can prepare actions.",
       connectGscTitle: "Connect Google Search Console",
@@ -35,6 +35,21 @@ export const serverStringsEn: SaasServerStrings = {
       reviewEmailTitle: "Review prepared email",
       reviewEmailDesc:
         "An approval email is ready. It will not be sent until you manually send it.",
+      openReviewTitle: "Review ready materials",
+      openReviewDesc:
+        "RankBoost prepared an article or fix. Nothing is published without your confirmation.",
+      openPlanTitle: "Open publishing plan",
+      openPlanDesc:
+        "Your plan has article topics — open it and decide what to prepare next.",
+      selectGscTitle: "Choose your Google Search Console site",
+      selectGscDesc:
+        "Google is connected — select the site property to unlock search data.",
+      setupPublishingTitle: "Set up publishing",
+      setupPublishingDesc:
+        "Connect WordPress or use manual publishing (export / developer handoff).",
+      openControlTitle: "Open control center",
+      openControlDesc:
+        "See plan status, tasks, and next steps in one place.",
     },
     actionLabels: {
       openGrowthPlan: "Open growth plan",
@@ -42,10 +57,16 @@ export const serverStringsEn: SaasServerStrings = {
       viewDrafts: "View drafts",
       viewPosts: "View posts",
       connectGsc: "Connect GSC",
-      runAudit: "Run audit",
+      runAudit: "Check my site now",
       viewTasks: "View tasks",
       openTimeline: "Open timeline",
       open: "Open",
+      openReview: "Open review queue",
+      openPlan: "Open plan",
+      selectGsc: "Choose site",
+      setupPublishing: "Set up publishing",
+      openControl: "Open control center",
+      checkSiteNow: "Check my site now",
     },
     findings: {
       seoTasksWaiting: (count) =>

@@ -94,19 +94,20 @@ export const dictionary: Dictionary = {
   solution: {
     title: "RankBoost on teie SEO autopiloot",
     subtitle:
-      "Platvorm leiab võimalused ja valmistab tegevused automaatselt — te otsustate ülevaatusrežiimis, mis avaldatakse.",
+      "Platvorm leiab võimalused ning valmistab plaanid, ülesanded ja artiklid ülevaatamiseks — te otsustate, mis avaldatakse.",
     items: [
       {
         title: "Leiab võimalused",
         description: "Veebiaudit, kasvülesanded ja SEO prioriteedid teie saidi signaalide põhjal.",
       },
       {
-        title: "Valmistab tegevused",
-        description: "Kuine plaan, SEO-ülesanded, sisuideed ja sotsiaalmeedia mustandid.",
+        title: "Valmistab plaanid ja artiklid",
+        description: "Kuine plaan, SEO-ülesanded ja artikli mustandid — valmis teie ülevaatuseks.",
       },
       {
-        title: "Ülevaatamiseks valmis mustandid",
-        description: "Artiklid, postitused ja e-kirjad ülevaatusrežiimis — kinnitate enne avaldamist.",
+        title: "Esmalt ülevaatus, siis avaldamine",
+        description:
+          "Midagi ei avaldata ilma teie kinnituseta. Kohandatud saidi jaoks — eksport, kopeerimine ja arendaja handoff.",
       },
       {
         title: "Jälgib progressi",
@@ -116,17 +117,19 @@ export const dictionary: Dictionary = {
   },
   outputs: {
     title: "Mida SEO autopiloot valmistada saab",
-    subtitle: "Ülevaatusrežiimis valmis tegevused — te jääte kontrolli alla.",
+    subtitle:
+      "Plaanid, ülesanded ja artiklid ülevaatusrežiimis — avaldamine ainult pärast teie kinnitust.",
     items: [
       "SEO-ülesanded",
       "Kuine kasvuplaan",
       "Artikli mustandid",
       "Sotsiaalpostituste mustandid",
       "Kinnituse e-kirjad",
-      "WordPressi mustandid",
+      "Eksport teie saidile",
       "AI-otsingu valmiduse kontrollid",
     ],
-    trustNote: "Alustage ülevaatamiseks valmis tegevustest. Automatiseerige valitud tegevusi hiljem, kui reeglid on lubatud.",
+    trustNote:
+      "Alustage ülevaatusest. Autoavaldamine ainult pärast selget lubamist ja ühendatud integratsioone. Kohandatud saitide jaoks annab RankBoost ekspordi ja arendaja handoffi.",
   },
   aiSearch: {
     eyebrow: "Google + AI-otsing",
@@ -250,7 +253,7 @@ export const dictionary: Dictionary = {
     popular: "Populaarne",
     pageTitle: "Alustage SEO autopilooti",
     pageSubtitle:
-      "Alustage tasuta. Uuendage rohkemate tegevuste ja mustandite jaoks. Ilma pikaajaliste lepinguteta. Alustage ülevaatusrežiimis.",
+      "Alustage tasuta. Uuendage rohkemate tegevuste ja mustandite jaoks. Avaldamine on ülevaatuse-eelne. Ilma garanteeritud Google'i positsioonideta.",
     comparisonTitle: "Pakettide võrdlus",
     customNote: "Maksmine on saadaval, kui arveldus on seadistatud.",
   },

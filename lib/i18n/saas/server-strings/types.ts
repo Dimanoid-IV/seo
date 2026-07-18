@@ -27,6 +27,16 @@ export type SaasServerStrings = {
       connectGscDesc: string;
       reviewEmailTitle: string;
       reviewEmailDesc: string;
+      openReviewTitle: string;
+      openReviewDesc: string;
+      openPlanTitle: string;
+      openPlanDesc: string;
+      selectGscTitle: string;
+      selectGscDesc: string;
+      setupPublishingTitle: string;
+      setupPublishingDesc: string;
+      openControlTitle: string;
+      openControlDesc: string;
     };
     actionLabels: {
       openGrowthPlan: string;
@@ -38,6 +48,12 @@ export type SaasServerStrings = {
       viewTasks: string;
       openTimeline: string;
       open: string;
+      openReview: string;
+      openPlan: string;
+      selectGsc: string;
+      setupPublishing: string;
+      openControl: string;
+      checkSiteNow: string;
     };
     findings: {
       seoTasksWaiting: (count: number) => string;

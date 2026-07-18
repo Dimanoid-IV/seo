@@ -357,12 +357,16 @@ export function ReviewPage() {
                   {item.type === "ARTICLE_DRAFT" && item.articleContext ? (
                     <div className="space-y-2 rounded-lg border border-slate-100 bg-slate-50/80 px-3 py-2">
                       <div className="flex flex-wrap items-center gap-2 text-xs">
-                        <span className="text-slate-500">
-                          {t.qualityScoreLabel}:{" "}
-                          <span className="font-semibold text-slate-800">
-                            {item.articleContext.qualityScore ?? "—"}
+                        {item.articleContext.qualityScore != null ? (
+                          <span className="rounded-full border border-emerald-200 bg-emerald-50 px-2 py-0.5 font-semibold text-emerald-800">
+                            {t.qualityOutOf(item.articleContext.qualityScore)}
                           </span>
-                        </span>
+                        ) : (
+                          <span className="text-slate-500">
+                            {t.qualityScoreLabel}:{" "}
+                            <span className="font-semibold text-slate-800">—</span>
+                          </span>
+                        )}
                         {item.articleContext.qualityPassed === true ? (
                           <span className="rounded-full bg-emerald-100 px-2 py-0.5 font-medium text-emerald-800">
                             {t.qualityPassedLabel}
@@ -382,6 +386,12 @@ export function ReviewPage() {
                           </span>
                         ) : null}
                       </div>
+                      {item.status === "READY_TO_PUBLISH" ||
+                      item.articleContext.qualityPassed === true ? (
+                        <p className="text-xs leading-relaxed text-slate-600">
+                          {t.articleReadyHint}
+                        </p>
+                      ) : null}
                       {item.articleContext.autopilotUnlockOnApprove ? (
                         <p className="text-xs text-violet-700">
                           {t.autopilotUnlockHint}
@@ -398,6 +408,22 @@ export function ReviewPage() {
                         <p className="text-xs text-amber-700">
                           {t.approveBlockedQuality}
                         </p>
+                      ) : null}
+                      {item.canApprove && item.editHref ? (
+                        <div className="flex flex-wrap gap-2 pt-1">
+                          <Link
+                            href={item.editHref}
+                            className="inline-flex items-center rounded-md border border-blue-200 bg-blue-50 px-2.5 py-1 text-xs font-medium text-blue-800 hover:bg-blue-100"
+                          >
+                            {t.publishManually}
+                          </Link>
+                          <Link
+                            href={item.editHref}
+                            className="inline-flex items-center rounded-md border border-slate-200 bg-white px-2.5 py-1 text-xs font-medium text-slate-700 hover:bg-slate-50"
+                          >
+                            {t.downloadForSite}
+                          </Link>
+                        </div>
                       ) : null}
                     </div>
                   ) : null}
@@ -447,7 +473,9 @@ export function ReviewPage() {
                           onClick={() => void applyAction(item, "APPROVE")}
                           className="bg-emerald-600 text-white hover:bg-emerald-500"
                         >
-                          {t.approve}
+                          {item.type === "ARTICLE_DRAFT"
+                            ? t.approveArticle
+                            : t.approve}
                         </Button>
                       ) : null}
                       {item.canEdit ? (

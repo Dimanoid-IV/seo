@@ -27,7 +27,7 @@ export const serverStringsRu: SaasServerStrings = {
       reviewPlanTitle: "Проверьте месячный план роста",
       reviewPlanDesc:
         "RankBoost подготовил план с SEO, контентом и соцсетями на этот месяц.",
-      runAuditTitle: "Запустите первый аудит",
+      runAuditTitle: "Проверить сайт сейчас",
       runAuditDesc:
         "RankBoost нужно просканировать сайт, прежде чем готовить действия.",
       connectGscTitle: "Подключите Google Search Console",
@@ -35,6 +35,21 @@ export const serverStringsRu: SaasServerStrings = {
       reviewEmailTitle: "Проверьте подготовленное письмо",
       reviewEmailDesc:
         "Письмо готово. Оно не будет отправлено, пока вы не отправите его вручную.",
+      openReviewTitle: "Проверить готовые материалы",
+      openReviewDesc:
+        "RankBoost подготовил статью или исправление. Ничего не публикуется без вашего подтверждения.",
+      openPlanTitle: "Открыть план публикаций",
+      openPlanDesc:
+        "В плане есть темы статей — откройте и решите, что готовить дальше.",
+      selectGscTitle: "Выбрать сайт в Google Search Console",
+      selectGscDesc:
+        "Google уже подключён — выберите свойство сайта, чтобы открыть поисковые данные.",
+      setupPublishingTitle: "Настроить публикацию",
+      setupPublishingDesc:
+        "Подключите WordPress или настройте ручную публикацию (экспорт / письмо разработчику).",
+      openControlTitle: "Открыть центр управления",
+      openControlDesc:
+        "Посмотрите статус плана, задач и следующих шагов в одном месте.",
     },
     actionLabels: {
       openGrowthPlan: "Открыть план роста",
@@ -42,10 +57,16 @@ export const serverStringsRu: SaasServerStrings = {
       viewDrafts: "Смотреть черновики",
       viewPosts: "Смотреть посты",
       connectGsc: "Подключить GSC",
-      runAudit: "Запустить аудит",
+      runAudit: "Проверить сайт сейчас",
       viewTasks: "Смотреть задачи",
       openTimeline: "Открыть историю",
       open: "Открыть",
+      openReview: "Открыть на проверку",
+      openPlan: "Открыть план",
+      selectGsc: "Выбрать сайт",
+      setupPublishing: "Настроить публикацию",
+      openControl: "Открыть центр управления",
+      checkSiteNow: "Проверить сайт сейчас",
     },
     findings: {
       seoTasksWaiting: (count) =>

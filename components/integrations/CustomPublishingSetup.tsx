@@ -28,10 +28,15 @@ export function CustomPublishingSetup({ articleId }: CustomPublishingSetupProps)
   const [busy, setBusy] = useState<"test" | "send" | null>(null);
   const [status, setStatus] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [testPassed, setTestPassed] = useState(false);
 
   async function callWebhook(dryRun: boolean) {
     if (!url.trim()) {
       setError("Укажите URL эндпоинта.");
+      return;
+    }
+    if (!dryRun && !testPassed) {
+      setError("Сначала проверьте соединение.");
       return;
     }
     setBusy(dryRun ? "test" : "send");
@@ -49,15 +54,18 @@ export function CustomPublishingSetup({ articleId }: CustomPublishingSetupProps)
       }
       const body = (await response.json()) as WebhookResponse;
       if (body.data.delivered) {
-        setStatus(
-          dryRun
-            ? "Соединение успешно: эндпоинт ответил."
-            : "Статья отправлена на ваш эндпоинт."
-        );
+        if (dryRun) {
+          setTestPassed(true);
+          setStatus("Соединение успешно: эндпоинт ответил. Теперь можно отправить статью.");
+        } else {
+          setStatus("Статья отправлена на ваш эндпоинт.");
+        }
       } else {
+        if (dryRun) setTestPassed(false);
         setError(body.data.error ?? "Эндпоинт недоступен.");
       }
     } catch {
+      if (dryRun) setTestPassed(false);
       setError("Сетевая ошибка при обращении к эндпоинту.");
     } finally {
       setBusy(null);
@@ -65,19 +73,22 @@ export function CustomPublishingSetup({ articleId }: CustomPublishingSetupProps)
   }
 
   return (
-    <div className="space-y-3 rounded-xl border border-white/10 bg-white/[0.02] p-4">
+    <div className="space-y-3 rounded-xl border border-dashed border-white/15 bg-white/[0.02] p-4">
       <div className="flex items-center gap-2 text-sm font-medium text-white">
         <Webhook className="size-4 text-cyan-300" />
-        Webhook для своего сайта
+        Для разработчика: webhook
       </div>
       <p className="text-xs text-slate-400">
-        Укажите endpoint вашего сайта — RankBoost отправит на него готовую статью.
-        Сначала проверьте соединение.
+        Расширенный вариант для своего сайта. Сначала проверьте соединение — реальная
+        отправка станет доступна только после успешного теста.
       </p>
       <input
         type="url"
         value={url}
-        onChange={(event) => setUrl(event.target.value)}
+        onChange={(event) => {
+          setUrl(event.target.value);
+          setTestPassed(false);
+        }}
         placeholder="https://ваш-сайт.ru/api/rankboost"
         className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none focus:border-blue-500/50"
       />
@@ -96,15 +107,15 @@ export function CustomPublishingSetup({ articleId }: CustomPublishingSetupProps)
               Проверяем…
             </>
           ) : (
-            "Проверить соединение"
+            "Сначала проверьте соединение"
           )}
         </Button>
         <Button
           type="button"
           size="sm"
-          disabled={busy !== null}
+          disabled={busy !== null || !testPassed}
           onClick={() => void callWebhook(false)}
-          className="bg-gradient-to-r from-blue-600 to-violet-600 text-white hover:from-blue-500 hover:to-violet-500"
+          className="bg-gradient-to-r from-blue-600 to-violet-600 text-white hover:from-blue-500 hover:to-violet-500 disabled:opacity-40"
         >
           {busy === "send" ? (
             <>

@@ -17,6 +17,7 @@ import {
 import type { CurrentUser } from "@/lib/auth/types";
 import { formatMonthlyAutopilotPlan } from "@/lib/autopilot/format";
 import { currentMonthKey } from "@/lib/autopilot/month-utils";
+import { parsePlanItemsDocument } from "@/lib/autopilot/plan-items";
 import { getPrisma } from "@/lib/db";
 import { resolveGscConnectionState } from "@/lib/integrations/gsc-state";
 import { getSaasDictionary } from "@/lib/i18n/saas";
@@ -262,6 +263,12 @@ export async function getAutopilotControlCenter(input: {
     : null;
   const monthlyPlanApproved =
     monthlyPlanRecord?.status === MonthlyAutopilotStatus.APPROVED;
+  const planItemsDocument = monthlyPlanRecord?.planItemsJson
+    ? parsePlanItemsDocument(monthlyPlanRecord.planItemsJson)
+    : null;
+  const hasArticleTopics = Boolean(
+    planItemsDocument?.items.some((item) => item.type === "ARTICLE")
+  );
 
   const gscSelectedProperty =
     gscIntegration?.googleData?.searchConsoleSiteUrl ?? null;
@@ -568,6 +575,7 @@ export async function getAutopilotControlCenter(input: {
           title: monthlyPlan.title,
           summary: monthlyPlan.summary,
           href: "/app/autopilot",
+          hasArticleTopics,
         }
       : undefined,
     approvalQueue,
