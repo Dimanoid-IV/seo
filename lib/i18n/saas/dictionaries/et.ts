@@ -240,6 +240,24 @@ export const saasDictionary: SaasDictionary = {
       monitoringNote:
         "RankBoost jälgib teie veebisaiti ja valmistab ette kasvutegevusi.",
     },
+    monthlyAutopilot: {
+      title: "Kuu autopiloot on aktiivne",
+      subtitle:
+        "RankBoost valmistab artiklid ajakava järgi. Avaldamine ainult pärast teie kinnitust.",
+      chipNextArticle: (date) => `Järgmine artikkel: ${date}`,
+      chipNextArticleSoon: "Järgmine artikkel: peagi",
+      chipReadyForReview: (count) => `Valmis ülevaatamiseks: ${count}`,
+      chipPublishManual: "Avaldamine: käsitsi",
+      chipPublishWordpress: "Avaldamine: WordPressi mustand",
+      chipPublishWebhook: "Avaldamine: webhook valmis",
+      openReview: "Vaata valmis materjale",
+      openPlan: "Ava kuu plaan",
+      setupPublishing: "Seadista avaldamine",
+      nudgeTitle: "Soovite vähem käsitsitööd?",
+      nudgeDescription:
+        "Saate ühendada WordPressi või webhooki. Seni valmistab RankBoost paketi käsitsi avaldamiseks.",
+      safetyNote: "Midagi ei avaldata automaatselt.",
+    },
     metrics: {
       growthScore: "Kasvuskoor",
       scoreDelta: "Skoori muutus",
@@ -1097,6 +1115,31 @@ export const saasDictionary: SaasDictionary = {
       wordpressDraftCreated: "WordPressi mustand loodud",
       customPackageReady: "Saidipakett valmis",
     },
+    whatsNextTitle: "Mis edasi?",
+    whatsNextSteps: [
+      "Vaadake artikkel üle",
+      "Vajadusel muutke",
+      "Kinnitage",
+      "Kopeerige/laadige materjalid alla või avage WordPressi mustand",
+    ],
+    customPackageHint:
+      "Teie saidi jaoks valmistas RankBoost paketi: HTML, Markdown, SEO pealkiri, meta kirjeldus ja kiri arendajale.",
+    publishPathLabels: {
+      wordpress_draft: "WordPressi mustand",
+      universal_package: "Saidipakett",
+      webhook: "Valmis saidile saatmiseks",
+      none: "Käsitsi",
+    },
+    pipelineLabels: {
+      researchReady: "Uuring valmis",
+      draftGenerating: "RankBoost valmistab artiklit",
+      draftReadyForReview: "Artikkel valmis ülevaatamiseks",
+      qualityNeedsRepair: "Artikkel vajab parandust",
+      universalPackageReady: "Avaldamispakett valmis",
+      wordpressDraftCreated: "WordPressi mustand loodud",
+      webhookReady: "Valmis saidile saatmiseks",
+      readyForPublishingHandoff: "Valmis avaldamiseks",
+    },
   },
   socialPosts: {
     title: "Sotsiaalpostitused",
@@ -1402,6 +1445,16 @@ export const saasDictionary: SaasDictionary = {
       selectAll: "Vali kõik",
       clearAll: "Tühjenda valik",
       approveSelected: "Kinnita valitud plaan",
+      afterApproveTitle: "Mis juhtub pärast kinnitamist?",
+      afterApproveSteps: [
+        "RankBoost planeerib artikliteemad kuupäevade järgi.",
+        "Õigel päeval loob mustandi.",
+        "Kontrollib kvaliteeti ja parandab teksti.",
+        "Paneb valmis artikli jaotisse «Ülevaatamiseks».",
+        "Kui WordPress on ühendatud — loob WordPressi mustandi.",
+        "Teise saidi jaoks — valmistab HTML/Markdowni ja kirja arendajale.",
+      ],
+      afterApproveFooter: "Midagi ei avaldata automaatselt.",
       approveFailed: "Valitud plaani punkte ei saanud kinnitada.",
       approveNetworkError: "Võrguviga plaani kinnitamisel.",
       selectAtLeastOne: "Vali kinnitamiseks vähemalt üks punkt.",

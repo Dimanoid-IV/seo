@@ -251,6 +251,17 @@ export const dictionary: Dictionary = {
       },
     ],
   },
+  monthlyHowItWorks: {
+    title: "How the monthly autopilot works",
+    steps: [
+      "You confirm the plan.",
+      "RankBoost prepares articles on schedule.",
+      "You review the ready materials.",
+      "You publish manually or via a connected site.",
+    ],
+    disclaimer:
+      "RankBoost does not guarantee Google rankings. Results depend on your site, competition, and regular publishing.",
+  },
   pricing: {
     title: "Pricing",
     subtitle: "SEO Autopilot plans — start free, upgrade when you need more growth actions",

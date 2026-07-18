@@ -240,6 +240,24 @@ export const saasDictionary: SaasDictionary = {
       monitoringNote:
         "RankBoost отслеживает ваш сайт и готовит действия для роста.",
     },
+    monthlyAutopilot: {
+      title: "Автопилот месяца активен",
+      subtitle:
+        "RankBoost будет готовить статьи по расписанию. Публикация — только после вашего подтверждения.",
+      chipNextArticle: (date) => `Следующая статья: ${date}`,
+      chipNextArticleSoon: "Следующая статья: скоро",
+      chipReadyForReview: (count) => `Готово к проверке: ${count}`,
+      chipPublishManual: "Публикация: вручную",
+      chipPublishWordpress: "Публикация: WordPress draft",
+      chipPublishWebhook: "Публикация: webhook ready",
+      openReview: "Проверить готовые материалы",
+      openPlan: "Открыть план месяца",
+      setupPublishing: "Настроить публикацию",
+      nudgeTitle: "Хотите меньше ручной работы?",
+      nudgeDescription:
+        "Можно подключить WordPress или webhook. Пока подключение не настроено, RankBoost готовит пакет для ручной публикации.",
+      safetyNote: "Ничего не публикуется автоматически.",
+    },
     metrics: {
       growthScore: "Оценка роста",
       scoreDelta: "Изменение оценки",
@@ -1094,6 +1112,31 @@ export const saasDictionary: SaasDictionary = {
       wordpressDraftCreated: "Черновик WordPress создан",
       customPackageReady: "Пакет для сайта готов",
     },
+    whatsNextTitle: "Что дальше?",
+    whatsNextSteps: [
+      "Проверьте статью",
+      "При необходимости отредактируйте",
+      "Одобрите",
+      "Скопируйте/скачайте материалы или откройте черновик WordPress",
+    ],
+    customPackageHint:
+      "Для вашего сайта RankBoost подготовил готовый пакет: HTML, Markdown, SEO title, meta description и письмо разработчику.",
+    publishPathLabels: {
+      wordpress_draft: "Черновик WordPress",
+      universal_package: "Пакет для сайта",
+      webhook: "Готово к отправке на сайт",
+      none: "Вручную",
+    },
+    pipelineLabels: {
+      researchReady: "Исследование готово",
+      draftGenerating: "RankBoost готовит статью",
+      draftReadyForReview: "Статья готова к проверке",
+      qualityNeedsRepair: "Статья требует доработки",
+      universalPackageReady: "Готов пакет для публикации",
+      wordpressDraftCreated: "Черновик WordPress создан",
+      webhookReady: "Готово к отправке на сайт",
+      readyForPublishingHandoff: "Готово к публикации",
+    },
   },
   socialPosts: {
     title: "Соцсети",
@@ -1399,6 +1442,16 @@ export const saasDictionary: SaasDictionary = {
       selectAll: "Выбрать все",
       clearAll: "Снять выбор",
       approveSelected: "Одобрить выбранный план",
+      afterApproveTitle: "Что произойдёт после подтверждения?",
+      afterApproveSteps: [
+        "RankBoost подготовит темы статей по датам.",
+        "В нужный день создаст черновик.",
+        "Проверит качество и улучшит текст.",
+        "Положит готовую статью в раздел «На проверку».",
+        "Если подключён WordPress — создаст черновик WordPress.",
+        "Если сайт другой — подготовит HTML/Markdown и письмо разработчику.",
+      ],
+      afterApproveFooter: "Ничего не публикуется автоматически.",
       approveFailed: "Не удалось одобрить выбранные пункты плана.",
       approveNetworkError: "Сетевая ошибка при одобрении плана.",
       selectAtLeastOne: "Выберите хотя бы один пункт для одобрения.",

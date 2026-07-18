@@ -11,6 +11,7 @@ import { ProcessSection } from "@/components/sections/ProcessSection";
 import { OutputsSection } from "@/components/sections/OutputsSection";
 import { AiSearchSection } from "@/components/sections/AiSearchSection";
 import { AutopilotModesSection } from "@/components/sections/AutopilotModesSection";
+import { MonthlyHowItWorksSection } from "@/components/sections/MonthlyHowItWorksSection";
 import { MarketingPricingPreview } from "@/components/sections/MarketingPricingPreview";
 import { CTASection } from "@/components/sections/CTASection";
 
@@ -49,6 +50,7 @@ export default async function HomePage({ params }: PageProps) {
       <ProblemSection dict={dict} />
       <SolutionSection dict={dict} />
       <ProcessSection dict={dict} theme="marketing" />
+      <MonthlyHowItWorksSection dict={dict} />
       <OutputsSection dict={dict} />
       <AiSearchSection dict={dict} />
       <AutopilotModesSection dict={dict} />

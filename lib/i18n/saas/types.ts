@@ -187,6 +187,22 @@ export type SaasDictionary = {
       eyebrow: string;
       monitoringNote: string;
     };
+    monthlyAutopilot: {
+      title: string;
+      subtitle: string;
+      chipNextArticle: (date: string) => string;
+      chipNextArticleSoon: string;
+      chipReadyForReview: (count: number) => string;
+      chipPublishManual: string;
+      chipPublishWordpress: string;
+      chipPublishWebhook: string;
+      openReview: string;
+      openPlan: string;
+      setupPublishing: string;
+      nudgeTitle: string;
+      nudgeDescription: string;
+      safetyNote: string;
+    };
     metrics: {
       growthScore: string;
       scoreDelta: string;
@@ -886,6 +902,25 @@ export type SaasDictionary = {
       wordpressDraftCreated: string;
       customPackageReady: string;
     };
+    whatsNextTitle: string;
+    whatsNextSteps: string[];
+    customPackageHint: string;
+    publishPathLabels: {
+      wordpress_draft: string;
+      universal_package: string;
+      webhook: string;
+      none: string;
+    };
+    pipelineLabels: {
+      researchReady: string;
+      draftGenerating: string;
+      draftReadyForReview: string;
+      qualityNeedsRepair: string;
+      universalPackageReady: string;
+      wordpressDraftCreated: string;
+      webhookReady: string;
+      readyForPublishingHandoff: string;
+    };
   };
   socialPosts: {
     title: string;
@@ -1162,6 +1197,9 @@ export type SaasDictionary = {
       selectAll: string;
       clearAll: string;
       approveSelected: string;
+      afterApproveTitle: string;
+      afterApproveSteps: string[];
+      afterApproveFooter: string;
       approveFailed: string;
       approveNetworkError: string;
       selectAtLeastOne: string;

@@ -10,6 +10,7 @@ import { OnboardingBanner } from "@/components/onboarding/OnboardingBanner";
 import { DashboardHero } from "@/components/dashboard/DashboardHero";
 import { DashboardMetricCard } from "@/components/dashboard/DashboardMetricCard";
 import { FindingsCard } from "@/components/dashboard/FindingsCard";
+import { MonthlyAutopilotActiveCard } from "@/components/dashboard/MonthlyAutopilotActiveCard";
 import { NextBestActionCard } from "@/components/dashboard/NextBestActionCard";
 import { PreparedForYouCard } from "@/components/dashboard/PreparedForYouCard";
 import { ReviewQueueCard } from "@/components/dashboard/ReviewQueueCard";
@@ -228,7 +229,28 @@ export function SimpleDashboardPage() {
             </section>
           ) : null}
 
-          {simple.hasAudit && nextAction ? (
+          {simple.hasAudit && simple.monthlyAutopilotActive ? (
+            <MonthlyAutopilotActiveCard
+              nextArticleDateLabel={
+                simple.monthlyAutopilotActive.nextArticleDateLabel
+              }
+              readyForReviewCount={
+                simple.monthlyAutopilotActive.readyForReviewCount
+              }
+              publishingPath={simple.monthlyAutopilotActive.publishingPath}
+              primaryHref={simple.monthlyAutopilotActive.primaryHref}
+              primaryLabel={
+                simple.monthlyAutopilotActive.primaryLabelKind === "review"
+                  ? d.monthlyAutopilot.openReview
+                  : d.monthlyAutopilot.openPlan
+              }
+              showPublishingNudge={
+                simple.monthlyAutopilotActive.showPublishingNudge
+              }
+            />
+          ) : null}
+
+          {simple.hasAudit && nextAction && !simple.monthlyAutopilotActive ? (
             <NextBestActionCard
               title={nextAction.title}
               description={nextAction.description}

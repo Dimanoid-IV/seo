@@ -674,18 +674,33 @@ export function PlanApprovalPanel({
       ) : null}
 
       {!hasApprovedItems || selectableItems.some((i) => i.status === "proposed") ? (
-        <Button
-          type="button"
-          disabled={submitting || selected.size === 0}
-          onClick={() => void handleApprove()}
-          className="min-h-10 rounded-xl"
-        >
-          {submitting ? (
-            <Loader2 className="size-4 animate-spin" />
-          ) : (
-            t.approveSelected
-          )}
-        </Button>
+        <>
+          <div className="rounded-xl border border-blue-200 bg-blue-50/70 px-4 py-4">
+            <p className="text-sm font-semibold text-slate-900">
+              {t.afterApproveTitle}
+            </p>
+            <ol className="mt-3 list-decimal space-y-1.5 pl-5 text-sm leading-relaxed text-slate-700">
+              {t.afterApproveSteps.map((step) => (
+                <li key={step}>{step}</li>
+              ))}
+            </ol>
+            <p className="mt-3 text-xs font-medium text-emerald-800">
+              {t.afterApproveFooter}
+            </p>
+          </div>
+          <Button
+            type="button"
+            disabled={submitting || selected.size === 0}
+            onClick={() => void handleApprove()}
+            className="min-h-10 rounded-xl"
+          >
+            {submitting ? (
+              <Loader2 className="size-4 animate-spin" />
+            ) : (
+              t.approveSelected
+            )}
+          </Button>
+        </>
       ) : null}
 
       <TopicBriefDrawer

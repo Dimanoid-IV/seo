@@ -198,9 +198,13 @@ export const serverStringsEn: SaasServerStrings = {
       "The monthly plan was approved and is ready for execution.":
         "The monthly plan was approved and is ready for execution.",
       "Autopilot prepared an article draft for review.":
-        "Autopilot prepared an article draft for review.",
+        "Article ready for review",
       "Autopilot created a WordPress draft from an approved article.":
-        "Autopilot created a WordPress draft from an approved article.",
+        "WordPress draft created",
+      "Autopilot prepared a research brief for a scheduled article.":
+        "Research ready",
+      "Autopilot prepared a publishing handoff (draft or export package).":
+        "Publishing package ready",
       "Your RankBoost subscription was updated.":
         "Your RankBoost subscription was updated.",
       "RankBoost prepared an email draft for your approval.":

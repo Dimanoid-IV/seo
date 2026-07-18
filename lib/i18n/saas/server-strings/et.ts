@@ -198,9 +198,13 @@ export const serverStringsEt: SaasServerStrings = {
       "The monthly plan was approved and is ready for execution.":
         "Kuuplaan on kinnitatud ja valmis täitmiseks.",
       "Autopilot prepared an article draft for review.":
-        "Autopiloot valmistas ette artikli mustandi ülevaatuseks.",
+        "Artikkel valmis ülevaatamiseks",
       "Autopilot created a WordPress draft from an approved article.":
-        "Autopiloot lõi kinnitatud artiklist WordPressi mustandi.",
+        "WordPressi mustand loodud",
+      "Autopilot prepared a research brief for a scheduled article.":
+        "Uuring valmis",
+      "Autopilot prepared a publishing handoff (draft or export package).":
+        "Avaldamispakett valmis",
       "Your RankBoost subscription was updated.":
         "Teie RankBoosti tellimust uuendati.",
       "RankBoost prepared an email draft for your approval.":

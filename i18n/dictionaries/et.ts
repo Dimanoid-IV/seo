@@ -247,6 +247,17 @@ export const dictionary: Dictionary = {
       },
     ],
   },
+  monthlyHowItWorks: {
+    title: "Kuidas kuu autopiloot töötab",
+    steps: [
+      "Te kinnitate plaani.",
+      "RankBoost valmistab artiklid ajakava järgi.",
+      "Te vaatate valmis materjalid üle.",
+      "Avaldate käsitsi või ühendatud saidi kaudu.",
+    ],
+    disclaimer:
+      "RankBoost ei garanteeri Google'i positsioone. Tulemus sõltub saidist, konkurentsist ja regulaarsest avaldamisest.",
+  },
   pricing: {
     title: "Hinnakiri",
     subtitle: "SaaS paketid veebilehe kasvuks — alustage tasuta, uuendage vajadusel",

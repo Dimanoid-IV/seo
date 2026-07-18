@@ -5,6 +5,7 @@ import { getDictionary, isValidLocale } from "@/lib/i18n";
 import type { SaasLocale } from "@/lib/i18n/saas/locales";
 import { generatePageMetadata, SEO_KEYWORDS } from "@/lib/seo";
 import { SaasPricingSection } from "@/components/sections/SaasPricingSection";
+import { MonthlyHowItWorksSection } from "@/components/sections/MonthlyHowItWorksSection";
 import { CTASection } from "@/components/sections/CTASection";
 
 type PageProps = {
@@ -49,6 +50,7 @@ export default async function PricingPage({ params }: PageProps) {
           </div>
         </div>
         <SaasPricingSection locale={saasLocale} hideHeading />
+        <MonthlyHowItWorksSection dict={dict} />
         <CTASection locale={loc} dict={dict} source="pricing" theme="marketing" />
       </div>
     </>

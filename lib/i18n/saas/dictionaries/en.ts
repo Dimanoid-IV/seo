@@ -240,6 +240,24 @@ export const saasDictionary: SaasDictionary = {
       monitoringNote:
         "RankBoost is monitoring your website and preparing growth actions.",
     },
+    monthlyAutopilot: {
+      title: "Monthly autopilot is active",
+      subtitle:
+        "RankBoost will prepare articles on schedule. Publishing only after your confirmation.",
+      chipNextArticle: (date) => `Next article: ${date}`,
+      chipNextArticleSoon: "Next article: soon",
+      chipReadyForReview: (count) => `Ready for review: ${count}`,
+      chipPublishManual: "Publishing: manual",
+      chipPublishWordpress: "Publishing: WordPress draft",
+      chipPublishWebhook: "Publishing: webhook ready",
+      openReview: "Review ready materials",
+      openPlan: "Open monthly plan",
+      setupPublishing: "Set up publishing",
+      nudgeTitle: "Want less manual work?",
+      nudgeDescription:
+        "Connect WordPress or a webhook. Until then, RankBoost prepares a package for manual publishing.",
+      safetyNote: "Nothing is published automatically.",
+    },
     metrics: {
       growthScore: "Growth Score",
       scoreDelta: "Score delta",
@@ -1091,6 +1109,31 @@ export const saasDictionary: SaasDictionary = {
       wordpressDraftCreated: "WordPress draft created",
       customPackageReady: "Custom package ready",
     },
+    whatsNextTitle: "What's next?",
+    whatsNextSteps: [
+      "Review the article",
+      "Edit if needed",
+      "Approve",
+      "Copy/download materials or open the WordPress draft",
+    ],
+    customPackageHint:
+      "For your site RankBoost prepared a ready package: HTML, Markdown, SEO title, meta description, and a developer email.",
+    publishPathLabels: {
+      wordpress_draft: "WordPress draft",
+      universal_package: "Site package",
+      webhook: "Ready to send to your site",
+      none: "Manual",
+    },
+    pipelineLabels: {
+      researchReady: "Research ready",
+      draftGenerating: "RankBoost is preparing the article",
+      draftReadyForReview: "Article ready for review",
+      qualityNeedsRepair: "Article needs revision",
+      universalPackageReady: "Publishing package ready",
+      wordpressDraftCreated: "WordPress draft created",
+      webhookReady: "Ready to send to your site",
+      readyForPublishingHandoff: "Ready for publishing",
+    },
   },
   socialPosts: {
     title: "Social Posts",
@@ -1395,6 +1438,16 @@ export const saasDictionary: SaasDictionary = {
       selectAll: "Select all",
       clearAll: "Clear all",
       approveSelected: "Approve selected plan",
+      afterApproveTitle: "What happens after you confirm?",
+      afterApproveSteps: [
+        "RankBoost schedules article topics by date.",
+        "On the right day it creates a draft.",
+        "It checks quality and improves the text.",
+        "It places the ready article in Review.",
+        "If WordPress is connected — it creates a WordPress draft.",
+        "For other sites — it prepares HTML/Markdown and a developer email.",
+      ],
+      afterApproveFooter: "Nothing is published automatically.",
       approveFailed: "Could not approve selected plan items.",
       approveNetworkError: "Network error while approving plan.",
       selectAtLeastOne: "Select at least one item to approve.",

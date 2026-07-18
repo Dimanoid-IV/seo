@@ -25,6 +25,7 @@ import {
   planHasApprovedArticleTopics,
   resolveDashboardPrimaryCta,
 } from "./primary-cta";
+import { publishingPathChip } from "@/lib/autopilot/human-pipeline-labels";
 
 export type SimpleDashboardTone = "GOOD" | "NEEDS_REVIEW" | "SETUP" | "NO_DATA";
 
@@ -70,6 +71,15 @@ export type SimpleDashboardViewModel = {
     articleDraftsCount: number;
     socialPostsCount: number;
     emailApprovalsCount: number;
+  };
+  /** Prompt 11.44 — human-facing monthly autopilot status when plan is approved. */
+  monthlyAutopilotActive?: {
+    nextArticleDateLabel: string | null;
+    readyForReviewCount: number;
+    publishingPath: "manual" | "wordpress_draft" | "webhook_ready";
+    primaryHref: string;
+    primaryLabelKind: "review" | "plan";
+    showPublishingNudge: boolean;
   };
   recentActivity: Array<{
     id: string;
@@ -152,6 +162,44 @@ export function buildSimpleDashboardViewModel(input: {
 
   const billingNote = localizedBillingNote(locale, input.subscriptionPlan);
 
+  const planApproved = planHasApprovedArticleTopics({
+    monthlyPlanStatus: control.monthlyPlan?.status,
+    planItemTypes: control.monthlyPlan?.hasArticleTopics ? ["ARTICLE"] : [],
+  });
+
+  const reviewCount = input.reviewQueueCount ?? needsReviewCount;
+  const publishChip = publishingPathChip(
+    wordpressIntegration?.status === "CONNECTED"
+      ? "wordpress_draft"
+      : "universal_package"
+  );
+
+  let nextArticleDateLabel: string | null = null;
+  if (control.monthlyPlan?.nextScheduledArticleAt) {
+    nextArticleDateLabel = new Date(
+      control.monthlyPlan.nextScheduledArticleAt
+    ).toLocaleDateString(
+      locale === "ru" ? "ru-RU" : locale === "et" ? "et-EE" : "en-US",
+      { year: "numeric", month: "short", day: "numeric" }
+    );
+  }
+
+  const monthlyAutopilotActive = planApproved
+    ? {
+        nextArticleDateLabel,
+        readyForReviewCount: Math.max(
+          reviewCount,
+          control.monthlyPlan?.readyToPublishCount ?? 0
+        ),
+        publishingPath: publishChip,
+        primaryHref: reviewCount > 0 ? "/app/review" : "/app/autopilot",
+        primaryLabelKind: (reviewCount > 0 ? "review" : "plan") as
+          | "review"
+          | "plan",
+        showPublishingNudge: wordpressIntegration?.status !== "CONNECTED",
+      }
+    : undefined;
+
   return {
     website: control.website ?? undefined,
     status,
@@ -168,7 +216,7 @@ export function buildSimpleDashboardViewModel(input: {
         control.metrics.openTasksCount
       ),
       needsReviewCount,
-      reviewQueueCount: input.reviewQueueCount ?? needsReviewCount,
+      reviewQueueCount: reviewCount,
     },
     nextBestAction: localizedPrimaryCta(locale, primaryDecision),
     secondaryAction,
@@ -183,6 +231,7 @@ export function buildSimpleDashboardViewModel(input: {
       socialPostsCount: control.metrics.readySocialPostsCount,
       emailApprovalsCount: control.metrics.pendingEmailsCount,
     },
+    monthlyAutopilotActive,
     recentActivity: control.recentActivity.slice(0, 3).map((event) => ({
       id: event.id,
       title: event.title,

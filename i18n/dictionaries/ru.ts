@@ -115,6 +115,11 @@ export type Dictionary = {
     subtitle: string;
     steps: { title: string; description?: string }[];
   };
+  monthlyHowItWorks: {
+    title: string;
+    steps: string[];
+    disclaimer: string;
+  };
   pricing: {
     title: string;
     subtitle: string;
@@ -499,6 +504,17 @@ export const dictionary: Dictionary = {
         description: "Дашборд показывает, что сделано и что дальше.",
       },
     ],
+  },
+  monthlyHowItWorks: {
+    title: "Как работает месячный автопилот",
+    steps: [
+      "Вы подтверждаете план.",
+      "RankBoost готовит статьи по расписанию.",
+      "Вы проверяете готовые материалы.",
+      "Публикуете вручную или через подключённый сайт.",
+    ],
+    disclaimer:
+      "RankBoost не гарантирует позиции в Google. Результат зависит от сайта, конкуренции и регулярной публикации.",
   },
   pricing: {
     title: "Тарифы",

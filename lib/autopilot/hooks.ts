@@ -66,7 +66,8 @@ export async function timelineAfterAutopilotPlanItemExecuted(input: {
   itemTitle: string;
 }) {
   const summaryByAction: Record<typeof input.action, string> = {
-    PREPARE_RESEARCH_BRIEF: "Autopilot prepared a research brief for a scheduled article.",
+    PREPARE_RESEARCH_BRIEF:
+      "Autopilot prepared a research brief for a scheduled article.",
     PREPARE_ARTICLE_DRAFT: "Autopilot prepared an article draft for review.",
     PREPARE_PUBLISHING_HANDOFF:
       "Autopilot prepared a publishing handoff (draft or export package).",

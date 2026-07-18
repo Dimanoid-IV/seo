@@ -49,6 +49,41 @@ function formatDate(iso: string, locale: string): string {
   });
 }
 
+function pipelineLabelForState(
+  state: string | undefined,
+  labels: {
+    researchReady: string;
+    draftGenerating: string;
+    draftReadyForReview: string;
+    qualityNeedsRepair: string;
+    universalPackageReady: string;
+    wordpressDraftCreated: string;
+    webhookReady: string;
+    readyForPublishingHandoff: string;
+  }
+): string | null {
+  switch (state) {
+    case "RESEARCH_READY":
+      return labels.researchReady;
+    case "DRAFT_GENERATING":
+      return labels.draftGenerating;
+    case "DRAFT_READY_FOR_REVIEW":
+      return labels.draftReadyForReview;
+    case "QUALITY_FAILED_NEEDS_REPAIR":
+      return labels.qualityNeedsRepair;
+    case "UNIVERSAL_PACKAGE_READY":
+      return labels.universalPackageReady;
+    case "WORDPRESS_DRAFT_CREATED":
+      return labels.wordpressDraftCreated;
+    case "WEBHOOK_READY":
+      return labels.webhookReady;
+    case "READY_FOR_PUBLISHING_HANDOFF":
+      return labels.readyForPublishingHandoff;
+    default:
+      return null;
+  }
+}
+
 export function ReviewPage() {
   const { dict, locale } = useSaasTranslations();
   const { isAdvanced } = useDashboardMode();
@@ -444,6 +479,35 @@ export function ReviewPage() {
                           </Link>
                         </div>
                       ) : null}
+                      <div className="rounded-lg border border-slate-200 bg-white px-3 py-2">
+                        <p className="text-xs font-semibold text-slate-800">
+                          {t.whatsNextTitle}
+                        </p>
+                        <ol className="mt-1.5 list-decimal space-y-0.5 pl-4 text-xs leading-relaxed text-slate-600">
+                          {t.whatsNextSteps.map((step) => (
+                            <li key={step}>{step}</li>
+                          ))}
+                        </ol>
+                        {item.articleContext.publishPath === "universal_package" ||
+                        item.articleContext.publishPath === "webhook" ||
+                        (!item.articleContext.wordpressDraftCreated &&
+                          item.articleContext.publishPath !== "wordpress_draft") ? (
+                          <p className="mt-2 text-xs leading-relaxed text-indigo-800">
+                            {t.customPackageHint}
+                          </p>
+                        ) : null}
+                        {pipelineLabelForState(
+                          item.articleContext.pipelineState,
+                          t.pipelineLabels
+                        ) ? (
+                          <p className="mt-2 text-xs font-medium text-violet-700">
+                            {pipelineLabelForState(
+                              item.articleContext.pipelineState,
+                              t.pipelineLabels
+                            )}
+                          </p>
+                        ) : null}
+                      </div>
                     </div>
                   ) : null}
                 </div>
