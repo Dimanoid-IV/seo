@@ -232,6 +232,32 @@ export async function updateArticleForUser({
     return article;
   });
 
+  if (
+    updateData.status === ArticleStatus.ARCHIVED &&
+    existing.status !== ArticleStatus.ARCHIVED
+  ) {
+    try {
+      const { reconcileArticleDraftUsage } = await import(
+        "@/lib/billing/article-usage"
+      );
+      const { getCurrentSubscription } = await import(
+        "@/lib/billing/get-subscription"
+      );
+      const subscription = await getCurrentSubscription({
+        userId: currentUser.id,
+        organizationId: updated.organizationId,
+      });
+      await reconcileArticleDraftUsage({
+        userId: currentUser.id,
+        organizationId: updated.organizationId,
+        websiteId: updated.websiteId,
+        planLimitId: subscription.planLimit?.id ?? null,
+      });
+    } catch {
+      // Snapshot reconcile must not block article updates.
+    }
+  }
+
   const wordpressConnected = await isWordPressConnectedForWebsite(
     updated.websiteId
   );

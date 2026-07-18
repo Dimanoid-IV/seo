@@ -99,7 +99,7 @@ async function applyArticleAction(input: ReviewActionInput) {
           },
         },
       },
-      select: { id: true },
+      select: { id: true, organizationId: true, websiteId: true },
     });
 
     if (!article) {
@@ -110,6 +110,28 @@ async function applyArticleAction(input: ReviewActionInput) {
       where: { id: article.id },
       data: { status: ArticleStatus.ARCHIVED },
     });
+
+    // Free the usable ARTICLE_DRAFT slot immediately (idempotent snap-to-live).
+    try {
+      const { reconcileArticleDraftUsage } = await import(
+        "@/lib/billing/article-usage"
+      );
+      const { getCurrentSubscription } = await import(
+        "@/lib/billing/get-subscription"
+      );
+      const subscription = await getCurrentSubscription({
+        userId: input.currentUser.id,
+        organizationId: article.organizationId,
+      });
+      await reconcileArticleDraftUsage({
+        userId: input.currentUser.id,
+        organizationId: article.organizationId,
+        websiteId: article.websiteId,
+        planLimitId: subscription.planLimit?.id ?? null,
+      });
+    } catch {
+      // Snapshot reconcile must not block reject.
+    }
 
     return { articleId: article.id, status: "ARCHIVED" as const };
   }

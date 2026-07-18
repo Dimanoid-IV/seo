@@ -11,6 +11,7 @@ import { resolveOwnedOrganization } from "@/lib/auth/queries";
 import { serializeOrganization } from "@/lib/auth/serialize";
 import type { CurrentUser } from "@/lib/auth/types";
 import { getSubscriptionPlanSummary } from "@/lib/billing/plan-summary";
+import { countActiveQuotaArticleDrafts } from "@/lib/billing/article-usage";
 import { getPrisma } from "@/lib/db";
 import { AppError, ErrorCode } from "@/lib/errors";
 
@@ -142,17 +143,26 @@ function serializePlanLimit(
     socialPostsUsed: number;
     aiCreditsLimitCents: number | null;
     aiCreditsUsedCents: number;
-  } | null
+  } | null,
+  articlesUsedOverride?: number
 ) {
   if (!limit) {
-    return DEFAULT_PLAN_LIMIT;
+    return {
+      ...DEFAULT_PLAN_LIMIT,
+      ...(articlesUsedOverride !== undefined
+        ? { articlesUsed: articlesUsedOverride }
+        : {}),
+    };
   }
 
   return {
     auditsLimit: limit.auditsLimit,
     auditsUsed: limit.auditsUsed,
     articlesLimit: limit.articlesLimit,
-    articlesUsed: limit.articlesUsed,
+    articlesUsed:
+      articlesUsedOverride !== undefined
+        ? articlesUsedOverride
+        : limit.articlesUsed,
     socialPostsLimit: limit.socialPostsLimit,
     socialPostsUsed: limit.socialPostsUsed,
     aiCreditsLimitCents: limit.aiCreditsLimitCents,
@@ -209,6 +219,12 @@ export async function getDashboardOverview(
           orderBy: { periodStart: "desc" },
         })
       : null;
+
+  const liveArticlesUsed = organization
+    ? await countActiveQuotaArticleDrafts({
+        organizationId: organization.id,
+      })
+    : 0;
 
   const activities =
     organization
@@ -269,7 +285,7 @@ export async function getDashboardOverview(
               status: subscription.status,
             }
           : null,
-        planLimit: serializePlanLimit(planLimitRecord),
+        planLimit: serializePlanLimit(planLimitRecord, liveArticlesUsed),
         latestAudit: null,
         growthScoreDelta: null,
         growthHistory: [],
@@ -445,7 +461,7 @@ export async function getDashboardOverview(
             status: subscription.status,
           }
         : null,
-      planLimit: serializePlanLimit(planLimitRecord),
+      planLimit: serializePlanLimit(planLimitRecord, liveArticlesUsed),
       latestAudit: latestAudit
         ? {
             id: latestAudit.id,

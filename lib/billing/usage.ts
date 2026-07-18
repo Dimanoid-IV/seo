@@ -6,6 +6,11 @@ import { monthPeriod } from "@/lib/auth/queries";
 import { getPrisma } from "@/lib/db";
 
 import {
+  countActiveQuotaArticleDrafts,
+  currentArticleUsageMonthKey,
+  reconcileArticleDraftUsage,
+} from "./article-usage";
+import {
   BILLING_PLANS,
   normalizeBillingPlan,
   type BillingPlanKey,
@@ -15,9 +20,7 @@ import { USAGE_KEY_LABELS } from "./types";
 import { getCurrentSubscription } from "./get-subscription";
 
 function currentMonthKey(): string {
-  const now = new Date();
-  const month = String(now.getUTCMonth() + 1).padStart(2, "0");
-  return `${now.getUTCFullYear()}-${month}`;
+  return currentArticleUsageMonthKey();
 }
 
 function limitForKey(planKey: BillingPlanKey, key: UsageKey): number {
@@ -48,7 +51,19 @@ async function getUsageCount(input: {
   userId: string;
   key: UsageKey;
   month: string;
+  websiteId?: string | null;
 }): Promise<number> {
+  // ARTICLE_DRAFT is live-derived from usable active drafts so archived /
+  // quality-failed junk cannot permanently block generation. AI_GENERATION
+  // remains the persisted attempt/cost counter.
+  if (input.key === "ARTICLE_DRAFT") {
+    return countActiveQuotaArticleDrafts({
+      organizationId: input.organizationId,
+      websiteId: null,
+      month: input.month,
+    });
+  }
+
   const prisma = getPrisma();
 
   const counter = await prisma.usageCounter.findFirst({
@@ -78,8 +93,6 @@ async function getUsageCount(input: {
   switch (input.key) {
     case "AUDIT_RUN":
       return planLimit.auditsUsed;
-    case "ARTICLE_DRAFT":
-      return planLimit.articlesUsed;
     case "SOCIAL_POST":
       return planLimit.socialPostsUsed;
     default:
@@ -106,6 +119,7 @@ export async function checkUsageLimit(input: {
     userId: input.userId,
     key: input.key,
     month,
+    websiteId: input.websiteId,
   });
 
   return {
@@ -124,6 +138,23 @@ export async function incrementUsage(input: {
 }) {
   const prisma = getPrisma();
   const month = currentMonthKey();
+
+  // ARTICLE_DRAFT: snap persisted snapshots to the live usable-draft count
+  // instead of blind +1 (archived junk must not accumulate forever).
+  if (input.key === "ARTICLE_DRAFT") {
+    const subscription = await getCurrentSubscription({
+      userId: input.userId,
+      organizationId: input.organizationId,
+    });
+    await reconcileArticleDraftUsage({
+      userId: input.userId,
+      organizationId: input.organizationId,
+      websiteId: input.websiteId,
+      month,
+      planLimitId: subscription.planLimit?.id ?? null,
+    });
+    return;
+  }
 
   await prisma.usageCounter.upsert({
     where: {
@@ -156,11 +187,11 @@ export async function incrementUsage(input: {
     const data: Record<string, { increment: number }> = {};
     if (input.key === "AUDIT_RUN") {
       data.auditsUsed = { increment: 1 };
-    } else if (input.key === "ARTICLE_DRAFT" || input.key === "AI_GENERATION") {
-      data.articlesUsed = { increment: 1 };
     } else if (input.key === "SOCIAL_POST") {
       data.socialPostsUsed = { increment: 1 };
     }
+    // AI_GENERATION is cost/attempt protection only — do not bump articlesUsed.
+    // articlesUsed tracks usable ARTICLE_DRAFT slots (live / reconciled).
 
     if (Object.keys(data).length > 0) {
       await prisma.planLimit.update({
