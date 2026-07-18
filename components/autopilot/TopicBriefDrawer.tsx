@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/button";
 import { parseContentResearchBrief } from "@/lib/content-research/parse";
 import type { AutopilotPlanItem } from "@/lib/autopilot/plan-item-types";
 import type { SaasLocale } from "@/lib/i18n/saas/locales";
+import { localizePlanItemTitle } from "@/lib/i18n/saas/plan-display";
 import { useSaasTranslations } from "@/lib/i18n/saas/SaasLocaleProvider";
 
 type PlanApprovalStrings = ReturnType<
@@ -56,8 +57,12 @@ export function TopicBriefDrawer({
   onGenerateDraft,
   onRemove,
 }: TopicBriefDrawerProps) {
+  const { dict } = useSaasTranslations();
   const d = t.briefDrawer;
   const brief = item?.researchBrief ? parseContentResearchBrief(item.researchBrief) : null;
+  const displayTitle = item
+    ? brief?.recommendedArticleTitle || localizePlanItemTitle(item, dict)
+    : d.title;
   const competitorAngles = brief?.competitors
     .flatMap((competitor) => competitor.contentAngles)
     .filter(Boolean)
@@ -67,7 +72,7 @@ export function TopicBriefDrawer({
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent side="right" className="w-full overflow-y-auto sm:max-w-md">
         <SheetHeader>
-          <SheetTitle>{item?.title ?? d.title}</SheetTitle>
+          <SheetTitle>{displayTitle}</SheetTitle>
           <SheetDescription>{d.title}</SheetDescription>
         </SheetHeader>
 

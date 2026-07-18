@@ -116,8 +116,12 @@ function localizedTimelineSummary(
   event: TimelineEvent,
   locale: SaasLocale
 ): string | undefined {
-  const copy = getServerStrings(locale).timeline.eventSummaries;
+  const timeline = getServerStrings(locale).timeline;
+  const copy = timeline.eventSummaries;
   const details = event.details;
+  const known = event.summary
+    ? timeline.knownSummaries[event.summary]
+    : undefined;
 
   switch (event.type) {
     case TimelineEventType.AUDIT_COMPLETED:
@@ -155,9 +159,9 @@ function localizedTimelineSummary(
       if (event.title === "Social post copied") {
         return copy.socialPostCopied;
       }
-      return event.summary ?? undefined;
+      return known ?? event.summary ?? undefined;
     default:
-      return event.summary ?? undefined;
+      return known ?? event.summary ?? undefined;
   }
 }
 

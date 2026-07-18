@@ -1483,6 +1483,9 @@ export const saasDictionary: SaasDictionary = {
       monthlyGrowthPlanTitle: "Kuu kasvuplaan — {month}",
       summaryTeaser:
         "Vaadake üle selle kuu fookusvaldkonnad, soovitatud tegevused, riskid ja järgmised sammud.",
+      itemTitles: {
+        prepareFirstArticle: "Valmista ette esimene artikkel",
+      },
       actionTypes: {
         TASK: "Ülesanne",
         ARTICLE: "Artikkel",

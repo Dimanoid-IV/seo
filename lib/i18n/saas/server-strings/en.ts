@@ -158,6 +158,26 @@ export const serverStringsEn: SaasServerStrings = {
       "Social post copied": "Social post copied",
       "Review email approved": "Review email approved",
       "Review email sent": "Review email sent",
+      "Autopilot plan item executed": "Autopilot plan item executed",
+      "Subscription updated": "Subscription updated",
+    },
+    knownSummaries: {
+      "RankBoost prepared a monthly plan with priority tasks, content ideas, and social post opportunities.":
+        "RankBoost prepared a monthly plan with priority tasks, content ideas, and social post opportunities.",
+      "The monthly plan was approved and is ready for execution.":
+        "The monthly plan was approved and is ready for execution.",
+      "Autopilot prepared an article draft for review.":
+        "Autopilot prepared an article draft for review.",
+      "Autopilot created a WordPress draft from an approved article.":
+        "Autopilot created a WordPress draft from an approved article.",
+      "Your RankBoost subscription was updated.":
+        "Your RankBoost subscription was updated.",
+      "RankBoost prepared an email draft for your approval.":
+        "RankBoost prepared an email draft for your approval.",
+      "An email draft was approved by the user.":
+        "An email draft was approved by the user.",
+      "An approved review email was sent manually.":
+        "An approved review email was sent manually.",
     },
     summaryHeadlines: {
       quiet:

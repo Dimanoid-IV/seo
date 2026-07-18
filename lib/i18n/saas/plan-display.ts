@@ -235,6 +235,38 @@ export function localizeNextStep(step: AutopilotNextStep, dict: SaasDictionary):
   return { title: step.title, description: step.description };
 }
 
+const PLACEHOLDER_ARTICLE_TITLES = new Set([
+  "Опубликовать первую статью",
+  "Publish first article",
+  "Publish the first article",
+]);
+
+/**
+ * Localizes a persisted plan item title. Legacy/raw English action titles are
+ * mapped to their existing localized action copy; the generic "publish first
+ * article" placeholder is labeled as a preparation step (not a researched
+ * topic). Real researched ARTICLE titles pass through unchanged.
+ */
+export function localizePlanItemTitle(
+  item: { type: string; title: string },
+  dict: SaasDictionary
+): string {
+  const key = LEGACY_ACTION_TITLES[item.title];
+  if (key) {
+    const copy =
+      dict.autopilot.planContent.actions[
+        key as keyof typeof dict.autopilot.planContent.actions
+      ];
+    if (copy?.title && !copy.title.includes("{")) {
+      return copy.title;
+    }
+  }
+  if (item.type === "ARTICLE" && PLACEHOLDER_ARTICLE_TITLES.has(item.title.trim())) {
+    return dict.autopilot.planContent.itemTitles.prepareFirstArticle;
+  }
+  return item.title;
+}
+
 export function localizeActionType(
   type: AutopilotRecommendedAction["type"],
   dict: SaasDictionary

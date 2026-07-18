@@ -16,6 +16,7 @@ import type {
 } from "@/lib/autopilot/plan-item-types";
 import { isPlanItemDueNow } from "@/lib/autopilot/execution-eligibility";
 import type { SaasLocale } from "@/lib/i18n/saas/locales";
+import { localizePlanItemTitle } from "@/lib/i18n/saas/plan-display";
 import { useSaasTranslations } from "@/lib/i18n/saas/SaasLocaleProvider";
 import { cn } from "@/lib/utils";
 
@@ -447,7 +448,7 @@ export function PlanApprovalPanel({
                   checked={checked}
                   disabled={!selectable || submitting}
                   onChange={() => toggleItem(item.id)}
-                  aria-label={item.title}
+                  aria-label={localizePlanItemTitle(item, dict)}
                 />
                 <div className="min-w-0 flex-1 space-y-2">
                   <div className="flex flex-wrap items-start justify-between gap-2">
@@ -461,10 +462,12 @@ export function PlanApprovalPanel({
                           onClick={() => setDetailsItemId(item.id)}
                           className="text-left font-medium text-slate-900 hover:text-violet-700 hover:underline"
                         >
-                          {item.title}
+                          {localizePlanItemTitle(item, dict)}
                         </button>
                       ) : (
-                        <h4 className="font-medium text-slate-900">{item.title}</h4>
+                        <h4 className="font-medium text-slate-900">
+                          {localizePlanItemTitle(item, dict)}
+                        </h4>
                       )}
                     </div>
                     <span

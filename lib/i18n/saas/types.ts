@@ -1217,6 +1217,9 @@ export type SaasDictionary = {
     planContent: {
       monthlyGrowthPlanTitle: string;
       summaryTeaser: string;
+      itemTitles: {
+        prepareFirstArticle: string;
+      };
       actionTypes: {
         TASK: string;
         ARTICLE: string;

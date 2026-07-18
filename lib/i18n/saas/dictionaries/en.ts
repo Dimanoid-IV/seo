@@ -1476,6 +1476,9 @@ export const saasDictionary: SaasDictionary = {
       monthlyGrowthPlanTitle: "Monthly growth plan — {month}",
       summaryTeaser:
         "Review this month's focus areas, recommended actions, risks, and next steps.",
+      itemTitles: {
+        prepareFirstArticle: "Prepare the first article",
+      },
       actionTypes: {
         TASK: "Task",
         ARTICLE: "Article",

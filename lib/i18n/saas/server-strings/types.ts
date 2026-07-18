@@ -93,6 +93,7 @@ export type SaasServerStrings = {
     severityLabels: Record<string, string>;
     eventTitles: Record<string, string>;
     systemNoteTitles: Record<string, string>;
+    knownSummaries: Record<string, string>;
     summaryHeadlines: {
       quiet: string;
       monitoringContinued: string;

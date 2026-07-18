@@ -158,6 +158,25 @@ export const serverStringsRu: SaasServerStrings = {
       "Social post copied": "Пост скопирован",
       "Review email approved": "Письмо на проверку одобрено",
       "Review email sent": "Письмо на проверку отправлено",
+      "Autopilot plan item executed": "Пункт плана выполнен автопилотом",
+      "Subscription updated": "Подписка обновлена",
+    },
+    knownSummaries: {
+      "RankBoost prepared a monthly plan with priority tasks, content ideas, and social post opportunities.":
+        "Автопилот подготовил месячный план с приоритетными задачами, идеями контента и постами для соцсетей.",
+      "The monthly plan was approved and is ready for execution.":
+        "Месячный план одобрен и готов к выполнению.",
+      "Autopilot prepared an article draft for review.":
+        "Автопилот подготовил черновик статьи на проверку.",
+      "Autopilot created a WordPress draft from an approved article.":
+        "Автопилот создал черновик в WordPress из одобренной статьи.",
+      "Your RankBoost subscription was updated.":
+        "Ваша подписка RankBoost обновлена.",
+      "RankBoost prepared an email draft for your approval.":
+        "RankBoost подготовил черновик письма на ваше одобрение.",
+      "An email draft was approved by the user.": "Черновик письма одобрен.",
+      "An approved review email was sent manually.":
+        "Одобренное письмо на проверку отправлено вручную.",
     },
     summaryHeadlines: {
       quiet:

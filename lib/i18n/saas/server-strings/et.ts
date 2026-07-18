@@ -158,6 +158,25 @@ export const serverStringsEt: SaasServerStrings = {
       "Social post copied": "Sotsiaalpostitus kopeeritud",
       "Review email approved": "Ülevaatusmeil kinnitatud",
       "Review email sent": "Ülevaatusmeil saadetud",
+      "Autopilot plan item executed": "Autopiloot täitis plaani punkti",
+      "Subscription updated": "Tellimus uuendatud",
+    },
+    knownSummaries: {
+      "RankBoost prepared a monthly plan with priority tasks, content ideas, and social post opportunities.":
+        "RankBoost koostas kuuplaani prioriteetsete ülesannete, sisuideede ja postitusvõimalustega.",
+      "The monthly plan was approved and is ready for execution.":
+        "Kuuplaan on kinnitatud ja valmis täitmiseks.",
+      "Autopilot prepared an article draft for review.":
+        "Autopiloot valmistas ette artikli mustandi ülevaatuseks.",
+      "Autopilot created a WordPress draft from an approved article.":
+        "Autopiloot lõi kinnitatud artiklist WordPressi mustandi.",
+      "Your RankBoost subscription was updated.":
+        "Teie RankBoosti tellimust uuendati.",
+      "RankBoost prepared an email draft for your approval.":
+        "RankBoost valmistas ette e-kirja mustandi teie kinnitamiseks.",
+      "An email draft was approved by the user.": "E-kirja mustand kinnitati.",
+      "An approved review email was sent manually.":
+        "Kinnitatud ülevaatuskiri saadeti käsitsi.",
     },
     summaryHeadlines: {
       quiet:
