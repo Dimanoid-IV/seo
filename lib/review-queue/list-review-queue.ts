@@ -12,9 +12,11 @@ import { resolveOwnedOrganization } from "@/lib/auth/queries";
 import type { CurrentUser } from "@/lib/auth/types";
 import { getPrisma } from "@/lib/db";
 import { parsePlanItemsDocument } from "@/lib/autopilot/plan-items";
+import type { AutopilotPlanItem } from "@/lib/autopilot/plan-item-types";
 import { parsePreparedFix } from "@/lib/tasks/prepared-fix";
 
 import type {
+  ReviewActionNeeded,
   ReviewItemGroup,
   ReviewItemStatus,
   ReviewItemType,
@@ -189,6 +191,7 @@ export async function getReviewQueue(
         status: true,
         qualityScore: true,
         qualityPassed: true,
+        wordpressPostId: true,
         createdAt: true,
         updatedAt: true,
       },
@@ -248,7 +251,18 @@ export async function getReviewQueue(
     }),
   ]);
 
-  const autopilotArticleIds = new Set<string>();
+  const autopilotByArticleId = new Map<
+    string,
+    {
+      publishingPath?: AutopilotPlanItem["publishingPath"];
+      pipelineState?: string;
+      plannedDate?: string | null;
+      nextAutomatedStep?: string | null;
+      wordpressDraftCreated?: boolean;
+      universalPackageReady?: boolean;
+      webhookReady?: boolean;
+    }
+  >();
   for (const plan of autopilotPlans) {
     const document = plan.planItemsJson
       ? parsePlanItemsDocument(plan.planItemsJson)
@@ -256,7 +270,15 @@ export async function getReviewQueue(
     if (!document) continue;
     for (const item of document.items) {
       if (item.generatedArticleId) {
-        autopilotArticleIds.add(item.generatedArticleId);
+        autopilotByArticleId.set(item.generatedArticleId, {
+          publishingPath: item.publishingPath,
+          pipelineState: item.pipelineState,
+          plannedDate: item.plannedPublishAt ?? item.scheduledFor ?? null,
+          nextAutomatedStep: item.nextAutomatedStep ?? null,
+          wordpressDraftCreated: Boolean(item.wordpressDraftCreatedAt),
+          universalPackageReady: Boolean(item.universalPackagePreparedAt),
+          webhookReady: Boolean(item.webhookReadyAt),
+        });
       }
     }
   }
@@ -286,11 +308,33 @@ export async function getReviewQueue(
       ? article.contentHtml.replace(/<[^>]+>/g, " ")
       : article.title;
 
-    const linkedAutopilotPlanItem = autopilotArticleIds.has(article.id);
+    const autopilotMeta = autopilotByArticleId.get(article.id);
+    const linkedAutopilotPlanItem = Boolean(autopilotMeta);
     const qualityPassed = article.qualityPassed;
     const canApproveArticle =
       article.status === ArticleStatus.WAITING_REVIEW &&
       qualityPassed !== false;
+
+    let actionNeeded: ReviewActionNeeded = "OTHER";
+    if (qualityPassed === false) {
+      actionNeeded = "QUALITY_NEEDS_REPAIR";
+    } else if (autopilotMeta?.wordpressDraftCreated || article.wordpressPostId) {
+      actionNeeded = "WORDPRESS_DRAFT_CREATED";
+    } else if (
+      autopilotMeta?.universalPackageReady ||
+      autopilotMeta?.webhookReady ||
+      autopilotMeta?.pipelineState === "UNIVERSAL_PACKAGE_READY" ||
+      autopilotMeta?.pipelineState === "WEBHOOK_READY"
+    ) {
+      actionNeeded = "CUSTOM_PACKAGE_READY";
+    } else if (qualityPassed === true && canApproveArticle) {
+      actionNeeded =
+        article.status === ArticleStatus.WAITING_REVIEW
+          ? "READY_TO_APPROVE"
+          : "READY_TO_PUBLISH_HANDOFF";
+    } else if (canApproveArticle) {
+      actionNeeded = "READY_TO_APPROVE";
+    }
 
     items.push({
       id: reviewItemId("ARTICLE_DRAFT", article.id),
@@ -305,6 +349,7 @@ export async function getReviewQueue(
       editHref: `/app/articles/${article.id}`,
       canEdit: true,
       canApprove: canApproveArticle,
+      actionNeeded,
       articleContext: {
         qualityScore: article.qualityScore,
         qualityPassed,
@@ -313,6 +358,13 @@ export async function getReviewQueue(
           linkedAutopilotPlanItem &&
           canApproveArticle &&
           qualityPassed === true,
+        publishPath: autopilotMeta?.publishingPath ?? "universal_package",
+        pipelineState: autopilotMeta?.pipelineState,
+        plannedDate: autopilotMeta?.plannedDate ?? null,
+        nextAutomatedStep: autopilotMeta?.nextAutomatedStep ?? null,
+        wordpressDraftCreated: Boolean(
+          autopilotMeta?.wordpressDraftCreated || article.wordpressPostId
+        ),
       },
     });
   }

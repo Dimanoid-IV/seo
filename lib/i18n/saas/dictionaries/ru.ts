@@ -1086,6 +1086,14 @@ export const saasDictionary: SaasDictionary = {
     qualityOutOf: (score) => `Качество ${score}/100`,
     publishManually: "Опубликовать вручную",
     downloadForSite: "Скачать / скопировать для сайта",
+    actionGroups: {
+      all: "Все",
+      readyToApprove: "Готово к одобрению",
+      readyToPublishHandoff: "Готово к публикации",
+      qualityNeedsRepair: "Нужен ремонт качества",
+      wordpressDraftCreated: "Черновик WordPress создан",
+      customPackageReady: "Пакет для сайта готов",
+    },
   },
   socialPosts: {
     title: "Соцсети",

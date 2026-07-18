@@ -18,6 +18,7 @@ import type { CurrentUser } from "@/lib/auth/types";
 import { formatMonthlyAutopilotPlan } from "@/lib/autopilot/format";
 import { currentMonthKey } from "@/lib/autopilot/month-utils";
 import { parsePlanItemsDocument } from "@/lib/autopilot/plan-items";
+import { findNextScheduledArticleAt } from "@/lib/dashboard/primary-cta";
 import { getPrisma } from "@/lib/db";
 import { resolveGscConnectionState } from "@/lib/integrations/gsc-state";
 import { getSaasDictionary } from "@/lib/i18n/saas";
@@ -269,6 +270,21 @@ export async function getAutopilotControlCenter(input: {
   const hasArticleTopics = Boolean(
     planItemsDocument?.items.some((item) => item.type === "ARTICLE")
   );
+  const nextScheduledArticleAt = planItemsDocument
+    ? findNextScheduledArticleAt(planItemsDocument.items)
+    : null;
+  const readyToPublishCount =
+    planItemsDocument?.items.filter(
+      (item) =>
+        item.type === "ARTICLE" &&
+        (item.pipelineState === "UNIVERSAL_PACKAGE_READY" ||
+          item.pipelineState === "WORDPRESS_DRAFT_CREATED" ||
+          item.pipelineState === "WEBHOOK_READY" ||
+          item.pipelineState === "DRAFT_READY_FOR_REVIEW" ||
+          item.pipelineState === "READY_FOR_PUBLISHING_HANDOFF" ||
+          Boolean(item.universalPackagePreparedAt) ||
+          Boolean(item.wordpressDraftCreatedAt))
+    ).length ?? 0;
 
   const gscSelectedProperty =
     gscIntegration?.googleData?.searchConsoleSiteUrl ?? null;
@@ -576,6 +592,8 @@ export async function getAutopilotControlCenter(input: {
           summary: monthlyPlan.summary,
           href: "/app/autopilot",
           hasArticleTopics,
+          nextScheduledArticleAt,
+          readyToPublishCount,
         }
       : undefined,
     approvalQueue,

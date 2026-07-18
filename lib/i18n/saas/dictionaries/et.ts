@@ -1089,6 +1089,14 @@ export const saasDictionary: SaasDictionary = {
     qualityOutOf: (score) => `Kvaliteet ${score}/100`,
     publishManually: "Avalda käsitsi",
     downloadForSite: "Laadi alla / kopeeri saidile",
+    actionGroups: {
+      all: "Kõik",
+      readyToApprove: "Valmis kinnitamiseks",
+      readyToPublishHandoff: "Valmis avaldamise handoffiks",
+      qualityNeedsRepair: "Kvaliteet vajab parandust",
+      wordpressDraftCreated: "WordPressi mustand loodud",
+      customPackageReady: "Saidipakett valmis",
+    },
   },
   socialPosts: {
     title: "Sotsiaalpostitused",

@@ -878,6 +878,14 @@ export type SaasDictionary = {
     qualityOutOf: (score: number) => string;
     publishManually: string;
     downloadForSite: string;
+    actionGroups: {
+      all: string;
+      readyToApprove: string;
+      readyToPublishHandoff: string;
+      qualityNeedsRepair: string;
+      wordpressDraftCreated: string;
+      customPackageReady: string;
+    };
   };
   socialPosts: {
     title: string;

@@ -110,6 +110,7 @@ export async function createWordPressDraftForArticle({
       slug: true,
       language: true,
       status: true,
+      qualityPassed: true,
       metaTitle: true,
       metaDescription: true,
       contentHtml: true,
@@ -131,11 +132,15 @@ export async function createWordPressDraftForArticle({
 
   if (
     article.status !== ArticleStatus.DRAFT &&
-    article.status !== ArticleStatus.APPROVED
+    article.status !== ArticleStatus.APPROVED &&
+    !(
+      article.status === ArticleStatus.WAITING_REVIEW &&
+      article.qualityPassed === true
+    )
   ) {
     throw new AppError(
       ErrorCode.VALIDATION_ERROR,
-      "В WordPress можно отправить только статью со статусом DRAFT или APPROVED."
+      "В WordPress можно отправить только статью со статусом DRAFT, APPROVED или качественный WAITING_REVIEW."
     );
   }
 

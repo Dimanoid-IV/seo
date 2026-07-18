@@ -33,6 +33,30 @@ export type AutopilotPlanItemSourceRef = {
   id: string;
 };
 
+export type AutopilotPlanItemPublishingPath =
+  | "wordpress_draft"
+  | "universal_package"
+  | "webhook"
+  | "none";
+
+export type AutopilotPlanItemPipelineState =
+  | "PROPOSED_TOPIC"
+  | "APPROVED_TOPIC"
+  | "SCHEDULED_FOR_RESEARCH"
+  | "RESEARCH_READY"
+  | "SCHEDULED_FOR_DRAFT"
+  | "DRAFT_GENERATING"
+  | "DRAFT_READY_FOR_REVIEW"
+  | "QUALITY_FAILED_NEEDS_REPAIR"
+  | "READY_FOR_PUBLISHING_HANDOFF"
+  | "WORDPRESS_DRAFT_CREATED"
+  | "UNIVERSAL_PACKAGE_READY"
+  | "WEBHOOK_READY"
+  | "WEBHOOK_SENT"
+  | "PUBLISHED_MANUALLY_CONFIRMED"
+  | "SKIPPED"
+  | "FAILED";
+
 export type AutopilotPlanItem = {
   id: string;
   type: AutopilotPlanItemType;
@@ -60,6 +84,17 @@ export type AutopilotPlanItem = {
   articleQualityPassed?: boolean;
   /** Set when the linked generated article is approved in Review Queue. */
   linkedArticleApprovedAt?: string;
+  /** Prompt 11.43 — fine-grained article automation state (JSON only). */
+  pipelineState?: AutopilotPlanItemPipelineState;
+  plannedResearchAt?: string;
+  plannedDraftAt?: string;
+  plannedPublishAt?: string;
+  publishingPath?: AutopilotPlanItemPublishingPath;
+  universalPackagePreparedAt?: string;
+  webhookReadyAt?: string;
+  webhookSentAt?: string;
+  wordpressDraftCreatedAt?: string;
+  nextAutomatedStep?: string;
 };
 
 export type AutopilotPlanItemsDocument = {

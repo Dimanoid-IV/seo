@@ -33,6 +33,10 @@ export type ControlCenterMonthlyPlan = {
   href: string;
   /** True when the plan includes at least one ARTICLE topic. */
   hasArticleTopics?: boolean;
+  /** ISO date of next scheduled article slot, if any. */
+  nextScheduledArticleAt?: string | null;
+  /** Count of articles ready for publishing handoff. */
+  readyToPublishCount?: number;
 };
 
 export type ApprovalQueueItem = {

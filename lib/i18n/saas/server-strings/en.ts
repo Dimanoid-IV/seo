@@ -50,6 +50,14 @@ export const serverStringsEn: SaasServerStrings = {
       openControlTitle: "Open control center",
       openControlDesc:
         "See plan status, tasks, and next steps in one place.",
+      confirmPlanTitle: "Confirm this month’s plan",
+      confirmPlanDesc:
+        "RankBoost will prepare articles on schedule after you confirm.",
+      autopilotActiveTitle: "Monthly autopilot is active",
+      autopilotActiveDesc:
+        "RankBoost prepares articles on schedule. Nothing goes live without a safe path.",
+      nextArticlePrepared: (date) => `Next article will be prepared: ${date}`,
+      readyToPublishCount: (count) => `Ready to publish: ${count}`,
     },
     actionLabels: {
       openGrowthPlan: "Open growth plan",
@@ -67,6 +75,8 @@ export const serverStringsEn: SaasServerStrings = {
       setupPublishing: "Set up publishing",
       openControl: "Open control center",
       checkSiteNow: "Check my site now",
+      confirmPlan: "Confirm plan",
+      viewAutopilot: "Open autopilot",
     },
     findings: {
       seoTasksWaiting: (count) =>

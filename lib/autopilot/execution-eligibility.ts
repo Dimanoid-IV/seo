@@ -1,11 +1,14 @@
 import { ArticleStatus, AutopilotMode } from "@prisma/client";
 
 import { isResearchBriefReadyForArticleGeneration } from "@/lib/content-research/readiness";
+import { isHandoffComplete } from "./article-pipeline";
 
 import type { AutopilotPlanItem } from "./plan-item-types";
 
 export type ExecutionActionType =
+  | "PREPARE_RESEARCH_BRIEF"
   | "PREPARE_ARTICLE_DRAFT"
+  | "PREPARE_PUBLISHING_HANDOFF"
   | "PUBLISH_APPROVED_ARTICLE"
   | "NOOP_INTERNAL"
   | "BLOCKED"
@@ -21,6 +24,7 @@ export type ExecutionReasonKey =
   | "publishDisabled"
   | "researchBriefMissing"
   | "researchBriefBlocked"
+  | "readyForResearch"
   | "notAContentOpportunity"
   | "unsafeArticleTopic"
   | "archivedArticleLinked"
@@ -31,11 +35,16 @@ export type ExecutionReasonKey =
   | "articleQualityFailed"
   | "waitingForReviewApproval"
   | "articleNotApproved"
+  | "readyForPublishingHandoff"
   | "readyForWordPressDraft"
   | "wordpressNotConnected"
   | "wordpressDraftAlreadyCreated"
+  | "universalPackageReady"
+  | "webhookReady"
   | "nonArticleNoop"
-  | "blockedStatus";
+  | "blockedStatus"
+  | "handoffComplete"
+  | "runBudgetExhausted";
 
 export type LinkedArticleSnapshot = {
   id: string;
@@ -56,6 +65,8 @@ export type ExecutionEligibilityInput = {
   article?: LinkedArticleSnapshot | null;
   /** When true, ignore scheduledFor timing (manual preview / dry-run inspection). */
   manualPreview?: boolean;
+  /** Website-level custom webhook tested+configured. */
+  webhookConfiguredAndTested?: boolean;
 };
 
 export type ExecutionEligibilityResult = {
@@ -85,8 +96,7 @@ const PREPARATION_MODES = new Set<AutopilotMode>([
   AutopilotMode.AUTOPUBLISH,
 ]);
 
-const PUBLISH_MODES = new Set<AutopilotMode>([
-  AutopilotMode.REVIEW_FIRST,
+const HANDOFF_MODES = new Set<AutopilotMode>([
   AutopilotMode.APPROVED_PLAN_AUTOPILOT,
   AutopilotMode.AUTOPUBLISH,
 ]);
@@ -148,18 +158,21 @@ function isArticleWaitingForReview(status: ArticleStatus): boolean {
   return status === ArticleStatus.WAITING_REVIEW;
 }
 
-function isArticleDraftOnly(status: ArticleStatus): boolean {
-  return status === ArticleStatus.DRAFT || status === ArticleStatus.IDEA;
-}
-
 /**
  * Determines whether an autopilot plan item can execute now and which safe action applies.
  */
 export function resolvePlanItemExecutionEligibility(
   input: ExecutionEligibilityInput
 ): ExecutionEligibilityResult {
-  const { item, now, autopilotMode, wordpressConnected, websiteId, organizationId, article } =
-    input;
+  const {
+    item,
+    now,
+    autopilotMode,
+    wordpressConnected,
+    websiteId,
+    organizationId,
+    article,
+  } = input;
 
   if (item.selected === false) {
     return skip("notSelected");
@@ -189,37 +202,32 @@ export function resolvePlanItemExecutionEligibility(
     return eligibleAction("NOOP_INTERNAL", "nonArticleNoop", "nonArticleNoop", item.status);
   }
 
-  const readinessContext = article
-    ? {
-        linkedArticle: {
-          status: article.status,
-          qualityPassed: article.qualityPassed,
-        },
-      }
-    : undefined;
+  // --- Research ---
+  if (!item.researchBrief) {
+    if (!PREPARATION_MODES.has(autopilotMode)) {
+      return skip("preparationDisabled", "researchWillBePrepared");
+    }
+    return eligibleAction(
+      "PREPARE_RESEARCH_BRIEF",
+      "readyForResearch",
+      "wouldResearch",
+      "scheduled"
+    );
+  }
 
+  if (!isResearchBriefReadyForArticleGeneration(item.researchBrief)) {
+    return blocked("researchBriefBlocked", "researchBriefBlocked");
+  }
+
+  // --- Draft ---
   if (!item.generatedArticleId) {
-    if (!item.researchBrief) {
-      return blocked("researchBriefMissing", "researchBriefMissing");
-    }
-
-    if (
-      !isResearchBriefReadyForArticleGeneration(
-        item.researchBrief,
-        readinessContext
-      )
-    ) {
-      return blocked("researchBriefBlocked", "researchBriefBlocked");
-    }
-
     if (!PREPARATION_MODES.has(autopilotMode)) {
       return skip("preparationDisabled", "draftWillBePrepared");
     }
-
     return eligibleAction(
       "PREPARE_ARTICLE_DRAFT",
       "readyForDraftPreparation",
-      "draftWillBePrepared",
+      "wouldGenerateDraft",
       "prepared"
     );
   }
@@ -244,45 +252,76 @@ export function resolvePlanItemExecutionEligibility(
     return skip("articleQualityFailed", "qualityFailed");
   }
 
-  if (isArticleWaitingForReview(article.status)) {
-    return skip("waitingForReviewApproval", "waitingForReviewApproval");
+  // Quality passed — prepare publishing handoff automatically in approved-plan mode
+  // (WP draft / universal package / webhook ready). Never live-publish.
+  if (
+    (article.qualityPassed === true || item.articleQualityPassed === true) &&
+    !isHandoffComplete(item) &&
+    !article.wordpressPostId
+  ) {
+    if (!HANDOFF_MODES.has(autopilotMode)) {
+      // REVIEW_FIRST: wait for human approval before handoff.
+      if (isArticleWaitingForReview(article.status)) {
+        return skip("waitingForReviewApproval", "waitingForReviewApproval");
+      }
+    } else {
+      return eligibleAction(
+        "PREPARE_PUBLISHING_HANDOFF",
+        "readyForPublishingHandoff",
+        wordpressConnected
+          ? "wouldCreateWordPressDraft"
+          : input.webhookConfiguredAndTested
+            ? "wouldPrepareWebhookReady"
+            : "wouldPrepareUniversalPackage",
+        "prepared"
+      );
+    }
   }
 
-  if (isArticleDraftOnly(article.status)) {
-    return skip("articleNotApproved", "articleNotApproved");
-  }
-
-  if (article.wordpressPostId || article.status === ArticleStatus.WORDPRESS_DRAFT_CREATED) {
+  if (isHandoffComplete(item) || article.wordpressPostId) {
     return eligibleAction(
       "NOOP_INTERNAL",
-      "wordpressDraftAlreadyCreated",
-      "wordpressDraftCreated",
+      "handoffComplete",
+      item.pipelineState === "WORDPRESS_DRAFT_CREATED" || article.wordpressPostId
+        ? "wordpressDraftCreated"
+        : item.pipelineState === "WEBHOOK_READY"
+          ? "webhookReady"
+          : "universalPackageReady",
       "executed"
     );
   }
 
-  if (article.status === ArticleStatus.PUBLISHED) {
-    return eligibleAction("NOOP_INTERNAL", "wordpressDraftAlreadyCreated", "published", "executed");
+  if (isArticleWaitingForReview(article.status)) {
+    return skip("waitingForReviewApproval", "waitingForReviewApproval");
   }
 
-  if (!isArticleApprovedForPublish(article.status)) {
-    return skip("articleNotApproved", "waitingForReviewApproval");
+  // Legacy path: after user approves article, create WP draft if still missing.
+  if (isArticleApprovedForPublish(article.status) && wordpressConnected && !article.wordpressPostId) {
+    if (!HANDOFF_MODES.has(autopilotMode) && autopilotMode !== AutopilotMode.REVIEW_FIRST) {
+      return skip("publishDisabled", "waitingForReviewApproval");
+    }
+    return eligibleAction(
+      "PUBLISH_APPROVED_ARTICLE",
+      "readyForWordPressDraft",
+      "wouldCreateWordPressDraft",
+      "executed"
+    );
   }
 
-  if (!PUBLISH_MODES.has(autopilotMode)) {
-    return skip("publishDisabled", "waitingForReviewApproval");
+  if (isArticleApprovedForPublish(article.status) && !wordpressConnected) {
+    // Custom site — handoff should already have run; if not, prepare package.
+    if (!isHandoffComplete(item)) {
+      return eligibleAction(
+        "PREPARE_PUBLISHING_HANDOFF",
+        "readyForPublishingHandoff",
+        "wouldPrepareUniversalPackage",
+        "prepared"
+      );
+    }
+    return skip("handoffComplete", "universalPackageReady");
   }
 
-  if (!wordpressConnected) {
-    return blocked("wordpressNotConnected", "wordpressRequired");
-  }
-
-  return eligibleAction(
-    "PUBLISH_APPROVED_ARTICLE",
-    "readyForWordPressDraft",
-    "wordpressDraftCreated",
-    "executed"
-  );
+  return skip("articleNotApproved", "articleNotApproved");
 }
 
 export type DryRunOutcome = "wouldRun" | "skipped" | "blocked";
@@ -305,7 +344,9 @@ export function classifyDryRunOutcome(
   }
 
   if (
+    result.action === "PREPARE_RESEARCH_BRIEF" ||
     result.action === "PREPARE_ARTICLE_DRAFT" ||
+    result.action === "PREPARE_PUBLISHING_HANDOFF" ||
     result.action === "PUBLISH_APPROVED_ARTICLE"
   ) {
     return "wouldRun";
@@ -333,4 +374,44 @@ export function findDuePlanItems(
   now: Date = new Date()
 ): AutopilotPlanItem[] {
   return items.filter((item) => isPlanItemDueNow(item, now));
+}
+
+/** Per-website run budget to avoid Hermes/cost storms. */
+export type RunBudget = {
+  researchRemaining: number;
+  draftRemaining: number;
+  handoffRemaining: number;
+};
+
+export function createDefaultRunBudget(): RunBudget {
+  return {
+    researchRemaining: 1,
+    draftRemaining: 1,
+    handoffRemaining: 3,
+  };
+}
+
+export function consumeBudgetForAction(
+  budget: RunBudget,
+  action: ExecutionActionType
+): boolean {
+  if (action === "PREPARE_RESEARCH_BRIEF") {
+    if (budget.researchRemaining <= 0) return false;
+    budget.researchRemaining -= 1;
+    return true;
+  }
+  if (action === "PREPARE_ARTICLE_DRAFT") {
+    if (budget.draftRemaining <= 0) return false;
+    budget.draftRemaining -= 1;
+    return true;
+  }
+  if (
+    action === "PREPARE_PUBLISHING_HANDOFF" ||
+    action === "PUBLISH_APPROVED_ARTICLE"
+  ) {
+    if (budget.handoffRemaining <= 0) return false;
+    budget.handoffRemaining -= 1;
+    return true;
+  }
+  return true;
 }

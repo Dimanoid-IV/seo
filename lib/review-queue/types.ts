@@ -6,6 +6,14 @@ export type ReviewItemType =
   | "META_FIX"
   | "TASK_FIX";
 
+export type ReviewActionNeeded =
+  | "READY_TO_APPROVE"
+  | "READY_TO_PUBLISH_HANDOFF"
+  | "QUALITY_NEEDS_REPAIR"
+  | "WORDPRESS_DRAFT_CREATED"
+  | "CUSTOM_PACKAGE_READY"
+  | "OTHER";
+
 export type ReviewItemGroup = "ALL" | "SEO" | "CONTENT" | "SOCIAL" | "EMAIL";
 
 export type ReviewItemStatus =
@@ -30,11 +38,18 @@ export type ReviewQueueItem = {
   editHref?: string;
   canEdit: boolean;
   canApprove: boolean;
+  /** Prompt 11.43 — what the user should do next. */
+  actionNeeded?: ReviewActionNeeded;
   articleContext?: {
     qualityScore: number | null;
     qualityPassed: boolean | null;
     linkedAutopilotPlanItem: boolean;
     autopilotUnlockOnApprove: boolean;
+    publishPath?: "wordpress_draft" | "universal_package" | "webhook" | "none";
+    pipelineState?: string;
+    plannedDate?: string | null;
+    nextAutomatedStep?: string | null;
+    wordpressDraftCreated?: boolean;
   };
   preparedFix?: {
     generatedBy: PreparedFixGeneratedBy;

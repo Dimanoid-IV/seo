@@ -58,13 +58,21 @@ export async function timelineAfterAutopilotPlanItemExecuted(input: {
   websiteId: string;
   planId: string;
   planItemId: string;
-  action: "PREPARE_ARTICLE_DRAFT" | "PUBLISH_APPROVED_ARTICLE";
+  action:
+    | "PREPARE_RESEARCH_BRIEF"
+    | "PREPARE_ARTICLE_DRAFT"
+    | "PREPARE_PUBLISHING_HANDOFF"
+    | "PUBLISH_APPROVED_ARTICLE";
   itemTitle: string;
 }) {
-  const summary =
-    input.action === "PREPARE_ARTICLE_DRAFT"
-      ? "Autopilot prepared an article draft for review."
-      : "Autopilot created a WordPress draft from an approved article.";
+  const summaryByAction: Record<typeof input.action, string> = {
+    PREPARE_RESEARCH_BRIEF: "Autopilot prepared a research brief for a scheduled article.",
+    PREPARE_ARTICLE_DRAFT: "Autopilot prepared an article draft for review.",
+    PREPARE_PUBLISHING_HANDOFF:
+      "Autopilot prepared a publishing handoff (draft or export package).",
+    PUBLISH_APPROVED_ARTICLE:
+      "Autopilot created a WordPress draft from an approved article.",
+  };
 
   await createTimelineEvent({
     userId: input.userId,
@@ -73,7 +81,7 @@ export async function timelineAfterAutopilotPlanItemExecuted(input: {
     source: TimelineEventSource.CONTINUOUS_IMPROVEMENT,
     severity: TimelineEventSeverity.INFO,
     title: "Autopilot plan item executed",
-    summary,
+    summary: summaryByAction[input.action],
     details: {
       planId: input.planId,
       planItemId: input.planItemId,

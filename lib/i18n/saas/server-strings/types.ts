@@ -37,6 +37,12 @@ export type SaasServerStrings = {
       setupPublishingDesc: string;
       openControlTitle: string;
       openControlDesc: string;
+      confirmPlanTitle: string;
+      confirmPlanDesc: string;
+      autopilotActiveTitle: string;
+      autopilotActiveDesc: string;
+      nextArticlePrepared: (date: string) => string;
+      readyToPublishCount: (count: number) => string;
     };
     actionLabels: {
       openGrowthPlan: string;
@@ -54,6 +60,8 @@ export type SaasServerStrings = {
       setupPublishing: string;
       openControl: string;
       checkSiteNow: string;
+      confirmPlan: string;
+      viewAutopilot: string;
     };
     findings: {
       seoTasksWaiting: (count: number) => string;

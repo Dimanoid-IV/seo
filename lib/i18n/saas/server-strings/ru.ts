@@ -50,6 +50,14 @@ export const serverStringsRu: SaasServerStrings = {
       openControlTitle: "Открыть центр управления",
       openControlDesc:
         "Посмотрите статус плана, задач и следующих шагов в одном месте.",
+      confirmPlanTitle: "Подтвердить план на месяц",
+      confirmPlanDesc:
+        "RankBoost подготовит статьи по расписанию после вашего подтверждения.",
+      autopilotActiveTitle: "Автопилот месяца активен",
+      autopilotActiveDesc:
+        "RankBoost готовит статьи по расписанию. Ничего не публикуется без безопасного пути.",
+      nextArticlePrepared: (date) => `Следующая статья будет подготовлена: ${date}`,
+      readyToPublishCount: (count) => `Готово к публикации: ${count}`,
     },
     actionLabels: {
       openGrowthPlan: "Открыть план роста",
@@ -67,6 +75,8 @@ export const serverStringsRu: SaasServerStrings = {
       setupPublishing: "Настроить публикацию",
       openControl: "Открыть центр управления",
       checkSiteNow: "Проверить сайт сейчас",
+      confirmPlan: "Подтвердить план",
+      viewAutopilot: "Открыть автопилот",
     },
     findings: {
       seoTasksWaiting: (count) =>

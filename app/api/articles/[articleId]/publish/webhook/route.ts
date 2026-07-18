@@ -4,6 +4,8 @@ import { assertSafeUrl } from "@/lib/audit/ssrf";
 import { getServerEnv } from "@/lib/env";
 import { AppError, ErrorCode } from "@/lib/errors";
 import { getArticleUniversalExport } from "@/lib/publishing/get-article-export";
+import { upsertCustomPublishingConfig } from "@/lib/publishing/custom-webhook-config";
+import { getPrisma } from "@/lib/db";
 
 function assertDatabaseConfigured(): void {
   if (!getServerEnv().DATABASE_URL) {
@@ -108,6 +110,28 @@ export async function POST(request: Request, context: RouteContext) {
     } catch {
       // Do not surface internal error details (avoids leaking endpoint info).
       deliveryError = "Не удалось связаться с эндпоинтом. Проверьте URL и доступность.";
+    }
+
+    // Persist tested endpoint after a successful dry-run (no URL in logs).
+    if (dryRun && delivered) {
+      try {
+        const prisma = getPrisma();
+        const article = await prisma.article.findFirst({
+          where: { id: articleId, deletedAt: null },
+          select: { websiteId: true, organizationId: true },
+        });
+        if (article) {
+          await upsertCustomPublishingConfig({
+            websiteId: article.websiteId,
+            organizationId: article.organizationId,
+            endpointUrl: rawUrl,
+            tested: true,
+            autoSendEnabled: false,
+          });
+        }
+      } catch {
+        // Config persistence must not fail the test response.
+      }
     }
 
     return authJsonResponse({

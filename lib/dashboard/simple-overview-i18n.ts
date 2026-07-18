@@ -68,14 +68,48 @@ export function localizedPrimaryCta(
         apiAction: decision.apiAction,
         tone: "PRIMARY",
       };
-    case "OPEN_REVIEW":
+    case "OPEN_REVIEW": {
+      const ready = decision.readyToPublishCount ?? 0;
       return {
         title: next.openReviewTitle,
-        description: next.openReviewDesc,
+        description:
+          ready > 0
+            ? `${next.openReviewDesc} ${next.readyToPublishCount(ready)}`
+            : next.openReviewDesc,
         label: labels.openReview,
         href: decision.href,
         tone: "PRIMARY",
       };
+    }
+    case "CONFIRM_MONTHLY_PLAN":
+      return {
+        title: next.confirmPlanTitle,
+        description: next.confirmPlanDesc,
+        label: labels.confirmPlan,
+        href: decision.href,
+        tone: "PRIMARY",
+      };
+    case "AUTOPILOT_ACTIVE": {
+      const dateLabel = decision.nextScheduledArticleAt
+        ? new Date(decision.nextScheduledArticleAt).toLocaleDateString(locale, {
+            year: "numeric",
+            month: "short",
+            day: "numeric",
+          })
+        : null;
+      const parts = [next.autopilotActiveDesc];
+      if (dateLabel) parts.push(next.nextArticlePrepared(dateLabel));
+      if ((decision.readyToPublishCount ?? 0) > 0) {
+        parts.push(next.readyToPublishCount(decision.readyToPublishCount!));
+      }
+      return {
+        title: next.autopilotActiveTitle,
+        description: parts.join(" "),
+        label: labels.viewAutopilot,
+        href: decision.href,
+        tone: "PRIMARY",
+      };
+    }
     case "OPEN_PLAN":
       return {
         title: next.openPlanTitle,

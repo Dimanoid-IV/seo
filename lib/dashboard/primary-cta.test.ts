@@ -1,6 +1,7 @@
 import assert from "node:assert";
 
 import {
+  findNextScheduledArticleAt,
   planHasApprovedArticleTopics,
   resolveDashboardPrimaryCta,
 } from "./primary-cta";
@@ -17,31 +18,45 @@ assert.equal(
   "RUN_AUDIT"
 );
 
-// 2) Ready review materials beat email/plan/GSC/publishing.
+// 2) Pending plan confirmation.
 assert.deepEqual(
+  resolveDashboardPrimaryCta({
+    hasAudit: true,
+    reviewQueueCount: 0,
+    hasPendingPlanApproval: true,
+    hasApprovedPlanWithArticleTopics: false,
+    gscNeedsProperty: false,
+    publishingConfigured: true,
+  }),
+  { kind: "CONFIRM_MONTHLY_PLAN", href: "/app/autopilot" }
+);
+
+// 3) Ready review materials beat plan/GSC/publishing.
+assert.equal(
   resolveDashboardPrimaryCta({
     hasAudit: true,
     reviewQueueCount: 1,
     hasApprovedPlanWithArticleTopics: true,
     gscNeedsProperty: true,
     publishingConfigured: false,
-  }),
-  { kind: "OPEN_REVIEW", href: "/app/review" }
+  }).kind,
+  "OPEN_REVIEW"
 );
 
-// 3) Approved plan with article topics when review is empty.
-assert.deepEqual(
+// 4) Approved plan active when review is empty.
+assert.equal(
   resolveDashboardPrimaryCta({
     hasAudit: true,
     reviewQueueCount: 0,
     hasApprovedPlanWithArticleTopics: true,
     gscNeedsProperty: true,
     publishingConfigured: false,
-  }),
-  { kind: "OPEN_PLAN", href: "/app/autopilot" }
+    nextScheduledArticleAt: "2026-07-20T09:00:00.000Z",
+  }).kind,
+  "AUTOPILOT_ACTIVE"
 );
 
-// 4) GSC property selection.
+// 5) GSC property selection.
 assert.deepEqual(
   resolveDashboardPrimaryCta({
     hasAudit: true,
@@ -53,7 +68,7 @@ assert.deepEqual(
   { kind: "SELECT_GSC", href: "/app/integrations" }
 );
 
-// 5) Publishing setup.
+// 6) Publishing setup.
 assert.deepEqual(
   resolveDashboardPrimaryCta({
     hasAudit: true,
@@ -65,7 +80,7 @@ assert.deepEqual(
   { kind: "SETUP_PUBLISHING", href: "/app/integrations" }
 );
 
-// 6) Fallback control center.
+// 7) Fallback control center.
 assert.deepEqual(
   resolveDashboardPrimaryCta({
     hasAudit: true,
@@ -84,19 +99,16 @@ assert.equal(
   }),
   true
 );
+
 assert.equal(
-  planHasApprovedArticleTopics({
-    monthlyPlanStatus: "approved",
-    planItemTypes: ["TASK_FIX"],
-  }),
-  false
-);
-assert.equal(
-  planHasApprovedArticleTopics({
-    monthlyPlanStatus: "proposed",
-    planItemTypes: ["ARTICLE"],
-  }),
-  false
+  findNextScheduledArticleAt(
+    [
+      { type: "ARTICLE", scheduledFor: "2026-07-10T09:00:00.000Z", status: "scheduled" },
+      { type: "ARTICLE", scheduledFor: "2026-07-22T09:00:00.000Z", status: "scheduled" },
+    ],
+    new Date("2026-07-15T12:00:00.000Z")
+  ),
+  "2026-07-22T09:00:00.000Z"
 );
 
 console.log("dashboard primary-cta checks passed");

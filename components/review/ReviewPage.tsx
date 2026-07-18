@@ -14,6 +14,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { authFetch, parseApiErrorMessage } from "@/lib/auth/client-session";
 import { useSaasTranslations } from "@/lib/i18n/saas/SaasLocaleProvider";
 import type {
+  ReviewActionNeeded,
   ReviewItemGroup,
   ReviewItemType,
   ReviewQueueData,
@@ -21,7 +22,7 @@ import type {
 } from "@/lib/review-queue/types";
 import { cn } from "@/lib/utils";
 
-type TabKey = ReviewItemGroup;
+type TabKey = ReviewItemGroup | ReviewActionNeeded | "ACTION_ALL";
 
 const statusStyles = {
   AWAITING_REVIEW: "border-violet-200 bg-violet-50 text-violet-800",
@@ -30,6 +31,15 @@ const statusStyles = {
   DRAFT: "border-slate-200 bg-slate-50 text-slate-600",
   READY_TO_PUBLISH: "border-blue-200 bg-blue-50 text-blue-800",
 } as const;
+
+const ACTION_TABS: Array<{ key: TabKey; labelKey: string }> = [
+  { key: "ACTION_ALL", labelKey: "all" },
+  { key: "READY_TO_APPROVE", labelKey: "readyToApprove" },
+  { key: "READY_TO_PUBLISH_HANDOFF", labelKey: "readyToPublishHandoff" },
+  { key: "QUALITY_NEEDS_REPAIR", labelKey: "qualityNeedsRepair" },
+  { key: "WORDPRESS_DRAFT_CREATED", labelKey: "wordpressDraftCreated" },
+  { key: "CUSTOM_PACKAGE_READY", labelKey: "customPackageReady" },
+];
 
 function formatDate(iso: string, locale: string): string {
   return new Date(iso).toLocaleDateString(locale, {
@@ -47,7 +57,7 @@ export function ReviewPage() {
   const [data, setData] = useState<ReviewQueueData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<TabKey>("ALL");
+  const [activeTab, setActiveTab] = useState<TabKey>("ACTION_ALL");
   const [actionLoadingId, setActionLoadingId] = useState<string | null>(null);
   const [actionError, setActionError] = useState<string | null>(null);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -95,36 +105,26 @@ export function ReviewPage() {
     };
   }, [locale, t.loadFailed]);
 
-  const tabs = useMemo(
-    () =>
-      [
-        { key: "ALL" as const, label: t.tabs.all, count: data?.counts.total ?? 0 },
-        { key: "SEO" as const, label: t.tabs.seo, count: data?.counts.seo ?? 0 },
-        {
-          key: "CONTENT" as const,
-          label: t.tabs.content,
-          count: data?.counts.content ?? 0,
-        },
-        {
-          key: "SOCIAL" as const,
-          label: t.tabs.social,
-          count: data?.counts.social ?? 0,
-        },
-        {
-          key: "EMAIL" as const,
-          label: t.tabs.email,
-          count: data?.counts.email ?? 0,
-        },
-      ] satisfies Array<{ key: TabKey; label: string; count: number }>,
-    [data?.counts, t.tabs]
-  );
+    const tabs = useMemo(() => {
+    const items = data?.items ?? [];
+    const labels = t.actionGroups;
+    const countFor = (key: TabKey) => {
+      if (key === "ACTION_ALL") return items.length;
+      return items.filter((item) => item.actionNeeded === key).length;
+    };
+    return ACTION_TABS.map((tab) => ({
+      key: tab.key,
+      label: labels[tab.labelKey as keyof typeof labels] ?? tab.labelKey,
+      count: countFor(tab.key),
+    }));
+  }, [data?.items, t.actionGroups]);
 
   const filteredItems =
     !data?.items.length
       ? []
-      : activeTab === "ALL"
+      : activeTab === "ACTION_ALL"
         ? data.items
-        : data.items.filter((item) => item.group === activeTab);
+        : data.items.filter((item) => item.actionNeeded === activeTab);
 
   async function applyAction(
     item: ReviewQueueItem,
@@ -383,6 +383,25 @@ export function ReviewPage() {
                         {item.articleContext.linkedAutopilotPlanItem ? (
                           <span className="rounded-full border border-violet-200 bg-violet-50 px-2 py-0.5 font-medium text-violet-700">
                             {t.autopilotLinkedLabel}
+                          </span>
+                        ) : null}
+                        {item.articleContext.publishPath === "wordpress_draft" ||
+                        item.articleContext.wordpressDraftCreated ? (
+                          <span className="rounded-full border border-sky-200 bg-sky-50 px-2 py-0.5 font-medium text-sky-800">
+                            WordPress draft
+                          </span>
+                        ) : item.articleContext.publishPath === "webhook" ? (
+                          <span className="rounded-full border border-cyan-200 bg-cyan-50 px-2 py-0.5 font-medium text-cyan-800">
+                            Webhook ready
+                          </span>
+                        ) : item.articleContext.publishPath === "universal_package" ? (
+                          <span className="rounded-full border border-indigo-200 bg-indigo-50 px-2 py-0.5 font-medium text-indigo-800">
+                            Universal package
+                          </span>
+                        ) : null}
+                        {item.articleContext.plannedDate ? (
+                          <span className="text-slate-500">
+                            {formatDate(item.articleContext.plannedDate, locale)}
                           </span>
                         ) : null}
                       </div>

@@ -126,12 +126,19 @@ export function buildSimpleDashboardViewModel(input: {
   const primaryDecision = resolveDashboardPrimaryCta({
     hasAudit,
     reviewQueueCount: input.reviewQueueCount ?? 0,
+    readyToPublishCount: control.monthlyPlan?.readyToPublishCount ?? 0,
+    hasPendingPlanApproval: Boolean(
+      control.monthlyPlan &&
+        control.monthlyPlan.status !== "approved" &&
+        control.monthlyPlan.hasArticleTopics
+    ),
     hasApprovedPlanWithArticleTopics: planHasApprovedArticleTopics({
       monthlyPlanStatus: control.monthlyPlan?.status,
       planItemTypes: control.monthlyPlan?.hasArticleTopics
         ? ["ARTICLE"]
         : [],
     }),
+    nextScheduledArticleAt: control.monthlyPlan?.nextScheduledArticleAt ?? null,
     gscNeedsProperty,
     publishingConfigured,
   });

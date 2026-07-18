@@ -6,12 +6,14 @@ import {
   MonthlyAutopilotStatus,
   type Prisma,
   WordPressConnectionStatus,
+  AutopilotMode,
 } from "@prisma/client";
 
 import { getPrisma } from "@/lib/db";
 import { AppError, ErrorCode } from "@/lib/errors";
 
 import { analyzeResearchBriefReadiness } from "@/lib/content-research/readiness";
+import { resolvePublishingPath } from "./article-pipeline";
 import { timelineAfterMonthlyAutopilotPlanApproved } from "./hooks";
 import {
   enrichPlanItemsFromEntities,
@@ -23,6 +25,8 @@ import type { AutopilotPlanPeriod } from "./plan-item-types";
 import { findAutopilotPlanForUser } from "./resolve-website";
 import { assignEveryOtherDaySlots } from "./scheduling";
 import { formatMonthlyAutopilotPlan } from "./format";
+import { getCustomPublishingConfig } from "@/lib/publishing/custom-webhook-config";
+import { updateAutopilotSettings } from "./autopilot-settings";
 
 export async function approveSelectedPlanItems(input: {
   planId: string;
@@ -43,7 +47,7 @@ export async function approveSelectedPlanItems(input: {
 
   const prisma = getPrisma();
 
-  const [gscIntegration, wpConnection, tasks] = await Promise.all([
+  const [gscIntegration, wpConnection, tasks, customPublishing] = await Promise.all([
     prisma.integration.findFirst({
       where: {
         websiteId: existing.websiteId,
@@ -60,11 +64,19 @@ export async function approveSelectedPlanItems(input: {
       select: { id: true, recommendationJson: true, status: true },
       take: 50,
     }),
+    getCustomPublishingConfig(existing.websiteId),
   ]);
 
   const wordpressConnected =
     wpConnection?.status === WordPressConnectionStatus.CONNECTED;
   const gscConnected = gscIntegration?.status === IntegrationStatus.CONNECTED;
+  const webhookConfiguredAndTested = Boolean(
+    customPublishing?.testedAt && customPublishing.endpointConfigured
+  );
+  const publishingPath = resolvePublishingPath({
+    wordpressConnected,
+    webhookConfiguredAndTested,
+  });
 
   let document = resolvePlanItemsDocumentFromPlan({
     planItemsJson: existing.planItemsJson,
@@ -98,11 +110,10 @@ export async function approveSelectedPlanItems(input: {
 
     let status: typeof item.status = "approved";
     let blockedReasonKey = item.blockedReasonKey;
+    let pipelineState = item.pipelineState;
 
-    if (item.type === "ARTICLE" && !wordpressConnected) {
-      status = "blocked";
-      blockedReasonKey = "wordpressNotConnected";
-    } else if (item.needsIntegration && item.integrationType === "gsc" && !gscConnected) {
+    // Custom sites no longer block article topics — universal package / webhook handoff.
+    if (item.needsIntegration && item.integrationType === "gsc" && !gscConnected) {
       status = "blocked";
       blockedReasonKey = "gscNotConnected";
     } else if (item.type === "ARTICLE" && item.researchBrief) {
@@ -114,7 +125,12 @@ export async function approveSelectedPlanItems(input: {
           readiness.reasonKey === "unsafeRecommendedTitle"
             ? "unsafeArticleTopic"
             : "researchBriefBlocked";
+        pipelineState = "FAILED";
       }
+    }
+
+    if (item.type === "ARTICLE" && status !== "blocked") {
+      pipelineState = "APPROVED_TOPIC";
     }
 
     return {
@@ -122,6 +138,16 @@ export async function approveSelectedPlanItems(input: {
       status,
       blockedReasonKey,
       selected: undefined,
+      pipelineState,
+      publishingPath: item.type === "ARTICLE" ? publishingPath : item.publishingPath,
+      integrationType:
+        item.type === "ARTICLE"
+          ? publishingPath === "wordpress_draft"
+            ? "wordpress"
+            : "manual"
+          : item.integrationType,
+      needsIntegration:
+        item.type === "ARTICLE" ? publishingPath === "wordpress_draft" : item.needsIntegration,
     };
   });
 
@@ -158,6 +184,18 @@ export async function approveSelectedPlanItems(input: {
       approvedAt: existing.approvedAt ?? new Date(),
     },
   });
+
+  // Approving the monthly plan enables approved-plan automation (not live autopublish).
+  try {
+    await updateAutopilotSettings({
+      userId: input.userId,
+      organizationId: existing.organizationId,
+      websiteId: existing.websiteId,
+      mode: AutopilotMode.APPROVED_PLAN_AUTOPILOT,
+    });
+  } catch {
+    // Mode update must not block approval.
+  }
 
   if (wasApproved) {
     try {

@@ -50,6 +50,14 @@ export const serverStringsEt: SaasServerStrings = {
       openControlTitle: "Ava juhtimiskeskus",
       openControlDesc:
         "Vaadake plaani olekut, ülesandeid ja järgmisi samme ühes kohas.",
+      confirmPlanTitle: "Kinnita kuu plaan",
+      confirmPlanDesc:
+        "RankBoost valmistab artiklid ajakava järgi pärast teie kinnitust.",
+      autopilotActiveTitle: "Kuu autopiloot on aktiivne",
+      autopilotActiveDesc:
+        "RankBoost valmistab artikleid ajakava järgi. Midagi ei lähe live ilma turvalise teeta.",
+      nextArticlePrepared: (date) => `Järgmine artikkel valmistatakse: ${date}`,
+      readyToPublishCount: (count) => `Valmis avaldamiseks: ${count}`,
     },
     actionLabels: {
       openGrowthPlan: "Ava kasvuplaan",
@@ -67,6 +75,8 @@ export const serverStringsEt: SaasServerStrings = {
       setupPublishing: "Seadista avaldamine",
       openControl: "Ava juhtimiskeskus",
       checkSiteNow: "Kontrolli saiti kohe",
+      confirmPlan: "Kinnita plaan",
+      viewAutopilot: "Ava autopiloot",
     },
     findings: {
       seoTasksWaiting: (count) =>

@@ -227,14 +227,16 @@ function runExecutionEligibilityChecks(): void {
       wordpressPostId: null,
     },
   });
-  assert.equal(waitingReview.eligible, false);
-  assert.equal(waitingReview.reasonKey, "waitingForReviewApproval");
+  assert.equal(waitingReview.eligible, true);
+  assert.equal(waitingReview.action, "PREPARE_PUBLISHING_HANDOFF");
 
   const publish = resolvePlanItemExecutionEligibility({
     item: baseArticleItem({
       status: "prepared",
       generatedArticleId: "article-1",
       articleQualityPassed: true,
+      pipelineState: "UNIVERSAL_PACKAGE_READY",
+      universalPackagePreparedAt: "2026-07-11T12:00:00.000Z",
     }),
     now,
     autopilotMode: AutopilotMode.APPROVED_PLAN_AUTOPILOT,
@@ -250,8 +252,8 @@ function runExecutionEligibilityChecks(): void {
       wordpressPostId: null,
     },
   });
-  assert.equal(publish.eligible, true);
-  assert.equal(publish.action, "PUBLISH_APPROVED_ARTICLE");
+  // Handoff already complete → NOOP / executed
+  assert.equal(publish.action, "NOOP_INTERNAL");
 
   const blockedWp = resolvePlanItemExecutionEligibility({
     item: baseArticleItem({
@@ -266,15 +268,25 @@ function runExecutionEligibilityChecks(): void {
     organizationId,
     article: {
       id: "article-1",
-      status: ArticleStatus.APPROVED,
+      status: ArticleStatus.WAITING_REVIEW,
       qualityPassed: true,
       websiteId,
       organizationId,
       wordpressPostId: null,
     },
   });
-  assert.equal(blockedWp.action, "BLOCKED");
-  assert.equal(blockedWp.reasonKey, "wordpressNotConnected");
+  assert.equal(blockedWp.action, "PREPARE_PUBLISHING_HANDOFF");
+  assert.equal(blockedWp.summaryKey, "wouldPrepareUniversalPackage");
+
+  const missingResearch = resolvePlanItemExecutionEligibility({
+    item: baseArticleItem({ researchBrief: undefined }),
+    now,
+    autopilotMode: AutopilotMode.APPROVED_PLAN_AUTOPILOT,
+    wordpressConnected: false,
+    websiteId,
+    organizationId,
+  });
+  assert.equal(missingResearch.action, "PREPARE_RESEARCH_BRIEF");
 
   const dueItems = findDuePlanItems(
     [
@@ -323,11 +335,11 @@ function runExecutionEligibilityChecks(): void {
   // A real preparable draft would run.
   assert.equal(classifyDryRunOutcome(prepare), "wouldRun");
 
-  // A publishable article would run.
-  assert.equal(classifyDryRunOutcome(publish), "wouldRun");
+  // A publishable article with incomplete handoff would run handoff.
+  assert.equal(classifyDryRunOutcome(waitingReview), "wouldRun");
 
-  // WordPress-blocked publish is blocked, not run.
-  assert.equal(classifyDryRunOutcome(blockedWp), "blocked");
+  // Custom site without WP prepares universal package — would run, not blocked.
+  assert.equal(classifyDryRunOutcome(blockedWp), "wouldRun");
 
   // Already-created WordPress draft is a real state transition → wouldRun.
   const alreadyDraft = resolvePlanItemExecutionEligibility({
@@ -335,6 +347,8 @@ function runExecutionEligibilityChecks(): void {
       status: "prepared",
       generatedArticleId: "article-wp",
       articleQualityPassed: true,
+      pipelineState: "WORDPRESS_DRAFT_CREATED",
+      wordpressDraftCreatedAt: "2026-07-11T12:00:00.000Z",
     }),
     now,
     autopilotMode: AutopilotMode.APPROVED_PLAN_AUTOPILOT,

@@ -6,6 +6,9 @@ import { getPrisma } from "@/lib/db";
 import { getServerEnv } from "@/lib/env";
 import { AppError, ErrorCode } from "@/lib/errors";
 
+/** Cap websites processed per cron invocation to avoid runaway Hermes cost. */
+const MAX_PLANS_PER_CRON = 25;
+
 function assertDatabaseConfigured(): void {
   if (!getServerEnv().DATABASE_URL) {
     throw new AppError(
@@ -13,6 +16,35 @@ function assertDatabaseConfigured(): void {
       "Database is not configured.",
       { statusCode: 503 }
     );
+  }
+}
+
+function summarizeAction(action: string, summaryKey?: string): string {
+  const key = summaryKey ?? action;
+  switch (key) {
+    case "wouldResearch":
+    case "readyForResearch":
+      return "would_research";
+    case "wouldGenerateDraft":
+    case "draftWillBePrepared":
+    case "readyForDraftPreparation":
+      return "would_generate_draft";
+    case "wouldCreateWordPressDraft":
+    case "wordpressDraftCreated":
+      return "would_create_wp_draft";
+    case "wouldPrepareUniversalPackage":
+    case "universalPackageReady":
+      return "would_prepare_universal_package";
+    case "wouldPrepareWebhookReady":
+    case "webhookReady":
+      return "would_prepare_webhook";
+    case "wouldSendWebhook":
+    case "webhookSent":
+      return "would_send_webhook_if_enabled";
+    case "qualityFailed":
+      return "would_skip_quality_failed";
+    default:
+      return key;
   }
 }
 
@@ -38,6 +70,7 @@ export async function GET(request: Request) {
         organizationId: true,
       },
       orderBy: { month: "desc" },
+      take: MAX_PLANS_PER_CRON,
     });
 
     const reports = [];
@@ -61,12 +94,14 @@ export async function GET(request: Request) {
         errorCount: report.errorCount,
         results: report.results.map((result) => ({
           planItemId: result.planItemId,
-          itemTitle: result.itemTitle,
+          // Title only — never article body / webhook URL / secrets.
+          itemTitle: result.itemTitle.slice(0, 120),
           action: result.action,
           reasonKey: result.reasonKey,
+          would: summarizeAction(result.action, result.summaryKey ?? result.would),
           eligible: result.eligible,
           executed: result.executed,
-          error: result.error,
+          error: result.error ? "execution_error" : undefined,
         })),
       });
     }
@@ -74,6 +109,7 @@ export async function GET(request: Request) {
     return Response.json({
       data: {
         plansProcessed: plans.length,
+        maxPlansPerRun: MAX_PLANS_PER_CRON,
         dryRun,
         reports,
       },

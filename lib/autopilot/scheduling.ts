@@ -1,3 +1,4 @@
+import { assignPipelineScheduleDates } from "./article-pipeline";
 import type { AutopilotPlanItem } from "./plan-item-types";
 
 const DEFAULT_TIMEZONE = "UTC";
@@ -97,6 +98,13 @@ export function assignEveryOtherDaySlots(input: {
 
     const scheduledFor = cursor.toISOString();
     cursor = addDaysUtc(cursor, SLOT_INTERVAL_DAYS);
+    const pipelineDates = assignPipelineScheduleDates(item, scheduledFor);
+    const pipelineState =
+      item.type === "ARTICLE"
+        ? item.researchBrief
+          ? ("SCHEDULED_FOR_DRAFT" as const)
+          : ("SCHEDULED_FOR_RESEARCH" as const)
+        : item.pipelineState;
 
     return {
       ...item,
@@ -104,6 +112,14 @@ export function assignEveryOtherDaySlots(input: {
       estimatedActionDate: scheduledFor,
       status: item.status === "blocked" ? "blocked" : "scheduled",
       selected: undefined,
+      pipelineState,
+      ...pipelineDates,
+      nextAutomatedStep:
+        item.type === "ARTICLE"
+          ? item.researchBrief
+            ? "generate_draft"
+            : "prepare_research"
+          : item.nextAutomatedStep,
     };
   });
 }

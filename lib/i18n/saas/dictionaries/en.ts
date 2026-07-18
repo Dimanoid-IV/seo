@@ -1083,6 +1083,14 @@ export const saasDictionary: SaasDictionary = {
     qualityOutOf: (score) => `Quality ${score}/100`,
     publishManually: "Publish manually",
     downloadForSite: "Download / copy for your site",
+    actionGroups: {
+      all: "All",
+      readyToApprove: "Ready to approve",
+      readyToPublishHandoff: "Ready to publish handoff",
+      qualityNeedsRepair: "Quality needs repair",
+      wordpressDraftCreated: "WordPress draft created",
+      customPackageReady: "Custom package ready",
+    },
   },
   socialPosts: {
     title: "Social Posts",

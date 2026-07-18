@@ -10,9 +10,15 @@ import {
 import { getPrisma } from "@/lib/db";
 import { AppError, ErrorCode } from "@/lib/errors";
 import { createWordPressDraftForArticle } from "@/lib/integrations/wordpress-drafts";
+import { refreshAutopilotPlanItemResearchBrief } from "@/lib/content-research/refresh-plan-item-brief";
+import { briefToJson } from "@/lib/content-research/parse";
+import { preparePublishingHandoff } from "@/lib/publishing/prepare-publishing-handoff";
+import { getCustomPublishingConfig } from "@/lib/publishing/custom-webhook-config";
 
 import {
   classifyDryRunOutcome,
+  consumeBudgetForAction,
+  createDefaultRunBudget,
   findDuePlanItems,
   resolvePlanItemExecutionEligibility,
   type ExecutionActionType,
@@ -43,6 +49,7 @@ export type PlanItemRunResult = {
   dryRun: boolean;
   error?: string;
   nextStatus?: AutopilotPlanItem["status"];
+  would?: string;
 };
 
 export type RunScheduledAutopilotReport = {
@@ -126,7 +133,7 @@ export async function runScheduledAutopilotPlans(input: {
     return report;
   }
 
-  const [plans, wpConnection] = await Promise.all([
+  const [plans, wpConnection, customPublishing] = await Promise.all([
     prisma.monthlyAutopilotPlan.findMany({
       where: {
         userId: input.userId,
@@ -141,12 +148,17 @@ export async function runScheduledAutopilotPlans(input: {
       where: { websiteId: website.id },
       select: { status: true },
     }),
+    getCustomPublishingConfig(website.id),
   ]);
 
   const wordpressConnected =
     wpConnection?.status === WordPressConnectionStatus.CONNECTED;
+  const webhookConfiguredAndTested = Boolean(
+    customPublishing?.testedAt && customPublishing.endpointConfigured
+  );
 
   report.plansScanned = plans.length;
+  const budget = createDefaultRunBudget();
 
   for (const plan of plans) {
     let document = resolvePlanItemsDocumentFromPlan(plan);
@@ -226,6 +238,7 @@ export async function runScheduledAutopilotPlans(input: {
           websiteId: plan.websiteId,
           organizationId: plan.organizationId,
           article,
+          webhookConfiguredAndTested,
         });
 
         itemResult.action = eligibility.action;
@@ -233,6 +246,7 @@ export async function runScheduledAutopilotPlans(input: {
         itemResult.summaryKey = eligibility.summaryKey;
         itemResult.eligible = eligibility.eligible;
         itemResult.nextStatus = eligibility.suggestedStatus;
+        itemResult.would = eligibility.summaryKey;
 
         if (!eligibility.eligible) {
           if (eligibility.action === "BLOCKED" && eligibility.persistBlocked) {
@@ -241,6 +255,7 @@ export async function runScheduledAutopilotPlans(input: {
               items = applyPlanItemUpdate(items, currentItem.id, {
                 status: "blocked",
                 blockedReasonKey: eligibility.reasonKey,
+                pipelineState: "FAILED",
               });
               planDirty = true;
             }
@@ -252,10 +267,17 @@ export async function runScheduledAutopilotPlans(input: {
           continue;
         }
 
+        if (!consumeBudgetForAction(budget, eligibility.action)) {
+          itemResult.eligible = false;
+          itemResult.action = "SKIP";
+          itemResult.reasonKey = "runBudgetExhausted";
+          itemResult.summaryKey = "runBudgetExhausted";
+          report.skippedCount += 1;
+          report.results.push(itemResult);
+          continue;
+        }
+
         if (dryRun) {
-          // Mirror the real-run classification so preview counts stay honest:
-          // no-op internal items (non-article TASK_FIX/SEO_FIX) do nothing and
-          // must be reported as skipped rather than "will run".
           const outcome = classifyDryRunOutcome(eligibility);
           itemResult.executed = false;
           if (outcome === "wouldRun") {
@@ -269,7 +291,43 @@ export async function runScheduledAutopilotPlans(input: {
           continue;
         }
 
-        if (eligibility.action === "PREPARE_ARTICLE_DRAFT") {
+        if (eligibility.action === "PREPARE_RESEARCH_BRIEF") {
+          const refreshed = await refreshAutopilotPlanItemResearchBrief({
+            planId: plan.id,
+            itemId: currentItem.id,
+            userId: input.userId,
+            organizationId: organization.id,
+          });
+
+          items = applyPlanItemUpdate(items, currentItem.id, {
+            researchBrief: briefToJson(refreshed.brief) as Record<string, unknown>,
+            pipelineState: refreshed.ready ? "RESEARCH_READY" : "FAILED",
+            nextAutomatedStep: refreshed.ready ? "generate_draft" : "none",
+            blockedReasonKey: refreshed.blockedReasonKey,
+            status: refreshed.blockedReasonKey ? "blocked" : "scheduled",
+          });
+          planDirty = true;
+          itemResult.executed = true;
+          itemResult.nextStatus = refreshed.blockedReasonKey ? "blocked" : "scheduled";
+          report.executedCount += 1;
+
+          try {
+            await timelineAfterAutopilotPlanItemExecuted({
+              userId: input.userId,
+              websiteId: plan.websiteId,
+              planId: plan.id,
+              planItemId: currentItem.id,
+              action: "PREPARE_RESEARCH_BRIEF",
+              itemTitle: currentItem.title,
+            });
+          } catch {
+            // Timeline must not block execution.
+          }
+        } else if (eligibility.action === "PREPARE_ARTICLE_DRAFT") {
+          items = applyPlanItemUpdate(items, currentItem.id, {
+            pipelineState: "DRAFT_GENERATING",
+          });
+
           const draftResult = await generatePlanItemArticleDraft({
             planId: plan.id,
             planItemId: currentItem.id,
@@ -277,15 +335,20 @@ export async function runScheduledAutopilotPlans(input: {
             organizationId: organization.id,
           });
 
+          const qualityPassed = draftResult.planItem.articleQualityPassed;
           items = applyPlanItemUpdate(items, currentItem.id, {
             status: "prepared",
             generatedArticleId: draftResult.planItem.generatedArticleId,
             articleQualityScore: draftResult.planItem.articleQualityScore,
-            articleQualityPassed: draftResult.planItem.articleQualityPassed,
+            articleQualityPassed: qualityPassed,
             reviewQueueHref: draftResult.planItem.reviewQueueHref,
-            blockedReasonKey: draftResult.planItem.articleQualityPassed
-              ? undefined
-              : "articleNeedsRevision",
+            blockedReasonKey: qualityPassed ? undefined : "articleNeedsRevision",
+            pipelineState: qualityPassed
+              ? "DRAFT_READY_FOR_REVIEW"
+              : "QUALITY_FAILED_NEEDS_REPAIR",
+            nextAutomatedStep: qualityPassed
+              ? "prepare_publishing_handoff"
+              : "repair_quality",
             sourceRef: {
               type: "article",
               id: draftResult.planItem.generatedArticleId,
@@ -308,6 +371,71 @@ export async function runScheduledAutopilotPlans(input: {
           } catch {
             // Timeline must not block execution.
           }
+
+          // Same-run handoff when quality passed and budget allows.
+          const afterDraft = items.find((i) => i.id === currentItem.id)!;
+          if (
+            qualityPassed &&
+            settings.mode === AutopilotMode.APPROVED_PLAN_AUTOPILOT &&
+            consumeBudgetForAction(budget, "PREPARE_PUBLISHING_HANDOFF")
+          ) {
+            const handoff = await preparePublishingHandoff({
+              articleId: draftResult.planItem.generatedArticleId,
+              userId: input.userId,
+              websiteId: plan.websiteId,
+              organizationId: plan.organizationId,
+              autopilotMode: settings.mode,
+              wordpressConnected,
+              currentItem: afterDraft,
+            });
+            items = applyPlanItemUpdate(items, currentItem.id, handoff.patch);
+            report.results.push({
+              ...itemResult,
+              action: "PREPARE_PUBLISHING_HANDOFF",
+              reasonKey: "readyForPublishingHandoff",
+              summaryKey: handoff.summaryKey,
+              would: handoff.summaryKey,
+              nextStatus: handoff.patch.status,
+            });
+            continue;
+          }
+        } else if (eligibility.action === "PREPARE_PUBLISHING_HANDOFF") {
+          if (!currentItem.generatedArticleId) {
+            throw new AppError(
+              ErrorCode.VALIDATION_ERROR,
+              "Generated article missing for publishing handoff."
+            );
+          }
+
+          const handoff = await preparePublishingHandoff({
+            articleId: currentItem.generatedArticleId,
+            userId: input.userId,
+            websiteId: plan.websiteId,
+            organizationId: plan.organizationId,
+            autopilotMode: settings.mode,
+            wordpressConnected,
+            currentItem,
+          });
+
+          items = applyPlanItemUpdate(items, currentItem.id, handoff.patch);
+          planDirty = true;
+          itemResult.executed = true;
+          itemResult.nextStatus = handoff.patch.status;
+          itemResult.summaryKey = handoff.summaryKey;
+          report.executedCount += 1;
+
+          try {
+            await timelineAfterAutopilotPlanItemExecuted({
+              userId: input.userId,
+              websiteId: plan.websiteId,
+              planId: plan.id,
+              planItemId: currentItem.id,
+              action: "PREPARE_PUBLISHING_HANDOFF",
+              itemTitle: currentItem.title,
+            });
+          } catch {
+            // Timeline must not block execution.
+          }
         } else if (eligibility.action === "PUBLISH_APPROVED_ARTICLE") {
           if (!currentItem.generatedArticleId) {
             throw new AppError(
@@ -324,6 +452,10 @@ export async function runScheduledAutopilotPlans(input: {
           items = applyPlanItemUpdate(items, currentItem.id, {
             status: "executed",
             blockedReasonKey: undefined,
+            pipelineState: "WORDPRESS_DRAFT_CREATED",
+            publishingPath: "wordpress_draft",
+            wordpressDraftCreatedAt: new Date().toISOString(),
+            nextAutomatedStep: "review_wordpress_draft",
           });
           planDirty = true;
           itemResult.executed = true;
@@ -377,11 +509,12 @@ export async function runScheduledAutopilotPlans(input: {
                 userId: input.userId,
                 type: ActivityType.SYSTEM_NOTICE,
                 title: "Autopilot plan item run failed",
-                description: `Could not execute "${dueItem.title}".`,
+                description: `Could not execute plan item.`,
                 metadataJson: {
                   planId: plan.id,
                   planItemId: dueItem.id,
-                  error: itemResult.error,
+                  action: itemResult.action,
+                  // Never log secrets / webhook URLs / article body.
                 },
               },
             });
