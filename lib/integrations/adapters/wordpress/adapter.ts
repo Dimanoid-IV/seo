@@ -1,7 +1,7 @@
 /**
- * WordPress integration adapter (Prompt 11.51).
- * Capabilities: ARTICLE_CREATE_DRAFT, ARTICLE_PUBLISH.
- * Does not implement UPDATE / META / IMAGE / ROLLBACK yet.
+ * WordPress integration adapter (Prompt 11.51 / 11.53).
+ * Capabilities: ARTICLE_CREATE_DRAFT, ARTICLE_PUBLISH, ARTICLE_ROLLBACK.
+ * Does not implement UPDATE / META / IMAGE.
  */
 
 import { IntegrationCapability } from "../capabilities";
@@ -19,6 +19,7 @@ import { createWordPressRestPublishedPost } from "./publish-article";
 export const WORDPRESS_ADAPTER_CAPABILITIES = [
   IntegrationCapability.CREATE_WORDPRESS_DRAFT,
   IntegrationCapability.PUBLISH_WORDPRESS_ARTICLE,
+  IntegrationCapability.ROLLBACK_WORDPRESS_ARTICLE,
   IntegrationCapability.TEST_CONNECTION,
 ] as const;
 
@@ -155,4 +156,5 @@ export function createWordPressAdapter(
 export const wordpressAdapterCapabilities = {
   ARTICLE_CREATE_DRAFT: IntegrationCapability.CREATE_WORDPRESS_DRAFT,
   ARTICLE_PUBLISH: IntegrationCapability.PUBLISH_WORDPRESS_ARTICLE,
+  ARTICLE_ROLLBACK: IntegrationCapability.ROLLBACK_WORDPRESS_ARTICLE,
 } as const;

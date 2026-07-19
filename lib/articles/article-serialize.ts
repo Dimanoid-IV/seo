@@ -22,12 +22,15 @@ type ArticleRecord = {
   schemaJson: unknown;
   wordpressPostId: string | null;
   wordpressEditUrl: string | null;
+  wordpressPublishedUrl?: string | null;
+  wordpressRolledBackAt?: Date | null;
   generatedByAIJobId?: string | null;
   qualityScore?: number | null;
   qualityPassed?: boolean | null;
   qualityIssuesJson?: unknown;
   qualityRepairAttempts?: number;
   approvedAt: Date | null;
+  publishedAt?: Date | null;
   createdAt: Date;
   updatedAt: Date;
 };
@@ -53,6 +56,9 @@ export function serializeArticleRecord(
     schemaJson: article.schemaJson as SerializedArticle["schemaJson"],
     wordpressPostId: article.wordpressPostId,
     wordpressEditUrl: article.wordpressEditUrl,
+    wordpressPublishedUrl: article.wordpressPublishedUrl ?? null,
+    wordpressRolledBackAt:
+      article.wordpressRolledBackAt?.toISOString() ?? null,
     generatedByAIJobId: article.generatedByAIJobId ?? null,
     qualityScore: article.qualityScore ?? null,
     qualityPassed: article.qualityPassed ?? null,
@@ -62,6 +68,7 @@ export function serializeArticleRecord(
     qualityRepairAttempts: article.qualityRepairAttempts ?? 0,
     wordpressConnected,
     approvedAt: article.approvedAt?.toISOString() ?? null,
+    publishedAt: article.publishedAt?.toISOString() ?? null,
     createdAt: article.createdAt.toISOString(),
     updatedAt: article.updatedAt.toISOString(),
   };

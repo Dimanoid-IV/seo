@@ -931,6 +931,14 @@ export const saasDictionary: SaasDictionary = {
       empty: "Пока нет заданий выполнения.",
       loadFailed: "Не удалось загрузить историю заданий",
       loadNetworkError: "Сетевая ошибка при загрузке истории заданий",
+      retry: "Повторить",
+      rollback: "Вернуть в черновик",
+      retryDisabled: "Повтор недоступен",
+      rollbackDisabled: "Откат недоступен",
+      actionFailed: "Не удалось выполнить действие.",
+      actionNetworkError: "Сетевая ошибка при выполнении действия.",
+      retrySuccess: "Повтор завершён.",
+      rollbackSuccess: "Запись WordPress переведена в черновик.",
     },
   },
   reports: {
@@ -1565,7 +1573,16 @@ export const saasDictionary: SaasDictionary = {
       noLivePublishScheduled: "Live-публикация не запланирована",
       killSwitchPausedNote:
         "Live publish приостановлен защитным kill switch до включения в этой среде.",
-      pauseAutopilotCta: "Приостановить автопилот",
+      pauseAutopilotCta: "Приостановить live publish",
+      resumeAutopilotCta: "Возобновить live publish",
+      pauseLivePublishOnlyNote:
+        "Пауза останавливает только live-публикацию. Исследование, черновики и проверка продолжают работать.",
+      livePublishPausedBanner:
+        "Live publish на паузе для этого сайта. Запланированные пункты остаются заблокированными, пока вы не возобновите.",
+      pauseFailed: "Не удалось приостановить live publish.",
+      pauseNetworkError: "Сетевая ошибка при паузе live publish.",
+      resumeFailed: "Не удалось возобновить live publish.",
+      resumeNetworkError: "Сетевая ошибка при возобновлении live publish.",
     },
     planApproval: {
       title: "Одобрение плана",

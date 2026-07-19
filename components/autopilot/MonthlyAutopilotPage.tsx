@@ -293,14 +293,31 @@ export function MonthlyAutopilotPage() {
           {data.autopilotStatus && data.autopilotSettings ? (
             <AutopilotStatusBlock
               status={data.autopilotStatus}
-              settingsMode={data.autopilotSettings.mode}
+              settingsMode={
+                (
+                  {
+                    OFF: "off",
+                    REVIEW_FIRST: "review_first",
+                    APPROVED_PLAN_AUTOPILOT: "approved_plan_autopilot",
+                    AUTOPUBLISH: "autopublish",
+                    off: "off",
+                    review_first: "review_first",
+                    approved_plan_autopilot: "approved_plan_autopilot",
+                    autopublish: "autopublish",
+                  } as Record<string, string>
+                )[String(data.autopilotSettings.mode)] ?? "review_first"
+              }
               autopublishAvailable={data.autopilotSettings.autopublishAvailable}
               websiteId={data.websiteId}
               planItems={data.planItems}
               planPublishingMode={data.plan.publishingMode}
               livePublishKillSwitchEngaged
+              livePublishPaused={Boolean(
+                data.autopilotSettings.livePublishPaused
+              )}
               onModeChange={() => void loadPlan(month)}
               onRunDue={() => void loadPlan(month)}
+              onPauseChange={() => void loadPlan(month)}
             />
           ) : null}
 

@@ -931,6 +931,14 @@ export const saasDictionary: SaasDictionary = {
       empty: "No execution jobs yet.",
       loadFailed: "Could not load execution history",
       loadNetworkError: "Network error while loading execution history",
+      retry: "Retry",
+      rollback: "Move back to draft",
+      retryDisabled: "Retry unavailable",
+      rollbackDisabled: "Rollback unavailable",
+      actionFailed: "Could not run this action.",
+      actionNetworkError: "Network error while running this action.",
+      retrySuccess: "Retry finished.",
+      rollbackSuccess: "WordPress post moved to draft.",
     },
   },
   reports: {
@@ -1562,7 +1570,16 @@ export const saasDictionary: SaasDictionary = {
       noLivePublishScheduled: "No live publish scheduled",
       killSwitchPausedNote:
         "Live publish is paused by the safety kill switch until enabled for this environment.",
-      pauseAutopilotCta: "Pause autopilot",
+      pauseAutopilotCta: "Pause live publish",
+      resumeAutopilotCta: "Resume live publish",
+      pauseLivePublishOnlyNote:
+        "Pause stops live publishing only. Research, drafts, and review keep working.",
+      livePublishPausedBanner:
+        "Live publish is paused for this website. Scheduled items stay blocked until you resume.",
+      pauseFailed: "Could not pause live publish.",
+      pauseNetworkError: "Network error while pausing live publish.",
+      resumeFailed: "Could not resume live publish.",
+      resumeNetworkError: "Network error while resuming live publish.",
     },
     planApproval: {
       title: "Plan approval",

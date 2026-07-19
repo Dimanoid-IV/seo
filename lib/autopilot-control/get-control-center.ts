@@ -605,6 +605,9 @@ export async function getAutopilotControlCenter(input: {
       mode: autopilotModeToClient(autopilotSettings.mode),
       websiteId: autopilotSettings.websiteId,
       autopublishAvailable: autopilotSettings.autopublishAvailable,
+      livePublishPaused: autopilotSettings.livePublishPaused,
+      livePublishPausedAt: autopilotSettings.livePublishPausedAt,
+      livePublishPauseReason: autopilotSettings.livePublishPauseReason,
     },
   };
 }

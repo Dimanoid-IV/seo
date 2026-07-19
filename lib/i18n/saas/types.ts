@@ -744,6 +744,14 @@ export type SaasDictionary = {
       empty: string;
       loadFailed: string;
       loadNetworkError: string;
+      retry: string;
+      rollback: string;
+      retryDisabled: string;
+      rollbackDisabled: string;
+      actionFailed: string;
+      actionNetworkError: string;
+      retrySuccess: string;
+      rollbackSuccess: string;
     };
   };
   reports: {
@@ -1295,6 +1303,13 @@ export type SaasDictionary = {
       noLivePublishScheduled: string;
       killSwitchPausedNote: string;
       pauseAutopilotCta: string;
+      resumeAutopilotCta: string;
+      pauseLivePublishOnlyNote: string;
+      livePublishPausedBanner: string;
+      pauseFailed: string;
+      pauseNetworkError: string;
+      resumeFailed: string;
+      resumeNetworkError: string;
     };
     planApproval: {
       title: string;

@@ -27,8 +27,10 @@ type AutopilotStatusBlockProps = {
   planItems?: AutopilotPlanItemsDocument | null;
   planPublishingMode?: "REVIEW_ONLY" | "AUTO_PUBLISH" | string | null;
   livePublishKillSwitchEngaged?: boolean;
+  livePublishPaused?: boolean;
   onModeChange?: (mode: string) => void;
   onRunDue?: () => void;
+  onPauseChange?: () => void;
   compact?: boolean;
 };
 
@@ -56,8 +58,10 @@ export function AutopilotStatusBlock({
   planItems,
   planPublishingMode = null,
   livePublishKillSwitchEngaged = true,
+  livePublishPaused = false,
   onModeChange,
   onRunDue,
+  onPauseChange,
   compact = false,
 }: AutopilotStatusBlockProps) {
   const { dict, locale } = useSaasTranslations();
@@ -65,9 +69,12 @@ export function AutopilotStatusBlock({
   const [optimisticMode, setOptimisticMode] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const [runningDue, setRunningDue] = useState(false);
+  const [pausing, setPausing] = useState(false);
+  const [pausedOverride, setPausedOverride] = useState<boolean | null>(null);
   const [runMessage, setRunMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const mode = optimisticMode ?? settingsMode;
+  const paused = pausedOverride ?? livePublishPaused;
 
   const dueCount = useMemo(
     () => (planItems?.items ? findDuePlanItems(planItems.items).length : 0),
@@ -130,6 +137,38 @@ export function AutopilotStatusBlock({
       setError(t.modeChangeNetworkError);
     } finally {
       setSaving(false);
+    }
+  }
+
+  async function handlePauseToggle() {
+    setPausing(true);
+    setError(null);
+    try {
+      const response = await authFetch(
+        paused ? "/api/autopilot/resume" : "/api/autopilot/pause",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            websiteId: websiteId ?? undefined,
+          }),
+        }
+      );
+      if (!response.ok) {
+        setError(
+          await parseApiErrorMessage(
+            response,
+            paused ? t.resumeFailed : t.pauseFailed
+          )
+        );
+        return;
+      }
+      setPausedOverride(!paused);
+      onPauseChange?.();
+    } catch {
+      setError(paused ? t.resumeNetworkError : t.pauseNetworkError);
+    } finally {
+      setPausing(false);
     }
   }
 
@@ -202,6 +241,41 @@ export function AutopilotStatusBlock({
             <h2 className="text-lg font-semibold text-slate-900">{t.title}</h2>
           </div>
           <p className="text-sm text-slate-600">{t.approvalHint}</p>
+
+          {paused ? (
+            <div className="rounded-xl border border-amber-300 bg-amber-50 px-3 py-2 text-sm text-amber-950">
+              <p className="font-medium">{t.livePublishPausedBanner}</p>
+              <p className="mt-1 text-xs text-amber-800">
+                {t.pauseLivePublishOnlyNote}
+              </p>
+            </div>
+          ) : null}
+
+          {(planPublishingMode === "AUTO_PUBLISH" ||
+            mode === "autopublish" ||
+            paused) && (
+            <div className="flex flex-wrap items-center gap-2">
+              <Button
+                type="button"
+                variant={paused ? "default" : "outline"}
+                size="sm"
+                disabled={pausing || !websiteId}
+                onClick={() => void handlePauseToggle()}
+              >
+                {pausing ? (
+                  <Loader2 className="size-4 animate-spin" />
+                ) : (
+                  <Shield className="size-4" />
+                )}
+                {paused ? t.resumeAutopilotCta : t.pauseAutopilotCta}
+              </Button>
+              {!paused ? (
+                <p className="text-xs text-slate-500">
+                  {t.pauseLivePublishOnlyNote}
+                </p>
+              ) : null}
+            </div>
+          )}
 
           <div className="flex flex-wrap gap-2">
             {MODE_OPTIONS.map((option) => {

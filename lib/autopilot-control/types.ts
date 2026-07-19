@@ -113,6 +113,9 @@ export type AutopilotControlCenterViewModel = {
     mode: string;
     websiteId: string;
     autopublishAvailable: boolean;
+    livePublishPaused: boolean;
+    livePublishPausedAt: string | null;
+    livePublishPauseReason: string | null;
   };
 };
 

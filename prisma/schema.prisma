@@ -631,6 +631,7 @@ model User {
   assistedSetupRequests AssistedSetupRequest[]
   integrationExecutionsRequested IntegrationExecutionJob[] @relation("IntegrationExecutionRequestedBy")
   integrationExecutionsApproved  IntegrationExecutionJob[] @relation("IntegrationExecutionApprovedBy")
+  websitesLivePublishPaused      Website[] @relation("WebsiteLivePublishPausedBy")
 
   @@index([stripeCustomerId])
   @@index([googleAuthId])
@@ -697,11 +698,17 @@ model Website {
   lastAuditAt             DateTime?
   currentGrowthScore      Int?
   currentAIReadinessScore Int?
+  /// Emergency pause for live WordPress/webhook publish only (Prompt 11.53).
+  autopilotLivePublishPaused Boolean      @default(false)
+  autopilotLivePublishPausedAt DateTime?
+  autopilotLivePublishPausedByUserId String? @db.Uuid
+  autopilotLivePublishPauseReason String?
   createdAt               DateTime        @default(now())
   updatedAt               DateTime        @updatedAt
   deletedAt               DateTime?
 
   organization            Organization            @relation(fields: [organizationId], references: [id])
+  livePublishPausedByUser User?                   @relation("WebsiteLivePublishPausedBy", fields: [autopilotLivePublishPausedByUserId], references: [id], onDelete: SetNull)
   audits                  Audit[]
   auditChecks             AuditCheck[]
   growthScoreSnapshots    GrowthScoreSnapshot[]
@@ -734,6 +741,7 @@ model Website {
   @@index([lastAuditAt])
   @@index([currentGrowthScore])
   @@index([deletedAt])
+  @@index([autopilotLivePublishPaused])
   @@map("websites")
 }
 
@@ -1172,6 +1180,9 @@ model Article {
   schemaJson         Json?
   wordpressPostId    String?
   wordpressEditUrl   String?
+  /// Last known public URL from live publish — kept after rollback for history.
+  wordpressPublishedUrl String?
+  wordpressRolledBackAt DateTime?
   generatedByAIJobId String?         @db.Uuid
   qualityScore       Int?
   qualityPassed      Boolean?

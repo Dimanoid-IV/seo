@@ -11,6 +11,9 @@ export type AutopilotSettingsView = {
   mode: AutopilotMode;
   websiteId: string;
   autopublishAvailable: boolean;
+  livePublishPaused: boolean;
+  livePublishPausedAt: string | null;
+  livePublishPauseReason: string | null;
 };
 
 const CLIENT_MODE_MAP: Record<AutopilotMode, string> = {
@@ -59,32 +62,50 @@ export async function getAutopilotSettings(input: {
   const prisma = getPrisma();
 
   try {
-    const state = await prisma.websiteUserState.upsert({
-      where: {
-        userId_websiteId: {
+    const [state, websitePause] = await Promise.all([
+      prisma.websiteUserState.upsert({
+        where: {
+          userId_websiteId: {
+            userId: input.userId,
+            websiteId: website.id,
+          },
+        },
+        create: {
           userId: input.userId,
           websiteId: website.id,
+          autopilotMode: AutopilotMode.REVIEW_FIRST,
         },
-      },
-      create: {
-        userId: input.userId,
-        websiteId: website.id,
-        autopilotMode: AutopilotMode.REVIEW_FIRST,
-      },
-      update: {},
-      select: { autopilotMode: true },
-    });
+        update: {},
+        select: { autopilotMode: true },
+      }),
+      prisma.website.findFirst({
+        where: { id: website.id },
+        select: {
+          autopilotLivePublishPaused: true,
+          autopilotLivePublishPausedAt: true,
+          autopilotLivePublishPauseReason: true,
+        },
+      }),
+    ]);
 
     return {
       mode: state.autopilotMode,
       websiteId: website.id,
       autopublishAvailable: false,
+      livePublishPaused: websitePause?.autopilotLivePublishPaused === true,
+      livePublishPausedAt:
+        websitePause?.autopilotLivePublishPausedAt?.toISOString() ?? null,
+      livePublishPauseReason:
+        websitePause?.autopilotLivePublishPauseReason ?? null,
     };
   } catch {
     return {
       mode: AutopilotMode.REVIEW_FIRST,
       websiteId: website.id,
       autopublishAvailable: false,
+      livePublishPaused: false,
+      livePublishPausedAt: null,
+      livePublishPauseReason: null,
     };
   }
 }
@@ -118,28 +139,43 @@ export async function updateAutopilotSettings(input: {
 
   const prisma = getPrisma();
 
-  const state = await prisma.websiteUserState.upsert({
-    where: {
-      userId_websiteId: {
+  const [state, websitePause] = await Promise.all([
+    prisma.websiteUserState.upsert({
+      where: {
+        userId_websiteId: {
+          userId: input.userId,
+          websiteId: website.id,
+        },
+      },
+      create: {
         userId: input.userId,
         websiteId: website.id,
+        autopilotMode: input.mode,
       },
-    },
-    create: {
-      userId: input.userId,
-      websiteId: website.id,
-      autopilotMode: input.mode,
-    },
-    update: {
-      autopilotMode: input.mode,
-    },
-    select: { autopilotMode: true },
-  });
+      update: {
+        autopilotMode: input.mode,
+      },
+      select: { autopilotMode: true },
+    }),
+    prisma.website.findFirst({
+      where: { id: website.id },
+      select: {
+        autopilotLivePublishPaused: true,
+        autopilotLivePublishPausedAt: true,
+        autopilotLivePublishPauseReason: true,
+      },
+    }),
+  ]);
 
   return {
     mode: state.autopilotMode,
     websiteId: website.id,
     /** Settings UI must not offer silent autopublish — only plan confirm. */
     autopublishAvailable: false,
+    livePublishPaused: websitePause?.autopilotLivePublishPaused === true,
+    livePublishPausedAt:
+      websitePause?.autopilotLivePublishPausedAt?.toISOString() ?? null,
+    livePublishPauseReason:
+      websitePause?.autopilotLivePublishPauseReason ?? null,
   };
 }

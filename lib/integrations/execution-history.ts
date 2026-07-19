@@ -10,6 +10,7 @@ import {
   sanitizeExecutionPayload,
 } from "./execution-sanitize";
 import { listIntegrationExecutionJobs } from "./execution-jobs";
+import { resolveExecutionJobActions } from "./execution-actions";
 
 export type IntegrationExecutionJobDto = {
   id: string;
@@ -30,6 +31,12 @@ export type IntegrationExecutionJobDto = {
   createdAt: string;
   startedAt: string | null;
   finishedAt: string | null;
+  actions: {
+    canRetry: boolean;
+    retryDisabledReason: string | null;
+    canRollback: boolean;
+    rollbackDisabledReason: string | null;
+  };
 };
 
 function asRecord(value: unknown): Record<string, unknown> | null {
@@ -73,6 +80,7 @@ export function toIntegrationExecutionJobDto(
     createdAt: job.createdAt.toISOString(),
     startedAt: job.startedAt?.toISOString() ?? null,
     finishedAt: job.finishedAt?.toISOString() ?? null,
+    actions: resolveExecutionJobActions(job),
   };
 }
 

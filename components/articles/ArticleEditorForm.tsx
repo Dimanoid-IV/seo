@@ -404,6 +404,20 @@ export function ArticleEditorForm({ article, onUpdated }: ArticleEditorFormProps
           <ArticlePublishPanel
             articleId={article.id}
             wordpressConnected={article.wordpressConnected}
+            articleStatus={article.status}
+            wordpressPostId={article.wordpressPostId}
+            wordpressPublishedUrl={article.wordpressPublishedUrl}
+            wordpressEditUrl={article.wordpressEditUrl}
+            onRolledBack={() => {
+              void (async () => {
+                const response = await authFetch(`/api/articles/${article.id}`);
+                if (!response.ok) return;
+                const body = (await response.json()) as {
+                  data: typeof article;
+                };
+                onUpdated(body.data);
+              })();
+            }}
           />
         </div>
       </div>

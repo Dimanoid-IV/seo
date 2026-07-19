@@ -19,6 +19,8 @@ export type SerializedArticle = {
   schemaJson: Prisma.JsonValue | null;
   wordpressPostId: string | null;
   wordpressEditUrl: string | null;
+  wordpressPublishedUrl: string | null;
+  wordpressRolledBackAt: string | null;
   generatedByAIJobId: string | null;
   qualityScore: number | null;
   qualityPassed: boolean | null;
@@ -26,6 +28,7 @@ export type SerializedArticle = {
   qualityRepairAttempts: number;
   wordpressConnected: boolean;
   approvedAt: string | null;
+  publishedAt: string | null;
   createdAt: string;
   updatedAt: string;
 };

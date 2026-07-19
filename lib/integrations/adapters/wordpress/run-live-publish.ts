@@ -144,7 +144,11 @@ export async function runWordPressLivePublishForPlanArticle(
           organizationId: input.organizationId,
           deletedAt: null,
         },
-        select: { id: true, organizationId: true },
+        select: {
+          id: true,
+          organizationId: true,
+          autopilotLivePublishPaused: true,
+        },
       }),
       prisma.wordPressConnection.findFirst({
         where: { websiteId: input.websiteId },
@@ -205,6 +209,7 @@ export async function runWordPressLivePublishForPlanArticle(
       : null,
     quality: { qualityPassed: article?.qualityPassed },
     killSwitch: { engaged: isLivePublishKillSwitchEngaged() },
+    websiteLivePublishPaused: website?.autopilotLivePublishPaused === true,
     monthlyQuotaOk: wordpressFeature && quota.allowed,
     duplicatePublishedExternalId: duplicatePublished,
   });
@@ -507,6 +512,8 @@ export async function runWordPressLivePublishForPlanArticle(
         status: ArticleStatus.PUBLISHED,
         wordpressPostId: publishResult.postId,
         wordpressEditUrl: publishResult.editUrl,
+        wordpressPublishedUrl: publishResult.link,
+        wordpressRolledBackAt: null,
         publishedAt: now,
       },
     });

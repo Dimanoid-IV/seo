@@ -21,6 +21,11 @@ type ExportResponse = {
 type ArticlePublishPanelProps = {
   articleId: string;
   wordpressConnected: boolean;
+  articleStatus?: string;
+  wordpressPostId?: string | null;
+  wordpressPublishedUrl?: string | null;
+  wordpressEditUrl?: string | null;
+  onRolledBack?: () => void;
 };
 
 type CopyKey = "html" | "markdown" | "metaTitle" | "metaDescription" | "email";
@@ -50,12 +55,16 @@ async function copyToClipboard(text: string): Promise<boolean> {
 }
 
 /**
- * Universal Publishing hub: WP draft priority → webhook ready → export fallback.
- * Never live-publishes.
+ * Universal Publishing hub + RankBoost live rollback when published (11.53).
  */
 export function ArticlePublishPanel({
   articleId,
   wordpressConnected,
+  articleStatus,
+  wordpressPostId,
+  wordpressPublishedUrl,
+  wordpressEditUrl,
+  onRolledBack,
 }: ArticlePublishPanelProps) {
   const [webhookTested, setWebhookTested] = useState(false);
   const publishPriority = resolveArticlePublishPriority({
@@ -67,6 +76,11 @@ export function ArticlePublishPanel({
   const [error, setError] = useState<string | null>(null);
   const [copied, setCopied] = useState<CopyKey | null>(null);
   const [downloading, setDownloading] = useState<"html" | "md" | null>(null);
+  const [rollingBack, setRollingBack] = useState(false);
+  const [rollbackMessage, setRollbackMessage] = useState<string | null>(null);
+
+  const isLivePublished =
+    articleStatus === "PUBLISHED" && Boolean(wordpressPostId);
 
   useEffect(() => {
     let cancelled = false;
@@ -136,6 +150,38 @@ export function ArticlePublishPanel({
     [articleId, pkg?.slug]
   );
 
+  async function handleRollback() {
+    if (
+      !window.confirm(
+        "Move this WordPress post back to draft? The post will not be deleted."
+      )
+    ) {
+      return;
+    }
+    setRollingBack(true);
+    setRollbackMessage(null);
+    try {
+      const response = await authFetch(
+        `/api/articles/${articleId}/wordpress-rollback`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ targetStatus: "draft" }),
+        }
+      );
+      if (!response.ok) {
+        setRollbackMessage("Could not move the WordPress post to draft.");
+        return;
+      }
+      setRollbackMessage("WordPress post moved to draft.");
+      onRolledBack?.();
+    } catch {
+      setRollbackMessage("Network error while rolling back.");
+    } finally {
+      setRollingBack(false);
+    }
+  }
+
   if (loading) {
     return (
       <div className="flex items-center gap-2 rounded-xl border border-white/10 bg-white/[0.02] p-4 text-sm text-slate-400">
@@ -178,6 +224,57 @@ export function ArticlePublishPanel({
 
   return (
     <div className="space-y-4 rounded-xl border border-white/10 bg-white/[0.02] p-4">
+      {isLivePublished ? (
+        <div className="rounded-xl border border-emerald-500/25 bg-emerald-500/10 p-3 text-xs text-emerald-50">
+          <p className="font-semibold text-emerald-100">Published on WordPress</p>
+          {wordpressPublishedUrl ? (
+            <p className="mt-1 break-all">
+              <a
+                href={wordpressPublishedUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="underline"
+              >
+                {wordpressPublishedUrl}
+              </a>
+            </p>
+          ) : null}
+          {wordpressEditUrl ? (
+            <p className="mt-1 text-emerald-200/80">
+              Edit:{" "}
+              <a
+                href={wordpressEditUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="underline"
+              >
+                open in WordPress
+              </a>
+            </p>
+          ) : null}
+          <p className="mt-2 text-amber-100">
+            Moving back to draft changes the WordPress post status. The post is
+            not deleted.
+          </p>
+          <Button
+            type="button"
+            size="sm"
+            variant="outline"
+            className="mt-2 border-white/20"
+            disabled={rollingBack}
+            onClick={() => void handleRollback()}
+          >
+            {rollingBack ? (
+              <Loader2 className="size-4 animate-spin" />
+            ) : null}
+            Move back to draft
+          </Button>
+          {rollbackMessage ? (
+            <p className="mt-2 text-emerald-100">{rollbackMessage}</p>
+          ) : null}
+        </div>
+      ) : null}
+
       <div>
         <h3 className="text-sm font-semibold text-white">Публикация статьи</h3>
         <p className="mt-1 text-xs text-slate-400">

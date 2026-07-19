@@ -34,6 +34,7 @@ export type LivePublishBlockedReason =
   | "seo_fix_not_live"
   | "quota_exceeded"
   | "kill_switch_engaged"
+  | "website_paused"
   | "missing_article"
   | "missing_content";
 
@@ -65,6 +66,8 @@ export type CanLivePublishArticleViaWordPressInput = {
   quality?: { qualityPassed?: boolean | null };
   /** When omitted, reads global kill switch. */
   killSwitch?: { engaged?: boolean };
+  /** Per-website emergency pause (Prompt 11.53). */
+  websiteLivePublishPaused?: boolean;
   /** Monthly quota check result — false means over limit. */
   monthlyQuotaOk?: boolean;
   /** Another article already owns this published external ID. */
@@ -113,6 +116,8 @@ const USER_SAFE: Record<LivePublishBlockedReason, string> = {
   quota_exceeded: "Monthly publishing quota has been reached.",
   kill_switch_engaged:
     "Live publish is paused by the safety kill switch. Use Review Queue.",
+  website_paused:
+    "Live publish is paused for this website. Resume in Autopilot to continue.",
   missing_article: "No article is linked to this plan item.",
   missing_content: "Article has no content to publish.",
 };
@@ -135,6 +140,10 @@ export function canLivePublishArticleViaWordPress(
 
   if (killEngaged) {
     return deny("kill_switch_engaged");
+  }
+
+  if (input.websiteLivePublishPaused === true) {
+    return deny("website_paused");
   }
 
   if (input.planStatus.toUpperCase() !== "APPROVED") {

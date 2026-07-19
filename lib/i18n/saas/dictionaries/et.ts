@@ -933,6 +933,14 @@ export const saasDictionary: SaasDictionary = {
       empty: "Täitmistöid veel pole.",
       loadFailed: "Täitmise ajalugu ei õnnestunud laadida",
       loadNetworkError: "Võrguviga täitmise ajaloo laadimisel",
+      retry: "Proovi uuesti",
+      rollback: "Tagasi mustandiks",
+      retryDisabled: "Uuesti proovimine pole saadaval",
+      rollbackDisabled: "Tagasivõtmine pole saadaval",
+      actionFailed: "Toimingut ei õnnestunud teha.",
+      actionNetworkError: "Võrguviga toimingu tegemisel.",
+      retrySuccess: "Uuesti proovimine lõpetatud.",
+      rollbackSuccess: "WordPressi postitus viidi mustandisse.",
     },
   },
   reports: {
@@ -1568,7 +1576,16 @@ export const saasDictionary: SaasDictionary = {
       noLivePublishScheduled: "Live-avaldamist pole planeeritud",
       killSwitchPausedNote:
         "Live publish on turvalisuse kill switchiga peatatud, kuni see keskkonnas lubatakse.",
-      pauseAutopilotCta: "Peata autopilot",
+      pauseAutopilotCta: "Peata live publish",
+      resumeAutopilotCta: "Jätka live publish",
+      pauseLivePublishOnlyNote:
+        "Paus peatab ainult live-avaldamise. Uurimine, mustandid ja ülevaatus jätkuvad.",
+      livePublishPausedBanner:
+        "Live publish on selle saidi jaoks peatatud. Planeeritud punktid jäävad blokeerituks, kuni jätkate.",
+      pauseFailed: "Live publish’i peatamine ebaõnnestus.",
+      pauseNetworkError: "Võrguviga live publish’i peatamisel.",
+      resumeFailed: "Live publish’i jätkamine ebaõnnestus.",
+      resumeNetworkError: "Võrguviga live publish’i jätkamisel.",
     },
     planApproval: {
       title: "Plaani kinnitamine",
