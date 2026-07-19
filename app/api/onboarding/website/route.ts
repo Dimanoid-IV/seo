@@ -10,8 +10,11 @@ import {
 import { createWebsiteForOnboarding } from "@/lib/onboarding/create-website";
 import { applyOnboardingStepAction } from "@/lib/onboarding/complete-step";
 import { getOnboardingState } from "@/lib/onboarding/get-onboarding-state";
+import { scheduleWebsiteActivation } from "@/lib/onboarding/schedule-activation";
 import { getServerEnv } from "@/lib/env";
 import { AppError, ErrorCode } from "@/lib/errors";
+
+export const maxDuration = 60;
 
 function assertDatabaseConfigured(): void {
   if (!getServerEnv().DATABASE_URL) {
@@ -39,7 +42,7 @@ export async function POST(request: Request) {
       throw validationErrorFromZod(parsed.error);
     }
 
-    await createWebsiteForOnboarding({
+    const website = await createWebsiteForOnboarding({
       userId: currentUser.id,
       url: parsed.data.url,
       displayName: parsed.data.displayName,
@@ -51,8 +54,25 @@ export async function POST(request: Request) {
       action: "COMPLETE",
     });
 
+    await scheduleWebsiteActivation({
+      userId: currentUser.id,
+      organizationId: website.organizationId,
+      websiteId: website.id,
+      websiteUrl: website.url,
+    });
+
     const onboarding = await getOnboardingState(currentUser.id);
-    return authJsonResponse({ data: { onboarding } });
+    return authJsonResponse({
+      data: {
+        onboarding,
+        website: {
+          id: website.id,
+          url: website.url,
+          displayName: website.displayName,
+        },
+        activationStarted: true,
+      },
+    });
   } catch (error) {
     return authErrorResponse(request, error);
   }

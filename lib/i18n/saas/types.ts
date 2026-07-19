@@ -210,6 +210,23 @@ export type SaasDictionary = {
       wordpressDraftOnly: string;
       customSitePackage: string;
     };
+    activation: {
+      title: string;
+      subtitle: string;
+      stepSiteTech: string;
+      stepBrandVoice: string;
+      stepAudit: string;
+      stepGrowth: string;
+      stepTopics: string;
+      stepMonthlyPlan: string;
+      brandVoiceReady: string;
+      gscLater: string;
+      planNeedsAudit: string;
+      reviewPlan: string;
+      retry: string;
+      preparingAnalysis: string;
+      platformHint: (platform: string) => string;
+    };
     metrics: {
       growthScore: string;
       scoreDelta: string;

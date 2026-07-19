@@ -11,6 +11,7 @@ import { DashboardHero } from "@/components/dashboard/DashboardHero";
 import { DashboardMetricCard } from "@/components/dashboard/DashboardMetricCard";
 import { FindingsCard } from "@/components/dashboard/FindingsCard";
 import { MonthlyAutopilotActiveCard } from "@/components/dashboard/MonthlyAutopilotActiveCard";
+import { ActivationProgressCard } from "@/components/dashboard/ActivationProgressCard";
 import { NextBestActionCard } from "@/components/dashboard/NextBestActionCard";
 import { PreparedForYouCard } from "@/components/dashboard/PreparedForYouCard";
 import { ReviewQueueCard } from "@/components/dashboard/ReviewQueueCard";
@@ -207,10 +208,31 @@ export function SimpleDashboardPage() {
             websiteDomain={simple.website.domain ?? simple.website.name}
           />
 
-          {!simple.hasAudit ? (
+          {simple.activation?.state &&
+          (simple.activation.state.status === "running" ||
+            simple.activation.state.status === "partial" ||
+            simple.activation.state.status === "failed" ||
+            (!simple.hasAudit &&
+              simple.activation.state.status !== "idle")) ? (
+            <ActivationProgressCard
+              initialActivation={simple.activation.state}
+              siteTechPlatform={simple.activation.siteTechPlatform}
+              brandVoiceReady={simple.activation.brandVoiceReady}
+              gscConnected={Boolean(simple.gsc?.connected)}
+            />
+          ) : null}
+
+          {!simple.hasAudit &&
+          !(
+            simple.activation?.state?.status === "running" ||
+            simple.activation?.state?.steps?.audit?.status === "in_progress" ||
+            simple.activation?.state?.steps?.audit?.status === "done"
+          ) ? (
             <section className="rounded-2xl border border-blue-200 bg-blue-50/60 p-6 text-center sm:p-8">
               <h2 className="text-lg font-semibold text-slate-900 sm:text-xl">
-                {d.notCheckedTitle}
+                {simple.activation?.preparingAnalysis
+                  ? d.activation.preparingAnalysis
+                  : d.notCheckedTitle}
               </h2>
               <p className="mx-auto mt-2 max-w-md text-sm text-slate-600">
                 {d.notCheckedDescription}

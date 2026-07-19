@@ -6,11 +6,14 @@ import {
   validationErrorFromZod,
 } from "@/lib/auth/responses";
 import { registerUser } from "@/lib/auth/service";
+import { scheduleWebsiteActivation } from "@/lib/onboarding/schedule-activation";
 import { registerSchema } from "@/lib/validators/auth";
 
 function assertDatabaseConfigured(): void {
   assertSaasConfigured();
 }
+
+export const maxDuration = 60;
 
 // TODO: rate limit — 5 registrations / hour / IP (docs/API-Design.md)
 
@@ -27,6 +30,15 @@ export async function POST(request: Request) {
 
     const result = await registerUser(parsed.data);
 
+    if (result.website?.id && result.organization?.id) {
+      await scheduleWebsiteActivation({
+        userId: result.user.id,
+        organizationId: result.organization.id,
+        websiteId: result.website.id,
+        websiteUrl: result.website.url,
+      });
+    }
+
     return authJsonResponse(
       {
         user: result.user,
@@ -36,7 +48,10 @@ export async function POST(request: Request) {
         accessToken: result.accessToken,
         expiresIn: result.expiresIn,
         ...(result.warnings?.length ? { warnings: result.warnings } : {}),
-        ...(result.previewAuditId ? { previewAuditId: result.previewAuditId } : {}),
+        ...(result.previewAuditId
+          ? { previewAuditId: result.previewAuditId }
+          : {}),
+        ...(result.website?.id ? { activationStarted: true } : {}),
       },
       { status: 201, refreshToken: result.refreshToken }
     );

@@ -265,6 +265,24 @@ export const saasDictionary: SaasDictionary = {
       customSitePackage:
         "Kohandatud sait: valmistame paketi / kirja arendajale",
     },
+    activation: {
+      title: "RankBoost seadistab teie saiti",
+      subtitle: "Esimene seadistus käivitub automaatselt — midagi klõpsata ei pea.",
+      stepSiteTech: "Tuvastame saidi platvormi",
+      stepBrandVoice: "Õpime brändi stiili",
+      stepAudit: "Kontrollime saiti",
+      stepGrowth: "Valmistame esimesed kasvuvõimalused",
+      stepTopics: "Valmistame esimesed teemad",
+      stepMonthlyPlan: "Valmistame kuuplaani",
+      brandVoiceReady: "Brändi stiil on õpitud",
+      gscLater:
+        "Google Search Console’i saate hiljem ühendada täpsemate teemade jaoks.",
+      planNeedsAudit: "Teemade valmistamiseks peame ootama saidi kontrolli.",
+      reviewPlan: "Vaata kuuplaani",
+      retry: "Proovi uuesti",
+      preparingAnalysis: "RankBoost on juba alustanud saidi kontrolli",
+      platformHint: (platform) => `Paistab, et sait töötab platvormil ${platform}`,
+    },
     metrics: {
       growthScore: "Kasvuskoor",
       scoreDelta: "Skoori muutus",

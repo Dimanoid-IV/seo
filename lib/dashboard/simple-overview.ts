@@ -26,6 +26,12 @@ import {
   resolveDashboardPrimaryCta,
 } from "./primary-cta";
 import { publishingPathChip } from "@/lib/autopilot/human-pipeline-labels";
+import { getActivationStateForUser } from "@/lib/onboarding/activation-state";
+import type { ActivationState } from "@/lib/onboarding/activation-types";
+import { readSiteTechFromBusinessGoals } from "@/lib/onboarding/site-tech-persist";
+import { readBrandVoiceFromBusinessGoals } from "@/lib/brand-voice/business-goals";
+import { getPrisma } from "@/lib/db";
+import { WebsiteStatus } from "@prisma/client";
 
 export type SimpleDashboardTone = "GOOD" | "NEEDS_REVIEW" | "SETUP" | "NO_DATA";
 
@@ -81,6 +87,13 @@ export type SimpleDashboardViewModel = {
     primaryLabelKind: "review" | "plan";
     showPublishingNudge: boolean;
   };
+  /** Prompt 11.46 — first website activation progress */
+  activation?: {
+    state: ActivationState | null;
+    siteTechPlatform: string | null;
+    brandVoiceReady: boolean;
+    preparingAnalysis: boolean;
+  };
   recentActivity: Array<{
     id: string;
     title: string;
@@ -109,6 +122,7 @@ export function buildSimpleDashboardViewModel(input: {
   subscriptionPlan?: string;
   locale?: SaasLocale;
   reviewQueueCount?: number;
+  activation?: SimpleDashboardViewModel["activation"];
 }): SimpleDashboardViewModel {
   const { controlCenter: control, onboarding } = input;
   const locale = input.locale ?? DEFAULT_SAAS_LOCALE;
@@ -232,6 +246,7 @@ export function buildSimpleDashboardViewModel(input: {
       emailApprovalsCount: control.metrics.pendingEmailsCount,
     },
     monthlyAutopilotActive,
+    activation: input.activation,
     recentActivity: control.recentActivity.slice(0, 3).map((event) => ({
       id: event.id,
       title: event.title,
@@ -253,20 +268,49 @@ export async function getSimpleDashboardOverview(
   }
 ): Promise<SimpleDashboardViewModel> {
   const locale = options?.locale ?? DEFAULT_SAAS_LOCALE;
-  const [controlCenter, onboarding, reviewQueueCount] = await Promise.all([
-    getAutopilotControlCenter({ currentUser, locale }),
-    getOnboardingSummary(currentUser.id, locale),
-    getReviewQueueCount(currentUser),
-  ]);
+  const [controlCenter, onboarding, reviewQueueCount, activationState] =
+    await Promise.all([
+      getAutopilotControlCenter({ currentUser, locale }),
+      getOnboardingSummary(currentUser.id, locale),
+      getReviewQueueCount(currentUser),
+      getActivationStateForUser(currentUser.id),
+    ]);
 
   let gsc: SimpleDashboardViewModel["gsc"];
   if (controlCenter.website?.id) {
-    const gscData = await loadDashboardGoogleSearchConsole(controlCenter.website.id);
+    const gscData = await loadDashboardGoogleSearchConsole(
+      controlCenter.website.id
+    );
     gsc = {
       connected: gscData.connected,
       connectHref: "/app/integrations",
       selectedProperty: gscData.selectedProperty,
       metricsSummary: gscData.metricsSummary,
+    };
+  }
+
+  let activation: SimpleDashboardViewModel["activation"];
+  if (controlCenter.website?.id) {
+    const prisma = getPrisma();
+    const website = await prisma.website.findFirst({
+      where: {
+        id: controlCenter.website.id,
+        deletedAt: null,
+        status: WebsiteStatus.ACTIVE,
+      },
+      select: { businessGoals: true },
+    });
+    const siteTech = readSiteTechFromBusinessGoals(website?.businessGoals);
+    const brandVoice = readBrandVoiceFromBusinessGoals(website?.businessGoals);
+    const preparingAnalysis =
+      activationState?.status === "running" ||
+      (!controlCenter.metrics.growthScore &&
+        activationState?.status !== "failed");
+    activation = {
+      state: activationState,
+      siteTechPlatform: siteTech?.platform ?? null,
+      brandVoiceReady: Boolean(brandVoice),
+      preparingAnalysis: Boolean(preparingAnalysis),
     };
   }
 
@@ -277,6 +321,7 @@ export async function getSimpleDashboardOverview(
     subscriptionPlan: options?.subscriptionPlan,
     locale,
     reviewQueueCount,
+    activation,
   });
 
   return { ...viewModel, gsc };

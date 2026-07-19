@@ -265,6 +265,24 @@ export const saasDictionary: SaasDictionary = {
       customSitePackage:
         "Custom site: готовим пакет/письмо разработчику",
     },
+    activation: {
+      title: "RankBoost настраивает ваш сайт",
+      subtitle: "Первый запуск идёт автоматически — вам не нужно ничего нажимать.",
+      stepSiteTech: "Определяем платформу сайта",
+      stepBrandVoice: "Изучаем стиль бренда",
+      stepAudit: "Проверяем сайт",
+      stepGrowth: "Готовим первые возможности роста",
+      stepTopics: "Готовим первые темы",
+      stepMonthlyPlan: "Готовим план на месяц",
+      brandVoiceReady: "Стиль бренда изучен",
+      gscLater:
+        "Можно подключить Google Search Console позже для более точных тем.",
+      planNeedsAudit: "Чтобы подготовить темы, нужно дождаться проверки сайта.",
+      reviewPlan: "Проверить план на месяц",
+      retry: "Повторить",
+      preparingAnalysis: "RankBoost уже начал проверку сайта",
+      platformHint: (platform) => `Похоже, сайт сделан на ${platform}`,
+    },
     metrics: {
       growthScore: "Оценка роста",
       scoreDelta: "Изменение оценки",

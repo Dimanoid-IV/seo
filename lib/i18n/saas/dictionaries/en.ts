@@ -265,6 +265,24 @@ export const saasDictionary: SaasDictionary = {
       customSitePackage:
         "Custom site: we prepare a package / developer email",
     },
+    activation: {
+      title: "RankBoost is setting up your website",
+      subtitle: "First setup runs automatically — nothing to click.",
+      stepSiteTech: "Detecting your site platform",
+      stepBrandVoice: "Learning your brand voice",
+      stepAudit: "Checking your website",
+      stepGrowth: "Preparing first growth opportunities",
+      stepTopics: "Preparing first topics",
+      stepMonthlyPlan: "Preparing the monthly plan",
+      brandVoiceReady: "Brand voice learned",
+      gscLater:
+        "You can connect Google Search Console later for more accurate topics.",
+      planNeedsAudit: "We need the site check to finish before preparing topics.",
+      reviewPlan: "Review monthly plan",
+      retry: "Retry",
+      preparingAnalysis: "RankBoost has already started checking your site",
+      platformHint: (platform) => `Looks like the site runs on ${platform}`,
+    },
     metrics: {
       growthScore: "Growth Score",
       scoreDelta: "Score delta",
