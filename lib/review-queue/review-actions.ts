@@ -22,6 +22,7 @@ import {
 } from "@/lib/tasks/prepared-fix";
 
 import type { ReviewAction, ReviewItemType } from "./types";
+import { trackEventFireAndForget } from "@/lib/analytics/track";
 
 type ReviewActionInput = {
   currentUser: CurrentUser;
@@ -32,20 +33,38 @@ type ReviewActionInput = {
 };
 
 export async function applyReviewAction(input: ReviewActionInput) {
-  switch (input.itemType) {
-    case "EMAIL_DRAFT":
-      return applyEmailAction(input);
-    case "ARTICLE_DRAFT":
-      return applyArticleAction(input);
-    case "SOCIAL_POST":
-      return applySocialAction(input);
-    case "META_FIX":
-    case "SEO_FIX":
-    case "TASK_FIX":
-      return applyTaskFixAction(input);
-    default:
-      throw new AppError(ErrorCode.VALIDATION_ERROR, "Unknown review item type");
+  const result = await (async () => {
+    switch (input.itemType) {
+      case "EMAIL_DRAFT":
+        return applyEmailAction(input);
+      case "ARTICLE_DRAFT":
+        return applyArticleAction(input);
+      case "SOCIAL_POST":
+        return applySocialAction(input);
+      case "META_FIX":
+      case "SEO_FIX":
+      case "TASK_FIX":
+        return applyTaskFixAction(input);
+      default:
+        throw new AppError(ErrorCode.VALIDATION_ERROR, "Unknown review item type");
+    }
+  })();
+
+  if (input.action === "APPROVE") {
+    trackEventFireAndForget({
+      event: "review_item_approved",
+      userId: input.currentUser.id,
+      organizationId: input.currentUser.organizationId,
+      properties: {
+        feature: input.itemType,
+        action: input.action,
+        articleId:
+          input.itemType === "ARTICLE_DRAFT" ? input.sourceId : undefined,
+      },
+    });
   }
+
+  return result;
 }
 
 async function applyEmailAction(input: ReviewActionInput) {

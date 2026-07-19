@@ -4,6 +4,7 @@ import { useState } from "react";
 
 import { MarketingPlanAuthDialog } from "@/components/marketing/MarketingPlanAuthDialog";
 import { Button } from "@/components/ui/button";
+import { trackClientEvent } from "@/lib/analytics/client";
 import { authFetch } from "@/lib/auth/client-session";
 import { fetchMarketingSession } from "@/lib/auth/marketing-session";
 import { friendlyApiErrorMessageForLocale } from "@/lib/copy/user-errors";
@@ -130,6 +131,10 @@ export function MarketingPlanCheckoutButton({
     }
 
     setError(null);
+    trackClientEvent({
+      event: "plan_cta_click",
+      properties: { plan, source: "pricing" },
+    });
 
     const session = await fetchMarketingSession();
     if (!session.authenticated) {
@@ -142,6 +147,10 @@ export function MarketingPlanCheckoutButton({
       return;
     }
 
+    trackClientEvent({
+      event: "checkout_started",
+      properties: { plan, source: "pricing" },
+    });
     await startCheckout();
   }
 

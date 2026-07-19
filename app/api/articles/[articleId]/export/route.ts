@@ -3,6 +3,7 @@ import { authErrorResponse, authJsonResponse } from "@/lib/auth/responses";
 import { getServerEnv } from "@/lib/env";
 import { AppError, ErrorCode } from "@/lib/errors";
 import { getArticleUniversalExport } from "@/lib/publishing/get-article-export";
+import { trackEventFireAndForget } from "@/lib/analytics/track";
 
 function assertDatabaseConfigured(): void {
   if (!getServerEnv().DATABASE_URL) {
@@ -26,6 +27,16 @@ export async function GET(request: Request, context: RouteContext) {
     const { articleId } = await context.params;
 
     const result = await getArticleUniversalExport({ articleId, currentUser });
+
+    trackEventFireAndForget({
+      event: "article_export_clicked",
+      userId: currentUser.id,
+      organizationId: currentUser.organizationId,
+      properties: {
+        articleId,
+        format: new URL(request.url).searchParams.get("format") ?? "json",
+      },
+    });
 
     const url = new URL(request.url);
     const format = url.searchParams.get("format");

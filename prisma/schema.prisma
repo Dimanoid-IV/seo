@@ -1594,3 +1594,23 @@ model OnboardingState {
   @@index([status])
   @@map("onboarding_states")
 }
+
+/// Privacy-safe product funnel events (Prompt 11.47).
+/// No article bodies, tokens, secrets, or sensitive URLs.
+model ProductEvent {
+  id             String   @id @default(uuid()) @db.Uuid
+  event          String
+  userId         String?  @db.Uuid
+  organizationId String?  @db.Uuid
+  websiteId      String?  @db.Uuid
+  route          String?
+  locale         String?
+  propertiesJson Json?
+  createdAt      DateTime @default(now())
+
+  @@index([event, createdAt])
+  @@index([createdAt])
+  @@index([organizationId, createdAt])
+  @@index([websiteId, createdAt])
+  @@map("product_events")
+}

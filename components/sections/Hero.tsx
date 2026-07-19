@@ -1,10 +1,10 @@
 "use client";
 
-import Link from "next/link";
 import { motion } from "framer-motion";
 import { ArrowRight, Sparkles } from "lucide-react";
 import type { Locale } from "@/i18n/config";
 import type { Dictionary } from "@/i18n/dictionaries/ru";
+import { TrackedLink } from "@/components/analytics/TrackedLink";
 import { ButtonLink } from "@/components/ui/ButtonLink";
 import { buttonVariants } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -48,7 +48,10 @@ export function Hero({ locale, dict }: HeroProps) {
             </p>
 
             <div className="mt-10 flex flex-col gap-3 sm:flex-row sm:items-center">
-              <Link
+              <TrackedLink
+                event="register_click"
+                locale={locale}
+                eventProperties={{ cta: "hero_primary", source: "landing" }}
                 href="/register"
                 className={cn(
                   buttonVariants({ size: "lg" }),
@@ -57,7 +60,7 @@ export function Hero({ locale, dict }: HeroProps) {
               >
                 {dict.hero.ctaPrimary}
                 <ArrowRight className="ml-2 h-4 w-4" />
-              </Link>
+              </TrackedLink>
               <ButtonLink
                 locale={locale}
                 href="/#how-it-works"

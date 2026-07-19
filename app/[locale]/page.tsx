@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { locales, type Locale } from "@/i18n/config";
 import { getDictionary, isValidLocale } from "@/lib/i18n";
 import { generatePageMetadata, SEO_KEYWORDS } from "@/lib/seo";
+import { AnalyticsPageView } from "@/components/analytics/AnalyticsPageView";
 import { Hero } from "@/components/sections/Hero";
 import { TrustBadges } from "@/components/sections/TrustBadges";
 import { ProblemSection } from "@/components/sections/ProblemSection";
@@ -45,6 +46,11 @@ export default async function HomePage({ params }: PageProps) {
 
   return (
     <div className="marketing-page">
+      <AnalyticsPageView
+        event="landing_view"
+        locale={locale}
+        route={`/${locale}`}
+      />
       <Hero locale={locale} dict={dict} />
       <TrustBadges dict={dict} />
       <ProblemSection dict={dict} />

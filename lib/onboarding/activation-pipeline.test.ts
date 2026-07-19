@@ -41,6 +41,11 @@ const baseFacts: ActivationFacts = {
     decideSiteTechStep({ ...baseFacts, hasStoredSiteTech: true }).action,
     "skip"
   );
+  // Skip path = activation analytics should not re-fire completed steps.
+  assert.equal(
+    decideSiteTechStep({ ...baseFacts, hasStoredSiteTech: true }).reason,
+    "already_detected"
+  );
 }
 
 {

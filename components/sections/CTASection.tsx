@@ -1,10 +1,10 @@
 "use client";
 
-import Link from "next/link";
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import type { Locale } from "@/i18n/config";
 import type { Dictionary } from "@/i18n/dictionaries/ru";
+import { TrackedLink } from "@/components/analytics/TrackedLink";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -16,13 +16,17 @@ type CTASectionProps = {
 };
 
 export function CTASection({
+  locale,
   dict,
   theme = "dark",
+  source = "cta",
 }: CTASectionProps) {
   const isMarketing = theme === "marketing";
 
   return (
-    <section className={isMarketing ? "marketing-section pb-24" : "py-20 lg:py-28"}>
+    <section
+      className={isMarketing ? "marketing-section pb-24" : "py-20 lg:py-28"}
+    >
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, scale: 0.98 }}
@@ -53,7 +57,10 @@ export function CTASection({
             >
               {dict.cta.subtitle}
             </p>
-            <Link
+            <TrackedLink
+              event="register_click"
+              locale={locale}
+              eventProperties={{ cta: "footer", source }}
               href="/register"
               className={cn(
                 buttonVariants({ size: "lg" }),
@@ -64,7 +71,7 @@ export function CTASection({
             >
               {dict.cta.button}
               <ArrowRight className="ml-2 h-4 w-4" />
-            </Link>
+            </TrackedLink>
             <p
               className={
                 isMarketing

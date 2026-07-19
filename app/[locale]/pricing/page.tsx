@@ -4,6 +4,7 @@ import { locales, type Locale } from "@/i18n/config";
 import { getDictionary, isValidLocale } from "@/lib/i18n";
 import type { SaasLocale } from "@/lib/i18n/saas/locales";
 import { generatePageMetadata, SEO_KEYWORDS } from "@/lib/seo";
+import { AnalyticsPageView } from "@/components/analytics/AnalyticsPageView";
 import { SaasPricingSection } from "@/components/sections/SaasPricingSection";
 import { MonthlyHowItWorksSection } from "@/components/sections/MonthlyHowItWorksSection";
 import { CTASection } from "@/components/sections/CTASection";
@@ -38,6 +39,11 @@ export default async function PricingPage({ params }: PageProps) {
 
   return (
     <>
+      <AnalyticsPageView
+        event="pricing_view"
+        locale={locale}
+        route={`/${locale}/pricing`}
+      />
       <div className="marketing-page min-h-screen">
         <div className="border-b border-slate-200/80 bg-gradient-to-b from-blue-50/80 to-white py-16">
           <div className="mx-auto max-w-7xl px-4 text-center sm:px-6 lg:px-8">

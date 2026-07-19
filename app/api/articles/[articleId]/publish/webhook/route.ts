@@ -1,6 +1,7 @@
 import { requireUser } from "@/lib/auth/current-user";
 import { authErrorResponse, authJsonResponse } from "@/lib/auth/responses";
 import { assertSafeUrl } from "@/lib/audit/ssrf";
+import { trackEventFireAndForget } from "@/lib/analytics/track";
 import { getServerEnv } from "@/lib/env";
 import { AppError, ErrorCode } from "@/lib/errors";
 import { getArticleUniversalExport } from "@/lib/publishing/get-article-export";
@@ -127,6 +128,18 @@ export async function POST(request: Request, context: RouteContext) {
             endpointUrl: rawUrl,
             tested: true,
             autoSendEnabled: false,
+          });
+
+          trackEventFireAndForget({
+            event: "webhook_tested",
+            userId: currentUser.id,
+            organizationId: article.organizationId,
+            websiteId: article.websiteId,
+            properties: {
+              articleId,
+              integration: "custom_webhook",
+              status: "ok",
+            },
           });
         }
       } catch {

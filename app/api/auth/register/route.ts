@@ -7,6 +7,7 @@ import {
 } from "@/lib/auth/responses";
 import { registerUser } from "@/lib/auth/service";
 import { scheduleWebsiteActivation } from "@/lib/onboarding/schedule-activation";
+import { trackEventFireAndForget } from "@/lib/analytics/track";
 import { registerSchema } from "@/lib/validators/auth";
 
 function assertDatabaseConfigured(): void {
@@ -29,6 +30,18 @@ export async function POST(request: Request) {
     }
 
     const result = await registerUser(parsed.data);
+
+    trackEventFireAndForget({
+      event: "account_created",
+      userId: result.user.id,
+      organizationId: result.organization?.id ?? null,
+      websiteId: result.website?.id ?? null,
+      route: "/register",
+      properties: {
+        source: "register",
+        status: result.website ? "with_website" : "no_website",
+      },
+    });
 
     if (result.website?.id && result.organization?.id) {
       await scheduleWebsiteActivation({

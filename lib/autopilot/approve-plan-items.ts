@@ -27,6 +27,7 @@ import { assignEveryOtherDaySlots } from "./scheduling";
 import { formatMonthlyAutopilotPlan } from "./format";
 import { getCustomPublishingConfig } from "@/lib/publishing/custom-webhook-config";
 import { updateAutopilotSettings } from "./autopilot-settings";
+import { trackEventFireAndForget } from "@/lib/analytics/track";
 
 export async function approveSelectedPlanItems(input: {
   planId: string;
@@ -208,6 +209,17 @@ export async function approveSelectedPlanItems(input: {
     } catch {
       // Timeline must not block approval.
     }
+
+    trackEventFireAndForget({
+      event: "monthly_plan_approved",
+      userId: input.userId,
+      organizationId: existing.organizationId,
+      websiteId: existing.websiteId,
+      properties: {
+        planId: existing.id,
+        count: approvedIds.size,
+      },
+    });
   }
 
   return {

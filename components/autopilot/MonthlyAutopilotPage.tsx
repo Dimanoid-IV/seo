@@ -9,6 +9,7 @@ import {
   isUsageLimitReached,
   useBillingOverview,
 } from "@/components/billing/useBillingOverview";
+import { trackClientEvent } from "@/lib/analytics/client";
 import { authFetch, parseApiErrorMessage } from "@/lib/auth/client-session";
 import type { MonthlyAutopilotGetResponse } from "@/lib/autopilot/types";
 
@@ -96,6 +97,14 @@ export function MonthlyAutopilotPage() {
       setLoading(false);
     }
   }, [a.loadPlanFailed, a.loadNetworkError]);
+
+  useEffect(() => {
+    trackClientEvent({
+      event: "monthly_plan_opened",
+      route: "/app/autopilot",
+      properties: { feature: "monthly_autopilot" },
+    });
+  }, []);
 
   useEffect(() => {
     let cancelled = false;

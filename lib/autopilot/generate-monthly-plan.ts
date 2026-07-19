@@ -27,6 +27,7 @@ import type {
   MonthlyAutopilotPlanViewModel,
 } from "./types";
 import { buildPlanItemsFromSource, planItemsToJson } from "./plan-items";
+import { trackEventFireAndForget } from "@/lib/analytics/track";
 
 let actionCounter = 0;
 
@@ -700,6 +701,18 @@ export async function generateMonthlyAutopilotPlan(input: {
     } catch {
       // Timeline must not block plan generation.
     }
+
+    trackEventFireAndForget({
+      event: "monthly_plan_created",
+      userId: input.userId,
+      organizationId: organization.id,
+      websiteId: website.id,
+      properties: {
+        planId: plan.id,
+        count: payload.recommendedActions.length,
+        source: "generate",
+      },
+    });
   }
 
   return {

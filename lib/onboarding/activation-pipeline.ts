@@ -35,6 +35,23 @@ import {
   readSiteTechFromBusinessGoals,
   siteTechAsInputJson,
 } from "./site-tech-persist";
+import { trackEventFireAndForget } from "@/lib/analytics/track";
+
+function trackActivationStep(
+  input: RunActivationPipelineInput,
+  step: string,
+  ok: boolean,
+  properties?: Record<string, unknown>
+) {
+  trackEventFireAndForget({
+    event: ok ? "activation_step_completed" : "activation_step_failed",
+    userId: input.userId,
+    organizationId: input.organizationId,
+    websiteId: input.websiteId,
+    locale: input.locale,
+    properties: { step, ...properties },
+  });
+}
 
 export type RunActivationPipelineInput = {
   userId: string;
@@ -224,11 +241,26 @@ export async function runActivationPipeline(
           resultRef: detection.platform,
           detail: `confidence:${detection.confidence.toFixed(2)}`,
         });
+        trackActivationStep(input, "siteTech", true, {
+          platform: detection.platform,
+          confidence: detection.confidence,
+        });
+        trackEventFireAndForget({
+          event: "site_tech_detected",
+          userId: input.userId,
+          organizationId: input.organizationId,
+          websiteId: website.id,
+          properties: {
+            platform: detection.platform,
+            confidence: detection.confidence,
+          },
+        });
       } catch (error) {
         activation = mergeStep(activation, website.id, "siteTech", {
           status: "failed",
           error: error instanceof Error ? error.message : "site_tech_failed",
         });
+        trackActivationStep(input, "siteTech", false);
       }
     }
     await saveActivationState({ userId: input.userId, activation });
@@ -266,11 +298,26 @@ export async function runActivationPipeline(
           detail: `confidence:${profile.confidence}`,
           resultRef: profile.tone,
         });
+        trackActivationStep(input, "brandVoice", true, {
+          confidence: profile.confidence,
+          tone: profile.tone,
+        });
+        trackEventFireAndForget({
+          event: "brand_voice_extracted",
+          userId: input.userId,
+          organizationId: input.organizationId,
+          websiteId: website.id,
+          properties: {
+            confidence: profile.confidence,
+            tone: profile.tone,
+          },
+        });
       } catch (error) {
         activation = mergeStep(activation, website.id, "brandVoice", {
           status: "failed",
           error: error instanceof Error ? error.message : "brand_voice_failed",
         });
+        trackActivationStep(input, "brandVoice", false);
       }
     }
     await saveActivationState({ userId: input.userId, activation });
@@ -303,6 +350,13 @@ export async function runActivationPipeline(
       await saveActivationState({ userId: input.userId, activation });
 
       try {
+        trackEventFireAndForget({
+          event: "audit_started",
+          userId: input.userId,
+          organizationId: input.organizationId,
+          websiteId: website.id,
+          properties: { source: "activation" },
+        });
         const result = await runAndPersistWebsiteAudit({
           websiteId: website.id,
           userId: input.userId,
@@ -314,12 +368,23 @@ export async function runActivationPipeline(
           resultRef: result.auditId,
           detail: `score:${result.score}`,
         });
+        trackActivationStep(input, "audit", true, {
+          status: "completed",
+        });
+        trackEventFireAndForget({
+          event: "audit_completed",
+          userId: input.userId,
+          organizationId: input.organizationId,
+          websiteId: website.id,
+          properties: { auditId: result.auditId, count: result.score },
+        });
       } catch (error) {
         activation = mergeStep(activation, website.id, "audit", {
           status: "needs_action",
           error: error instanceof Error ? error.message : "audit_failed",
           detail: "manual_audit_needed",
         });
+        trackActivationStep(input, "audit", false);
       }
     }
     await saveActivationState({ userId: input.userId, activation });
@@ -423,6 +488,22 @@ export async function runActivationPipeline(
           resultRef: plan.id,
           detail: created ? "created" : "existing",
         });
+        trackActivationStep(input, "monthlyPlan", true, {
+          status: created ? "created" : "existing",
+        });
+        if (created) {
+          trackEventFireAndForget({
+            event: "monthly_plan_created",
+            userId: input.userId,
+            organizationId: input.organizationId,
+            websiteId: website.id,
+            properties: {
+              planId: plan.id,
+              count: articleTopicCount,
+              source: "activation",
+            },
+          });
+        }
       } catch (error) {
         activation = mergeStep(activation, website.id, "topics", {
           status: "failed",
@@ -432,6 +513,7 @@ export async function runActivationPipeline(
           status: "failed",
           error: error instanceof Error ? error.message : "plan_failed",
         });
+        trackActivationStep(input, "monthlyPlan", false);
       }
     }
   }

@@ -7,6 +7,7 @@ import {
 import { getPrisma } from "@/lib/db";
 import { AppError, ErrorCode } from "@/lib/errors";
 import { safeLogError } from "@/lib/logging";
+import { trackEventFireAndForget } from "@/lib/analytics/track";
 import { assertCanUseFeature } from "@/lib/billing/feature-gates";
 import {
   getWordPressConnectionWithSecret,
@@ -268,6 +269,18 @@ export async function createWordPressDraftForArticle({
   } catch {
     // Timeline sync must not block WordPress draft creation.
   }
+
+  trackEventFireAndForget({
+    event: "wordpress_draft_created",
+    userId,
+    organizationId: article.organizationId,
+    websiteId: article.websiteId,
+    properties: {
+      articleId: article.id,
+      integration: "wordpress",
+      status: "created",
+    },
+  });
 
   return {
     postId,

@@ -54,6 +54,7 @@ import {
   createDefaultBrandVoice,
 } from "@/lib/brand-voice";
 import { loadBrandVoiceForWebsite } from "@/lib/brand-voice/persist";
+import { trackEventFireAndForget } from "@/lib/analytics/track";
 
 export type GenerateArticleFromResearchInput = {
   websiteId: string;
@@ -187,6 +188,17 @@ export async function generateArticleFromResearchBrief(
     key: "ARTICLE_DRAFT",
     message:
       "You've reached the monthly article limit for your current plan. Upgrade to continue.",
+  });
+
+  trackEventFireAndForget({
+    event: "article_draft_started",
+    userId: input.userId,
+    organizationId: organization.id,
+    websiteId: website.id,
+    properties: {
+      source: input.planItemId ? "autopilot" : "research",
+      topicId: input.planItemId ?? undefined,
+    },
   });
 
   const topic = resolveTopicFromBrief(brief);
@@ -654,6 +666,31 @@ export async function generateArticleFromResearchBrief(
     } catch {
       // Timeline sync must not block article generation.
     }
+
+    trackEventFireAndForget({
+      event: "article_draft_created",
+      userId: input.userId,
+      organizationId: organization.id,
+      websiteId: website.id,
+      properties: {
+        articleId: article.id,
+        qualityPassed: qualityReport.passed,
+        qualityScore: qualityReport.score,
+        source: input.planItemId ? "autopilot" : "research",
+      },
+    });
+    trackEventFireAndForget({
+      event: qualityReport.passed
+        ? "article_quality_passed"
+        : "article_quality_failed",
+      userId: input.userId,
+      organizationId: organization.id,
+      websiteId: website.id,
+      properties: {
+        articleId: article.id,
+        qualityScore: qualityReport.score,
+      },
+    });
 
     return {
       article: serializeArticleRecord(article, wordpressConnected),

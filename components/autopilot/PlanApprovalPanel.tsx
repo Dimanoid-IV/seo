@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { ResearchBriefPreview } from "@/components/content-research/ResearchBriefPreview";
 import { researchSummaryFromBrief } from "@/components/content-research/ResearchBriefPreview";
 import { TopicBriefDrawer } from "@/components/autopilot/TopicBriefDrawer";
+import { trackClientEvent } from "@/lib/analytics/client";
 import { authFetch, parseApiErrorMessage } from "@/lib/auth/client-session";
 import type {
   AutopilotPlanItem,
@@ -459,7 +460,18 @@ export function PlanApprovalPanel({
                       {item.type === "ARTICLE" ? (
                         <button
                           type="button"
-                          onClick={() => setDetailsItemId(item.id)}
+                          onClick={() => {
+                            setDetailsItemId(item.id);
+                            trackClientEvent({
+                              event: "article_topic_opened",
+                              route: "/app/autopilot",
+                              properties: {
+                                topicId: item.id,
+                                planId,
+                                action: "open",
+                              },
+                            });
+                          }}
                           className="text-left font-medium text-slate-900 hover:text-violet-700 hover:underline"
                         >
                           {localizePlanItemTitle(item, dict)}
@@ -511,7 +523,18 @@ export function PlanApprovalPanel({
                       />
                       <button
                         type="button"
-                        onClick={() => setDetailsItemId(item.id)}
+                        onClick={() => {
+                          setDetailsItemId(item.id);
+                          trackClientEvent({
+                            event: "article_topic_opened",
+                            route: "/app/autopilot",
+                            properties: {
+                              topicId: item.id,
+                              planId,
+                              action: "open",
+                            },
+                          });
+                        }}
                         className="text-xs font-medium text-violet-600 hover:text-violet-800 hover:underline"
                       >
                         {t.viewTopicDetails}

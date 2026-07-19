@@ -12,6 +12,7 @@ import { isStripeConfigured } from "@/lib/billing/errors";
 import { resolveOrganizationForBilling } from "@/lib/billing/get-subscription";
 import { billingError } from "@/lib/billing/errors";
 import type { BillingPlanKey } from "@/lib/billing/plans";
+import { trackEventFireAndForget } from "@/lib/analytics/track";
 import { getServerEnv } from "@/lib/env";
 import { AppError, ErrorCode } from "@/lib/errors";
 
@@ -68,6 +69,14 @@ export async function POST(request: Request) {
       organizationId: organization.id,
       userEmail: currentUser.email,
       plan: parsed.data.plan as BillingPlanKey,
+    });
+
+    trackEventFireAndForget({
+      event: "checkout_started",
+      userId: currentUser.id,
+      organizationId: organization.id,
+      route: "/api/billing/checkout",
+      properties: { plan: parsed.data.plan },
     });
 
     return authJsonResponse({ data: result });

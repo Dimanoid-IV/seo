@@ -11,6 +11,7 @@ import { PageHeader } from "@/components/shared/PageHeader";
 import { PageLoadingState } from "@/components/shared/PageLoadingState";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import { trackClientEvent } from "@/lib/analytics/client";
 import { authFetch, parseApiErrorMessage } from "@/lib/auth/client-session";
 import { useSaasTranslations } from "@/lib/i18n/saas/SaasLocaleProvider";
 import type {
@@ -119,6 +120,13 @@ export function ReviewPage() {
     setData(result.data);
     setError(result.error);
   }
+
+  useEffect(() => {
+    trackClientEvent({
+      event: "review_opened",
+      route: "/app/review",
+    });
+  }, []);
 
   useEffect(() => {
     let cancelled = false;

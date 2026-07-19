@@ -16,6 +16,7 @@ import { PageLoadingState } from "@/components/shared/PageLoadingState";
 import { TrustNote } from "@/components/shared/TrustNote";
 import { useSaasTranslations } from "@/lib/i18n/saas/SaasLocaleProvider";
 import { authFetch, parseApiErrorMessage } from "@/lib/auth/client-session";
+import { trackClientEvent } from "@/lib/analytics/client";
 import { friendlyApiErrorMessageForLocale } from "@/lib/copy/user-errors";
 import { getClientLocale } from "@/lib/i18n/saas/locale-state";
 
@@ -41,6 +42,13 @@ export function BillingPage() {
   const checkoutSyncStarted = useRef(false);
 
   useEffect(() => {
+    trackClientEvent({
+      event: "billing_page_opened",
+      route: "/app/billing",
+    });
+  }, []);
+
+  useEffect(() => {
     if (searchParams.get("checkout") !== "success") {
       return;
     }
@@ -51,6 +59,11 @@ export function BillingPage() {
 
     checkoutSyncStarted.current = true;
     let cancelled = false;
+
+    trackClientEvent({
+      event: "checkout_success_seen",
+      route: "/app/billing",
+    });
 
     async function syncAfterCheckout() {
       setSyncingAfterCheckout(true);
@@ -77,6 +90,11 @@ export function BillingPage() {
             void refetchDashboardOverview({ silent: true });
 
             if (!cancelled && body.data.synced) {
+              trackClientEvent({
+                event: "subscription_synced",
+                route: "/app/billing",
+                properties: { plan: body.data.plan, status: "synced" },
+              });
               setActionSuccess("Subscription updated.");
               setSyncingAfterCheckout(false);
               return;

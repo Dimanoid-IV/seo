@@ -1,11 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Menu, Sparkles, X } from "lucide-react";
 import type { Locale } from "@/i18n/config";
 import type { Dictionary } from "@/i18n/dictionaries/ru";
+import { TrackedLink } from "@/components/analytics/TrackedLink";
 import { LocaleLink } from "@/components/ui/LocaleLink";
 import { buttonVariants } from "@/components/ui/button";
 import { LanguageSwitcher } from "@/components/layout/LanguageSwitcher";
@@ -77,8 +77,10 @@ export function Header({ locale, dict }: HeaderProps) {
 
         <div className="hidden items-center gap-2 md:flex">
           <LanguageSwitcher currentLocale={locale} />
-          <Link
+          <TrackedLink
+            event="login_click"
             href="/login"
+            eventProperties={{ cta: "header" }}
             className={cn(
               "rounded-lg px-3 py-2 text-sm transition-colors",
               isLight
@@ -87,16 +89,18 @@ export function Header({ locale, dict }: HeaderProps) {
             )}
           >
             {dict.nav.login}
-          </Link>
-          <Link
+          </TrackedLink>
+          <TrackedLink
+            event="register_click"
             href="/register"
+            eventProperties={{ cta: "header" }}
             className={cn(
               buttonVariants({ size: "sm" }),
               "rounded-xl bg-gradient-to-r from-blue-600 to-violet-600 hover:from-blue-500 hover:to-violet-500"
             )}
           >
             {dict.nav.cta}
-          </Link>
+          </TrackedLink>
         </div>
 
         <div className="flex items-center gap-2 md:hidden">
@@ -128,15 +132,19 @@ export function Header({ locale, dict }: HeaderProps) {
                     {dict.nav[item.key]}
                   </LocaleLink>
                 ))}
-                <Link
+                <TrackedLink
+                  event="login_click"
                   href="/login"
+                  eventProperties={{ cta: "header_mobile" }}
                   onClick={() => setOpen(false)}
                   className="rounded-lg px-4 py-3 text-base text-slate-700 transition-colors hover:bg-slate-100"
                 >
                   {dict.nav.login}
-                </Link>
-                <Link
+                </TrackedLink>
+                <TrackedLink
+                  event="register_click"
                   href="/register"
+                  eventProperties={{ cta: "header_mobile" }}
                   onClick={() => setOpen(false)}
                   className={cn(
                     buttonVariants(),
@@ -144,7 +152,7 @@ export function Header({ locale, dict }: HeaderProps) {
                   )}
                 >
                   {dict.nav.cta}
-                </Link>
+                </TrackedLink>
               </nav>
             </SheetContent>
           </Sheet>
