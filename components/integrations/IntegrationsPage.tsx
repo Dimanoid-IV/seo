@@ -8,6 +8,8 @@ import { useAuthSession } from "@/components/auth/AuthSessionProvider";
 import { EmptyState } from "@/components/dashboard/EmptyState";
 import { IntegrationActionSheet } from "@/components/integrations/IntegrationActionSheet";
 import { IntegrationGrid } from "@/components/integrations/IntegrationGrid";
+import { BrandVoiceCard } from "@/components/integrations/BrandVoiceCard";
+import { FutureMentionsCard } from "@/components/integrations/FutureMentionsCard";
 import { SiteTechHint } from "@/components/integrations/SiteTechHint";
 import { PageErrorState } from "@/components/shared/PageErrorState";
 import { PageHeader } from "@/components/shared/PageHeader";
@@ -223,6 +225,18 @@ export function IntegrationsPage() {
         <div className="mb-6">
           <SiteTechHint websiteId={data.website.id} />
         </div>
+      ) : null}
+
+      {data.website?.id ? (
+        <BrandVoiceCard websiteId={data.website.id} />
+      ) : null}
+
+      {data.website?.id ? (
+        <FutureMentionsCard
+          title={i.futureMentions.title}
+          description={i.futureMentions.description}
+          badge={i.futureMentions.badge}
+        />
       ) : null}
 
       {banner ? (

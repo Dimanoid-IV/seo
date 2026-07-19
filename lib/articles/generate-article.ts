@@ -10,6 +10,12 @@ import {
 
 import { findPrimaryOrganization } from "@/lib/auth/queries";
 import { assertUsageLimit, recordUsage } from "@/lib/billing/feature-gates";
+import {
+  buildBrandVoiceCtaGuidance,
+  buildBrandVoiceGenerationInstructions,
+  createDefaultBrandVoice,
+} from "@/lib/brand-voice";
+import { loadBrandVoiceForWebsite } from "@/lib/brand-voice/persist";
 import { getPrisma } from "@/lib/db";
 import { AppError, ErrorCode } from "@/lib/errors";
 import { generateArticleDraft } from "@/lib/hermes/client";
@@ -197,6 +203,40 @@ export async function generateArticleDraftForWebsite(
   const language =
     input.language ?? website.primaryLanguage ?? WebsiteLanguage.RU;
 
+  const brandVoice =
+    (await loadBrandVoiceForWebsite(website.id)) ??
+    createDefaultBrandVoice({
+      language: language.toLowerCase(),
+      sourceUrls: [website.url],
+    });
+
+  const brandVoiceInstructions = buildBrandVoiceGenerationInstructions(
+    brandVoice,
+    language.toLowerCase()
+  );
+
+  const enrichedRecommendationJson = {
+    ...(task?.recommendationJson &&
+    typeof task.recommendationJson === "object" &&
+    !Array.isArray(task.recommendationJson)
+      ? (task.recommendationJson as Record<string, unknown>)
+      : {}),
+    brandVoice,
+    generationInstructions: [
+      ...brandVoiceInstructions,
+      ...((task?.recommendationJson &&
+      typeof task.recommendationJson === "object" &&
+      !Array.isArray(task.recommendationJson) &&
+      Array.isArray(
+        (task.recommendationJson as { generationInstructions?: unknown })
+          .generationInstructions
+      )
+        ? ((task.recommendationJson as { generationInstructions: string[] })
+            .generationInstructions)
+        : []) as string[]),
+    ],
+  };
+
   const now = new Date();
   const aiJob = await prisma.aIJob.create({
     data: {
@@ -231,9 +271,13 @@ export async function generateArticleDraftForWebsite(
         ? {
             title: task.title,
             description: task.description,
-            recommendationJson: task.recommendationJson,
+            recommendationJson: enrichedRecommendationJson,
           }
-        : undefined,
+        : {
+            title: resolvedTopic,
+            description: null,
+            recommendationJson: enrichedRecommendationJson,
+          },
       article: {
         topic: resolvedTopic,
         targetKeyword,
@@ -245,6 +289,12 @@ export async function generateArticleDraftForWebsite(
         writeForSmallBusinessOwner: true,
         includeFaq: true,
         includeMeta: true,
+        includeCallToAction: true,
+        ctaGuidance: buildBrandVoiceCtaGuidance(
+          brandVoice,
+          resolvedTopic,
+          website.url
+        ),
       },
     });
 

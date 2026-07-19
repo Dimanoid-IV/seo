@@ -1,5 +1,9 @@
 import "server-only";
 
+import {
+  buildBrandVoiceHumanizerAddendum,
+  type BrandVoiceProfile,
+} from "@/lib/brand-voice";
 import { isHermesConfigured, repairArticleDraft } from "@/lib/hermes/client";
 import type { HermesArticleDraftResult } from "@/lib/hermes/types";
 import type { ContentResearchBrief } from "@/lib/content-research/types";
@@ -141,6 +145,7 @@ export function humanizeArticleDeterministic(
 const HUMANIZER_REPAIR_INSTRUCTIONS = `Humanize this article draft:
 - Remove generic AI filler and robotic section sameness.
 - Use concrete, business-specific language from the research brief.
+- Preserve and strengthen the brand voice (tone, CTA style, phrases to use/avoid).
 - Vary sentence rhythm; keep plain-language tone for small business owners.
 - Preserve SEO structure without keyword stuffing.
 - Include FAQ naturally.
@@ -158,6 +163,7 @@ export async function humanizeArticleDraft(
     website: { url: string; niche: string | null; language: string };
     topic: string;
     targetKeyword: string | null;
+    brandVoice?: BrandVoiceProfile | null;
   }
 ): Promise<HumanizeArticleResult> {
   const humanizedAt = new Date().toISOString();
@@ -174,6 +180,10 @@ export async function humanizeArticleDraft(
         currentDraft: draft,
         repairInstructions: [
           HUMANIZER_REPAIR_INSTRUCTIONS,
+          buildBrandVoiceHumanizerAddendum(
+            context.brandVoice,
+            context.website.language
+          ),
           `Buyer question: ${context.brief.buyerQuestion}`,
           `Primary keyword: ${context.brief.primaryKeyword}`,
           context.brief.contentGapSummary
@@ -182,7 +192,9 @@ export async function humanizeArticleDraft(
         ]
           .filter(Boolean)
           .join("\n"),
-        issues: ["Humanize tone and remove generic AI phrasing"],
+        issues: [
+          "Humanize tone, preserve brand voice, and remove generic AI phrasing",
+        ],
       });
 
       return {

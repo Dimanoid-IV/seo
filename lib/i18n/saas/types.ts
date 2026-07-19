@@ -202,6 +202,13 @@ export type SaasDictionary = {
       nudgeTitle: string;
       nudgeDescription: string;
       safetyNote: string;
+      /** Prompt 11.45 — hands-off background clarity */
+      worksInBackground: string;
+      nextPrep: (date: string) => string;
+      nextPrepSoon: string;
+      publishAfterConfirm: string;
+      wordpressDraftOnly: string;
+      customSitePackage: string;
     };
     metrics: {
       growthScore: string;
@@ -649,6 +656,39 @@ export type SaasDictionary = {
       lastPing: string;
       permissionsTitle: string;
       instructions: string;
+    };
+    brandVoice: {
+      title: string;
+      description: string;
+      confidenceEnough: string;
+      confidenceThin: string;
+      refresh: string;
+      refreshing: string;
+      editManual: string;
+      defaultHint: string;
+      summary: (tone: string, audience: string) => string;
+      loadFailed: string;
+      loadNetworkError: string;
+      refreshFailed: string;
+      refreshNetworkError: string;
+      saveFailed: string;
+      saveNetworkError: string;
+      editorTitle: string;
+      fieldAudience: string;
+      fieldTone: string;
+      fieldWordsToUse: string;
+      fieldWordsToAvoid: string;
+      fieldCta: string;
+      fieldExample: string;
+      wordsPlaceholder: string;
+      save: string;
+      cancel: string;
+      tones: Record<string, string>;
+    };
+    futureMentions: {
+      title: string;
+      description: string;
+      badge: string;
     };
   };
   reports: {

@@ -1,15 +1,25 @@
-import "server-only";
-
+import {
+  buildBrandVoiceGenerationInstructions,
+  type BrandVoiceProfile,
+} from "@/lib/brand-voice";
 import type { ContentResearchBrief } from "@/lib/content-research/types";
 
 /**
  * Builds Hermes task context from a ContentResearchBrief.
  * Passed via task.recommendationJson — no Hermes API changes required.
  */
-export function buildResearchTaskContext(brief: ContentResearchBrief) {
+export function buildResearchTaskContext(
+  brief: ContentResearchBrief,
+  brandVoice?: BrandVoiceProfile | null
+) {
   const competitorAngles = brief.competitors.flatMap((c) => c.contentAngles);
   const competitorGaps = brief.competitors.map(
     (c) => `${c.name}: ${c.reason}`
+  );
+
+  const brandVoiceInstructions = buildBrandVoiceGenerationInstructions(
+    brandVoice,
+    brandVoice?.language
   );
 
   return {
@@ -32,8 +42,9 @@ export function buildResearchTaskContext(brief: ContentResearchBrief) {
       evidence: brief.evidence,
       riskLevel: brief.riskLevel,
     },
+    brandVoice: brandVoice ?? null,
     generationInstructions: [
-      "Write in a human, non-generic voice for a small business owner.",
+      ...brandVoiceInstructions,
       "Write a thorough, in-depth article of at least 1000 words (aim for 1000–1300).",
       "Structure: H1 title, short intro, 5–7 useful H2 sections with practical buying/decision advice, an FAQ, and a final call-to-action section.",
       "End with a natural, non-aggressive call-to-action that invites the reader to order/request the service or contact the business, relevant to the topic and website.",

@@ -49,6 +49,11 @@ import {
   type ArticleGenerationMetadata,
 } from "./research-generation-types";
 import type { SerializedArticle } from "./types";
+import {
+  buildBrandVoiceCtaGuidance,
+  createDefaultBrandVoice,
+} from "@/lib/brand-voice";
+import { loadBrandVoiceForWebsite } from "@/lib/brand-voice/persist";
 
 export type GenerateArticleFromResearchInput = {
   websiteId: string;
@@ -188,7 +193,13 @@ export async function generateArticleFromResearchBrief(
   const targetKeyword = resolveTargetKeywordFromBrief(brief);
   const language =
     input.language ?? website.primaryLanguage ?? WebsiteLanguage.RU;
-  const researchContext = buildResearchTaskContext(brief);
+  const brandVoice =
+    (await loadBrandVoiceForWebsite(website.id)) ??
+    createDefaultBrandVoice({
+      language: language.toLowerCase(),
+      sourceUrls: [website.url],
+    });
+  const researchContext = buildResearchTaskContext(brief, brandVoice);
   const evidenceNotes = buildEvidenceNotes(brief);
 
   const now = new Date();
@@ -207,6 +218,14 @@ export async function generateArticleFromResearchBrief(
         topic,
         targetKeyword,
         language,
+        brandVoice: {
+          tone: brandVoice.tone,
+          formality: brandVoice.formality,
+          sellingStyle: brandVoice.sellingStyle,
+          confidence: brandVoice.confidence,
+          ctaStyle: brandVoice.ctaStyle,
+          language: brandVoice.language,
+        },
       },
       startedAt: now,
     },
@@ -244,7 +263,11 @@ export async function generateArticleFromResearchBrief(
         targetWordCount: 1200,
         minSections: 5,
         includeCallToAction: true,
-        ctaGuidance: `End with a natural, non-aggressive call-to-action inviting the reader to order or request "${topic}" or contact the business at ${website.url}. Make it relevant to the topic.`,
+        ctaGuidance: buildBrandVoiceCtaGuidance(
+          brandVoice,
+          topic,
+          website.url
+        ),
         internalLinkSuggestions: brief.internalLinkSuggestions.slice(0, 5),
       },
     });
@@ -258,6 +281,7 @@ export async function generateArticleFromResearchBrief(
       },
       topic,
       targetKeyword,
+      brandVoice,
     });
 
     let currentArticle = guardHumanizedArticle(hermesResult, humanized.article, {
@@ -274,6 +298,7 @@ export async function generateArticleFromResearchBrief(
       targetKeyword,
       brief,
       evidenceNotesCount: evidenceNotes.length,
+      brandVoice,
     });
 
     const repairUsages: Array<{
@@ -338,6 +363,7 @@ export async function generateArticleFromResearchBrief(
         },
         topic,
         targetKeyword,
+        brandVoice,
       });
 
       currentArticle = guardHumanizedArticle(currentArticle, rehumanized.article, {
@@ -353,6 +379,7 @@ export async function generateArticleFromResearchBrief(
         targetKeyword,
         brief,
         evidenceNotesCount: evidenceNotes.length,
+        brandVoice,
       });
     }
 
@@ -375,6 +402,7 @@ export async function generateArticleFromResearchBrief(
         targetKeyword,
         brief,
         evidenceNotesCount: evidenceNotes.length,
+        brandVoice,
       });
     }
 

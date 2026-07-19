@@ -33,6 +33,11 @@ export function MonthlyAutopilotActiveCard({
         ? t.chipPublishWebhook
         : t.chipPublishManual;
 
+  const pathClarity =
+    publishingPath === "wordpress_draft"
+      ? t.wordpressDraftOnly
+      : t.customSitePackage;
+
   return (
     <section className="rounded-2xl border border-emerald-200 bg-gradient-to-br from-emerald-50/90 to-blue-50/40 p-6 sm:p-8">
       <div className="flex items-start gap-3">
@@ -40,7 +45,10 @@ export function MonthlyAutopilotActiveCard({
           <ShieldCheck className="size-5 text-emerald-700" />
         </div>
         <div className="min-w-0 flex-1">
-          <h2 className="text-lg font-semibold tracking-tight text-slate-900 sm:text-xl">
+          <p className="text-xs font-medium uppercase tracking-wide text-emerald-700">
+            {t.worksInBackground}
+          </p>
+          <h2 className="mt-1 text-lg font-semibold tracking-tight text-slate-900 sm:text-xl">
             {t.title}
           </h2>
           <p className="mt-2 max-w-2xl text-sm leading-relaxed text-slate-600">
@@ -48,6 +56,16 @@ export function MonthlyAutopilotActiveCard({
           </p>
         </div>
       </div>
+
+      <ul className="mt-4 space-y-1.5 text-sm text-slate-700">
+        <li>
+          {nextArticleDateLabel
+            ? t.nextPrep(nextArticleDateLabel)
+            : t.nextPrepSoon}
+        </li>
+        <li>{t.publishAfterConfirm}</li>
+        <li>{pathClarity}</li>
+      </ul>
 
       <div className="mt-5 flex flex-wrap gap-2">
         <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-white/80 px-3 py-1 text-xs font-medium text-emerald-900">

@@ -5,6 +5,11 @@ import {
   type ArticleQualityIssue,
 } from "@/lib/hermes/article-quality";
 import type { ContentResearchBrief } from "@/lib/content-research/types";
+import {
+  countGenericMarketingPhrases,
+  ctaLooksRelevant,
+  type BrandVoiceProfile,
+} from "@/lib/brand-voice";
 
 import {
   RESEARCH_QUALITY_PASS_THRESHOLD,
@@ -130,6 +135,7 @@ export function validateResearchAwareArticle(
     targetKeyword: string | null;
     brief: ContentResearchBrief;
     evidenceNotesCount: number;
+    brandVoice?: BrandVoiceProfile | null;
   }
 ): ArticleQualityReport {
   const baseValidation = validateGeneratedArticle(
@@ -239,6 +245,36 @@ export function validateResearchAwareArticle(
       noAi
         ? "No generic AI assistant phrasing detected."
         : 'Remove "as an AI" or similar generic phrasing.'
+    )
+  );
+
+  const genericMarketingCount = countGenericMarketingPhrases(searchable);
+  const noGenericMarketing = genericMarketingCount === 0;
+  checks.push(
+    toCheck(
+      "no_generic_marketing",
+      "No generic AI marketing fluff",
+      noGenericMarketing,
+      "warning",
+      noGenericMarketing
+        ? "No generic marketing filler phrases detected."
+        : "Replace generic AI marketing fluff with brand-specific language."
+    )
+  );
+
+  const ctaOk = ctaLooksRelevant(
+    article.contentHtml ?? "",
+    context.brandVoice?.ctaStyle
+  );
+  checks.push(
+    toCheck(
+      "cta_brand_relevance",
+      "CTA matches brand voice",
+      ctaOk,
+      "warning",
+      ctaOk
+        ? "CTA aligns with brand voice guidance."
+        : "CTA should better match the brand CTA style."
     )
   );
 
