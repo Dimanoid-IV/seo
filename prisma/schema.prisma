@@ -703,6 +703,8 @@ model Website {
   autopilotLivePublishPausedAt DateTime?
   autopilotLivePublishPausedByUserId String? @db.Uuid
   autopilotLivePublishPauseReason String?
+  /// First-customer scoped rollout flag (Prompt 11.55). OR with env allowlist.
+  livePublishRolloutEnabled Boolean @default(false)
   createdAt               DateTime        @default(now())
   updatedAt               DateTime        @updatedAt
   deletedAt               DateTime?
@@ -742,6 +744,7 @@ model Website {
   @@index([currentGrowthScore])
   @@index([deletedAt])
   @@index([autopilotLivePublishPaused])
+  @@index([livePublishRolloutEnabled])
   @@map("websites")
 }
 

@@ -1583,6 +1583,18 @@ export const saasDictionary: SaasDictionary = {
       pauseNetworkError: "Сетевая ошибка при паузе live publish.",
       resumeFailed: "Не удалось возобновить live publish.",
       resumeNetworkError: "Сетевая ошибка при возобновлении live publish.",
+      autoPublishExplainer:
+        "Autopilot будет автоматически публиковать одобренные статьи месячного плана, когда WordPress здоров и live publish включён для этого сайта.",
+      noRankingGuarantee:
+        "RankBoost не гарантирует позиции, трафик или выручку. Публикация — только операционная помощь.",
+      wordpressHealthLabel: "WordPress",
+      wordpressHealthConnected: "Подключён",
+      wordpressHealthDisconnected: "Не подключён",
+      rollbackAvailableNote:
+        "Опубликованные статьи можно вернуть в черновик на странице статьи или в истории интеграций.",
+      lastPublishedUrlLabel: "Последний опубликованный URL",
+      scopedRolloutNote:
+        "Live publish ограничен одобренными сайтами первого клиента. Пауза останавливает только live-публикацию.",
     },
     planApproval: {
       title: "Одобрение плана",

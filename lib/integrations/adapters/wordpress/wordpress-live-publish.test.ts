@@ -108,8 +108,10 @@ function allowedInput(
       disconnectedAt: null,
       hasCredentials: true,
     },
-    quality: { qualityPassed: true },
+    quality: { qualityPassed: true, qualityScore: 85 },
     killSwitch: { engaged: false },
+    livePublishRolloutEnabled: true,
+    minQualityScore: 70,
     monthlyQuotaOk: true,
     duplicatePublishedExternalId: false,
     ...overrides,
@@ -182,9 +184,14 @@ function allowedInput(
 }
 
 // --- gate denies kill switch ---
+// --- kill switch blocks non-allowlisted websites ---
 {
   const r = canLivePublishArticleViaWordPress(
-    allowedInput({ killSwitch: { engaged: true } })
+    allowedInput({
+      killSwitch: { engaged: true },
+      livePublishRolloutEnabled: false,
+      envAllowlist: [],
+    })
   );
   assert.equal(r.allowed, false);
   assert.equal(r.blockedReason, "kill_switch_engaged");

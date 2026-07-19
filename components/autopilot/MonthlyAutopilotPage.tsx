@@ -315,6 +315,13 @@ export function MonthlyAutopilotPage() {
               livePublishPaused={Boolean(
                 data.autopilotSettings.livePublishPaused
               )}
+              livePublishRolloutEnabled={Boolean(
+                data.livePublishScopedAllowed ??
+                  data.autopilotSettings.livePublishRolloutEnabled
+              )}
+              wordpressConnected={Boolean(data.wordpressConnected)}
+              lastPublishedUrl={data.lastPublishedUrl ?? null}
+              rollbackAvailable={data.rollbackAvailable !== false}
               onModeChange={() => void loadPlan(month)}
               onRunDue={() => void loadPlan(month)}
               onPauseChange={() => void loadPlan(month)}

@@ -1580,6 +1580,18 @@ export const saasDictionary: SaasDictionary = {
       pauseNetworkError: "Network error while pausing live publish.",
       resumeFailed: "Could not resume live publish.",
       resumeNetworkError: "Network error while resuming live publish.",
+      autoPublishExplainer:
+        "Autopilot will publish approved monthly plan articles automatically when WordPress is healthy and live publish is enabled for this site.",
+      noRankingGuarantee:
+        "RankBoost does not guarantee rankings, traffic, or revenue. Publishing is an operational assist only.",
+      wordpressHealthLabel: "WordPress",
+      wordpressHealthConnected: "Connected",
+      wordpressHealthDisconnected: "Not connected",
+      rollbackAvailableNote:
+        "Published articles can be moved back to draft from the article page or Integrations history.",
+      lastPublishedUrlLabel: "Last published URL",
+      scopedRolloutNote:
+        "Live publish is limited to approved first-customer sites. Pause stops live publishing only.",
     },
     planApproval: {
       title: "Plan approval",

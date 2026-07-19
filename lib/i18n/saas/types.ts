@@ -1310,6 +1310,14 @@ export type SaasDictionary = {
       pauseNetworkError: string;
       resumeFailed: string;
       resumeNetworkError: string;
+      autoPublishExplainer: string;
+      noRankingGuarantee: string;
+      wordpressHealthLabel: string;
+      wordpressHealthConnected: string;
+      wordpressHealthDisconnected: string;
+      rollbackAvailableNote: string;
+      lastPublishedUrlLabel: string;
+      scopedRolloutNote: string;
     };
     planApproval: {
       title: string;

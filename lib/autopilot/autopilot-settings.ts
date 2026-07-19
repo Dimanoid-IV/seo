@@ -14,6 +14,8 @@ export type AutopilotSettingsView = {
   livePublishPaused: boolean;
   livePublishPausedAt: string | null;
   livePublishPauseReason: string | null;
+  /** DB-backed first-customer scoped live publish (Prompt 11.55). */
+  livePublishRolloutEnabled: boolean;
 };
 
 const CLIENT_MODE_MAP: Record<AutopilotMode, string> = {
@@ -84,6 +86,7 @@ export async function getAutopilotSettings(input: {
           autopilotLivePublishPaused: true,
           autopilotLivePublishPausedAt: true,
           autopilotLivePublishPauseReason: true,
+          livePublishRolloutEnabled: true,
         },
       }),
     ]);
@@ -97,6 +100,8 @@ export async function getAutopilotSettings(input: {
         websitePause?.autopilotLivePublishPausedAt?.toISOString() ?? null,
       livePublishPauseReason:
         websitePause?.autopilotLivePublishPauseReason ?? null,
+      livePublishRolloutEnabled:
+        websitePause?.livePublishRolloutEnabled === true,
     };
   } catch {
     return {
@@ -106,6 +111,7 @@ export async function getAutopilotSettings(input: {
       livePublishPaused: false,
       livePublishPausedAt: null,
       livePublishPauseReason: null,
+      livePublishRolloutEnabled: false,
     };
   }
 }
@@ -163,6 +169,7 @@ export async function updateAutopilotSettings(input: {
         autopilotLivePublishPaused: true,
         autopilotLivePublishPausedAt: true,
         autopilotLivePublishPauseReason: true,
+        livePublishRolloutEnabled: true,
       },
     }),
   ]);
@@ -177,5 +184,7 @@ export async function updateAutopilotSettings(input: {
       websitePause?.autopilotLivePublishPausedAt?.toISOString() ?? null,
     livePublishPauseReason:
       websitePause?.autopilotLivePublishPauseReason ?? null,
+    livePublishRolloutEnabled:
+      websitePause?.livePublishRolloutEnabled === true,
   };
 }

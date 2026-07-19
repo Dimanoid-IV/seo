@@ -1586,6 +1586,18 @@ export const saasDictionary: SaasDictionary = {
       pauseNetworkError: "Võrguviga live publish’i peatamisel.",
       resumeFailed: "Live publish’i jätkamine ebaõnnestus.",
       resumeNetworkError: "Võrguviga live publish’i jätkamisel.",
+      autoPublishExplainer:
+        "Autopilot avaldab kinnitatud kuuplaani artiklid automaatselt, kui WordPress on terve ja live publish on selle saidi jaoks lubatud.",
+      noRankingGuarantee:
+        "RankBoost ei taga kohti, liiklust ega tulu. Avaldamine on ainult operatiivne abi.",
+      wordpressHealthLabel: "WordPress",
+      wordpressHealthConnected: "Ühendatud",
+      wordpressHealthDisconnected: "Pole ühendatud",
+      rollbackAvailableNote:
+        "Avaldatud artikleid saab mustandisse tagasi viia artikli lehelt või integratsioonide ajaloost.",
+      lastPublishedUrlLabel: "Viimati avaldatud URL",
+      scopedRolloutNote:
+        "Live publish on piiratud kinnitatud esimese kliendi saitidega. Paus peatab ainult live-avaldamise.",
     },
     planApproval: {
       title: "Plaani kinnitamine",

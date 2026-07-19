@@ -34,7 +34,12 @@ import {
   markExecutionJobSucceeded,
 } from "@/lib/integrations/execution-jobs";
 import { sanitizeExecutionPayload } from "@/lib/integrations/execution-sanitize";
-import { isLivePublishKillSwitchEngaged } from "@/lib/integrations/live-publish-gate";
+import {
+  getLivePublishFirstRolloutMaxArticles,
+  getLivePublishMaxPerDay,
+  getLivePublishMinQualityScore,
+  utcDayBounds,
+} from "@/lib/integrations/live-publish-rollout";
 import { createWordPressRestPublishedPost } from "@/lib/integrations/adapters/wordpress/publish-article";
 import {
   buildWordPressPublishIdempotencyKey,
@@ -130,6 +135,7 @@ export async function runWordPressLivePublishForPlanArticle(
           organizationId: true,
           status: true,
           qualityPassed: true,
+          qualityScore: true,
           wordpressPostId: true,
           contentHtml: true,
           publishedAt: true,
@@ -148,6 +154,7 @@ export async function runWordPressLivePublishForPlanArticle(
           id: true,
           organizationId: true,
           autopilotLivePublishPaused: true,
+          livePublishRolloutEnabled: true,
         },
       }),
       prisma.wordPressConnection.findFirst({
@@ -170,6 +177,30 @@ export async function runWordPressLivePublishForPlanArticle(
         organizationId: input.organizationId,
         websiteId: input.websiteId,
         key: "ARTICLE_DRAFT",
+      }),
+    ]);
+
+  const day = utcDayBounds();
+  const [succeededPublishCountToday, succeededPublishCountTotal] =
+    await Promise.all([
+      prisma.integrationExecutionJob.count({
+        where: {
+          websiteId: input.websiteId,
+          organizationId: input.organizationId,
+          action: IntegrationExecutionAction.PUBLISH,
+          provider: IntegrationExecutionProvider.WORDPRESS,
+          status: IntegrationExecutionStatus.SUCCEEDED,
+          finishedAt: { gte: day.start, lte: day.end },
+        },
+      }),
+      prisma.integrationExecutionJob.count({
+        where: {
+          websiteId: input.websiteId,
+          organizationId: input.organizationId,
+          action: IntegrationExecutionAction.PUBLISH,
+          provider: IntegrationExecutionProvider.WORDPRESS,
+          status: IntegrationExecutionStatus.SUCCEEDED,
+        },
       }),
     ]);
 
@@ -207,9 +238,17 @@ export async function runWordPressLivePublishForPlanArticle(
           hasCredentials: Boolean(wpConnection.apiSecretEncrypted),
         }
       : null,
-    quality: { qualityPassed: article?.qualityPassed },
-    killSwitch: { engaged: isLivePublishKillSwitchEngaged() },
+    quality: {
+      qualityPassed: article?.qualityPassed,
+      qualityScore: article?.qualityScore,
+    },
     websiteLivePublishPaused: website?.autopilotLivePublishPaused === true,
+    livePublishRolloutEnabled: website?.livePublishRolloutEnabled === true,
+    minQualityScore: getLivePublishMinQualityScore(),
+    maxPublishPerDay: getLivePublishMaxPerDay(),
+    firstRolloutMaxArticles: getLivePublishFirstRolloutMaxArticles(),
+    succeededPublishCountToday,
+    succeededPublishCountTotal,
     monthlyQuotaOk: wordpressFeature && quota.allowed,
     duplicatePublishedExternalId: duplicatePublished,
   });
@@ -542,6 +581,8 @@ export async function runWordPressLivePublishForPlanArticle(
           editUrl: publishResult.editUrl,
           planId: input.planId,
           planItemId: input.planItem.id,
+          firstCustomerRollout: true,
+          supportNotify: true,
         },
       },
     });
@@ -561,6 +602,8 @@ export async function runWordPressLivePublishForPlanArticle(
           publishedUrl: publishResult.link,
           planId: input.planId,
           planItemId: input.planItem.id,
+          firstCustomerRollout: true,
+          supportNotify: true,
         },
       },
     });

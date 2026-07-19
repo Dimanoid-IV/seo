@@ -82,6 +82,8 @@ function planItem(
       hasCredentials: true,
     },
     killSwitch: { engaged: true },
+    livePublishRolloutEnabled: false,
+    envAllowlist: [],
     websiteLivePublishPaused: false,
     monthlyQuotaOk: true,
   });
@@ -104,6 +106,7 @@ function planItem(
       hasCredentials: true,
     },
     killSwitch: { engaged: false },
+    livePublishRolloutEnabled: true,
     websiteLivePublishPaused: true,
     monthlyQuotaOk: true,
   });
@@ -126,6 +129,7 @@ function planItem(
       hasCredentials: true,
     },
     killSwitch: { engaged: false },
+    livePublishRolloutEnabled: true,
     websiteLivePublishPaused: false,
     monthlyQuotaOk: true,
   });
@@ -298,6 +302,7 @@ function planItem(
       hasCredentials: true,
     },
     killSwitch: { engaged: false },
+    livePublishRolloutEnabled: true,
     websiteLivePublishPaused: false,
     monthlyQuotaOk: true,
   });

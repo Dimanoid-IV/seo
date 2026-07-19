@@ -15,7 +15,7 @@ import {
   type PlanPublishingModeValue,
 } from "@/lib/autopilot/plan-publishing-mode";
 import type { AutopilotPlanItem } from "@/lib/autopilot/plan-item-types";
-import { isLivePublishKillSwitchEngaged } from "@/lib/integrations/live-publish-gate";
+import { resolveLivePublishScope } from "@/lib/integrations/live-publish-rollout";
 
 export type LivePublishBlockedReason =
   | "plan_not_approved"
@@ -23,6 +23,7 @@ export type LivePublishBlockedReason =
   | "plan_review_only"
   | "autopilot_not_autopublish"
   | "quality_failed"
+  | "quality_score_too_low"
   | "article_status_not_publishable"
   | "ownership_mismatch"
   | "wordpress_not_connected"
@@ -34,7 +35,10 @@ export type LivePublishBlockedReason =
   | "seo_fix_not_live"
   | "quota_exceeded"
   | "kill_switch_engaged"
+  | "website_not_allowlisted"
   | "website_paused"
+  | "daily_limit_exceeded"
+  | "first_rollout_limit_exceeded"
   | "missing_article"
   | "missing_content";
 
@@ -45,6 +49,7 @@ export type CanLivePublishArticleViaWordPressInput = {
     organizationId: string;
     status: ArticleStatus | string;
     qualityPassed: boolean | null;
+    qualityScore?: number | null;
     wordpressPostId: string | null;
     contentHtml?: string | null;
     publishedAt?: Date | null;
@@ -63,11 +68,25 @@ export type CanLivePublishArticleViaWordPressInput = {
     disconnectedAt?: Date | null;
     hasCredentials?: boolean;
   } | null;
-  quality?: { qualityPassed?: boolean | null };
-  /** When omitted, reads global kill switch. */
+  quality?: { qualityPassed?: boolean | null; qualityScore?: number | null };
+  /** When omitted, reads global kill switch via scoped rollout policy. */
   killSwitch?: { engaged?: boolean };
   /** Per-website emergency pause (Prompt 11.53). */
   websiteLivePublishPaused?: boolean;
+  /** DB Website.livePublishRolloutEnabled (Prompt 11.55). */
+  livePublishRolloutEnabled?: boolean | null;
+  /** Override env allowlist for tests. */
+  envAllowlist?: string[];
+  /** Minimum quality score required (rollout). */
+  minQualityScore?: number;
+  /** SUCCEEDED WP PUBLISH jobs today for this website. */
+  succeededPublishCountToday?: number;
+  /** Max publishes per UTC day (rollout). */
+  maxPublishPerDay?: number;
+  /** Total SUCCEEDED WP PUBLISH jobs for this website. */
+  succeededPublishCountTotal?: number;
+  /** Max total publishes in first rollout. */
+  firstRolloutMaxArticles?: number;
   /** Monthly quota check result — false means over limit. */
   monthlyQuotaOk?: boolean;
   /** Another article already owns this published external ID. */
@@ -116,8 +135,16 @@ const USER_SAFE: Record<LivePublishBlockedReason, string> = {
   quota_exceeded: "Monthly publishing quota has been reached.",
   kill_switch_engaged:
     "Live publish is paused by the safety kill switch. Use Review Queue.",
+  website_not_allowlisted:
+    "This website is not on the first-customer live publish allowlist yet.",
   website_paused:
     "Live publish is paused for this website. Resume in Autopilot to continue.",
+  daily_limit_exceeded:
+    "Daily live publish limit reached for this website. Try again tomorrow.",
+  first_rollout_limit_exceeded:
+    "First-customer rollout limit reached for this website.",
+  quality_score_too_low:
+    "Article quality score is below the minimum required for live publish.",
   missing_article: "No article is linked to this plan item.",
   missing_content: "Article has no content to publish.",
 };
@@ -133,17 +160,24 @@ export function canLivePublishArticleViaWordPress(
     userSafeMessage: USER_SAFE[blockedReason],
   });
 
-  const killEngaged =
-    typeof input.killSwitch?.engaged === "boolean"
-      ? input.killSwitch.engaged
-      : isLivePublishKillSwitchEngaged();
-
-  if (killEngaged) {
-    return deny("kill_switch_engaged");
-  }
-
+  // Pause always wins — even for allowlisted websites.
   if (input.websiteLivePublishPaused === true) {
     return deny("website_paused");
+  }
+
+  const scope = resolveLivePublishScope({
+    websiteId: input.website.id,
+    dbRolloutEnabled: input.livePublishRolloutEnabled,
+    killSwitchEngaged: input.killSwitch?.engaged,
+    envAllowlist: input.envAllowlist,
+  });
+
+  if (!scope.allowed) {
+    return deny(
+      scope.blockedReason === "website_not_allowlisted"
+        ? "website_not_allowlisted"
+        : "kill_switch_engaged"
+    );
   }
 
   if (input.planStatus.toUpperCase() !== "APPROVED") {
@@ -192,6 +226,19 @@ export function canLivePublishArticleViaWordPress(
     input.quality?.qualityPassed === true || article.qualityPassed === true;
   if (!qualityPassed) {
     return deny("quality_failed");
+  }
+
+  const qualityScore =
+    typeof input.quality?.qualityScore === "number"
+      ? input.quality.qualityScore
+      : typeof article.qualityScore === "number"
+        ? article.qualityScore
+        : null;
+  if (
+    typeof input.minQualityScore === "number" &&
+    (qualityScore === null || qualityScore < input.minQualityScore)
+  ) {
+    return deny("quality_score_too_low");
   }
 
   if (!PUBLISHABLE_STATUSES.has(String(article.status))) {
@@ -243,6 +290,22 @@ export function canLivePublishArticleViaWordPress(
 
   if (input.monthlyQuotaOk === false) {
     return deny("quota_exceeded");
+  }
+
+  if (
+    typeof input.maxPublishPerDay === "number" &&
+    typeof input.succeededPublishCountToday === "number" &&
+    input.succeededPublishCountToday >= input.maxPublishPerDay
+  ) {
+    return deny("daily_limit_exceeded");
+  }
+
+  if (
+    typeof input.firstRolloutMaxArticles === "number" &&
+    typeof input.succeededPublishCountTotal === "number" &&
+    input.succeededPublishCountTotal >= input.firstRolloutMaxArticles
+  ) {
+    return deny("first_rollout_limit_exceeded");
   }
 
   return {

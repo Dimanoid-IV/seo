@@ -28,6 +28,11 @@ type AutopilotStatusBlockProps = {
   planPublishingMode?: "REVIEW_ONLY" | "AUTO_PUBLISH" | string | null;
   livePublishKillSwitchEngaged?: boolean;
   livePublishPaused?: boolean;
+  /** Site is on first-customer allowlist / DB rollout flag. */
+  livePublishRolloutEnabled?: boolean;
+  wordpressConnected?: boolean;
+  lastPublishedUrl?: string | null;
+  rollbackAvailable?: boolean;
   onModeChange?: (mode: string) => void;
   onRunDue?: () => void;
   onPauseChange?: () => void;
@@ -59,6 +64,10 @@ export function AutopilotStatusBlock({
   planPublishingMode = null,
   livePublishKillSwitchEngaged = true,
   livePublishPaused = false,
+  livePublishRolloutEnabled = false,
+  wordpressConnected = false,
+  lastPublishedUrl = null,
+  rollbackAvailable = true,
   onModeChange,
   onRunDue,
   onPauseChange,
@@ -241,6 +250,9 @@ export function AutopilotStatusBlock({
             <h2 className="text-lg font-semibold text-slate-900">{t.title}</h2>
           </div>
           <p className="text-sm text-slate-600">{t.approvalHint}</p>
+          <p className="text-sm text-slate-600">{t.autoPublishExplainer}</p>
+          <p className="text-xs text-slate-500">{t.noRankingGuarantee}</p>
+          <p className="text-xs text-slate-500">{t.scopedRolloutNote}</p>
 
           {paused ? (
             <div className="rounded-xl border border-amber-300 bg-amber-50 px-3 py-2 text-sm text-amber-950">
@@ -361,7 +373,41 @@ export function AutopilotStatusBlock({
             </div>
           ) : null}
 
+          <div>
+            <p className="text-[10px] font-semibold uppercase tracking-wide text-slate-500">
+              {t.wordpressHealthLabel}
+            </p>
+            <p className="mt-1 text-sm text-slate-800">
+              {wordpressConnected
+                ? t.wordpressHealthConnected
+                : t.wordpressHealthDisconnected}
+            </p>
+          </div>
+
+          {lastPublishedUrl ? (
+            <div>
+              <p className="text-[10px] font-semibold uppercase tracking-wide text-slate-500">
+                {t.lastPublishedUrlLabel}
+              </p>
+              <a
+                href={lastPublishedUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="mt-1 block break-all text-xs text-violet-700 underline"
+              >
+                {lastPublishedUrl}
+              </a>
+            </div>
+          ) : null}
+
+          {rollbackAvailable ? (
+            <p className="text-xs leading-relaxed text-slate-600">
+              {t.rollbackAvailableNote}
+            </p>
+          ) : null}
+
           {livePublishKillSwitchEngaged &&
+          !livePublishRolloutEnabled &&
           planPublishingMode === "AUTO_PUBLISH" ? (
             <p className="text-xs leading-relaxed text-amber-800">
               {t.killSwitchPausedNote}

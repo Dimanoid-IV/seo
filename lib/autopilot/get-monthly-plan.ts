@@ -6,6 +6,7 @@ import {
 
 import type { CurrentUser } from "@/lib/auth/types";
 import { getPrisma } from "@/lib/db";
+import { isWebsiteOnLivePublishAllowlist } from "@/lib/integrations/live-publish-rollout";
 
 import { getAutopilotSettings } from "./autopilot-settings";
 import { getAutopilotStatusSnapshot } from "./autopilot-status";
@@ -53,7 +54,7 @@ export async function getMonthlyAutopilotPlan(input: {
       month,
     });
 
-    const [autopilotSettings, autopilotStatus, wpConnection, tasks] =
+    const [autopilotSettings, autopilotStatus, wpConnection, tasks, lastPublished] =
       await Promise.all([
         getAutopilotSettings({
           userId: input.currentUser.id,
@@ -73,10 +74,27 @@ export async function getMonthlyAutopilotPlan(input: {
           select: { id: true, recommendationJson: true, status: true },
           take: 50,
         }),
+        getPrisma().article.findFirst({
+          where: {
+            websiteId: website.id,
+            deletedAt: null,
+            wordpressPublishedUrl: { not: null },
+          },
+          orderBy: { publishedAt: "desc" },
+          select: { wordpressPublishedUrl: true, status: true },
+        }),
       ]);
 
     const wordpressConnected =
       wpConnection?.status === WordPressConnectionStatus.CONNECTED;
+
+    const livePublishScopedAllowed = isWebsiteOnLivePublishAllowlist(
+      website.id,
+      {
+        dbRolloutEnabled:
+          autopilotSettings.livePublishRolloutEnabled === true,
+      }
+    );
 
     const baseFormattedPlan =
       plan && !plan.archivedAt ? formatMonthlyAutopilotPlan(plan) : null;
@@ -127,6 +145,10 @@ export async function getMonthlyAutopilotPlan(input: {
       planItems,
       autopilotStatus,
       autopilotSettings,
+      wordpressConnected,
+      lastPublishedUrl: lastPublished?.wordpressPublishedUrl ?? null,
+      rollbackAvailable: true,
+      livePublishScopedAllowed,
     };
   } catch {
     return {
@@ -135,6 +157,10 @@ export async function getMonthlyAutopilotPlan(input: {
       websiteId: null,
       websiteUrl: null,
       sourceSummary: null,
+      wordpressConnected: false,
+      lastPublishedUrl: null,
+      rollbackAvailable: true,
+      livePublishScopedAllowed: false,
     };
   }
 }

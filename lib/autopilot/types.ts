@@ -99,4 +99,9 @@ export type MonthlyAutopilotGetResponse = {
   planItems?: import("./plan-item-types").AutopilotPlanItemsDocument | null;
   autopilotStatus?: import("./autopilot-status").AutopilotStatusSnapshot;
   autopilotSettings?: import("./autopilot-settings").AutopilotSettingsView;
+  wordpressConnected?: boolean;
+  lastPublishedUrl?: string | null;
+  rollbackAvailable?: boolean;
+  /** Env allowlist and/or DB livePublishRolloutEnabled. */
+  livePublishScopedAllowed?: boolean;
 };
