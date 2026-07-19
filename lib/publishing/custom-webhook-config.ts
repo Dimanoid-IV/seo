@@ -1,7 +1,8 @@
 /**
  * Custom publishing webhook config for non-WordPress sites.
  * Persisted on Integration(provider=OTHER) — no schema migration.
- * Endpoint URL is encrypted; only host + testedAt are stored in scopesJson.
+ * Endpoint URL encrypted in apiKeyEncrypted; optional HMAC secret in refreshTokenEncrypted.
+ * Only host + testedAt are stored in scopesJson (never the full URL).
  */
 import "server-only";
 
@@ -22,6 +23,7 @@ export type CustomPublishingScopes = {
   testedAt?: string | null;
   /** Explicit opt-in for automated send after successful test. Default false. */
   autoSendEnabled?: boolean;
+  hasSharedSecret?: boolean;
 };
 
 export type CustomPublishingConfig = {
@@ -30,6 +32,7 @@ export type CustomPublishingConfig = {
   endpointHost: string | null;
   testedAt: string | null;
   autoSendEnabled: boolean;
+  hasSharedSecret: boolean;
 };
 
 function parseScopes(raw: unknown): CustomPublishingScopes | null {
@@ -41,6 +44,7 @@ function parseScopes(raw: unknown): CustomPublishingScopes | null {
     endpointHost: typeof obj.endpointHost === "string" ? obj.endpointHost : undefined,
     testedAt: typeof obj.testedAt === "string" ? obj.testedAt : null,
     autoSendEnabled: obj.autoSendEnabled === true,
+    hasSharedSecret: obj.hasSharedSecret === true,
   };
 }
 
@@ -57,6 +61,7 @@ export async function getCustomPublishingConfig(
     select: {
       id: true,
       apiKeyEncrypted: true,
+      refreshTokenEncrypted: true,
       scopesJson: true,
       status: true,
     },
@@ -71,6 +76,9 @@ export async function getCustomPublishingConfig(
     endpointHost: scopes?.endpointHost ?? null,
     testedAt: scopes?.testedAt ?? null,
     autoSendEnabled: scopes?.autoSendEnabled === true,
+    hasSharedSecret: Boolean(
+      scopes?.hasSharedSecret || integration.refreshTokenEncrypted
+    ),
   };
 }
 
@@ -95,12 +103,34 @@ export async function getCustomPublishingWebhookUrl(
   }
 }
 
+export async function getCustomPublishingSharedSecret(
+  websiteId: string
+): Promise<string | null> {
+  const prisma = getPrisma();
+  const integration = await prisma.integration.findFirst({
+    where: {
+      websiteId,
+      provider: IntegrationProvider.OTHER,
+      displayName: CUSTOM_PUBLISHING_KIND,
+    },
+    select: { refreshTokenEncrypted: true },
+  });
+
+  if (!integration?.refreshTokenEncrypted) return null;
+  try {
+    return decryptSecret(integration.refreshTokenEncrypted);
+  } catch {
+    return null;
+  }
+}
+
 export async function upsertCustomPublishingConfig(input: {
   websiteId: string;
   organizationId: string;
   endpointUrl: string;
   tested: boolean;
   autoSendEnabled?: boolean;
+  sharedSecret?: string | null;
 }): Promise<CustomPublishingConfig> {
   const prisma = getPrisma();
   let host: string | null = null;
@@ -110,14 +140,19 @@ export async function upsertCustomPublishingConfig(input: {
     host = null;
   }
 
+  const hasSecret = Boolean(input.sharedSecret?.trim());
   const scopes: CustomPublishingScopes = {
     kind: CUSTOM_PUBLISHING_KIND,
     endpointHost: host ?? undefined,
     testedAt: input.tested ? new Date().toISOString() : null,
     autoSendEnabled: input.autoSendEnabled === true,
+    hasSharedSecret: hasSecret,
   };
 
   const encrypted = encryptSecret(input.endpointUrl);
+  const encryptedSecret = hasSecret
+    ? encryptSecret(input.sharedSecret!.trim())
+    : null;
 
   const existing = await prisma.integration.findFirst({
     where: {
@@ -125,22 +160,40 @@ export async function upsertCustomPublishingConfig(input: {
       provider: IntegrationProvider.OTHER,
       displayName: CUSTOM_PUBLISHING_KIND,
     },
-    select: { id: true },
+    select: { id: true, refreshTokenEncrypted: true },
   });
 
   const data = {
     status: IntegrationStatus.CONNECTED,
     displayName: CUSTOM_PUBLISHING_KIND,
     apiKeyEncrypted: encrypted,
-    scopesJson: scopes as unknown as Prisma.InputJsonValue,
+    // Keep existing secret if not provided on this upsert.
+    refreshTokenEncrypted:
+      encryptedSecret ??
+      (input.sharedSecret === null ? null : existing?.refreshTokenEncrypted ?? null),
+    scopesJson: {
+      ...scopes,
+      hasSharedSecret: Boolean(
+        encryptedSecret ??
+          (input.sharedSecret === null
+            ? false
+            : existing?.refreshTokenEncrypted)
+      ),
+    } as unknown as Prisma.InputJsonValue,
     lastSuccessAt: input.tested ? new Date() : undefined,
+    disconnectedAt: null,
   };
 
   const row = existing
     ? await prisma.integration.update({
         where: { id: existing.id },
         data,
-        select: { id: true, scopesJson: true, apiKeyEncrypted: true },
+        select: {
+          id: true,
+          scopesJson: true,
+          apiKeyEncrypted: true,
+          refreshTokenEncrypted: true,
+        },
       })
     : await prisma.integration.create({
         data: {
@@ -149,7 +202,12 @@ export async function upsertCustomPublishingConfig(input: {
           provider: IntegrationProvider.OTHER,
           ...data,
         },
-        select: { id: true, scopesJson: true, apiKeyEncrypted: true },
+        select: {
+          id: true,
+          scopesJson: true,
+          apiKeyEncrypted: true,
+          refreshTokenEncrypted: true,
+        },
       });
 
   const parsed = parseScopes(row.scopesJson);
@@ -159,7 +217,33 @@ export async function upsertCustomPublishingConfig(input: {
     endpointHost: parsed?.endpointHost ?? null,
     testedAt: parsed?.testedAt ?? null,
     autoSendEnabled: parsed?.autoSendEnabled === true,
+    hasSharedSecret: Boolean(row.refreshTokenEncrypted),
   };
+}
+
+export async function disconnectCustomPublishingConfig(
+  websiteId: string
+): Promise<void> {
+  const prisma = getPrisma();
+  await prisma.integration.updateMany({
+    where: {
+      websiteId,
+      provider: IntegrationProvider.OTHER,
+      displayName: CUSTOM_PUBLISHING_KIND,
+    },
+    data: {
+      status: IntegrationStatus.DISCONNECTED,
+      apiKeyEncrypted: null,
+      refreshTokenEncrypted: null,
+      disconnectedAt: new Date(),
+      scopesJson: {
+        kind: CUSTOM_PUBLISHING_KIND,
+        testedAt: null,
+        autoSendEnabled: false,
+        hasSharedSecret: false,
+      } as unknown as Prisma.InputJsonValue,
+    },
+  });
 }
 
 export function isWebhookReadyForAutoSend(

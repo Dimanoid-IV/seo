@@ -7,6 +7,7 @@ import { GscSyncButton } from "@/components/integrations/GoogleSearchConsoleDash
 import { GscMetricsSummaryDisplay } from "@/components/integrations/GscMetricsSummary";
 import { GscInsightsList } from "@/components/integrations/GscInsightsList";
 import { IntegrationStatusBadge } from "@/components/integrations/IntegrationStatusBadge";
+import { WordPressConnectionForm } from "@/components/integrations/WordPressConnectionForm";
 import { WordPressConnectorPanel } from "@/components/integrations/WordPressConnectorPanel";
 import { Button } from "@/components/ui/button";
 import {
@@ -365,11 +366,26 @@ function IntegrationActionSheetContent({
           ) : null}
 
           {isWordPress && !isComingSoon ? (
-            <WordPressConnectorPanel
-              integration={integration}
-              websiteId={websiteId}
-              onConnectionUpdated={onIntegrationUpdated}
-            />
+            <div className="space-y-4">
+              <WordPressConnectionForm
+                integration={integration}
+                websiteId={websiteId}
+                defaultSiteUrl={websiteUrl}
+                onConnectionUpdated={onIntegrationUpdated}
+              />
+              <details className="rounded-lg border border-slate-200 bg-white p-3">
+                <summary className="cursor-pointer text-sm font-medium text-slate-700">
+                  Дополнительно: плагин RankBoost Connector
+                </summary>
+                <div className="mt-3">
+                  <WordPressConnectorPanel
+                    integration={integration}
+                    websiteId={websiteId}
+                    onConnectionUpdated={onIntegrationUpdated}
+                  />
+                </div>
+              </details>
+            </div>
           ) : null}
         </div>
 

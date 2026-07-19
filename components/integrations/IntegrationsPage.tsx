@@ -9,6 +9,7 @@ import { EmptyState } from "@/components/dashboard/EmptyState";
 import { IntegrationActionSheet } from "@/components/integrations/IntegrationActionSheet";
 import { IntegrationGrid } from "@/components/integrations/IntegrationGrid";
 import { BrandVoiceCard } from "@/components/integrations/BrandVoiceCard";
+import { CustomWebsiteIntegrationPanel } from "@/components/integrations/CustomWebsiteIntegrationPanel";
 import { FutureMentionsCard } from "@/components/integrations/FutureMentionsCard";
 import { SiteTechHint } from "@/components/integrations/SiteTechHint";
 import { PageErrorState } from "@/components/shared/PageErrorState";
@@ -224,6 +225,12 @@ export function IntegrationsPage() {
       {data.website?.id ? (
         <div className="mb-6">
           <SiteTechHint websiteId={data.website.id} />
+        </div>
+      ) : null}
+
+      {data.website?.id ? (
+        <div className="mb-8">
+          <CustomWebsiteIntegrationPanel websiteId={data.website.id} />
         </div>
       ) : null}
 

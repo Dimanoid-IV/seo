@@ -168,8 +168,8 @@ export function ArticlePublishPanel({
         <h3 className="text-sm font-semibold text-white">Публикация статьи</h3>
         <p className="mt-1 text-xs text-slate-400">
           {wordpressConnected
-            ? "WordPress подключён — можно создать черновик. Либо возьмите готовые материалы для любого сайта ниже."
-            : "Ваш сайт не подключён к WordPress. Используйте готовые материалы ниже."}
+            ? "1) WordPress: создайте черновик. 2) Webhook: если настроен и протестирован. 3) Универсальный пакет HTML/Markdown — запасной путь."
+            : "1) Webhook для разработчика (если настроен). 2) Универсальный пакет HTML/Markdown / письмо разработчику."}
         </p>
       </div>
 

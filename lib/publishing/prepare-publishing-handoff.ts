@@ -11,12 +11,9 @@ import { AppError, ErrorCode } from "@/lib/errors";
 import { createWordPressDraftForArticle } from "@/lib/integrations/wordpress-drafts";
 import {
   getCustomPublishingConfig,
-  getCustomPublishingWebhookUrl,
   isWebhookReadyForAutoSend,
 } from "@/lib/publishing/custom-webhook-config";
-import { buildUniversalExport } from "@/lib/publishing/universal-export";
 import type { AutopilotPlanItem } from "@/lib/autopilot/plan-item-types";
-import { assertSafeUrl } from "@/lib/audit/ssrf";
 
 export type PublishingHandoffResult = {
   path: AutopilotPlanItem["publishingPath"];
@@ -27,8 +24,6 @@ export type PublishingHandoffResult = {
   /** True only when a real webhook delivery was attempted (never in default modes). */
   webhookDelivered?: boolean;
 };
-
-const WEBHOOK_TIMEOUT_MS = 10_000;
 
 /**
  * Prepare the safest available publishing path for a quality-passed article.
@@ -198,80 +193,27 @@ async function sendWebhookPackage(input: {
   articleId: string;
   websiteId: string;
 }): Promise<boolean> {
+  const { deliverCustomWebhook } = await import("@/lib/publishing/custom-webhook");
+  const { getCustomPublishingWebhookUrl } = await import(
+    "@/lib/publishing/custom-webhook-config"
+  );
   const url = await getCustomPublishingWebhookUrl(input.websiteId);
   if (!url) return false;
 
-  let parsed: URL;
-  try {
-    parsed = new URL(url);
-  } catch {
-    return false;
-  }
-  await assertSafeUrl(parsed);
-
   const prisma = getPrisma();
-  const [article, website] = await Promise.all([
-    prisma.article.findFirst({
-      where: { id: input.articleId, websiteId: input.websiteId, deletedAt: null },
-      select: {
-        id: true,
-        title: true,
-        slug: true,
-        metaTitle: true,
-        metaDescription: true,
-        contentHtml: true,
-        targetKeyword: true,
-        language: true,
-      },
-    }),
-    prisma.website.findUnique({
-      where: { id: input.websiteId },
-      select: { url: true },
-    }),
-  ]);
-
+  const article = await prisma.article.findFirst({
+    where: { id: input.articleId, websiteId: input.websiteId, deletedAt: null },
+    select: { organizationId: true },
+  });
   if (!article) return false;
 
-  const pkg = buildUniversalExport(
-    {
-      title: article.title,
-      slug: article.slug,
-      metaTitle: article.metaTitle,
-      metaDescription: article.metaDescription,
-      contentHtml: article.contentHtml,
-      targetKeyword: article.targetKeyword,
-      language: article.language,
-    },
-    { websiteUrl: website?.url ?? "" }
-  );
-
-  try {
-    const response = await fetch(parsed.toString(), {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "User-Agent": "RankBoost-Webhook/1.0",
-        "X-RankBoost-Event": "rankboost.article.publish",
-      },
-      body: JSON.stringify({
-        event: "rankboost.article.publish",
-        dryRun: false,
-        article: {
-          id: article.id,
-          slug: pkg.slug,
-          metaTitle: pkg.metaTitle,
-          metaDescription: pkg.metaDescription,
-          canonicalUrl: pkg.canonicalUrl,
-          html: pkg.html,
-          bodyHtml: pkg.bodyHtml,
-          markdown: pkg.markdown,
-        },
-      }),
-      signal: AbortSignal.timeout(WEBHOOK_TIMEOUT_MS),
-      redirect: "manual",
-    });
-    return response.status >= 200 && response.status < 300;
-  } catch {
-    return false;
-  }
+  const result = await deliverCustomWebhook({
+    articleId: input.articleId,
+    websiteId: input.websiteId,
+    organizationId: article.organizationId,
+    endpointUrl: url,
+    dryRun: false,
+    persistOnSuccess: false,
+  });
+  return result.delivered;
 }

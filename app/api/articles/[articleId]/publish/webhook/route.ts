@@ -1,11 +1,9 @@
 import { requireUser } from "@/lib/auth/current-user";
 import { authErrorResponse, authJsonResponse } from "@/lib/auth/responses";
-import { assertSafeUrl } from "@/lib/audit/ssrf";
 import { trackEventFireAndForget } from "@/lib/analytics/track";
 import { getServerEnv } from "@/lib/env";
 import { AppError, ErrorCode } from "@/lib/errors";
-import { getArticleUniversalExport } from "@/lib/publishing/get-article-export";
-import { upsertCustomPublishingConfig } from "@/lib/publishing/custom-webhook-config";
+import { deliverCustomWebhook } from "@/lib/publishing/custom-webhook";
 import { getPrisma } from "@/lib/db";
 
 function assertDatabaseConfigured(): void {
@@ -18,8 +16,6 @@ function assertDatabaseConfigured(): void {
   }
 }
 
-const WEBHOOK_TIMEOUT_MS = 10_000;
-
 type RouteContext = {
   params: Promise<{ articleId: string }>;
 };
@@ -27,9 +23,8 @@ type RouteContext = {
 /**
  * Sends an approved article to a user-provided webhook endpoint.
  * - Requires an explicit, manual request (review-first; never called by cron).
- * - SSRF-protected via assertSafeUrl.
- * - `dryRun` sends only a small test ping so users can verify connectivity
- *   before delivering the full article.
+ * - SSRF-protected; HTTPS preferred.
+ * - `dryRun` sends event "rankboost.test" only.
  * - Never logs the endpoint URL or payload.
  */
 export async function POST(request: Request, context: RouteContext) {
@@ -39,7 +34,7 @@ export async function POST(request: Request, context: RouteContext) {
     const currentUser = await requireUser(request);
     const { articleId } = await context.params;
 
-    let body: { url?: unknown; dryRun?: unknown } = {};
+    let body: { url?: unknown; dryRun?: unknown; sharedSecret?: unknown } = {};
     try {
       body = (await request.json()) as typeof body;
     } catch {
@@ -47,108 +42,61 @@ export async function POST(request: Request, context: RouteContext) {
     }
 
     const rawUrl = typeof body.url === "string" ? body.url.trim() : "";
-    const dryRun = body.dryRun !== false; // default to a safe dry-run
+    const dryRun = body.dryRun !== false;
+    const sharedSecret =
+      typeof body.sharedSecret === "string" ? body.sharedSecret.trim() : null;
 
     if (!rawUrl) {
       throw new AppError(ErrorCode.VALIDATION_ERROR, "Укажите URL webhook.");
     }
 
-    let parsedUrl: URL;
-    try {
-      parsedUrl = new URL(rawUrl);
-    } catch {
-      throw new AppError(ErrorCode.VALIDATION_ERROR, "Некорректный URL webhook.");
-    }
-    if (parsedUrl.protocol !== "https:" && parsedUrl.protocol !== "http:") {
-      throw new AppError(ErrorCode.VALIDATION_ERROR, "URL должен использовать http или https.");
-    }
-    await assertSafeUrl(parsedUrl);
-
-    const result = await getArticleUniversalExport({ articleId, currentUser });
-    const pkg = result.export;
-
-    const payload = dryRun
-      ? {
-          event: "rankboost.webhook.test",
-          dryRun: true,
-          article: { id: result.articleId, slug: pkg.slug, metaTitle: pkg.metaTitle },
-        }
-      : {
-          event: "rankboost.article.publish",
-          dryRun: false,
-          article: {
-            id: result.articleId,
-            slug: pkg.slug,
-            metaTitle: pkg.metaTitle,
-            metaDescription: pkg.metaDescription,
-            canonicalUrl: pkg.canonicalUrl,
-            html: pkg.html,
-            bodyHtml: pkg.bodyHtml,
-            markdown: pkg.markdown,
-          },
-        };
-
-    let statusCode = 0;
-    let delivered = false;
-    let deliveryError: string | null = null;
-    try {
-      const response = await fetch(parsedUrl.toString(), {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "User-Agent": "RankBoost-Webhook/1.0",
-          "X-RankBoost-Event": payload.event,
+    const prisma = getPrisma();
+    const article = await prisma.article.findFirst({
+      where: {
+        id: articleId,
+        deletedAt: null,
+        organization: {
+          ownerUserId: currentUser.id,
+          deletedAt: null,
         },
-        body: JSON.stringify(payload),
-        signal: AbortSignal.timeout(WEBHOOK_TIMEOUT_MS),
-        redirect: "manual",
-      });
-      statusCode = response.status;
-      delivered = response.status >= 200 && response.status < 300;
-      if (!delivered) {
-        deliveryError = `Эндпоинт вернул статус ${response.status}.`;
-      }
-    } catch {
-      // Do not surface internal error details (avoids leaking endpoint info).
-      deliveryError = "Не удалось связаться с эндпоинтом. Проверьте URL и доступность.";
+      },
+      select: { id: true, websiteId: true, organizationId: true },
+    });
+    if (!article) {
+      throw new AppError(ErrorCode.NOT_FOUND, "Статья не найдена");
     }
 
-    // Persist tested endpoint after a successful dry-run (no URL in logs).
-    if (dryRun && delivered) {
-      try {
-        const prisma = getPrisma();
-        const article = await prisma.article.findFirst({
-          where: { id: articleId, deletedAt: null },
-          select: { websiteId: true, organizationId: true },
-        });
-        if (article) {
-          await upsertCustomPublishingConfig({
-            websiteId: article.websiteId,
-            organizationId: article.organizationId,
-            endpointUrl: rawUrl,
-            tested: true,
-            autoSendEnabled: false,
-          });
+    const result = await deliverCustomWebhook({
+      articleId: article.id,
+      websiteId: article.websiteId,
+      organizationId: article.organizationId,
+      endpointUrl: rawUrl,
+      dryRun,
+      sharedSecret,
+      persistOnSuccess: dryRun,
+    });
 
-          trackEventFireAndForget({
-            event: "webhook_tested",
-            userId: currentUser.id,
-            organizationId: article.organizationId,
-            websiteId: article.websiteId,
-            properties: {
-              articleId,
-              integration: "custom_webhook",
-              status: "ok",
-            },
-          });
-        }
-      } catch {
-        // Config persistence must not fail the test response.
-      }
+    if (dryRun && result.delivered) {
+      trackEventFireAndForget({
+        event: "webhook_tested",
+        userId: currentUser.id,
+        organizationId: article.organizationId,
+        websiteId: article.websiteId,
+        properties: {
+          articleId,
+          integration: "custom_webhook",
+          status: "ok",
+        },
+      });
     }
 
     return authJsonResponse({
-      data: { dryRun, delivered, statusCode, error: deliveryError },
+      data: {
+        dryRun: result.dryRun,
+        delivered: result.delivered,
+        statusCode: result.statusCode,
+        error: result.error,
+      },
     });
   } catch (error) {
     return authErrorResponse(request, error);
