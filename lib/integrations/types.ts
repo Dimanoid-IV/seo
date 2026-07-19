@@ -40,6 +40,14 @@ export type IntegrationsOverviewData = {
     url: string;
   } | null;
   integrations: IntegrationOverviewItem[];
+  /** Host-only custom webhook status — never includes URL/secret. */
+  customPublishing?: {
+    endpointConfigured: boolean;
+    endpointHost: string | null;
+    testedAt: string | null;
+    hasSharedSecret: boolean;
+    connectedBanner: string | null;
+  } | null;
 };
 
 export type IntegrationsOverviewResponse = {

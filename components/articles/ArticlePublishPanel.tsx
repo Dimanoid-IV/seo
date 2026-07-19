@@ -7,11 +7,13 @@ import { CustomPublishingSetup } from "@/components/integrations/CustomPublishin
 import { Button } from "@/components/ui/button";
 import { authFetch } from "@/lib/auth/client-session";
 import type { UniversalExportPackage } from "@/lib/publishing/universal-export";
+import { resolveArticlePublishPriority } from "@/lib/publishing/custom-publishing-display";
 
 type ExportResponse = {
   data: {
     articleId: string;
     wordpressConnected: boolean;
+    webhookTested: boolean;
     export: UniversalExportPackage;
   };
 };
@@ -30,7 +32,7 @@ async function copyToClipboard(text: string): Promise<boolean> {
       return true;
     }
   } catch {
-    // fall through to legacy path
+    // fall through
   }
   try {
     const textarea = document.createElement("textarea");
@@ -48,14 +50,18 @@ async function copyToClipboard(text: string): Promise<boolean> {
 }
 
 /**
- * Universal Publishing hub for an article: copy-ready blocks, downloads,
- * a developer email draft, and an optional webhook. Ensures a custom-site
- * article is never a dead-end even without a native integration.
+ * Universal Publishing hub: WP draft priority → webhook ready → export fallback.
+ * Never live-publishes.
  */
 export function ArticlePublishPanel({
   articleId,
   wordpressConnected,
 }: ArticlePublishPanelProps) {
+  const [webhookTested, setWebhookTested] = useState(false);
+  const publishPriority = resolveArticlePublishPriority({
+    wordpressConnected,
+    webhookTested,
+  });
   const [pkg, setPkg] = useState<UniversalExportPackage | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -72,11 +78,16 @@ export function ArticlePublishPanel({
           signal: AbortSignal.timeout(15_000),
         });
         if (!response.ok) {
-          if (!cancelled) setError("Не удалось подготовить материалы для публикации.");
+          if (!cancelled) {
+            setError("Не удалось подготовить материалы для публикации.");
+          }
           return;
         }
         const body = (await response.json()) as ExportResponse;
-        if (!cancelled) setPkg(body.data.export);
+        if (!cancelled) {
+          setPkg(body.data.export);
+          setWebhookTested(body.data.webhookTested === true);
+        }
       } catch {
         if (!cancelled) setError("Сетевая ошибка при подготовке материалов.");
       } finally {
@@ -93,7 +104,10 @@ export function ArticlePublishPanel({
     const ok = await copyToClipboard(text);
     if (ok) {
       setCopied(key);
-      setTimeout(() => setCopied((current) => (current === key ? null : current)), 2000);
+      setTimeout(
+        () => setCopied((current) => (current === key ? null : current)),
+        2000
+      );
     }
   }, []);
 
@@ -167,9 +181,11 @@ export function ArticlePublishPanel({
       <div>
         <h3 className="text-sm font-semibold text-white">Публикация статьи</h3>
         <p className="mt-1 text-xs text-slate-400">
-          {wordpressConnected
-            ? "1) WordPress: создайте черновик. 2) Webhook: если настроен и протестирован. 3) Универсальный пакет HTML/Markdown — запасной путь."
-            : "1) Webhook для разработчика (если настроен). 2) Универсальный пакет HTML/Markdown / письмо разработчику."}
+          {publishPriority === "wordpress_draft"
+            ? "1) WordPress draft (приоритет). 2) Webhook если протестирован. 3) Универсальный пакет HTML/Markdown. Без live publish."
+            : publishPriority === "webhook"
+              ? "1) Custom webhook готов. 2) Универсальный пакет HTML/Markdown / письмо разработчику. Без автоотправки."
+              : "Универсальный пакет HTML/Markdown / письмо разработчику — запасной путь для любого сайта."}
         </p>
       </div>
 
@@ -181,7 +197,11 @@ export function ArticlePublishPanel({
           {copyRow("html", "Скопировать HTML", pkg.copy.articleHtml)}
           {copyRow("markdown", "Скопировать Markdown", pkg.copy.articleMarkdown)}
           {copyRow("metaTitle", "Скопировать SEO title", pkg.copy.metaTitle)}
-          {copyRow("metaDescription", "Скопировать meta description", pkg.copy.metaDescription)}
+          {copyRow(
+            "metaDescription",
+            "Скопировать meta description",
+            pkg.copy.metaDescription
+          )}
         </div>
       </div>
 

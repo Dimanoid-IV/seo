@@ -230,7 +230,19 @@ export function IntegrationsPage() {
 
       {data.website?.id ? (
         <div className="mb-8">
-          <CustomWebsiteIntegrationPanel websiteId={data.website.id} />
+          <CustomWebsiteIntegrationPanel
+            websiteId={data.website.id}
+            initialConfig={
+              data.customPublishing
+                ? {
+                    endpointConfigured: data.customPublishing.endpointConfigured,
+                    endpointHost: data.customPublishing.endpointHost,
+                    testedAt: data.customPublishing.testedAt,
+                    hasSharedSecret: data.customPublishing.hasSharedSecret,
+                  }
+                : null
+            }
+          />
         </div>
       ) : null}
 

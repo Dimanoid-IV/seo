@@ -5,6 +5,10 @@ import { CheckCircle2, Code2, Loader2, Webhook } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { authFetch, parseApiErrorMessage } from "@/lib/auth/client-session";
+import {
+  buildCustomPublishingDisplayState,
+  type CustomPublishingDisplayState,
+} from "@/lib/publishing/custom-publishing-display";
 import { cn } from "@/lib/utils";
 
 type CustomPublishingConfig = {
@@ -16,6 +20,8 @@ type CustomPublishingConfig = {
 
 type CustomWebsiteIntegrationPanelProps = {
   websiteId?: string | null;
+  /** Host-only preload from integrations overview — never a full URL. */
+  initialConfig?: CustomPublishingConfig | null;
   className?: string;
 };
 
@@ -48,23 +54,66 @@ function verify(body, secret, header) {
 
 /**
  * Site-level custom website / developer webhook integration.
+ * When connected, shows host-only “Подключено: example.com” — never full URL/secret.
  */
 export function CustomWebsiteIntegrationPanel({
   websiteId,
+  initialConfig = null,
   className,
 }: CustomWebsiteIntegrationPanelProps) {
   const [endpointUrl, setEndpointUrl] = useState("");
   const [sharedSecret, setSharedSecret] = useState("");
-  const [busy, setBusy] = useState<"test" | "disconnect" | null>(null);
+  const [busy, setBusy] = useState<"test" | "disconnect" | "load" | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [status, setStatus] = useState<string | null>(null);
-  const [config, setConfig] = useState<CustomPublishingConfig | null>(null);
+  const [loadedConfig, setLoadedConfig] = useState<CustomPublishingConfig | null>(
+    null
+  );
+  const [sessionConfig, setSessionConfig] =
+    useState<CustomPublishingConfig | null | undefined>(undefined);
+  const [replacing, setReplacing] = useState(false);
+
+  const config =
+    sessionConfig !== undefined
+      ? sessionConfig
+      : loadedConfig ?? initialConfig ?? null;
 
   useEffect(() => {
-    // Config host is available via overview in future; keep local after test.
-  }, []);
+    if (!websiteId || initialConfig) return;
 
-  const tested = Boolean(config?.testedAt);
+    let cancelled = false;
+    async function loadStatus() {
+      setBusy("load");
+      try {
+        const response = await authFetch(
+          `/api/integrations/custom-publishing?websiteId=${encodeURIComponent(websiteId!)}`
+        );
+        if (!response.ok || cancelled) return;
+        const body = (await response.json()) as {
+          data: { config: CustomPublishingConfig | null };
+        };
+        if (!cancelled) setLoadedConfig(body.data.config);
+      } catch {
+        // ignore preload failures
+      } finally {
+        if (!cancelled) setBusy((b) => (b === "load" ? null : b));
+      }
+    }
+    void loadStatus();
+    return () => {
+      cancelled = true;
+    };
+  }, [websiteId, initialConfig]);
+
+  const display: CustomPublishingDisplayState =
+    buildCustomPublishingDisplayState({
+      endpointConfigured: config?.endpointConfigured,
+      endpointHost: config?.endpointHost,
+      testedAt: config?.testedAt,
+      hasSharedSecret: config?.hasSharedSecret,
+    });
+
+  const showConnectedState = display.connected && !replacing;
 
   async function handleTest() {
     if (!websiteId) {
@@ -103,11 +152,13 @@ export function CustomWebsiteIntegrationPanel({
         };
       };
       if (body.data.delivered) {
-        setConfig(body.data.config);
+        setSessionConfig(body.data.config);
         setStatus(
-          "Соединение успешно. Конфиг сохранён. Реальная отправка статьи — только вручную."
+          "Соединение успешно. Конфиг сохранён. Реальная отправка статьи — только вручную. Live publish выключен."
         );
         setSharedSecret("");
+        setEndpointUrl("");
+        setReplacing(false);
       } else {
         setError(body.data.error ?? "Эндпоинт недоступен.");
       }
@@ -135,9 +186,12 @@ export function CustomWebsiteIntegrationPanel({
         setError(await parseApiErrorMessage(response, "Не удалось отключить."));
         return;
       }
-      setConfig(null);
+      setSessionConfig(null);
+      setLoadedConfig(null);
       setEndpointUrl("");
-      setStatus("Webhook отключён.");
+      setSharedSecret("");
+      setReplacing(false);
+      setStatus("Webhook отключён. Секрет и URL удалены.");
     } catch {
       setError("Сетевая ошибка при отключении.");
     } finally {
@@ -160,7 +214,7 @@ export function CustomWebsiteIntegrationPanel({
           </p>
           <p className="mt-1 text-sm text-slate-600">
             Webhook для разработчика или готовый пакет HTML/Markdown. Custom
-            сайт поддерживается — без тупика.
+            сайт поддерживается — без тупика. Без автоматической публикации.
           </p>
         </div>
       </div>
@@ -171,63 +225,125 @@ export function CustomWebsiteIntegrationPanel({
         <li>• Проверить соединение перед отправкой</li>
       </ul>
 
-      {tested ? (
-        <div className="flex items-start gap-2 text-emerald-800">
-          <CheckCircle2 className="mt-0.5 size-4 shrink-0" />
-          <p className="text-sm">
-            Webhook готов
-            {config?.endpointHost ? ` (${config.endpointHost})` : ""}. Автоотправка
-            выключена.
-          </p>
+      {showConnectedState ? (
+        <div className="space-y-3 rounded-lg border border-emerald-200 bg-emerald-50/80 p-3">
+          <div className="flex items-start gap-2 text-emerald-800">
+            <CheckCircle2 className="mt-0.5 size-4 shrink-0" />
+            <div>
+              <p className="text-sm font-medium">
+                {display.connectedBanner ?? "Webhook подключён"}
+              </p>
+              <p className="mt-1 text-xs text-emerald-700/90">
+                Полный URL и shared secret не отображаются. Автоотправка
+                выключена — только тест или явная отправка.
+              </p>
+              {display.hasSharedSecret ? (
+                <p className="mt-1 text-xs text-slate-600">
+                  HMAC secret сохранён (не показывается).
+                </p>
+              ) : null}
+            </div>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              disabled={busy !== null}
+              onClick={() => {
+                setReplacing(true);
+                setEndpointUrl("");
+                setSharedSecret("");
+                setStatus(null);
+                setError(null);
+              }}
+            >
+              Заменить endpoint
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              disabled={busy !== null}
+              onClick={() => void handleDisconnect()}
+            >
+              {busy === "disconnect" ? (
+                <Loader2 className="size-4 animate-spin" />
+              ) : null}
+              Отключить
+            </Button>
+          </div>
         </div>
-      ) : null}
-
-      <label className="block space-y-1">
-        <span className="text-xs font-medium text-slate-700">Endpoint URL</span>
-        <input
-          type="url"
-          value={endpointUrl}
-          onChange={(e) => setEndpointUrl(e.target.value)}
-          placeholder="https://ваш-сайт.ru/api/rankboost"
-          className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:border-violet-400"
-        />
-      </label>
-
-      <label className="block space-y-1">
-        <span className="text-xs font-medium text-slate-700">
-          Shared secret (опционально, HMAC)
-        </span>
-        <input
-          type="password"
-          value={sharedSecret}
-          onChange={(e) => setSharedSecret(e.target.value)}
-          placeholder="секретидляподписи"
-          className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:border-violet-400"
-        />
-      </label>
-
-      <div className="flex flex-wrap gap-2">
-        <Button
-          type="button"
-          disabled={busy !== null || !websiteId}
-          onClick={() => void handleTest()}
-        >
-          {busy === "test" ? (
-            <Loader2 className="size-4 animate-spin" />
+      ) : (
+        <>
+          {replacing && display.hostLabel ? (
+            <p className="text-xs text-slate-600">
+              Сейчас подключено: {display.hostLabel}. Введите новый URL для
+              повторной проверки.
+            </p>
           ) : null}
-          Проверить соединение
-        </Button>
-        {tested ? (
-          <Button
-            type="button"
-            variant="outline"
-            disabled={busy !== null}
-            onClick={() => void handleDisconnect()}
-          >
-            Отключить
-          </Button>
-        ) : null}
-      </div>
+
+          <label className="block space-y-1">
+            <span className="text-xs font-medium text-slate-700">
+              Endpoint URL
+            </span>
+            <input
+              type="url"
+              value={endpointUrl}
+              onChange={(e) => setEndpointUrl(e.target.value)}
+              placeholder="https://ваш-сайт.ru/api/rankboost"
+              className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:border-violet-400"
+            />
+          </label>
+
+          <label className="block space-y-1">
+            <span className="text-xs font-medium text-slate-700">
+              Shared secret (опционально, HMAC)
+            </span>
+            <input
+              type="password"
+              value={sharedSecret}
+              onChange={(e) => setSharedSecret(e.target.value)}
+              placeholder={
+                display.hasSharedSecret && replacing
+                  ? "Оставьте пустым, чтобы сохранить прежний secret"
+                  : "секретидляподписи"
+              }
+              className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:border-violet-400"
+            />
+            <span className="text-[11px] text-slate-500">
+              Secret никогда не показывается после сохранения.
+            </span>
+          </label>
+
+          <div className="flex flex-wrap gap-2">
+            <Button
+              type="button"
+              disabled={busy !== null || !websiteId}
+              onClick={() => void handleTest()}
+            >
+              {busy === "test" ? (
+                <Loader2 className="size-4 animate-spin" />
+              ) : null}
+              Проверить соединение
+            </Button>
+            {replacing ? (
+              <Button
+                type="button"
+                variant="outline"
+                disabled={busy !== null}
+                onClick={() => {
+                  setReplacing(false);
+                  setEndpointUrl("");
+                  setSharedSecret("");
+                }}
+              >
+                Отмена
+              </Button>
+            ) : null}
+          </div>
+        </>
+      )}
 
       {error ? <p className="text-xs text-red-600">{error}</p> : null}
       {status ? <p className="text-xs text-emerald-700">{status}</p> : null}

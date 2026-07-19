@@ -5,10 +5,12 @@ import type { CurrentUser } from "@/lib/auth/types";
 import { getPrisma } from "@/lib/db";
 
 import { buildUniversalExport, type UniversalExportPackage } from "./universal-export";
+import { getCustomPublishingConfig } from "./custom-webhook-config";
 
 export interface ArticleUniversalExportResult {
   articleId: string;
   wordpressConnected: boolean;
+  webhookTested: boolean;
   export: UniversalExportPackage;
 }
 
@@ -31,6 +33,8 @@ export async function getArticleUniversalExport({
     select: { url: true },
   });
 
+  const custom = await getCustomPublishingConfig(article.websiteId);
+
   const pkg = buildUniversalExport(
     {
       title: article.title,
@@ -47,6 +51,7 @@ export async function getArticleUniversalExport({
   return {
     articleId: article.id,
     wordpressConnected: article.wordpressConnected,
+    webhookTested: Boolean(custom?.endpointConfigured && custom.testedAt),
     export: pkg,
   };
 }

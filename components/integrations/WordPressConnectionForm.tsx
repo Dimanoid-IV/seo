@@ -171,10 +171,13 @@ export function WordPressConnectionForm({
           <li>• Публикация вручную после проверки</li>
         </ul>
 
-        <p className="text-xs text-slate-600">{wp.draftOnlyMessage}</p>
-        <p className="text-xs text-slate-500">
-          Application Password больше не отображается после сохранения.
-        </p>
+          <p className="text-xs text-slate-600">{wp.draftOnlyMessage}</p>
+          <p className="text-xs font-medium text-slate-700">
+            Публикация вручную после проверки. Live publish выключен.
+          </p>
+          <p className="text-xs text-slate-500">
+            Application Password больше не отображается после сохранения.
+          </p>
 
         <Button
           type="button"

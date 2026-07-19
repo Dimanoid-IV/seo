@@ -16,6 +16,8 @@ import {
   mapWordPressConnectionStatus,
 } from "./wordpress-connector";
 import { isHermesConfigured } from "@/lib/hermes/client";
+import { getCustomPublishingConfig } from "@/lib/publishing/custom-webhook-config";
+import { buildCustomPublishingDisplayState } from "@/lib/publishing/custom-publishing-display";
 
 /**
  * Loads integrations hub overview: catalog merged with DB Integration rows.
@@ -74,6 +76,7 @@ export async function getIntegrationsOverview(
       data: {
         website: null,
         integrations: emptyIntegrations,
+        customPublishing: null,
       },
     };
   }
@@ -93,6 +96,7 @@ export async function getIntegrationsOverview(
       data: {
         website: null,
         integrations: emptyIntegrations,
+        customPublishing: null,
       },
     };
   }
@@ -124,6 +128,14 @@ export async function getIntegrationsOverview(
 
   const wordpressConnection = await getWordPressConnection({
     websiteId: website.id,
+  });
+
+  const customPublishingConfig = await getCustomPublishingConfig(website.id);
+  const customDisplay = buildCustomPublishingDisplayState({
+    endpointConfigured: customPublishingConfig?.endpointConfigured,
+    endpointHost: customPublishingConfig?.endpointHost,
+    testedAt: customPublishingConfig?.testedAt,
+    hasSharedSecret: customPublishingConfig?.hasSharedSecret,
   });
 
   const integrations = INTEGRATION_CATALOG.map((item) => {
@@ -259,6 +271,15 @@ export async function getIntegrationsOverview(
     data: {
       website: { id: website.id, url: website.url },
       integrations,
+      customPublishing: customPublishingConfig
+        ? {
+            endpointConfigured: customPublishingConfig.endpointConfigured,
+            endpointHost: customPublishingConfig.endpointHost,
+            testedAt: customPublishingConfig.testedAt,
+            hasSharedSecret: customPublishingConfig.hasSharedSecret,
+            connectedBanner: customDisplay.connectedBanner,
+          }
+        : null,
     },
   };
 }
