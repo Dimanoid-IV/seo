@@ -11,7 +11,7 @@ import type {
 
 import {
   evaluateLivePublishGate,
-  LIVE_PUBLISH_KILL_SWITCH_ENGAGED,
+  isLivePublishKillSwitchEngaged,
 } from "./live-publish-gate";
 
 export type ExecutionStatus = IntegrationExecutionStatus;
@@ -37,7 +37,7 @@ const ALLOWED_TRANSITIONS: Record<string, ReadonlySet<string>> = {
   WAITING: new Set(["QUEUED", "RUNNING", "CANCELED", "FAILED"]),
   RETRYING: new Set(["RUNNING", "FAILED", "CANCELED"]),
   SUCCEEDED: new Set(),
-  FAILED: new Set(["RETRYING"]),
+  FAILED: new Set(["RETRYING", "QUEUED", "RUNNING"]),
   PARTIALLY_APPLIED: new Set(),
   CANCELED: new Set(),
 };
@@ -88,16 +88,17 @@ export function buildExecutionListWhere(input: {
 
 /**
  * Whether external adapter execute (including live publish) may run.
- * Product end state can be true; today the live-publish kill switch keeps this false.
+ * Product end state can be true; kill switch stays engaged by default.
  */
 export function foundationExternalActionsEnabled(): boolean {
   return (
-    !LIVE_PUBLISH_KILL_SWITCH_ENGAGED &&
+    !isLivePublishKillSwitchEngaged() &&
     evaluateLivePublishGate({
       websiteAllowsLivePublish: true,
       executionHistoryAvailable: true,
       qualityGatePassed: true,
       rollbackStrategyReady: true,
+      killSwitchEngaged: isLivePublishKillSwitchEngaged(),
     }).livePublishEnabled
   );
 }

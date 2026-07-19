@@ -14,6 +14,8 @@ import { refreshAutopilotPlanItemResearchBrief } from "@/lib/content-research/re
 import { briefToJson } from "@/lib/content-research/parse";
 import { preparePublishingHandoff } from "@/lib/publishing/prepare-publishing-handoff";
 import { getCustomPublishingConfig } from "@/lib/publishing/custom-webhook-config";
+import { runWordPressLivePublishForPlanArticle } from "@/lib/integrations/adapters/wordpress/run-live-publish";
+import { isPlanAutoPublishMode } from "./plan-publishing-mode";
 
 import {
   classifyDryRunOutcome,
@@ -239,6 +241,7 @@ export async function runScheduledAutopilotPlans(input: {
           organizationId: plan.organizationId,
           article,
           webhookConfiguredAndTested,
+          planPublishingMode: plan.publishingMode,
         });
 
         itemResult.action = eligibility.action;
@@ -373,6 +376,7 @@ export async function runScheduledAutopilotPlans(input: {
           }
 
           // Same-run handoff when quality passed and budget allows.
+          // REVIEW / approved-plan modes → draft/package. AUTOPUBLISH + AUTO_PUBLISH → live.
           const afterDraft = items.find((i) => i.id === currentItem.id)!;
           if (
             qualityPassed &&
@@ -397,6 +401,65 @@ export async function runScheduledAutopilotPlans(input: {
               would: handoff.summaryKey,
               nextStatus: handoff.patch.status,
             });
+            continue;
+          }
+
+          if (
+            qualityPassed &&
+            settings.mode === AutopilotMode.AUTOPUBLISH &&
+            isPlanAutoPublishMode(plan.publishingMode) &&
+            wordpressConnected &&
+            consumeBudgetForAction(budget, "LIVE_PUBLISH_ARTICLE")
+          ) {
+            const live = await runWordPressLivePublishForPlanArticle({
+              userId: input.userId,
+              organizationId: plan.organizationId,
+              websiteId: plan.websiteId,
+              articleId: draftResult.planItem.generatedArticleId,
+              planId: plan.id,
+              planItem: afterDraft,
+              planStatus: plan.status,
+              planPublishingMode: plan.publishingMode,
+              autopilotMode: settings.mode,
+            });
+
+            if (live.livePublished) {
+              items = applyPlanItemUpdate(items, currentItem.id, {
+                status: "published",
+                blockedReasonKey: undefined,
+                pipelineState: "WORDPRESS_LIVE_PUBLISHED",
+                publishingPath: "wordpress_live",
+                nextAutomatedStep: "done",
+              });
+              report.results.push({
+                ...itemResult,
+                action: "LIVE_PUBLISH_ARTICLE",
+                reasonKey: "readyForLivePublish",
+                summaryKey: live.summaryKey,
+                would: live.summaryKey,
+                nextStatus: "published",
+                executed: true,
+              });
+            } else {
+              items = applyPlanItemUpdate(items, currentItem.id, {
+                status: "blocked",
+                blockedReasonKey:
+                  live.blockedReason ??
+                  live.gate.blockedReason ??
+                  "livePublishBlocked",
+                reviewQueueHref: "/app/review",
+                nextAutomatedStep: "review_before_publish",
+              });
+              report.blockedCount += 1;
+              report.results.push({
+                ...itemResult,
+                action: "LIVE_PUBLISH_ARTICLE",
+                reasonKey: "livePublishBlocked",
+                summaryKey: live.summaryKey,
+                nextStatus: "blocked",
+                executed: Boolean(live.executed),
+              });
+            }
             continue;
           }
         } else if (eligibility.action === "PREPARE_PUBLISHING_HANDOFF") {
@@ -469,6 +532,108 @@ export async function runScheduledAutopilotPlans(input: {
               planId: plan.id,
               planItemId: currentItem.id,
               action: "PUBLISH_APPROVED_ARTICLE",
+              itemTitle: currentItem.title,
+            });
+          } catch {
+            // Timeline must not block execution.
+          }
+        } else if (eligibility.action === "LIVE_PUBLISH_ARTICLE") {
+          if (!currentItem.generatedArticleId) {
+            throw new AppError(
+              ErrorCode.VALIDATION_ERROR,
+              "Generated article missing for live publish step."
+            );
+          }
+
+          // REVIEW_ONLY plans never enter this branch (eligibility guards).
+          if (
+            !isPlanAutoPublishMode(plan.publishingMode) ||
+            settings.mode !== AutopilotMode.AUTOPUBLISH
+          ) {
+            items = applyPlanItemUpdate(items, currentItem.id, {
+              status: "blocked",
+              blockedReasonKey: "plan_review_only",
+              reviewQueueHref: "/app/review",
+              nextAutomatedStep: "review_before_publish",
+            });
+            planDirty = true;
+            itemResult.executed = false;
+            itemResult.nextStatus = "blocked";
+            itemResult.summaryKey = "plan_review_only";
+            report.blockedCount += 1;
+            report.results.push(itemResult);
+            continue;
+          }
+
+          const live = await runWordPressLivePublishForPlanArticle({
+            userId: input.userId,
+            organizationId: plan.organizationId,
+            websiteId: plan.websiteId,
+            articleId: currentItem.generatedArticleId,
+            planId: plan.id,
+            planItem: currentItem,
+            planStatus: plan.status,
+            planPublishingMode: plan.publishingMode,
+            autopilotMode: settings.mode,
+          });
+
+          if (!live.allowed || !live.livePublished) {
+            items = applyPlanItemUpdate(items, currentItem.id, {
+              status: "blocked",
+              blockedReasonKey:
+                live.blockedReason ?? live.gate.blockedReason ?? "livePublishBlocked",
+              reviewQueueHref: "/app/review",
+              nextAutomatedStep: "review_before_publish",
+              pipelineState:
+                live.articleStatus === "WORDPRESS_DRAFT_CREATED"
+                  ? "WORDPRESS_DRAFT_CREATED"
+                  : "FAILED",
+            });
+            planDirty = true;
+            itemResult.executed = Boolean(live.executed);
+            itemResult.nextStatus = "blocked";
+            itemResult.summaryKey = live.summaryKey;
+            itemResult.reasonKey = "livePublishBlocked";
+            report.blockedCount += 1;
+
+            try {
+              await timelineAfterAutopilotPlanItemExecuted({
+                userId: input.userId,
+                websiteId: plan.websiteId,
+                planId: plan.id,
+                planItemId: currentItem.id,
+                action: "LIVE_PUBLISH_ARTICLE",
+                itemTitle: currentItem.title,
+              });
+            } catch {
+              // Timeline must not block execution.
+            }
+
+            report.results.push(itemResult);
+            continue;
+          }
+
+          items = applyPlanItemUpdate(items, currentItem.id, {
+            status: "published",
+            blockedReasonKey: undefined,
+            pipelineState: "WORDPRESS_LIVE_PUBLISHED",
+            publishingPath: "wordpress_live",
+            nextAutomatedStep: "done",
+            reviewQueueHref: undefined,
+          });
+          planDirty = true;
+          itemResult.executed = true;
+          itemResult.nextStatus = "published";
+          itemResult.summaryKey = live.summaryKey;
+          report.executedCount += 1;
+
+          try {
+            await timelineAfterAutopilotPlanItemExecuted({
+              userId: input.userId,
+              websiteId: plan.websiteId,
+              planId: plan.id,
+              planItemId: currentItem.id,
+              action: "LIVE_PUBLISH_ARTICLE",
               itemTitle: currentItem.title,
             });
           } catch {

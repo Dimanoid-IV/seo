@@ -448,6 +448,21 @@ export function ReviewPage() {
                           </span>
                         ) : null}
                       </div>
+                      {item.articleContext.livePublishBlockedReason &&
+                      item.articleContext.planPublishingMode ===
+                        "AUTO_PUBLISH" ? (
+                        <div className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2">
+                          <p className="text-xs font-semibold text-amber-900">
+                            {t.autoPublishGateBlockedTitle}
+                          </p>
+                          <p className="mt-1 text-xs leading-relaxed text-amber-800">
+                            {t.autoPublishGateBlockedHint}
+                          </p>
+                          <p className="mt-1 text-[11px] text-amber-700">
+                            {item.articleContext.livePublishBlockedReason}
+                          </p>
+                        </div>
+                      ) : null}
                       {item.status === "READY_TO_PUBLISH" ||
                       item.articleContext.qualityPassed === true ? (
                         <p className="text-xs leading-relaxed text-slate-600">

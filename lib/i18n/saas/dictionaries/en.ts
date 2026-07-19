@@ -835,9 +835,15 @@ export const saasDictionary: SaasDictionary = {
       disconnectFailed: "Could not disconnect.",
       disconnectNetworkError: "Network error while disconnecting.",
       disconnected: "WordPress disconnected.",
-      createDraftsBullet: "Create WordPress drafts",
+      createDraftsBullet: "Drafts supported",
+      livePublishBullet:
+        "Live publish supported when plan permission is Auto-publish",
+      updatesComingBullet: "Updates to existing pages coming later",
       manualPublishBullet: "Manual publishing after review",
-      manualPublishNote: "Manual publishing after review. Live publish is off.",
+      manualPublishNote:
+        "Drafts always work. Live publish runs only for approved AUTO_PUBLISH plans when Autopilot is on Autopublish.",
+      livePublishSupportedNote:
+        "Live publish is plan-scoped — choose Auto-publish when confirming a monthly plan.",
       passwordHiddenNote:
         "The Application Password is not shown again after saving.",
       testConnection: "Test connection",
@@ -1210,6 +1216,9 @@ export const saasDictionary: SaasDictionary = {
       "Approving unlocks the next scheduled Autopilot run (WordPress draft only — nothing is published automatically).",
     autopilotAlreadyApprovedHint:
       "Already approved — Autopilot will continue on the next due run.",
+    autoPublishGateBlockedTitle: "Auto-publish needs your review",
+    autoPublishGateBlockedHint:
+      "This article was on an Auto-publish plan, but live publish was blocked. Review and publish manually, or fix the blocker and re-run Autopilot.",
     approveBlockedQuality:
       "This draft cannot be approved until quality checks pass.",
     approveArticle: "Approve article",
@@ -1237,6 +1246,7 @@ export const saasDictionary: SaasDictionary = {
       "For your site RankBoost prepared a ready package: HTML, Markdown, SEO title, meta description, and a developer email.",
     publishPathLabels: {
       wordpress_draft: "WordPress draft",
+      wordpress_live: "WordPress live",
       universal_package: "Site package",
       webhook: "Ready to send to your site",
       none: "Manual",
@@ -1248,6 +1258,7 @@ export const saasDictionary: SaasDictionary = {
       qualityNeedsRepair: "Article needs revision",
       universalPackageReady: "Publishing package ready",
       wordpressDraftCreated: "WordPress draft created",
+      wordpressLivePublished: "Published to WordPress",
       webhookReady: "Ready to send to your site",
       readyForPublishingHandoff: "Ready for publishing",
     },
@@ -1544,6 +1555,14 @@ export const saasDictionary: SaasDictionary = {
         `${eligible} item${eligible === 1 ? "" : "s"} would run, ${skipped} skipped, ${blocked} blocked (preview only).`,
       dueItemsCount: (count: number) =>
         `${count} item${count === 1 ? "" : "s"} due now`,
+      planPublishingModeLabel: "Approved plan publishing",
+      planModeReviewOnly: "Review before publish",
+      planModeAutoPublish: "Auto-publish on schedule",
+      nextLivePublishLabel: "Next live publish",
+      noLivePublishScheduled: "No live publish scheduled",
+      killSwitchPausedNote:
+        "Live publish is paused by the safety kill switch until enabled for this environment.",
+      pauseAutopilotCta: "Pause autopilot",
     },
     planApproval: {
       title: "Plan approval",

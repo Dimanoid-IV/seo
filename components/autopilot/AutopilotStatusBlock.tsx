@@ -25,6 +25,8 @@ type AutopilotStatusBlockProps = {
   autopublishAvailable?: boolean;
   websiteId?: string | null;
   planItems?: AutopilotPlanItemsDocument | null;
+  planPublishingMode?: "REVIEW_ONLY" | "AUTO_PUBLISH" | string | null;
+  livePublishKillSwitchEngaged?: boolean;
   onModeChange?: (mode: string) => void;
   onRunDue?: () => void;
   compact?: boolean;
@@ -52,6 +54,8 @@ export function AutopilotStatusBlock({
   autopublishAvailable = false,
   websiteId,
   planItems,
+  planPublishingMode = null,
+  livePublishKillSwitchEngaged = true,
   onModeChange,
   onRunDue,
   compact = false,
@@ -69,6 +73,25 @@ export function AutopilotStatusBlock({
     () => (planItems?.items ? findDuePlanItems(planItems.items).length : 0),
     [planItems]
   );
+
+  const nextLivePublish = useMemo(() => {
+    if (planPublishingMode !== "AUTO_PUBLISH" || !planItems?.items) return null;
+    const candidates = planItems.items
+      .filter(
+        (item) =>
+          item.type === "ARTICLE" &&
+          item.status !== "published" &&
+          item.status !== "executed" &&
+          item.status !== "skipped" &&
+          item.scheduledFor
+      )
+      .sort(
+        (a, b) =>
+          new Date(a.scheduledFor!).getTime() -
+          new Date(b.scheduledFor!).getTime()
+      );
+    return candidates[0] ?? null;
+  }, [planItems, planPublishingMode]);
 
   const canRunDue =
     mode !== "off" &&
@@ -229,6 +252,48 @@ export function AutopilotStatusBlock({
             </p>
           </div>
 
+          {planPublishingMode ? (
+            <div>
+              <p className="text-[10px] font-semibold uppercase tracking-wide text-slate-500">
+                {t.planPublishingModeLabel}
+              </p>
+              <p className="mt-1 text-sm font-medium text-slate-900">
+                {planPublishingMode === "AUTO_PUBLISH"
+                  ? t.planModeAutoPublish
+                  : t.planModeReviewOnly}
+              </p>
+            </div>
+          ) : null}
+
+          {planPublishingMode === "AUTO_PUBLISH" ? (
+            <div>
+              <p className="text-[10px] font-semibold uppercase tracking-wide text-slate-500">
+                {t.nextLivePublishLabel}
+              </p>
+              {nextLivePublish?.scheduledFor ? (
+                <div className="mt-1">
+                  <p className="text-sm font-medium text-slate-900">
+                    {nextLivePublish.title}
+                  </p>
+                  <p className="text-xs text-slate-500">
+                    {formatScheduledDate(nextLivePublish.scheduledFor, locale)}
+                  </p>
+                </div>
+              ) : (
+                <p className="mt-1 text-sm text-slate-500">
+                  {t.noLivePublishScheduled}
+                </p>
+              )}
+            </div>
+          ) : null}
+
+          {livePublishKillSwitchEngaged &&
+          planPublishingMode === "AUTO_PUBLISH" ? (
+            <p className="text-xs leading-relaxed text-amber-800">
+              {t.killSwitchPausedNote}
+            </p>
+          ) : null}
+
           {dueCount > 0 ? (
             <div>
               <p className="text-[10px] font-semibold uppercase tracking-wide text-emerald-700">
@@ -321,6 +386,18 @@ export function AutopilotStatusBlock({
                 {t.dryRunLabel}
               </Button>
             </>
+          ) : null}
+          {mode !== "off" ? (
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              className="rounded-xl border-amber-200 bg-amber-50 text-amber-900"
+              disabled={saving}
+              onClick={() => void handleModeChange("off")}
+            >
+              {t.pauseAutopilotCta}
+            </Button>
           ) : null}
         </div>
       ) : null}

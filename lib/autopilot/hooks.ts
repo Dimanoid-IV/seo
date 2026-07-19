@@ -62,7 +62,8 @@ export async function timelineAfterAutopilotPlanItemExecuted(input: {
     | "PREPARE_RESEARCH_BRIEF"
     | "PREPARE_ARTICLE_DRAFT"
     | "PREPARE_PUBLISHING_HANDOFF"
-    | "PUBLISH_APPROVED_ARTICLE";
+    | "PUBLISH_APPROVED_ARTICLE"
+    | "LIVE_PUBLISH_ARTICLE";
   itemTitle: string;
 }) {
   const summaryByAction: Record<typeof input.action, string> = {
@@ -73,6 +74,8 @@ export async function timelineAfterAutopilotPlanItemExecuted(input: {
       "Autopilot prepared a publishing handoff (draft or export package).",
     PUBLISH_APPROVED_ARTICLE:
       "Autopilot created a WordPress draft from an approved article.",
+    LIVE_PUBLISH_ARTICLE:
+      "Autopilot attempted WordPress live publish for an approved plan article.",
   };
 
   await createTimelineEvent({

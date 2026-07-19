@@ -16,6 +16,7 @@ export type ArticlePipelineState =
   | "QUALITY_FAILED_NEEDS_REPAIR"
   | "READY_FOR_PUBLISHING_HANDOFF"
   | "WORDPRESS_DRAFT_CREATED"
+  | "WORDPRESS_LIVE_PUBLISHED"
   | "UNIVERSAL_PACKAGE_READY"
   | "WEBHOOK_READY"
   | "WEBHOOK_SENT"
@@ -25,6 +26,7 @@ export type ArticlePipelineState =
 
 export type PublishingPath =
   | "wordpress_draft"
+  | "wordpress_live"
   | "universal_package"
   | "webhook"
   | "none";
@@ -37,6 +39,7 @@ export type LinkedArticlePipelineSnapshot = {
 
 const HANDOFF_STATES = new Set<ArticlePipelineState>([
   "WORDPRESS_DRAFT_CREATED",
+  "WORDPRESS_LIVE_PUBLISHED",
   "UNIVERSAL_PACKAGE_READY",
   "WEBHOOK_READY",
   "WEBHOOK_SENT",
@@ -111,6 +114,9 @@ export function deriveArticlePipelineState(
   if (item.status === "proposed") return "PROPOSED_TOPIC";
   if (item.status === "prepared") return "DRAFT_READY_FOR_REVIEW";
   if (item.status === "executed" || item.status === "published") {
+    if (item.publishingPath === "wordpress_live") {
+      return "WORDPRESS_LIVE_PUBLISHED";
+    }
     return item.publishingPath === "wordpress_draft"
       ? "WORDPRESS_DRAFT_CREATED"
       : "UNIVERSAL_PACKAGE_READY";
@@ -149,6 +155,8 @@ export function nextAutomatedStepLabel(
       return "prepare_publishing_handoff";
     case "WORDPRESS_DRAFT_CREATED":
       return "review_wordpress_draft";
+    case "WORDPRESS_LIVE_PUBLISHED":
+      return "done";
     case "UNIVERSAL_PACKAGE_READY":
       return "copy_or_send_package";
     case "WEBHOOK_READY":

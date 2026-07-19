@@ -837,10 +837,15 @@ export const saasDictionary: SaasDictionary = {
       disconnectFailed: "Ühendust ei õnnestunud katkestada.",
       disconnectNetworkError: "Võrguviga ühenduse katkestamisel.",
       disconnected: "WordPressi ühendus katkestatud.",
-      createDraftsBullet: "Luua WordPressi mustandeid",
+      createDraftsBullet: "Mustandid on toetatud",
+      livePublishBullet:
+        "Live publish on toetatud, kui plaani luba on Autopublish",
+      updatesComingBullet: "Olemasolevate lehtede uuendused tulevad hiljem",
       manualPublishBullet: "Käsitsi avaldamine pärast ülevaatust",
       manualPublishNote:
-        "Käsitsi avaldamine pärast ülevaatust. Live publish on välja lülitatud.",
+        "Mustandid töötavad alati. Live publish ainult kinnitatud AUTO_PUBLISH plaanidele Autopublish-režiimis.",
+      livePublishSupportedNote:
+        "Live publish on plaani-põhine — vali Autopublish kuuplaani kinnitamisel.",
       passwordHiddenNote:
         "Application Passwordi pärast salvestamist enam ei näidata.",
       testConnection: "Testi ühendust",
@@ -1217,6 +1222,9 @@ export const saasDictionary: SaasDictionary = {
       "Kinnitamine avab järgmise plaanitud Autopiloti käigu (ainult WordPressi mustand — midagi automaatselt ei avaldata).",
     autopilotAlreadyApprovedHint:
       "Juba kinnitatud — Autopilot jätkab järgmisel tähtajal.",
+    autoPublishGateBlockedTitle: "Autopublish vajab ülevaatust",
+    autoPublishGateBlockedHint:
+      "Artikkel oli Autopublish-plaanis, kuid live publish blokeeriti. Vaata üle käsitsi või paranda blokeering ja käivita Autopilot uuesti.",
     approveBlockedQuality:
       "Seda mustandit ei saa kinnitada enne, kui kvaliteedikontroll on läbitud.",
     approveArticle: "Kinnita artikkel",
@@ -1244,6 +1252,7 @@ export const saasDictionary: SaasDictionary = {
       "Teie saidi jaoks valmistas RankBoost paketi: HTML, Markdown, SEO pealkiri, meta kirjeldus ja kiri arendajale.",
     publishPathLabels: {
       wordpress_draft: "WordPressi mustand",
+      wordpress_live: "Avaldatud WordPressis",
       universal_package: "Saidipakett",
       webhook: "Valmis saidile saatmiseks",
       none: "Käsitsi",
@@ -1255,6 +1264,7 @@ export const saasDictionary: SaasDictionary = {
       qualityNeedsRepair: "Artikkel vajab parandust",
       universalPackageReady: "Avaldamispakett valmis",
       wordpressDraftCreated: "WordPressi mustand loodud",
+      wordpressLivePublished: "Avaldatud WordPressis",
       webhookReady: "Valmis saidile saatmiseks",
       readyForPublishingHandoff: "Valmis avaldamiseks",
     },
@@ -1551,6 +1561,14 @@ export const saasDictionary: SaasDictionary = {
         `${eligible} punkti käivitataks, ${skipped} vahele jäetud, ${blocked} blokeeritud (ainult eelvaade).`,
       dueItemsCount: (count: number) =>
         `${count} punkt${count === 1 ? "" : "i"} on tähtaja saabunud`,
+      planPublishingModeLabel: "Kinnitatud plaani avaldamine",
+      planModeReviewOnly: "Ülevaatus enne avaldamist",
+      planModeAutoPublish: "Autopublish graafiku järgi",
+      nextLivePublishLabel: "Järgmine live-avaldamine",
+      noLivePublishScheduled: "Live-avaldamist pole planeeritud",
+      killSwitchPausedNote:
+        "Live publish on turvalisuse kill switchiga peatatud, kuni see keskkonnas lubatakse.",
+      pauseAutopilotCta: "Peata autopilot",
     },
     planApproval: {
       title: "Plaani kinnitamine",

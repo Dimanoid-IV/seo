@@ -26,6 +26,7 @@ import {
 import {
   evaluateLivePublishGate,
   isLivePublishAction,
+  isLivePublishKillSwitchEngaged,
   LIVE_PUBLISH_KILL_SWITCH_ENGAGED,
   livePublishBlockedReason,
 } from "./live-publish-gate";
@@ -111,6 +112,7 @@ import {
 // --- live publish: end state, currently gated ---
 {
   assert.equal(LIVE_PUBLISH_KILL_SWITCH_ENGAGED, true);
+  assert.equal(isLivePublishKillSwitchEngaged(), true);
   assert.equal(isLivePublishAction("PUBLISH"), true);
   assert.equal(isLivePublishAction("CREATE_DRAFT"), false);
   assert.equal(foundationExternalActionsEnabled(), false);
@@ -126,6 +128,16 @@ import {
   assert.equal(closed.killSwitchEngaged, true);
   assert.equal(livePublishBlockedReason(closed), "live_publish_kill_switch");
   assert.ok(closed.missingPrerequisites.includes("kill_switch_cleared"));
+
+  const opened = evaluateLivePublishGate({
+    websiteAllowsLivePublish: true,
+    executionHistoryAvailable: true,
+    qualityGatePassed: true,
+    rollbackStrategyReady: true,
+    killSwitchEngaged: false,
+  });
+  assert.equal(opened.livePublishEnabled, true);
+  assert.equal(opened.killSwitchEngaged, false);
 
   const planScoped = evaluateLivePublishGate({
     planApproved: true,

@@ -9,7 +9,7 @@ import { cn } from "@/lib/utils";
 export type MonthlyAutopilotActiveCardProps = {
   nextArticleDateLabel: string | null;
   readyForReviewCount: number;
-  publishingPath: "manual" | "wordpress_draft" | "webhook_ready";
+  publishingPath: "manual" | "wordpress_draft" | "wordpress_live" | "webhook_ready";
   primaryHref: string;
   primaryLabel: string;
   showPublishingNudge: boolean;
@@ -29,14 +29,18 @@ export function MonthlyAutopilotActiveCard({
   const publishChip =
     publishingPath === "wordpress_draft"
       ? t.chipPublishWordpress
-      : publishingPath === "webhook_ready"
-        ? t.chipPublishWebhook
-        : t.chipPublishManual;
+      : publishingPath === "wordpress_live"
+        ? t.chipPublishWordpress
+        : publishingPath === "webhook_ready"
+          ? t.chipPublishWebhook
+          : t.chipPublishManual;
 
   const pathClarity =
     publishingPath === "wordpress_draft"
       ? t.wordpressDraftOnly
-      : t.customSitePackage;
+      : publishingPath === "wordpress_live"
+        ? t.wordpressDraftOnly
+        : t.customSitePackage;
 
   return (
     <section className="rounded-2xl border border-emerald-200 bg-gradient-to-br from-emerald-50/90 to-blue-50/40 p-6 sm:p-8">

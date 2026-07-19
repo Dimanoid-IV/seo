@@ -835,10 +835,15 @@ export const saasDictionary: SaasDictionary = {
       disconnectFailed: "Не удалось отключить.",
       disconnectNetworkError: "Сетевая ошибка при отключении.",
       disconnected: "WordPress отключён.",
-      createDraftsBullet: "Создавать черновики WordPress",
+      createDraftsBullet: "Черновики поддерживаются",
+      livePublishBullet:
+        "Live publish доступен, если в плане выбран режим автопубликации",
+      updatesComingBullet: "Обновления существующих страниц — позже",
       manualPublishBullet: "Публикация вручную после проверки",
       manualPublishNote:
-        "Публикация вручную после проверки. Live publish выключен.",
+        "Черновики всегда работают. Live publish — только для одобренных планов AUTO_PUBLISH при режиме Autopublish.",
+      livePublishSupportedNote:
+        "Live publish зависит от плана — выберите автопубликацию при подтверждении месячного плана.",
       passwordHiddenNote:
         "Application Password больше не отображается после сохранения.",
       testConnection: "Проверить подключение",
@@ -1214,6 +1219,9 @@ export const saasDictionary: SaasDictionary = {
       "Одобрение разблокирует следующий запланированный запуск Autopilot (только черновик WordPress — ничего не публикуется автоматически).",
     autopilotAlreadyApprovedHint:
       "Уже одобрено — Autopilot продолжит на следующем запланированном запуске.",
+    autoPublishGateBlockedTitle: "Автопубликация требует проверки",
+    autoPublishGateBlockedHint:
+      "Статья была в плане с автопубликацией, но live publish заблокирован. Проверьте вручную или устраните причину и перезапустите Autopilot.",
     approveBlockedQuality:
       "Черновик нельзя одобрить, пока не пройдены проверки качества.",
     approveArticle: "Одобрить статью",
@@ -1241,6 +1249,7 @@ export const saasDictionary: SaasDictionary = {
       "Для вашего сайта RankBoost подготовил готовый пакет: HTML, Markdown, SEO title, meta description и письмо разработчику.",
     publishPathLabels: {
       wordpress_draft: "Черновик WordPress",
+      wordpress_live: "Опубликовано в WordPress",
       universal_package: "Пакет для сайта",
       webhook: "Готово к отправке на сайт",
       none: "Вручную",
@@ -1252,6 +1261,7 @@ export const saasDictionary: SaasDictionary = {
       qualityNeedsRepair: "Статья требует доработки",
       universalPackageReady: "Готов пакет для публикации",
       wordpressDraftCreated: "Черновик WordPress создан",
+      wordpressLivePublished: "Опубликовано в WordPress",
       webhookReady: "Готово к отправке на сайт",
       readyForPublishingHandoff: "Готово к публикации",
     },
@@ -1548,6 +1558,14 @@ export const saasDictionary: SaasDictionary = {
         `${eligible} пункт${eligible === 1 ? "" : eligible < 5 ? "а" : "ов"} будет выполнено, ${skipped} пропущено, ${blocked} заблокировано (только предпросмотр).`,
       dueItemsCount: (count: number) =>
         `${count} пункт${count === 1 ? "" : count < 5 ? "а" : "ов"} пора выполнить`,
+      planPublishingModeLabel: "Публикация одобренного плана",
+      planModeReviewOnly: "Сначала проверка",
+      planModeAutoPublish: "Автопубликация по расписанию",
+      nextLivePublishLabel: "Следующая live-публикация",
+      noLivePublishScheduled: "Live-публикация не запланирована",
+      killSwitchPausedNote:
+        "Live publish приостановлен защитным kill switch до включения в этой среде.",
+      pauseAutopilotCta: "Приостановить автопилот",
     },
     planApproval: {
       title: "Одобрение плана",

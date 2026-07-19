@@ -5,6 +5,9 @@
  * Plan-scoped permission (11.50): after confirming a monthly plan with
  * AUTO_PUBLISH, articles that pass the quality gate are permitted — without
  * per-article confirmation. Global kill switch / rollback still gate execution.
+ *
+ * Prompt 11.51: WordPress adapter execution exists; kill switch stays engaged
+ * by default until LIVE_PUBLISH_KILL_SWITCH is explicitly cleared.
  */
 
 import { IntegrationCapability } from "./adapters/capabilities";
@@ -13,8 +16,36 @@ import {
   isPlanAutoPublishMode,
 } from "@/lib/autopilot/plan-publishing-mode";
 
-/** Global kill switch — engage to block all live publish / live webhook send. */
-export const LIVE_PUBLISH_KILL_SWITCH_ENGAGED = true as const;
+/**
+ * Global kill switch — engaged blocks all live publish / live webhook send.
+ * Clear only via env: LIVE_PUBLISH_KILL_SWITCH=cleared|0|false|off
+ */
+export function isLivePublishKillSwitchEngaged(): boolean {
+  const raw = process.env.LIVE_PUBLISH_KILL_SWITCH?.trim().toLowerCase();
+  if (
+    raw === "0" ||
+    raw === "false" ||
+    raw === "cleared" ||
+    raw === "off" ||
+    raw === "disabled"
+  ) {
+    return false;
+  }
+  if (
+    raw === "1" ||
+    raw === "true" ||
+    raw === "engaged" ||
+    raw === "on" ||
+    raw === "enabled"
+  ) {
+    return true;
+  }
+  // Safe default: engaged (blocks live publish on customer sites).
+  return true;
+}
+
+/** Snapshot for callers / tests that need a boolean constant at import time. */
+export const LIVE_PUBLISH_KILL_SWITCH_ENGAGED = true as boolean;
 
 export const LIVE_PUBLISH_PREREQUISITES = [
   "per_website_permission",
@@ -42,6 +73,8 @@ export type LivePublishGateInput = {
   qualityGatePassed?: boolean;
   /** Rollback strategy registered for the provider/action. */
   rollbackStrategyReady?: boolean;
+  /** Override kill-switch check (tests / article-level gate). */
+  killSwitchEngaged?: boolean;
 };
 
 export type LivePublishGateState = {
@@ -83,8 +116,12 @@ export function evaluateLivePublishGate(
 ): LivePublishGateState {
   const missing: LivePublishPrerequisite[] = [];
   const permissionGranted = hasPlanScopedPermission(input);
+  const killSwitchEngaged =
+    typeof input.killSwitchEngaged === "boolean"
+      ? input.killSwitchEngaged
+      : isLivePublishKillSwitchEngaged();
 
-  if (LIVE_PUBLISH_KILL_SWITCH_ENGAGED) {
+  if (killSwitchEngaged) {
     missing.push("kill_switch_cleared");
   }
   if (!permissionGranted) {
@@ -113,7 +150,7 @@ export function evaluateLivePublishGate(
 
   return {
     productEndState: "live_publish",
-    killSwitchEngaged: LIVE_PUBLISH_KILL_SWITCH_ENGAGED,
+    killSwitchEngaged,
     permissionGranted,
     livePublishEnabled,
     missingPrerequisites: missing,
@@ -128,6 +165,7 @@ export function evaluateArticleLivePublishPermission(input: {
   qualityPassed: boolean | null | undefined;
   executionHistoryAvailable?: boolean;
   rollbackStrategyReady?: boolean;
+  killSwitchEngaged?: boolean;
 }): LivePublishGateState {
   const planApproved = input.planStatus.toUpperCase() === "APPROVED";
   const articlePermitted = isApprovedPlanArticleLivePublishPermitted({
@@ -144,6 +182,7 @@ export function evaluateArticleLivePublishPermission(input: {
     websiteAllowsLivePublish: articlePermitted,
     executionHistoryAvailable: input.executionHistoryAvailable,
     rollbackStrategyReady: input.rollbackStrategyReady,
+    killSwitchEngaged: input.killSwitchEngaged,
   });
 }
 

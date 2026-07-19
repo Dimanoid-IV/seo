@@ -2,6 +2,7 @@ import { ArticleStatus, AutopilotMode } from "@prisma/client";
 
 import { isResearchBriefReadyForArticleGeneration } from "@/lib/content-research/readiness";
 import { isHandoffComplete } from "./article-pipeline";
+import { isPlanAutoPublishMode } from "./plan-publishing-mode";
 
 import type { AutopilotPlanItem } from "./plan-item-types";
 
@@ -10,6 +11,7 @@ export type ExecutionActionType =
   | "PREPARE_ARTICLE_DRAFT"
   | "PREPARE_PUBLISHING_HANDOFF"
   | "PUBLISH_APPROVED_ARTICLE"
+  | "LIVE_PUBLISH_ARTICLE"
   | "NOOP_INTERNAL"
   | "BLOCKED"
   | "SKIP";
@@ -37,6 +39,8 @@ export type ExecutionReasonKey =
   | "articleNotApproved"
   | "readyForPublishingHandoff"
   | "readyForWordPressDraft"
+  | "readyForLivePublish"
+  | "livePublishBlocked"
   | "wordpressNotConnected"
   | "wordpressDraftAlreadyCreated"
   | "universalPackageReady"
@@ -44,7 +48,8 @@ export type ExecutionReasonKey =
   | "nonArticleNoop"
   | "blockedStatus"
   | "handoffComplete"
-  | "runBudgetExhausted";
+  | "runBudgetExhausted"
+  | "seoFixNotLivePublish";
 
 export type LinkedArticleSnapshot = {
   id: string;
@@ -67,6 +72,8 @@ export type ExecutionEligibilityInput = {
   manualPreview?: boolean;
   /** Website-level custom webhook tested+configured. */
   webhookConfiguredAndTested?: boolean;
+  /** Plan publishing mode from MonthlyAutopilotPlan.publishingMode. */
+  planPublishingMode?: string | null;
 };
 
 export type ExecutionEligibilityResult = {
@@ -199,6 +206,7 @@ export function resolvePlanItemExecutionEligibility(
   }
 
   if (item.type !== "ARTICLE") {
+    // SEO_FIX / TASK_FIX never live-publish — internal noop only.
     return eligibleAction("NOOP_INTERNAL", "nonArticleNoop", "nonArticleNoop", item.status);
   }
 
@@ -252,12 +260,37 @@ export function resolvePlanItemExecutionEligibility(
     return skip("articleQualityFailed", "qualityFailed");
   }
 
+  const wantsLivePublish =
+    autopilotMode === AutopilotMode.AUTOPUBLISH &&
+    isPlanAutoPublishMode(input.planPublishingMode);
+
+  // Plan-scoped AUTO_PUBLISH + AutopilotMode AUTOPUBLISH → live publish path.
+  // REVIEW_ONLY / REVIEW_FIRST keep draft / package / review handoff.
+  if (
+    wantsLivePublish &&
+    (article.qualityPassed === true || item.articleQualityPassed === true) &&
+    !article.wordpressPostId &&
+    (isArticleWaitingForReview(article.status) ||
+      isArticleApprovedForPublish(article.status))
+  ) {
+    if (!wordpressConnected) {
+      return blocked("wordpressNotConnected", "wordpressRequired");
+    }
+    return eligibleAction(
+      "LIVE_PUBLISH_ARTICLE",
+      "readyForLivePublish",
+      "wouldLivePublishWordPress",
+      "published"
+    );
+  }
+
   // Quality passed — prepare publishing handoff automatically in approved-plan mode
-  // (WP draft / universal package / webhook ready). Never live-publish.
+  // (WP draft / universal package / webhook ready). Live publish only via LIVE_PUBLISH_ARTICLE.
   if (
     (article.qualityPassed === true || item.articleQualityPassed === true) &&
     !isHandoffComplete(item) &&
-    !article.wordpressPostId
+    !article.wordpressPostId &&
+    !wantsLivePublish
   ) {
     if (!HANDOFF_MODES.has(autopilotMode)) {
       // REVIEW_FIRST: wait for human approval before handoff.
@@ -286,7 +319,9 @@ export function resolvePlanItemExecutionEligibility(
         ? "wordpressDraftCreated"
         : item.pipelineState === "WEBHOOK_READY"
           ? "webhookReady"
-          : "universalPackageReady",
+          : item.pipelineState === "WORDPRESS_LIVE_PUBLISHED"
+            ? "wordpressLivePublished"
+            : "universalPackageReady",
       "executed"
     );
   }
@@ -297,6 +332,14 @@ export function resolvePlanItemExecutionEligibility(
 
   // Legacy path: after user approves article, create WP draft if still missing.
   if (isArticleApprovedForPublish(article.status) && wordpressConnected && !article.wordpressPostId) {
+    if (wantsLivePublish) {
+      return eligibleAction(
+        "LIVE_PUBLISH_ARTICLE",
+        "readyForLivePublish",
+        "wouldLivePublishWordPress",
+        "published"
+      );
+    }
     if (!HANDOFF_MODES.has(autopilotMode) && autopilotMode !== AutopilotMode.REVIEW_FIRST) {
       return skip("publishDisabled", "waitingForReviewApproval");
     }
@@ -347,7 +390,8 @@ export function classifyDryRunOutcome(
     result.action === "PREPARE_RESEARCH_BRIEF" ||
     result.action === "PREPARE_ARTICLE_DRAFT" ||
     result.action === "PREPARE_PUBLISHING_HANDOFF" ||
-    result.action === "PUBLISH_APPROVED_ARTICLE"
+    result.action === "PUBLISH_APPROVED_ARTICLE" ||
+    result.action === "LIVE_PUBLISH_ARTICLE"
   ) {
     return "wouldRun";
   }
@@ -407,7 +451,8 @@ export function consumeBudgetForAction(
   }
   if (
     action === "PREPARE_PUBLISHING_HANDOFF" ||
-    action === "PUBLISH_APPROVED_ARTICLE"
+    action === "PUBLISH_APPROVED_ARTICLE" ||
+    action === "LIVE_PUBLISH_ARTICLE"
   ) {
     if (budget.handoffRemaining <= 0) return false;
     budget.handoffRemaining -= 1;

@@ -297,6 +297,8 @@ export function MonthlyAutopilotPage() {
               autopublishAvailable={data.autopilotSettings.autopublishAvailable}
               websiteId={data.websiteId}
               planItems={data.planItems}
+              planPublishingMode={data.plan.publishingMode}
+              livePublishKillSwitchEngaged
               onModeChange={() => void loadPlan(month)}
               onRunDue={() => void loadPlan(month)}
             />

@@ -168,10 +168,11 @@ export function WordPressConnectionForm({
 
         <ul className="space-y-1 text-sm text-slate-700">
           <li>• {wp.createDraftsBullet}</li>
-          <li>• {wp.manualPublishBullet}</li>
+          <li>• {wp.livePublishBullet}</li>
+          <li>• {wp.updatesComingBullet}</li>
         </ul>
 
-        <p className="text-xs text-slate-600">{wp.draftOnlyMessage}</p>
+        <p className="text-xs text-slate-600">{wp.livePublishSupportedNote}</p>
         <p className="text-xs font-medium text-slate-700">
           {wp.manualPublishNote}
         </p>

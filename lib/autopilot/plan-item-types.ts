@@ -35,6 +35,7 @@ export type AutopilotPlanItemSourceRef = {
 
 export type AutopilotPlanItemPublishingPath =
   | "wordpress_draft"
+  | "wordpress_live"
   | "universal_package"
   | "webhook"
   | "none";
@@ -50,6 +51,7 @@ export type AutopilotPlanItemPipelineState =
   | "QUALITY_FAILED_NEEDS_REPAIR"
   | "READY_FOR_PUBLISHING_HANDOFF"
   | "WORDPRESS_DRAFT_CREATED"
+  | "WORDPRESS_LIVE_PUBLISHED"
   | "UNIVERSAL_PACKAGE_READY"
   | "WEBHOOK_READY"
   | "WEBHOOK_SENT"

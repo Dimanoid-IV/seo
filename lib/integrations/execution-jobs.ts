@@ -214,7 +214,7 @@ export async function markExecutionJobRunning(
     to: IntegrationExecutionStatus.RUNNING,
     patch: { startedAt: new Date() },
     eventType: "job.running",
-    message: "Задание запущено (без внешнего действия).",
+    message: "Задание запущено.",
   });
 }
 
@@ -253,7 +253,51 @@ export async function markExecutionJobSucceeded(input: {
       errorMessage: null,
     },
     eventType: "job.succeeded",
-    message: "Задание успешно завершено (без внешнего действия).",
+    message: "Задание успешно завершено.",
+    metadata: result,
+  });
+}
+
+export async function markExecutionJobPartiallyApplied(input: {
+  jobId: string;
+  result?: Record<string, unknown> | null;
+  externalId?: string | null;
+  externalUrl?: string | null;
+  errorCode?: string | null;
+  errorMessage?: string | null;
+}): Promise<IntegrationExecutionJob> {
+  const result = sanitizeExecutionPayload(input.result ?? null);
+  if (result && !assertPayloadHasNoSecrets(result)) {
+    throw new AppError(
+      ErrorCode.VALIDATION_ERROR,
+      "Результат содержит запрещённые поля."
+    );
+  }
+  let externalUrl: string | null = null;
+  if (input.externalUrl) {
+    try {
+      const url = new URL(input.externalUrl);
+      externalUrl = `${url.origin}${url.pathname}`.slice(0, 500);
+    } catch {
+      externalUrl = null;
+    }
+  }
+
+  return transitionJob({
+    jobId: input.jobId,
+    to: IntegrationExecutionStatus.PARTIALLY_APPLIED,
+    patch: {
+      finishedAt: new Date(),
+      resultJson: (result as Prisma.InputJsonValue | undefined) ?? undefined,
+      externalId: input.externalId?.slice(0, 200) ?? null,
+      externalUrl,
+      errorCode: input.errorCode?.slice(0, 80) ?? "PARTIALLY_APPLIED",
+      errorMessage: sanitizeExecutionErrorMessage(input.errorMessage),
+    },
+    eventType: "job.partially_applied",
+    message:
+      sanitizeExecutionErrorMessage(input.errorMessage) ??
+      "Задание применено частично.",
     metadata: result,
   });
 }

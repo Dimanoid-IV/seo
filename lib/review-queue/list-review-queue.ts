@@ -247,6 +247,7 @@ export async function getReviewQueue(
       },
       select: {
         planItemsJson: true,
+        publishingMode: true,
       },
     }),
   ]);
@@ -261,6 +262,8 @@ export async function getReviewQueue(
       wordpressDraftCreated?: boolean;
       universalPackageReady?: boolean;
       webhookReady?: boolean;
+      blockedReasonKey?: string | null;
+      planPublishingMode?: string | null;
     }
   >();
   for (const plan of autopilotPlans) {
@@ -278,6 +281,8 @@ export async function getReviewQueue(
           wordpressDraftCreated: Boolean(item.wordpressDraftCreatedAt),
           universalPackageReady: Boolean(item.universalPackagePreparedAt),
           webhookReady: Boolean(item.webhookReadyAt),
+          blockedReasonKey: item.blockedReasonKey ?? null,
+          planPublishingMode: plan.publishingMode ?? null,
         });
       }
     }
@@ -365,6 +370,8 @@ export async function getReviewQueue(
         wordpressDraftCreated: Boolean(
           autopilotMeta?.wordpressDraftCreated || article.wordpressPostId
         ),
+        livePublishBlockedReason: autopilotMeta?.blockedReasonKey ?? null,
+        planPublishingMode: autopilotMeta?.planPublishingMode ?? null,
       },
     });
   }

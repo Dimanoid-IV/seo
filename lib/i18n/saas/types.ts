@@ -666,8 +666,11 @@ export type SaasDictionary = {
       disconnectNetworkError: string;
       disconnected: string;
       createDraftsBullet: string;
+      livePublishBullet: string;
+      updatesComingBullet: string;
       manualPublishBullet: string;
       manualPublishNote: string;
+      livePublishSupportedNote: string;
       passwordHiddenNote: string;
       testConnection: string;
       saveConnection: string;
@@ -980,6 +983,8 @@ export type SaasDictionary = {
     autopilotLinkedLabel: string;
     autopilotUnlockHint: string;
     autopilotAlreadyApprovedHint: string;
+    autoPublishGateBlockedTitle: string;
+    autoPublishGateBlockedHint: string;
     approveBlockedQuality: string;
     approveArticle: string;
     articleReadyHint: string;
@@ -999,6 +1004,7 @@ export type SaasDictionary = {
     customPackageHint: string;
     publishPathLabels: {
       wordpress_draft: string;
+      wordpress_live: string;
       universal_package: string;
       webhook: string;
       none: string;
@@ -1010,6 +1016,7 @@ export type SaasDictionary = {
       qualityNeedsRepair: string;
       universalPackageReady: string;
       wordpressDraftCreated: string;
+      wordpressLivePublished: string;
       webhookReady: string;
       readyForPublishingHandoff: string;
     };
@@ -1281,6 +1288,13 @@ export type SaasDictionary = {
       dryRunLabel: string;
       dryRunSuccess: (eligible: number, skipped: number, blocked: number) => string;
       dueItemsCount: (count: number) => string;
+      planPublishingModeLabel: string;
+      planModeReviewOnly: string;
+      planModeAutoPublish: string;
+      nextLivePublishLabel: string;
+      noLivePublishScheduled: string;
+      killSwitchPausedNote: string;
+      pauseAutopilotCta: string;
     };
     planApproval: {
       title: string;

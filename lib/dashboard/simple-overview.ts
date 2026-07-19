@@ -82,7 +82,7 @@ export type SimpleDashboardViewModel = {
   monthlyAutopilotActive?: {
     nextArticleDateLabel: string | null;
     readyForReviewCount: number;
-    publishingPath: "manual" | "wordpress_draft" | "webhook_ready";
+    publishingPath: "manual" | "wordpress_draft" | "wordpress_live" | "webhook_ready";
     primaryHref: string;
     primaryLabelKind: "review" | "plan";
     showPublishingNudge: boolean;

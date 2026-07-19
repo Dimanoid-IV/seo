@@ -45,11 +45,19 @@ export type ReviewQueueItem = {
     qualityPassed: boolean | null;
     linkedAutopilotPlanItem: boolean;
     autopilotUnlockOnApprove: boolean;
-    publishPath?: "wordpress_draft" | "universal_package" | "webhook" | "none";
+    publishPath?:
+      | "wordpress_draft"
+      | "wordpress_live"
+      | "universal_package"
+      | "webhook"
+      | "none";
     pipelineState?: string;
     plannedDate?: string | null;
     nextAutomatedStep?: string | null;
     wordpressDraftCreated?: boolean;
+    /** When AUTO_PUBLISH plan item was blocked by the live-publish gate. */
+    livePublishBlockedReason?: string | null;
+    planPublishingMode?: string | null;
   };
   preparedFix?: {
     generatedBy: PreparedFixGeneratedBy;

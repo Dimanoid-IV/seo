@@ -16,6 +16,7 @@ export type PipelineHumanLabelKey =
   | "qualityNeedsRepair"
   | "readyForPublishingHandoff"
   | "wordpressDraftCreated"
+  | "wordpressLivePublished"
   | "universalPackageReady"
   | "webhookReady"
   | "webhookSent"
@@ -34,6 +35,7 @@ const STATE_TO_KEY: Record<AutopilotPlanItemPipelineState, PipelineHumanLabelKey
   QUALITY_FAILED_NEEDS_REPAIR: "qualityNeedsRepair",
   READY_FOR_PUBLISHING_HANDOFF: "readyForPublishingHandoff",
   WORDPRESS_DRAFT_CREATED: "wordpressDraftCreated",
+  WORDPRESS_LIVE_PUBLISHED: "wordpressLivePublished",
   UNIVERSAL_PACKAGE_READY: "universalPackageReady",
   WEBHOOK_READY: "webhookReady",
   WEBHOOK_SENT: "webhookSent",
@@ -64,6 +66,7 @@ export const PIPELINE_LABELS_RU: Record<PipelineHumanLabelKey, string> = {
   qualityNeedsRepair: "Статья требует доработки",
   readyForPublishingHandoff: "Готово к публикации",
   wordpressDraftCreated: "Черновик WordPress создан",
+  wordpressLivePublished: "Опубликовано в WordPress",
   universalPackageReady: "Готов пакет для публикации",
   webhookReady: "Готово к отправке на сайт",
   webhookSent: "Отправлено на сайт",
@@ -75,12 +78,14 @@ export const PIPELINE_LABELS_RU: Record<PipelineHumanLabelKey, string> = {
 export type PublishingPathChip =
   | "manual"
   | "wordpress_draft"
+  | "wordpress_live"
   | "webhook_ready";
 
 export function publishingPathChip(
   path: string | null | undefined
 ): PublishingPathChip {
   if (path === "wordpress_draft") return "wordpress_draft";
+  if (path === "wordpress_live") return "wordpress_live";
   if (path === "webhook") return "webhook_ready";
   return "manual";
 }
