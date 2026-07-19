@@ -367,6 +367,54 @@ function runExecutionEligibilityChecks(): void {
   assert.equal(alreadyDraft.action, "NOOP_INTERNAL");
   assert.equal(alreadyDraft.suggestedStatus, "executed");
   assert.equal(classifyDryRunOutcome(alreadyDraft), "wouldRun");
+
+  // Prompt 11.50: AUTO_PUBLISH skips per-article confirm after quality pass.
+  const autoPublishHandoff = resolvePlanItemExecutionEligibility({
+    item: baseArticleItem({
+      status: "prepared",
+      generatedArticleId: "article-auto",
+      articleQualityPassed: true,
+    }),
+    now,
+    autopilotMode: AutopilotMode.AUTOPUBLISH,
+    wordpressConnected: true,
+    websiteId,
+    organizationId,
+    article: {
+      id: "article-auto",
+      status: ArticleStatus.WAITING_REVIEW,
+      qualityPassed: true,
+      websiteId,
+      organizationId,
+      wordpressPostId: null,
+    },
+  });
+  assert.equal(autoPublishHandoff.action, "PREPARE_PUBLISHING_HANDOFF");
+  assert.equal(autoPublishHandoff.reasonKey, "readyForPublishingHandoff");
+
+  // Prepare-for-review (REVIEW_FIRST) waits for human before handoff.
+  const reviewFirstWait = resolvePlanItemExecutionEligibility({
+    item: baseArticleItem({
+      status: "prepared",
+      generatedArticleId: "article-review",
+      articleQualityPassed: true,
+    }),
+    now,
+    autopilotMode: AutopilotMode.REVIEW_FIRST,
+    wordpressConnected: true,
+    websiteId,
+    organizationId,
+    article: {
+      id: "article-review",
+      status: ArticleStatus.WAITING_REVIEW,
+      qualityPassed: true,
+      websiteId,
+      organizationId,
+      wordpressPostId: null,
+    },
+  });
+  assert.equal(reviewFirstWait.action, "SKIP");
+  assert.equal(reviewFirstWait.reasonKey, "waitingForReviewApproval");
 }
 
 if (require.main === module) {

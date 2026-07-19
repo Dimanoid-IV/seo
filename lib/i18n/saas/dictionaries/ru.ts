@@ -1565,11 +1565,20 @@ export const saasDictionary: SaasDictionary = {
         "RankBoost подготовит темы статей по датам.",
         "В нужный день создаст черновик.",
         "Проверит качество и улучшит текст.",
-        "Положит готовую статью в раздел «На проверку».",
-        "Если подключён WordPress — создаст черновик WordPress.",
-        "Если сайт другой — подготовит HTML/Markdown и письмо разработчику.",
+        "Дальше — по выбранному режиму публикации ниже.",
       ],
-      afterApproveFooter: "Ничего не публикуется автоматически.",
+      afterApproveFooter:
+        "Автопубликация не включается молча — выберите режим ниже.",
+      publishingModeTitle: "Как публиковать статьи этого плана?",
+      publishingModeRequired: "Выберите режим публикации перед подтверждением.",
+      publishingModeReviewOnlyTitle: "Подготовить к проверке",
+      publishingModeReviewOnlyDescription:
+        "Статьи появятся на проверку. Live publish выключен для этого плана.",
+      publishingModeAutoPublishTitle: "Публиковать автоматически по расписанию",
+      publishingModeAutoPublishDescription:
+        "После quality gate статьи этого одобренного плана публикуются без отдельного подтверждения каждой.",
+      publishingModeAutoPublishWarning:
+        "Live publish разрешён только внутри этого одобренного плана и только для статей, прошедших quality gate.",
       approveFailed: "Не удалось одобрить выбранные пункты плана.",
       approveNetworkError: "Сетевая ошибка при одобрении плана.",
       selectAtLeastOne: "Выберите хотя бы один пункт для одобрения.",

@@ -68,6 +68,7 @@ export async function GET(request: Request) {
         livePublish: {
           productEndState: "live_publish",
           enabled: false,
+          permissionGranted: false,
           killSwitchEngaged: true,
         },
         externalActionsEnabled: false,

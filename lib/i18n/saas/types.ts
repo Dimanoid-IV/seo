@@ -1292,6 +1292,13 @@ export type SaasDictionary = {
       afterApproveTitle: string;
       afterApproveSteps: string[];
       afterApproveFooter: string;
+      publishingModeTitle: string;
+      publishingModeRequired: string;
+      publishingModeReviewOnlyTitle: string;
+      publishingModeReviewOnlyDescription: string;
+      publishingModeAutoPublishTitle: string;
+      publishingModeAutoPublishDescription: string;
+      publishingModeAutoPublishWarning: string;
       approveFailed: string;
       approveNetworkError: string;
       selectAtLeastOne: string;

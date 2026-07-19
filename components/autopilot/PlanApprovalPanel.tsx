@@ -108,6 +108,9 @@ export function PlanApprovalPanel({
   const { dict, locale } = useSaasTranslations();
   const t = dict.autopilot.planApproval;
   const [period, setPeriod] = useState<AutopilotPlanPeriod>(planItems.period);
+  const [publishingMode, setPublishingMode] = useState<
+    "REVIEW_ONLY" | "AUTO_PUBLISH"
+  >("REVIEW_ONLY");
   const [selected, setSelected] = useState<Set<string>>(() => {
     const initial = new Set<string>();
     for (const item of planItems.items) {
@@ -199,6 +202,10 @@ export function PlanApprovalPanel({
       setError(t.selectAtLeastOne);
       return;
     }
+    if (!publishingMode) {
+      setError(t.publishingModeRequired);
+      return;
+    }
 
     setSubmitting(true);
     setError(null);
@@ -213,6 +220,7 @@ export function PlanApprovalPanel({
           body: JSON.stringify({
             itemIds: [...selected],
             period,
+            publishingMode,
           }),
         }
       );
@@ -711,6 +719,64 @@ export function PlanApprovalPanel({
               {t.afterApproveFooter}
             </p>
           </div>
+
+          <fieldset className="space-y-3 rounded-xl border border-slate-200 bg-white px-4 py-4">
+            <legend className="px-1 text-sm font-semibold text-slate-900">
+              {t.publishingModeTitle}
+            </legend>
+            <label
+              className={cn(
+                "flex cursor-pointer gap-3 rounded-xl border px-3 py-3 text-sm",
+                publishingMode === "REVIEW_ONLY"
+                  ? "border-blue-400 bg-blue-50/60"
+                  : "border-slate-200"
+              )}
+            >
+              <input
+                type="radio"
+                name="publishingMode"
+                className="mt-1"
+                checked={publishingMode === "REVIEW_ONLY"}
+                onChange={() => setPublishingMode("REVIEW_ONLY")}
+              />
+              <span>
+                <span className="block font-medium text-slate-900">
+                  {t.publishingModeReviewOnlyTitle}
+                </span>
+                <span className="mt-1 block text-slate-600">
+                  {t.publishingModeReviewOnlyDescription}
+                </span>
+              </span>
+            </label>
+            <label
+              className={cn(
+                "flex cursor-pointer gap-3 rounded-xl border px-3 py-3 text-sm",
+                publishingMode === "AUTO_PUBLISH"
+                  ? "border-amber-400 bg-amber-50/70"
+                  : "border-slate-200"
+              )}
+            >
+              <input
+                type="radio"
+                name="publishingMode"
+                className="mt-1"
+                checked={publishingMode === "AUTO_PUBLISH"}
+                onChange={() => setPublishingMode("AUTO_PUBLISH")}
+              />
+              <span>
+                <span className="block font-medium text-slate-900">
+                  {t.publishingModeAutoPublishTitle}
+                </span>
+                <span className="mt-1 block text-slate-600">
+                  {t.publishingModeAutoPublishDescription}
+                </span>
+                <span className="mt-2 block text-xs font-medium text-amber-900">
+                  {t.publishingModeAutoPublishWarning}
+                </span>
+              </span>
+            </label>
+          </fieldset>
+
           <Button
             type="button"
             disabled={submitting || selected.size === 0}

@@ -24,6 +24,7 @@ function assertDatabaseConfigured(): void {
 const postSchema = z.object({
   itemIds: z.array(z.string().min(1)).min(1),
   period: z.enum(["weekly", "monthly"]).optional(),
+  publishingMode: z.enum(["REVIEW_ONLY", "AUTO_PUBLISH"]).optional(),
 });
 
 type RouteContext = {
@@ -47,6 +48,7 @@ export async function POST(request: Request, context: RouteContext) {
       userId: currentUser.id,
       itemIds: parsed.data.itemIds,
       period: parsed.data.period,
+      publishingMode: parsed.data.publishingMode,
       timezone: null,
     });
 

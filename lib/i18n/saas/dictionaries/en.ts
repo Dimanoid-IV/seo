@@ -1560,11 +1560,20 @@ export const saasDictionary: SaasDictionary = {
         "RankBoost schedules article topics by date.",
         "On the right day it creates a draft.",
         "It checks quality and improves the text.",
-        "It places the ready article in Review.",
-        "If WordPress is connected — it creates a WordPress draft.",
-        "For other sites — it prepares HTML/Markdown and a developer email.",
+        "Next steps follow the publishing mode you choose below.",
       ],
-      afterApproveFooter: "Nothing is published automatically.",
+      afterApproveFooter:
+        "Autopublish is never enabled silently — choose a mode below.",
+      publishingModeTitle: "How should articles from this plan be published?",
+      publishingModeRequired: "Choose a publishing mode before confirming.",
+      publishingModeReviewOnlyTitle: "Prepare for review",
+      publishingModeReviewOnlyDescription:
+        "Articles go to Review. Live publish stays off for this plan.",
+      publishingModeAutoPublishTitle: "Publish automatically on schedule",
+      publishingModeAutoPublishDescription:
+        "After the quality gate, articles from this approved plan publish without confirming each one.",
+      publishingModeAutoPublishWarning:
+        "Live publish is allowed only inside this approved plan and only for quality-passed articles.",
       approveFailed: "Could not approve selected plan items.",
       approveNetworkError: "Network error while approving plan.",
       selectAtLeastOne: "Select at least one item to approve.",

@@ -127,9 +127,29 @@ import {
   assert.equal(livePublishBlockedReason(closed), "live_publish_kill_switch");
   assert.ok(closed.missingPrerequisites.includes("kill_switch_cleared"));
 
+  const planScoped = evaluateLivePublishGate({
+    planApproved: true,
+    planPublishingMode: "AUTO_PUBLISH",
+    qualityGatePassed: true,
+  });
+  assert.equal(planScoped.permissionGranted, true);
+  assert.equal(planScoped.livePublishEnabled, false);
+  assert.ok(planScoped.missingPrerequisites.includes("kill_switch_cleared"));
+
+  const reviewOnlyPlan = evaluateLivePublishGate({
+    planApproved: true,
+    planPublishingMode: "REVIEW_ONLY",
+    qualityGatePassed: true,
+  });
+  assert.equal(reviewOnlyPlan.permissionGranted, false);
+  assert.ok(
+    reviewOnlyPlan.missingPrerequisites.includes("approved_plan_auto_publish")
+  );
+
   const missingPerms = evaluateLivePublishGate({});
   assert.ok(
-    missingPerms.missingPrerequisites.includes("per_website_permission")
+    missingPerms.missingPrerequisites.includes("per_website_permission") ||
+      missingPerms.missingPrerequisites.includes("approved_plan_auto_publish")
   );
   assert.ok(missingPerms.missingPrerequisites.includes("quality_gates"));
   assert.ok(missingPerms.missingPrerequisites.includes("rollback_strategy"));

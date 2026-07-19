@@ -1568,11 +1568,20 @@ export const saasDictionary: SaasDictionary = {
         "RankBoost planeerib artikliteemad kuupäevade järgi.",
         "Õigel päeval loob mustandi.",
         "Kontrollib kvaliteeti ja parandab teksti.",
-        "Paneb valmis artikli jaotisse «Ülevaatamiseks».",
-        "Kui WordPress on ühendatud — loob WordPressi mustandi.",
-        "Teise saidi jaoks — valmistab HTML/Markdowni ja kirja arendajale.",
+        "Edasi vastavalt allpool valitud avaldamisrežiimile.",
       ],
-      afterApproveFooter: "Midagi ei avaldata automaatselt.",
+      afterApproveFooter:
+        "Automaatset avaldamist ei lülitata sisse vaikimisi — vali režiim allpool.",
+      publishingModeTitle: "Kuidas selle plaani artikleid avaldada?",
+      publishingModeRequired: "Vali enne kinnitamist avaldamisrežiim.",
+      publishingModeReviewOnlyTitle: "Valmista ülevaatamiseks",
+      publishingModeReviewOnlyDescription:
+        "Artiklid lähevad ülevaatusse. Live-avaldamine on selle plaani jaoks välja lülitatud.",
+      publishingModeAutoPublishTitle: "Avalda automaatselt graafiku järgi",
+      publishingModeAutoPublishDescription:
+        "Pärast quality gate’i avaldatakse selle kinnitatud plaani artiklid ilma iga artikli eraldi kinnituseta.",
+      publishingModeAutoPublishWarning:
+        "Live-avaldamine on lubatud ainult selle kinnitatud plaani sees ja ainult quality gate’i läbinud artiklitele.",
       approveFailed: "Valitud plaani punkte ei saanud kinnitada.",
       approveNetworkError: "Võrguviga plaani kinnitamisel.",
       selectAtLeastOne: "Vali kinnitamiseks vähemalt üks punkt.",

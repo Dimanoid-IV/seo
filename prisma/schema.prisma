@@ -315,6 +315,13 @@ enum AutopilotMode {
   AUTOPUBLISH
 }
 
+/// Publishing permission chosen when confirming a monthly plan (Prompt 11.50).
+/// Default REVIEW_ONLY — AUTO_PUBLISH is never silent.
+enum PlanPublishingMode {
+  REVIEW_ONLY
+  AUTO_PUBLISH
+}
+
 enum EmailApprovalType {
   MONTHLY_PLAN_REVIEW
   CONTENT_REVIEW
@@ -1060,6 +1067,8 @@ model MonthlyAutopilotPlan {
   risksJson           Json?
   nextActionsJson     Json?
   generatedBy         String?                @default("system")
+  /// Explicit choice at plan confirm. Default REVIEW_ONLY — never silent AUTO_PUBLISH.
+  publishingMode      PlanPublishingMode     @default(REVIEW_ONLY)
   approvedAt          DateTime?
   archivedAt          DateTime?
   createdAt           DateTime               @default(now())

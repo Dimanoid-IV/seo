@@ -4,6 +4,7 @@ import {
   IntegrationProvider,
   IntegrationStatus,
   MonthlyAutopilotStatus,
+  PlanPublishingMode,
   type Prisma,
   WordPressConnectionStatus,
   AutopilotMode,
@@ -22,6 +23,11 @@ import {
   resolvePlanItemsDocumentFromPlan,
 } from "./plan-items";
 import type { AutopilotPlanPeriod } from "./plan-item-types";
+import {
+  defaultPlanPublishingMode,
+  parsePlanPublishingMode,
+  type PlanPublishingModeValue,
+} from "./plan-publishing-mode";
 import { findAutopilotPlanForUser } from "./resolve-website";
 import { assignEveryOtherDaySlots } from "./scheduling";
 import { formatMonthlyAutopilotPlan } from "./format";
@@ -35,10 +41,19 @@ export async function approveSelectedPlanItems(input: {
   itemIds: string[];
   period?: AutopilotPlanPeriod;
   timezone?: string | null;
+  /**
+   * Explicit publishing choice at plan confirm.
+   * Omitted/invalid → REVIEW_ONLY (never silent AUTO_PUBLISH).
+   */
+  publishingMode?: string | null;
 }) {
   if (input.itemIds.length === 0) {
     throw new AppError(ErrorCode.VALIDATION_ERROR, "Select at least one plan item.");
   }
+
+  const publishingMode: PlanPublishingModeValue = parsePlanPublishingMode(
+    input.publishingMode ?? defaultPlanPublishingMode()
+  );
 
   const existing = await findAutopilotPlanForUser(input.planId, input.userId);
 
@@ -177,22 +192,34 @@ export async function approveSelectedPlanItems(input: {
 
   const wasApproved = existing.status !== MonthlyAutopilotStatus.APPROVED;
 
+  const prismaPublishingMode =
+    publishingMode === "AUTO_PUBLISH"
+      ? PlanPublishingMode.AUTO_PUBLISH
+      : PlanPublishingMode.REVIEW_ONLY;
+
   const updated = await prisma.monthlyAutopilotPlan.update({
     where: { id: existing.id },
     data: {
       planItemsJson: planItemsToJson(document),
       status: MonthlyAutopilotStatus.APPROVED,
       approvedAt: existing.approvedAt ?? new Date(),
+      publishingMode: prismaPublishingMode,
     },
   });
 
-  // Approving the monthly plan enables approved-plan automation (not live autopublish).
+  // Explicit mode from plan confirm — never silent AUTO_PUBLISH.
+  const autopilotMode =
+    publishingMode === "AUTO_PUBLISH"
+      ? AutopilotMode.AUTOPUBLISH
+      : AutopilotMode.REVIEW_FIRST;
+
   try {
     await updateAutopilotSettings({
       userId: input.userId,
       organizationId: existing.organizationId,
       websiteId: existing.websiteId,
-      mode: AutopilotMode.APPROVED_PLAN_AUTOPILOT,
+      mode: autopilotMode,
+      source: "plan_approval",
     });
   } catch {
     // Mode update must not block approval.
@@ -218,6 +245,7 @@ export async function approveSelectedPlanItems(input: {
       properties: {
         planId: existing.id,
         count: approvedIds.size,
+        publishingMode,
       },
     });
   }
@@ -229,6 +257,7 @@ export async function approveSelectedPlanItems(input: {
     blockedCount: items.filter(
       (item) => selectedIds.has(item.id) && item.status === "blocked"
     ).length,
+    publishingMode,
   };
 }
 

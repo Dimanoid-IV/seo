@@ -94,11 +94,19 @@ export async function updateAutopilotSettings(input: {
   organizationId: string | null;
   websiteId?: string | null;
   mode: AutopilotMode;
+  /**
+   * AUTOPUBLISH is only allowed from explicit monthly-plan confirmation
+   * (Prompt 11.50) — never from silent settings toggles.
+   */
+  source?: "plan_approval" | "settings_ui";
 }): Promise<AutopilotSettingsView> {
-  if (input.mode === AutopilotMode.AUTOPUBLISH) {
+  if (
+    input.mode === AutopilotMode.AUTOPUBLISH &&
+    input.source !== "plan_approval"
+  ) {
     throw new AppError(
       ErrorCode.VALIDATION_ERROR,
-      "Autopublish mode is not available yet."
+      "Autopublish can only be enabled when confirming a monthly plan."
     );
   }
 
@@ -131,6 +139,7 @@ export async function updateAutopilotSettings(input: {
   return {
     mode: state.autopilotMode,
     websiteId: website.id,
+    /** Settings UI must not offer silent autopublish — only plan confirm. */
     autopublishAvailable: false,
   };
 }

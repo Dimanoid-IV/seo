@@ -73,6 +73,8 @@ export type MonthlyAutopilotPlanViewModel = {
   updatedAt: string;
   approvedAt?: string;
   hermesSummaryUsed?: boolean;
+  /** Explicit choice at plan confirm — REVIEW_ONLY | AUTO_PUBLISH */
+  publishingMode?: "REVIEW_ONLY" | "AUTO_PUBLISH";
   planItems?: import("./plan-item-types").AutopilotPlanItemsDocument | null;
 };
 

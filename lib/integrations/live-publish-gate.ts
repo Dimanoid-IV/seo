@@ -2,17 +2,23 @@
  * Live publish product policy (RankBoost).
  *
  * End state: live publish is required.
- * First implementation: live publish stays disabled until every prerequisite
- * below is satisfied. This is a gated rollout, not a draft-only product.
+ * Plan-scoped permission (11.50): after confirming a monthly plan with
+ * AUTO_PUBLISH, articles that pass the quality gate are permitted — without
+ * per-article confirmation. Global kill switch / rollback still gate execution.
  */
 
 import { IntegrationCapability } from "./adapters/capabilities";
+import {
+  isApprovedPlanArticleLivePublishPermitted,
+  isPlanAutoPublishMode,
+} from "@/lib/autopilot/plan-publishing-mode";
 
 /** Global kill switch — engage to block all live publish / live webhook send. */
 export const LIVE_PUBLISH_KILL_SWITCH_ENGAGED = true as const;
 
 export const LIVE_PUBLISH_PREREQUISITES = [
   "per_website_permission",
+  "approved_plan_auto_publish",
   "execution_history",
   "quality_gates",
   "rollback_strategy",
@@ -26,6 +32,10 @@ export type LivePublishGateInput = {
   websiteId?: string | null;
   /** Explicit per-website permission to allow live publish. */
   websiteAllowsLivePublish?: boolean;
+  /** Monthly plan is APPROVED. */
+  planApproved?: boolean;
+  /** Plan publishing mode chosen at confirm (REVIEW_ONLY | AUTO_PUBLISH). */
+  planPublishingMode?: string | null;
   /** Execution history subsystem available for this website. */
   executionHistoryAvailable?: boolean;
   /** Quality gate passed for the change being published. */
@@ -38,7 +48,12 @@ export type LivePublishGateState = {
   /** Product destination — not draft-only forever. */
   productEndState: "live_publish";
   killSwitchEngaged: boolean;
-  /** True only when kill switch is off and all prerequisites pass. */
+  /**
+   * Plan/user granted live-publish permission for this scope
+   * (approved plan + AUTO_PUBLISH + quality when provided).
+   */
+  permissionGranted: boolean;
+  /** May actually execute live publish (permission + kill switch + remaining prereqs). */
   livePublishEnabled: boolean;
   missingPrerequisites: LivePublishPrerequisite[];
   websiteId: string | null;
@@ -51,21 +66,38 @@ const LIVE_PUBLISH_CAPABILITIES = new Set<string>([
   IntegrationCapability.SEND_CUSTOM_WEBHOOK,
 ]);
 
+function hasPlanScopedPermission(input: LivePublishGateInput): boolean {
+  if (input.websiteAllowsLivePublish === true) return true;
+  if (input.planApproved !== true) return false;
+  if (!isPlanAutoPublishMode(input.planPublishingMode)) return false;
+  // If quality is provided, require pass; if omitted, plan-level permission only.
+  if (input.qualityGatePassed === false) return false;
+  return true;
+}
+
 /**
  * Evaluates whether live publish may run for a website/change.
- * Today this always returns disabled because the kill switch is engaged
- * and per-website permissions / rollback are not yet productized.
  */
 export function evaluateLivePublishGate(
   input: LivePublishGateInput = {}
 ): LivePublishGateState {
   const missing: LivePublishPrerequisite[] = [];
+  const permissionGranted = hasPlanScopedPermission(input);
 
   if (LIVE_PUBLISH_KILL_SWITCH_ENGAGED) {
     missing.push("kill_switch_cleared");
   }
-  if (input.websiteAllowsLivePublish !== true) {
-    missing.push("per_website_permission");
+  if (!permissionGranted) {
+    if (
+      input.planApproved === true &&
+      !isPlanAutoPublishMode(input.planPublishingMode)
+    ) {
+      missing.push("approved_plan_auto_publish");
+    } else if (input.websiteAllowsLivePublish !== true) {
+      missing.push("per_website_permission");
+    } else {
+      missing.push("approved_plan_auto_publish");
+    }
   }
   if (input.executionHistoryAvailable !== true) {
     missing.push("execution_history");
@@ -77,13 +109,42 @@ export function evaluateLivePublishGate(
     missing.push("rollback_strategy");
   }
 
+  const livePublishEnabled = missing.length === 0;
+
   return {
     productEndState: "live_publish",
     killSwitchEngaged: LIVE_PUBLISH_KILL_SWITCH_ENGAGED,
-    livePublishEnabled: missing.length === 0,
+    permissionGranted,
+    livePublishEnabled,
     missingPrerequisites: missing,
     websiteId: input.websiteId ?? null,
   };
+}
+
+export function evaluateArticleLivePublishPermission(input: {
+  websiteId?: string | null;
+  planStatus: string;
+  planPublishingMode: string | null | undefined;
+  qualityPassed: boolean | null | undefined;
+  executionHistoryAvailable?: boolean;
+  rollbackStrategyReady?: boolean;
+}): LivePublishGateState {
+  const planApproved = input.planStatus.toUpperCase() === "APPROVED";
+  const articlePermitted = isApprovedPlanArticleLivePublishPermitted({
+    planStatus: input.planStatus,
+    publishingMode: input.planPublishingMode,
+    qualityPassed: input.qualityPassed,
+  });
+
+  return evaluateLivePublishGate({
+    websiteId: input.websiteId,
+    planApproved,
+    planPublishingMode: input.planPublishingMode,
+    qualityGatePassed: input.qualityPassed === true,
+    websiteAllowsLivePublish: articlePermitted,
+    executionHistoryAvailable: input.executionHistoryAvailable,
+    rollbackStrategyReady: input.rollbackStrategyReady,
+  });
 }
 
 export function isLivePublishAction(action: string): boolean {
@@ -94,10 +155,6 @@ export function isLivePublishCapability(capability: string): boolean {
   return LIVE_PUBLISH_CAPABILITIES.has(capability);
 }
 
-/**
- * Evaluates the live-publish gate for a potential live action.
- * Draft / prepare / test-connection are not live-publish actions.
- */
 export function assertLivePublishAllowed(
   input: LivePublishGateInput
 ): LivePublishGateState {

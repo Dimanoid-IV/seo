@@ -51,6 +51,7 @@ export function formatMonthlyAutopilotPlan(
     createdAt: plan.createdAt.toISOString(),
     updatedAt: plan.updatedAt.toISOString(),
     approvedAt: plan.approvedAt?.toISOString(),
+    publishingMode: plan.publishingMode,
     planItems: parsePlanItemsDocument(plan.planItemsJson),
   };
 }
