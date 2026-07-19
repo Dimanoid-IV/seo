@@ -51,7 +51,7 @@ export function parseWordPressPermissionsExtended(
         : true,
     canUpdateMeta:
       typeof record.canUpdateMeta === "boolean" ? record.canUpdateMeta : true,
-    canPublish: false, // never allow live publish from stored permissions
+    canPublish: false, // live publish gated until per-site permission + gate open
     authMode,
     username: typeof record.username === "string" ? record.username : null,
     defaultCategoryIds: categoryIds,

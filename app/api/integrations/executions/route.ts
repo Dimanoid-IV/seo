@@ -64,7 +64,12 @@ export async function GET(request: Request) {
       data: {
         websiteId: website.id,
         executions,
-        /** Foundation: no live external actions from this endpoint. */
+        /** Live publish is the product end state; currently gated off. */
+        livePublish: {
+          productEndState: "live_publish",
+          enabled: false,
+          killSwitchEngaged: true,
+        },
         externalActionsEnabled: false,
       },
     });

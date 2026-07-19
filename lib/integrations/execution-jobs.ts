@@ -68,17 +68,14 @@ export type CreateIntegrationExecutionJobResult = {
 
 /**
  * Creates a job or returns the existing one for the same idempotency key.
- * Never performs external publishing actions.
+ * Records intent only — adapter execute / live publish stays behind the gate.
  */
 export async function createIntegrationExecutionJob(
   input: CreateIntegrationExecutionJobInput
 ): Promise<CreateIntegrationExecutionJobResult> {
-  if (foundationExternalActionsEnabled()) {
-    throw new AppError(
-      ErrorCode.INTERNAL_ERROR,
-      "Внешние действия интеграций отключены."
-    );
-  }
+  // Job persistence is always allowed. Live execute remains gated separately
+  // via evaluateLivePublishGate / foundationExternalActionsEnabled().
+  void foundationExternalActionsEnabled;
 
   const prisma = getPrisma();
   const idempotencyKey =

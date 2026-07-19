@@ -922,7 +922,7 @@ export const saasDictionary: SaasDictionary = {
     executionHistory: {
       title: "Integratsioonide täitmise ajalugu",
       description:
-        "Ettevalmistatud saiditoimingute kirjed. Ainult alus — ilma live-avaldamiseta ja ilma webhooki saatmiseta.",
+        "Saiditoimingute kirjed. Live-avaldamine on RankBoosti lõppeesmärk; see püsib välja lülitatud, kuni saidi õigused, ajalugu, quality gate, rollback ja kill switch on valmis.",
       safetyNote: "Saladusi ja paroole ei näidata kunagi.",
       loading: "Laadime ajalugu…",
       empty: "Täitmistöid veel pole.",

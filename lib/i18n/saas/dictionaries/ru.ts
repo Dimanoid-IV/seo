@@ -920,7 +920,7 @@ export const saasDictionary: SaasDictionary = {
     executionHistory: {
       title: "История заданий интеграций",
       description:
-        "Записи о подготовленных действиях с сайтом. Пока только фундамент — без live-публикации и без отправки webhook.",
+        "Записи о действиях с сайтом. Live publish — целевой режим RankBoost; сейчас он выключен, пока не будут права на сайт, история, quality gate, rollback и kill switch.",
       safetyNote: "Секреты и пароли никогда не показываются.",
       loading: "Загружаем историю…",
       empty: "Пока нет заданий выполнения.",

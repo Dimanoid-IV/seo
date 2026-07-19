@@ -9,7 +9,13 @@ import type {
   IntegrationExecutionStatus,
 } from "@prisma/client";
 
+import {
+  evaluateLivePublishGate,
+  LIVE_PUBLISH_KILL_SWITCH_ENGAGED,
+} from "./live-publish-gate";
+
 export type ExecutionStatus = IntegrationExecutionStatus;
+
 
 const TERMINAL: ReadonlySet<string> = new Set([
   "SUCCEEDED",
@@ -80,9 +86,20 @@ export function buildExecutionListWhere(input: {
   };
 }
 
-/** Foundation guard — never call external publishers from this module. */
-export function foundationExternalActionsEnabled(): false {
-  return false;
+/**
+ * Whether external adapter execute (including live publish) may run.
+ * Product end state can be true; today the live-publish kill switch keeps this false.
+ */
+export function foundationExternalActionsEnabled(): boolean {
+  return (
+    !LIVE_PUBLISH_KILL_SWITCH_ENGAGED &&
+    evaluateLivePublishGate({
+      websiteAllowsLivePublish: true,
+      executionHistoryAvailable: true,
+      qualityGatePassed: true,
+      rollbackStrategyReady: true,
+    }).livePublishEnabled
+  );
 }
 
 /**

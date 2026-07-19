@@ -919,7 +919,7 @@ export const saasDictionary: SaasDictionary = {
     executionHistory: {
       title: "Integration execution history",
       description:
-        "Records of prepared site actions. Foundation only — no live publish and no webhook send yet.",
+        "Records of site actions. Live publish is RankBoost’s end state; it stays disabled until per-website permission, execution history, quality gates, rollback, and the kill switch are ready.",
       safetyNote: "Secrets and passwords are never shown.",
       loading: "Loading history…",
       empty: "No execution jobs yet.",
