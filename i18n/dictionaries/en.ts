@@ -8,17 +8,17 @@ export const dictionary: Dictionary = {
     home: {
       title: "RankBoost — SEO Autopilot for Small Businesses",
       description:
-        "Find website growth opportunities, prepare SEO and content actions, and improve visibility in Google and AI search. Start in Review Mode and automate more when ready.",
+        "RankBoost analyzes your site, prepares a monthly article plan, writes in your brand voice, and can publish to WordPress after you confirm the plan. Start in Review Mode.",
     },
     services: {
       title: "SEO Autopilot capabilities | RankBoost.eu",
       description:
-        "What your SEO Autopilot prepares: website audits, growth tasks, content drafts, social posts, GSC insights, and AI search readiness.",
+        "Website audits, monthly growth plans, brand-voice articles, WordPress publishing after plan confirmation, and handoff packages for custom sites.",
     },
     pricing: {
       title: "Start your SEO autopilot | RankBoost.eu",
       description:
-        "Start free, then upgrade for more growth actions, review workflows, and future automation controls. No long-term contracts.",
+        "Start free, then upgrade for more growth actions, review workflows, and optional WordPress auto-publish after you confirm a plan. No long-term contracts.",
     },
     blog: {
       title: "Website growth, SEO autopilot & AI search | RankBoost.eu",
@@ -54,10 +54,11 @@ export const dictionary: Dictionary = {
     badge: "SEO Autopilot",
     title: "SEO Autopilot for small businesses",
     subtitle:
-      "RankBoost audits your website, finds growth opportunities, and prepares SEO, content, and social actions to improve visibility in Google and AI search. Start in Review Mode, then automate more when you are ready.",
+      "RankBoost analyzes your website, prepares a monthly plan of articles and improvements, writes in your brand style, and can publish automatically to WordPress after you confirm the plan.",
     ctaPrimary: "Start free",
     ctaSecondary: "See how it works",
-    trustLine: "Review first. Auto-publish later when you explicitly enable it.",
+    trustLine:
+      "You confirm the plan once a month. Autopilot can be paused. Published posts can be rolled back.",
     dashboard: {
       overview: "Your website growth overview",
       status: "Monitoring your site",
@@ -70,15 +71,15 @@ export const dictionary: Dictionary = {
       nextAction: "Next step",
       nextActionValue: "Review your monthly growth plan",
       prepared: "Prepared for you",
-      preparedItems: "Article draft · social posts · review email",
+      preparedItems: "Monthly plan · article draft · WordPress path",
     },
   },
   trust: {
     items: [
-      "Start in Review Mode",
-      "Automate more when you enable rules",
+      "Confirm the monthly plan first",
+      "Pause Autopilot anytime",
       "Cancel anytime",
-      "Google and AI search visibility",
+      "No ranking guarantees",
     ],
   },
   problem: {
@@ -94,45 +95,45 @@ export const dictionary: Dictionary = {
   solution: {
     title: "RankBoost is your SEO Autopilot",
     subtitle:
-      "The platform finds opportunities and prepares plans, tasks, and articles for review — you decide what to publish.",
+      "Analyze the site, build a monthly plan, write articles in your brand voice, then publish on WordPress after you confirm — or hand off a package for custom sites.",
     items: [
       {
-        title: "Find opportunities",
+        title: "Analyze your site",
         description:
-          "Website audit, growth tasks, and SEO priorities based on your site signals.",
+          "Website audit, growth tasks, and clear SEO priorities.",
       },
       {
-        title: "Prepare plans and articles",
+        title: "Monthly plan and brand-voice articles",
         description:
-          "Monthly plan, SEO tasks, and article drafts — ready for your review.",
+          "A monthly plan of articles and improvements, written in your brand style for review.",
       },
       {
-        title: "Review first, then publish",
+        title: "Publish with control",
         description:
-          "Nothing is published without your confirmation. For custom sites — export, copy, and developer handoff.",
+          "On WordPress, RankBoost can publish approved plan articles automatically after you confirm. For custom sites — export, webhook, or developer handoff.",
       },
       {
-        title: "Track progress",
+        title: "Pause and roll back",
         description:
-          "Growth Score, activity log, and your next autopilot action always visible.",
+          "You can pause Autopilot anytime. WordPress posts published by RankBoost can be moved back to draft.",
       },
     ],
   },
   outputs: {
     title: "What your SEO Autopilot can prepare",
     subtitle:
-      "Plans, tasks, and articles in review mode — publishing only after you approve.",
+      "Monthly plans and articles first — WordPress auto-publish only after you confirm the plan.",
     items: [
       "SEO tasks",
       "Monthly growth plan",
-      "Article drafts",
+      "Brand-voice articles",
       "Social post drafts",
-      "Review emails",
-      "Export for your site",
+      "WordPress publish (after plan confirmation)",
+      "Export / webhook for custom sites",
       "AI search readiness checks",
     ],
     trustNote:
-      "Start with review. Auto-publishing only after you explicitly enable it and connect integrations. For custom sites, RankBoost provides export and developer handoff.",
+      "WordPress: automatic publishing after you confirm the monthly plan. Custom sites: ready package or webhook integration. Backlinks and partner networks are not included yet. No ranking guarantees.",
   },
   aiSearch: {
     eyebrow: "Google + AI search",
@@ -144,26 +145,27 @@ export const dictionary: Dictionary = {
   },
   autopilotModes: {
     title: "Choose how much your SEO autopilot can do",
-    subtitle: "Start safely in Review Mode. Add controlled automation when you are ready.",
+    subtitle:
+      "Start safely in Review Mode. Enable WordPress auto-publish when you confirm a monthly plan.",
     reviewMode: {
       badge: "Available now",
       title: "Review Mode",
       description:
-        "RankBoost finds opportunities and prepares actions, drafts, emails, and WordPress content for your review. You approve what goes live.",
+        "RankBoost finds opportunities and prepares plans, tasks, and articles for your review. You decide what goes live.",
     },
     autoPublishMode: {
-      badge: "Planned controlled mode",
+      badge: "WordPress after plan confirmation",
       title: "Auto-Publish Mode",
       description:
-        "A future controlled mode for businesses that want RankBoost to publish selected actions automatically — only after you explicitly enable it, connect integrations, and set rules.",
+        "After you confirm a monthly plan and choose auto-publish, RankBoost can publish approved articles to WordPress on schedule. You can pause anytime and roll posts back to draft.",
     },
     safeguards: [
-      "Explicitly enabled",
-      "Rule-based",
+      "Confirm the plan monthly",
+      "WordPress connected",
       "Can be paused",
-      "Activity log",
+      "Rollback available",
     ],
-    note: "Auto-Publish Mode is designed as an optional, controlled automation layer — not enabled by default. Start safely in Review Mode today.",
+    note: "Auto-publish is optional and not on by default. Custom sites get an export or webhook package — not the same as WordPress live publish. No ranking guarantees.",
   },
   pricingPreview: {
     title: "Simple pricing, no long-term contracts",
@@ -243,7 +245,7 @@ export const dictionary: Dictionary = {
       },
       {
         title: "Review and approve",
-        description: "Plans, drafts, and emails — only after you decide.",
+        description: "Confirm the monthly plan — then RankBoost prepares and can publish on WordPress.",
       },
       {
         title: "Track progress",
@@ -254,13 +256,13 @@ export const dictionary: Dictionary = {
   monthlyHowItWorks: {
     title: "How the monthly autopilot works",
     steps: [
-      "You confirm the plan.",
-      "RankBoost prepares articles on schedule.",
-      "You review the ready materials.",
-      "You publish manually or via a connected site.",
+      "You confirm the monthly plan once.",
+      "RankBoost writes articles in your brand style on schedule.",
+      "On WordPress with auto-publish enabled, approved articles can go live automatically.",
+      "You can pause Autopilot anytime and roll a published post back to draft.",
     ],
     disclaimer:
-      "RankBoost does not guarantee Google rankings. Results depend on your site, competition, and regular publishing.",
+      "RankBoost does not guarantee Google rankings, traffic, or revenue. Results depend on your site, competition, and consistent publishing. Backlinks are not included yet.",
   },
   pricing: {
     title: "Pricing",
@@ -268,7 +270,7 @@ export const dictionary: Dictionary = {
     popular: "Popular",
     pageTitle: "Start your SEO autopilot",
     pageSubtitle:
-      "Start free, then upgrade when you need more growth actions and drafts. Publishing is review-first. No guaranteed Google rankings.",
+      "Start free, then upgrade for more growth actions and optional WordPress auto-publish after plan confirmation. No guaranteed Google rankings.",
     comparisonTitle: "Plan comparison",
     customNote: "Paid checkout will be available when billing is configured.",
   },
@@ -277,51 +279,51 @@ export const dictionary: Dictionary = {
     subtitle: "Answers to common questions about plans and payment",
   },
   stats: {
-    title: "Numbers that speak for themselves",
+    title: "Built for busy small businesses",
     items: [
       {
-        value: "+180%",
-        label: "Organic traffic growth",
-        description: "Average client result over 6 months",
+        value: "1×",
+        label: "Monthly plan confirmation",
+        description: "Approve once — Autopilot prepares on schedule",
       },
       {
-        value: "3–4 mo",
-        label: "To Maps top-3",
-        description: "For Local SEO in Tallinn",
+        value: "WP",
+        label: "WordPress auto-publish",
+        description: "Optional, after you confirm the plan",
       },
       {
-        value: "100+",
-        label: "Audit parameters",
-        description: "In every technical SEO report",
+        value: "3",
+        label: "Languages",
+        description: "English, Russian, and Estonian",
       },
       {
-        value: "98%",
-        label: "Clients renew",
-        description: "Contract after first 3 months",
+        value: "0",
+        label: "Ranking guarantees",
+        description: "Honest tooling — results depend on your market",
       },
     ],
   },
   testimonials: {
-    title: "Client testimonials",
-    subtitle: "Real results for businesses in Estonia",
+    title: "What owners want from Autopilot",
+    subtitle: "Clarity and control — not empty ranking promises",
     items: [
       {
         quote:
-          "Organic traffic grew 220% in 4 months. RankBoost understands the Estonian market and works in three languages.",
+          "I needed a clear monthly plan and articles in our brand voice — without becoming an SEO specialist.",
         author: "Maria K.",
         role: "Director",
         company: "Beauty Studio Tallinn",
       },
       {
         quote:
-          "Technical audit found 47 critical issues. After fixes, the site indexed 3x faster.",
+          "The audit showed what to fix first. Drafts and WordPress handoff made publishing manageable.",
         author: "Andres T.",
         role: "CEO",
         company: "TechShop.ee",
       },
       {
         quote:
-          "Local SEO got us into Google Maps top-3 for 12 keywords. Inquiries grew 2.5x.",
+          "I want clear next steps in Estonian, Russian, and English — and to pause publishing if something looks wrong.",
         author: "Dmitri S.",
         role: "Owner",
         company: "RemontPro Tallinn",
@@ -330,14 +332,14 @@ export const dictionary: Dictionary = {
   },
   faq: {
     title: "Frequently asked questions",
-    subtitle: "Answers to the main questions about SEO promotion",
+    subtitle: "Answers about SEO Autopilot, WordPress publishing, and plans",
   },
   cta: {
     title: "Turn website issues into growth actions",
     subtitle:
-      "Start your SEO Autopilot in Review Mode — RankBoost prepares the next steps for your approval.",
+      "Start free: RankBoost analyzes your site and prepares a monthly plan. Confirm once — pause and roll back anytime.",
     button: "Start free",
-    note: "No credit card required on the Free plan. Cancel anytime.",
+    note: "No credit card required on the Free plan. Cancel anytime. No ranking guarantees.",
   },
   blog: {
     title: "Website growth, SEO autopilot, and AI search",

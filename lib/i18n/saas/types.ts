@@ -1318,6 +1318,16 @@ export type SaasDictionary = {
       rollbackAvailableNote: string;
       lastPublishedUrlLabel: string;
       scopedRolloutNote: string;
+      pilotChecklistTitle: string;
+      pilotWordpressConnected: string;
+      pilotPlanApproved: string;
+      pilotAutoPublishEnabled: string;
+      pilotAutoPublishPending: string;
+      pilotNextPublish: string;
+      pilotPauseReady: string;
+      pilotRollbackReady: string;
+      pilotSupportContact: string;
+      pilotSupportHint: string;
     };
     planApproval: {
       title: string;

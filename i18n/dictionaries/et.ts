@@ -8,17 +8,17 @@ export const dictionary: Dictionary = {
     home: {
       title: "RankBoost — SEO autopiloot väikeettevõtetele",
       description:
-        "Leidke veebilehe kasvuvõimalusi, valmistage SEO- ja sisutegevusi ning parandage nähtavust Google'is ja AI-otsingus. Alustage ülevaatusrežiimis ja automatiseerige rohkem siis, kui olete valmis.",
+        "RankBoost analüüsib teie saiti, valmistab kuise artikliplaani, kirjutab brändihääles ja saab avaldada WordPressi pärast plaani kinnitamist. Alustage ülevaatusrežiimis.",
     },
     services: {
       title: "SEO autopiloodi võimalused | RankBoost.eu",
       description:
-        "Mida SEO autopiloot valmistab: audit, kasvülesanded, mustandid, GSC ülevaated ja AI-otsingu valmidus.",
+        "Veebiaudit, kuised kasvuplaanid, brändihäälega artiklid, WordPressi avaldamine pärast plaani kinnitamist ja handoff-paketid kohandatud saitidele.",
     },
     pricing: {
       title: "Alustage SEO autopilooti | RankBoost.eu",
       description:
-        "Alustage tasuta ja uuendage rohkemate tegevuste, ülevaatuste ja tulevaste automatiseerimisseadete jaoks.",
+        "Alustage tasuta, seejärel uuendage rohkemate kasvutegevuste, ülevaatusvoogude ja valikulise WordPressi autoavaldamise jaoks pärast plaani kinnitamist. Ilma pikaajaliste lepinguteta.",
     },
     blog: {
       title: "Veebi kasv, SEO autopiloot ja AI-otsing | RankBoost.eu",
@@ -54,10 +54,11 @@ export const dictionary: Dictionary = {
     badge: "SEO autopiloot",
     title: "SEO autopiloot väikeettevõtetele",
     subtitle:
-      "RankBoost analüüsib teie veebilehte, leiab kasvuvõimalusi ning valmistab ette SEO, sisu ja sotsiaalmeedia tegevused, et parandada nähtavust Google'is ja AI-otsingus. Alustage ülevaatusrežiimis ja automatiseerige rohkem siis, kui olete valmis.",
+      "RankBoost analüüsib teie veebilehte, valmistab kuise plaani artiklitest ja parandustest, kirjutab brändistiilis ning saab avaldada automaatselt WordPressi pärast plaani kinnitamist.",
     ctaPrimary: "Alusta tasuta",
     ctaSecondary: "Kuidas see töötab",
-    trustLine: "Esmalt ülevaatus. Automaatne avaldamine ainult siis, kui te selle ise lubate.",
+    trustLine:
+      "Te kinnitate plaani üks kord kuus. Autopiloodi saab peatada. Avaldatud postitusi saab tagasi võtta.",
     dashboard: {
       overview: "Teie veebilehe kasvu ülevaade",
       status: "Jälgime teie saiti",
@@ -70,15 +71,15 @@ export const dictionary: Dictionary = {
       nextAction: "Järgmine samm",
       nextActionValue: "Vaata üle kuine kasvuplaan",
       prepared: "Teile valmistatud",
-      preparedItems: "Artikli mustand · postitused · kinnituse e-kiri",
+      preparedItems: "Kuine plaan · artikli mustand · WordPressi tee",
     },
   },
   trust: {
     items: [
-      "Alustage ülevaatusrežiimis",
-      "Automatiseerige reeglite järgi",
+      "Kinnitage esmalt kuine plaan",
+      "Peatage autopiloot igal ajal",
       "Tühistamine igal ajal",
-      "Google ja AI-otsing",
+      "Ilma positsioonigarantideta",
     ],
   },
   problem: {
@@ -94,42 +95,44 @@ export const dictionary: Dictionary = {
   solution: {
     title: "RankBoost on teie SEO autopiloot",
     subtitle:
-      "Platvorm leiab võimalused ning valmistab plaanid, ülesanded ja artiklid ülevaatamiseks — te otsustate, mis avaldatakse.",
+      "Analüüsib saiti, koostab kuise plaani, kirjutab artikleid brändihääles, seejärel avaldab WordPressis pärast teie kinnitust — või annab üle paketi kohandatud saitidele.",
     items: [
       {
-        title: "Leiab võimalused",
-        description: "Veebiaudit, kasvülesanded ja SEO prioriteedid teie saidi signaalide põhjal.",
+        title: "Analüüsib teie saiti",
+        description: "Veebiaudit, kasvülesanded ja selged SEO prioriteedid.",
       },
       {
-        title: "Valmistab plaanid ja artiklid",
-        description: "Kuine plaan, SEO-ülesanded ja artikli mustandid — valmis teie ülevaatuseks.",
-      },
-      {
-        title: "Esmalt ülevaatus, siis avaldamine",
+        title: "Kuine plaan ja brändihäälega artiklid",
         description:
-          "Midagi ei avaldata ilma teie kinnituseta. Kohandatud saidi jaoks — eksport, kopeerimine ja arendaja handoff.",
+          "Kuine plaan artiklitest ja parandustest, kirjutatud teie brändistiilis ülevaatuseks.",
       },
       {
-        title: "Jälgib progressi",
-        description: "Growth Score, tegevuste logi ja järgmine autopiloodi samm on alati nähtaval.",
+        title: "Avaldamine teie kontrolli all",
+        description:
+          "WordPressis saab RankBoost pärast plaani kinnitamist avaldada heakskiidetud artikleid automaatselt. Kohandatud saitidele — eksport, webhook või arendaja handoff.",
+      },
+      {
+        title: "Peatamine ja tagasivõtmine",
+        description:
+          "Autopiloodi saab igal ajal peatada. RankBoosti avaldatud WordPressi postitusi saab tagasi mustandisse viia.",
       },
     ],
   },
   outputs: {
     title: "Mida SEO autopiloot valmistada saab",
     subtitle:
-      "Plaanid, ülesanded ja artiklid ülevaatusrežiimis — avaldamine ainult pärast teie kinnitust.",
+      "Esmalt kuised plaanid ja artiklid — WordPressi autoavaldamine ainult pärast plaani kinnitamist.",
     items: [
       "SEO-ülesanded",
       "Kuine kasvuplaan",
-      "Artikli mustandid",
+      "Brändihäälega artiklid",
       "Sotsiaalpostituste mustandid",
-      "Kinnituse e-kirjad",
-      "Eksport teie saidile",
+      "WordPressi avaldamine (pärast plaani kinnitamist)",
+      "Eksport / webhook kohandatud saitidele",
       "AI-otsingu valmiduse kontrollid",
     ],
     trustNote:
-      "Alustage ülevaatusest. Autoavaldamine ainult pärast selget lubamist ja ühendatud integratsioone. Kohandatud saitide jaoks annab RankBoost ekspordi ja arendaja handoffi.",
+      "WordPress: automaatne avaldamine pärast kuise plaani kinnitamist. Kohandatud saidid: valmis pakett või webhook. Tagasilingid ja partnerivõrgustikud ei kuulu veel. Ilma positsioonigarantideta.",
   },
   aiSearch: {
     eyebrow: "Google + AI-otsing",
@@ -141,26 +144,27 @@ export const dictionary: Dictionary = {
   },
   autopilotModes: {
     title: "Valige, kui palju SEO autopiloot teha saab",
-    subtitle: "Alustage turvaliselt ülevaatusrežiimis. Lisage kontrollitud automatiseerimist, kui olete valmis.",
+    subtitle:
+      "Alustage turvaliselt ülevaatusrežiimis. Lubage WordPressi autoavaldamine, kui kinnitate kuise plaani.",
     reviewMode: {
       badge: "Saadaval nüüd",
       title: "Ülevaatusrežiim (Review Mode)",
       description:
-        "RankBoost leiab võimalused ja valmistab tegevused, mustandid, e-kirjad ja WordPressi sisu teie ülevaatuseks. Te kinnitate, mis avaldatakse.",
+        "RankBoost leiab võimalused ning valmistab plaanid, ülesanded ja artiklid teie ülevaatuseks. Te otsustate, mis avaldatakse.",
     },
     autoPublishMode: {
-      badge: "Plaanitud kontrollitud režiim",
+      badge: "WordPress pärast plaani kinnitamist",
       title: "Automaatse avaldamise režiim (Auto-Publish Mode)",
       description:
-        "Tulevane kontrollitud režiim ettevõtetele, kes soovivad valitud tegevusi automaatselt avaldada — ainult pärast selget lubamist, integratsioonide ühendamist ja reeglite seadistamist.",
+        "Pärast kuise plaani kinnitamist ja autoavaldamise valimist saab RankBoost avaldada heakskiidetud artikleid WordPressi ajakava järgi. Saate igal ajal peatada ja postitused mustandisse tagasi viia.",
     },
     safeguards: [
-      "Lubatakse selgelt",
-      "Reeglipõhine",
+      "Plaani kinnitamine kord kuus",
+      "WordPress ühendatud",
       "Saab peatada",
-      "Tegevuste logi",
+      "Tagasivõtmine saadaval",
     ],
-    note: "Auto-Publish Mode on kavandatud valikulise kontrollitud automatiseerimise kihina — vaikimisi pole lubatud. Alustage täna turvaliselt ülevaatusrežiimis.",
+    note: "Autoavaldamine on valikuline ja vaikimisi väljas. Kohandatud saidid saavad ekspordi või webhooki paketi — see ei ole sama mis WordPressi otseavaldamine. Ilma positsioonigarantideta.",
   },
   pricingPreview: {
     title: "Lihtsad hinnad, ilma pikaajaliste lepinguteta",
@@ -221,7 +225,7 @@ export const dictionary: Dictionary = {
     learnMore: "Loe lähemalt",
     pageTitle: "Mida SEO autopiloot teie jaoks valmistada saab",
     pageSubtitle:
-      "Audit, SEO-ülesanded, sisukava, mustandid, GSC ülevaated ja AI-otsingu valmidus — alustage ülevaatusrežiimis, automatiseerige reeglite järgi.",
+      "Veebiaudit, SEO-ülesanded, sisukavad, mustandid, GSC ülevaated ja AI-otsingu valmidus — alustage ülevaatusrežiimis, automatiseerige rohkem, kui lubate reeglid.",
     ctaConsultation: "Alusta tasuta",
     whatsIncluded: "Mis sisaldub",
   },
@@ -239,7 +243,8 @@ export const dictionary: Dictionary = {
       },
       {
         title: "Vaadake üle ja kinnitage",
-        description: "Plaanid, mustandid ja e-kirjad — alles teie otsuse järel.",
+        description:
+          "Kinnitage kuine plaan — seejärel RankBoost valmistab materjalid ja saab avaldada WordPressis.",
       },
       {
         title: "Jälgige progressi",
@@ -250,13 +255,13 @@ export const dictionary: Dictionary = {
   monthlyHowItWorks: {
     title: "Kuidas kuu autopiloot töötab",
     steps: [
-      "Te kinnitate plaani.",
-      "RankBoost valmistab artiklid ajakava järgi.",
-      "Te vaatate valmis materjalid üle.",
-      "Avaldate käsitsi või ühendatud saidi kaudu.",
+      "Te kinnitate kuise plaani üks kord.",
+      "RankBoost kirjutab artikleid brändistiilis ajakava järgi.",
+      "WordPressis autoavaldamise korral võivad heakskiidetud artiklid minna automaatselt live'i.",
+      "Autopiloodi saab igal ajal peatada ja avaldatud postituse mustandisse tagasi viia.",
     ],
     disclaimer:
-      "RankBoost ei garanteeri Google'i positsioone. Tulemus sõltub saidist, konkurentsist ja regulaarsest avaldamisest.",
+      "RankBoost ei garanteeri Google'i positsioone, liiklust ega tulu. Tulemus sõltub saidist, konkurentsist ja regulaarsest avaldamisest. Tagasilingid ei kuulu veel.",
   },
   pricing: {
     title: "Hinnakiri",
@@ -264,7 +269,7 @@ export const dictionary: Dictionary = {
     popular: "Populaarne",
     pageTitle: "Alustage SEO autopilooti",
     pageSubtitle:
-      "Alustage tasuta. Uuendage rohkemate tegevuste ja mustandite jaoks. Avaldamine on ülevaatuse-eelne. Ilma garanteeritud Google'i positsioonideta.",
+      "Alustage tasuta, seejärel uuendage rohkemate kasvutegevuste ja valikulise WordPressi autoavaldamise jaoks pärast plaani kinnitamist. Ilma garanteeritud Google'i positsioonideta.",
     comparisonTitle: "Pakettide võrdlus",
     customNote: "Maksmine on saadaval, kui arveldus on seadistatud.",
   },
@@ -273,51 +278,51 @@ export const dictionary: Dictionary = {
     subtitle: "Vastused sagedastele küsimustele plaanide ja maksete kohta",
   },
   stats: {
-    title: "Numbrid, mis räägivad ise enda eest",
+    title: "Loodud hõivatud väikeettevõtetele",
     items: [
       {
-        value: "+180%",
-        label: "Orgaanilise liikluse kasv",
-        description: "Klientide keskmine tulemus 6 kuu jooksul",
+        value: "1×",
+        label: "Plaani kinnitamine kord kuus",
+        description: "Kinnitage üks kord — autopiloot valmistab ajakava järgi",
       },
       {
-        value: "3–4 kuud",
-        label: "Maps top-3-ni",
-        description: "Kohaliku SEO jaoks Tallinnas",
+        value: "WP",
+        label: "WordPressi autoavaldamine",
+        description: "Valikuline, pärast plaani kinnitamist",
       },
       {
-        value: "100+",
-        label: "Auditi parameetrit",
-        description: "Igas tehnilises SEO-aruandes",
+        value: "3",
+        label: "Keelt",
+        description: "Inglise, vene ja eesti",
       },
       {
-        value: "98%",
-        label: "Klientid pikendavad",
-        description: "Lepingut pärast esimesi 3 kuud",
+        value: "0",
+        label: "Positsioonigarantiid",
+        description: "Aus tööriist — tulemus sõltub teie turust",
       },
     ],
   },
   testimonials: {
-    title: "Klientide arvustused",
-    subtitle: "Päris tulemused Eesti ettevõtetele",
+    title: "Mida omanikud autopiloodilt ootavad",
+    subtitle: "Selgus ja kontroll — mitte tühjad positsioonilubadused",
     items: [
       {
         quote:
-          "4 kuuga kasvas orgaaniline liiklus 220%. RankBoost mõistab Eesti turu spetsiifikat ja töötab kolmes keeles.",
+          "Vajasin selget kuist plaani ja artikleid meie brändihääles — ilma SEO-spetsialistiks saamata.",
         author: "Maria K.",
         role: "Direktor",
         company: "Beauty Studio Tallinn",
       },
       {
         quote:
-          "Tehniline audit leidis 47 kriitilist viga. Pärast parandamist hakkas sait indekseeruma 3x kiiremini.",
+          "Audit näitas, mida esimesena parandada. Mustandid ja WordPressi handoff tegid avaldamise hallatavaks.",
         author: "Andres T.",
         role: "CEO",
         company: "TechShop.ee",
       },
       {
         quote:
-          "Kohalik SEO aitas meil jõuda Google Maps top-3 12 märksõna järgi. Päringud kasvasid 2.5x.",
+          "Tahan selgeid järgmisi samme eesti, vene ja inglise keeles — ning võimalust avaldamine peatada, kui midagi tundub valesti.",
         author: "Dmitri S.",
         role: "Omanik",
         company: "RemontPro Tallinn",
@@ -331,9 +336,9 @@ export const dictionary: Dictionary = {
   cta: {
     title: "Muutke veebilehe probleemid kasvutegevusteks",
     subtitle:
-      "Käivitage SEO autopiloot ülevaatusrežiimis — RankBoost valmistab järgmised sammud teie kinnituseks.",
+      "Alustage tasuta: RankBoost analüüsib teie saiti ja valmistab kuise plaani. Kinnitage üks kord — peatage ja võtke tagasi igal ajal.",
     button: "Alusta tasuta",
-    note: "Free paketil krediitkaart pole vajalik. Tühistamine igal ajal.",
+    note: "Free paketil krediitkaart pole vajalik. Tühistamine igal ajal. Ilma positsioonigarantideta.",
   },
   blog: {
     title: "Veebi kasv, SEO autopiloot ja AI-otsing",

@@ -406,6 +406,52 @@ export function AutopilotStatusBlock({
             </p>
           ) : null}
 
+          {(planPublishingMode === "AUTO_PUBLISH" ||
+            mode === "autopublish" ||
+            livePublishRolloutEnabled) && (
+            <div className="rounded-xl border border-slate-200 bg-white/70 px-3 py-2.5">
+              <p className="text-[10px] font-semibold uppercase tracking-wide text-slate-500">
+                {t.pilotChecklistTitle}
+              </p>
+              <ul className="mt-2 space-y-1 text-xs text-slate-700">
+                <li>
+                  {wordpressConnected ? "✓" : "○"} {t.pilotWordpressConnected}
+                </li>
+                <li>
+                  {status.planApprovalStatus === "approved" ? "✓" : "○"}{" "}
+                  {t.pilotPlanApproved}
+                </li>
+                <li>
+                  {livePublishRolloutEnabled ? "✓" : "○"}{" "}
+                  {livePublishRolloutEnabled
+                    ? t.pilotAutoPublishEnabled
+                    : t.pilotAutoPublishPending}
+                </li>
+                <li>
+                  ○ {t.pilotNextPublish}
+                  {nextLivePublish?.scheduledFor
+                    ? `: ${formatScheduledDate(nextLivePublish.scheduledFor, locale)}`
+                    : ""}
+                </li>
+                <li>✓ {t.pilotPauseReady}</li>
+                <li>
+                  {rollbackAvailable ? "✓" : "○"} {t.pilotRollbackReady}
+                </li>
+              </ul>
+              <p className="mt-2 text-xs text-slate-600">
+                <a
+                  href="mailto:info@rankboost.eu"
+                  className="text-violet-700 underline"
+                >
+                  {t.pilotSupportContact}
+                </a>
+              </p>
+              <p className="mt-0.5 text-[11px] text-slate-500">
+                {t.pilotSupportHint}
+              </p>
+            </div>
+          )}
+
           {livePublishKillSwitchEngaged &&
           !livePublishRolloutEnabled &&
           planPublishingMode === "AUTO_PUBLISH" ? (

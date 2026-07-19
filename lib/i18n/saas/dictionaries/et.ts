@@ -71,7 +71,7 @@ export const saasDictionary: SaasDictionary = {
     emailApprovalSafety:
       "Kinnitamine ei saada e-kirja. Saatmine nõuab alati eraldi toimingut.",
     wordpressDraftSafety:
-      "RankBoost loob praegu WordPressi mustandeid. Teie otsustate, millal avaldada.",
+      "WordPressis saab RankBoost luua mustandeid või avaldada kinnitatud kuuplaani artikleid pärast Autopublish kinnitamist. Saate peatada ja tagasi võtta.",
     billingCancelAnytime: "Pikaajalisi lepinguid pole. Tühistage igal ajal.",
     billingDataAvailability:
       "Teie andmed jäävad kättesaadavaks ka tellimuse muutumisel.",
@@ -243,27 +243,28 @@ export const saasDictionary: SaasDictionary = {
     monthlyAutopilot: {
       title: "Kuu autopiloot on aktiivne",
       subtitle:
-        "RankBoost valmistab artiklid ajakava järgi. Avaldamine ainult pärast teie kinnitust.",
+        "RankBoost valmistab artiklid ajakava järgi. WordPressis võivad kinnitatud plaani artiklid ilmuda automaatselt pärast Autopublish kinnitamist.",
       chipNextArticle: (date) => `Järgmine artikkel: ${date}`,
       chipNextArticleSoon: "Järgmine artikkel: peagi",
       chipReadyForReview: (count) => `Valmis ülevaatamiseks: ${count}`,
       chipPublishManual: "Avaldamine: käsitsi",
-      chipPublishWordpress: "Avaldamine: WordPressi mustand",
+      chipPublishWordpress: "Avaldamine: WordPress",
       chipPublishWebhook: "Avaldamine: webhook valmis",
       openReview: "Vaata valmis materjale",
       openPlan: "Ava kuu plaan",
       setupPublishing: "Seadista avaldamine",
       nudgeTitle: "Soovite vähem käsitsitööd?",
       nudgeDescription:
-        "Saate ühendada WordPressi või webhooki. Seni valmistab RankBoost paketi käsitsi avaldamiseks.",
-      safetyNote: "Midagi ei avaldata automaatselt.",
+        "Ühendage WordPress autopublishiks pärast plaani kinnitamist või webhook kohandatud saidi jaoks. Seni valmistab RankBoost paketi käsitsi avaldamiseks.",
+      safetyNote:
+        "Kinnitate plaani kord kuus. Autopiloodi saab peatada. WordPressi avaldusi saab mustandisse tagasi võtta.",
       worksInBackground: "RankBoost töötab taustal",
       nextPrep: (date) => `Järgmine automaatne ettevalmistus: ${date}`,
       nextPrepSoon: "Järgmine automaatne ettevalmistus: peagi",
-      publishAfterConfirm: "Avaldamine ainult pärast teie kinnitust",
-      wordpressDraftOnly: "WordPress: loome mustandi, ei avalda",
+      publishAfterConfirm: "Avaldamine järgib režiimi, mille valisite plaani kinnitamisel",
+      wordpressDraftOnly: "WordPress: vaikimisi mustandid; autopublish pärast plaani kinnitamist",
       customSitePackage:
-        "Kohandatud sait: valmistame paketi / kirja arendajale",
+        "Kohandatud sait: valmis pakett / webhook — see ei ole sama mis WordPressi live-avaldamine",
     },
     activation: {
       title: "RankBoost seadistab teie saiti",
@@ -666,15 +667,15 @@ export const saasDictionary: SaasDictionary = {
     benefitsTitle: "Miks integratsioone ühendada?",
     benefits: [
       "Google Search Console'i tegelikud andmed ja otsinguvõimalused",
-      "WordPressi mustandid ülevaatamiseks (teie otsustate, millal avaldada)",
-      "Kuised kasvukokkuvõtted ja ülevaatavad e-kirjad",
+      "WordPressi mustandid või kinnitatud plaani artiklite autopublish pärast Autopublish kinnitamist",
+      "Kuised kasvukokkuvõtted",
       "Kasvuplaanid reaalsete veebisaidi ja otsinguandmete põhjal",
     ],
     gscConnected: "Google Search Console edukalt ühendatud.",
     gscConnectionFailed:
       "Google Search Console ei ole veel ühendamiseks valmis.",
     gscOauthNotConfigured:
-      "Google OAuth pole veel seadistatud. Lisage GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET ja GOOGLE_REDIRECT_URI.",
+      "Google'i ühendus pole veel valmis. Kirjutage toele, kui vajate abi Search Console'iga.",
     connect: "Ühenda",
     manage: "Halda",
     comingSoon: "Peagi",
@@ -805,10 +806,10 @@ export const saasDictionary: SaasDictionary = {
         'Klõpsake WordPressis "Testi ühendust".',
       ],
       draftOnlyMessage:
-        "RankBoost loob praegu WordPressi mustandeid — teie otsustate, millal avaldada.",
+        "Vaikimisi loob RankBoost WordPressi mustandeid. Pärast kuuplaani Autopublish kinnitamist võivad kinnitatud artiklid automaatselt ilmuda.",
       connectionTitle: "WordPressi ühendus",
       connectionDescription:
-        "Looge WordPressis Application Password. RankBoost loob ainult artiklite mustandeid. Midagi ei avaldata automaatselt.",
+        "Looge WordPressis Application Password. Ühendage üks kord — seejärel valige mustandid või Autopublish kuuplaani kinnitamisel.",
       appPasswordGuideTitle: "Kuidas luua Application Password",
       appPasswordGuideIntro:
         "See on eraldi parool ainult RankBoosti jaoks. Tavalist administraatori parooli ei ole vaja sisestada.",
@@ -831,7 +832,7 @@ export const saasDictionary: SaasDictionary = {
       testSuccess: (username: string) =>
         `Ühendus õnnestus (${username}). Võite selle salvestada.`,
       saveSuccess:
-        "Ühendus salvestatud. RankBoost loob ainult mustandeid.",
+        "Ühendus salvestatud. Mustandid töötavad; Autopublish järgib kuuplaani kinnitamist.",
       networkError: "Võrguviga WordPressiga ühenduse võtmisel.",
       disconnect: "Katkesta ühendus",
       disconnectFailed: "Ühendust ei õnnestunud katkestada.",
@@ -839,13 +840,13 @@ export const saasDictionary: SaasDictionary = {
       disconnected: "WordPressi ühendus katkestatud.",
       createDraftsBullet: "Mustandid on toetatud",
       livePublishBullet:
-        "Live publish on toetatud, kui plaani luba on Autopublish",
+        "Autopublish pärast kuuplaani kinnitamist",
       updatesComingBullet: "Olemasolevate lehtede uuendused tulevad hiljem",
       manualPublishBullet: "Käsitsi avaldamine pärast ülevaatust",
       manualPublishNote:
-        "Mustandid töötavad alati. Live publish ainult kinnitatud AUTO_PUBLISH plaanidele Autopublish-režiimis.",
+        "Mustandid töötavad alati. Autopublish ainult kinnitatud Autopublish plaanidele Autopublish-režiimis.",
       livePublishSupportedNote:
-        "Live publish on plaani-põhine — vali Autopublish kuuplaani kinnitamisel.",
+        "Vali Autopublish kuuplaani kinnitamisel — siis võivad kinnitatud artiklid ilmuda graafiku järgi.",
       passwordHiddenNote:
         "Application Passwordi pärast salvestamist enam ei näidata.",
       testConnection: "Testi ühendust",
@@ -927,8 +928,8 @@ export const saasDictionary: SaasDictionary = {
     executionHistory: {
       title: "Integratsioonide täitmise ajalugu",
       description:
-        "Saiditoimingute kirjed. Live-avaldamine on RankBoosti lõppeesmärk; see püsib välja lülitatud, kuni saidi õigused, ajalugu, quality gate, rollback ja kill switch on valmis.",
-      safetyNote: "Saladusi ja paroole ei näidata kunagi.",
+        "Saiditoimingute kirjed — mustandid, avaldamised ja tagasivõtmised. Saladusi ei näidata.",
+      safetyNote: "Paroole ja API saladusi siin ei näidata.",
       loading: "Laadime ajalugu…",
       empty: "Täitmistöid veel pole.",
       loadFailed: "Täitmise ajalugu ei õnnestunud laadida",
@@ -1507,7 +1508,7 @@ export const saasDictionary: SaasDictionary = {
     emptyNoPlanDescription:
       "Looge plaan, et RankBoost korraldaks selle kuu SEO, sisu ja sotsiaalmeedia toimingud.",
     reviewNote:
-      "See plaan on ette valmistatud ülevaatusrežiimis. Midagi ei avaldata automaatselt.",
+      "Kinnitamisel valige avaldamise režiim. Ainult ülevaatus jätab mustandid; Autopublish võib pärast kinnitamist WordPressis avaldada.",
     loadPlanFailed:
       "Autopiloodi plaani laadimine ebaõnnestus. Värskenda lehte.",
     statusBlock: {
@@ -1575,7 +1576,7 @@ export const saasDictionary: SaasDictionary = {
       nextLivePublishLabel: "Järgmine live-avaldamine",
       noLivePublishScheduled: "Live-avaldamist pole planeeritud",
       killSwitchPausedNote:
-        "Live publish on turvalisuse kill switchiga peatatud, kuni see keskkonnas lubatakse.",
+        "Automaatne avaldamine pole selle saidi jaoks veel lubatud. Mustandid ja ülevaatusjärjekord töötavad edasi.",
       pauseAutopilotCta: "Peata live publish",
       resumeAutopilotCta: "Jätka live publish",
       pauseLivePublishOnlyNote:
@@ -1587,7 +1588,7 @@ export const saasDictionary: SaasDictionary = {
       resumeFailed: "Live publish’i jätkamine ebaõnnestus.",
       resumeNetworkError: "Võrguviga live publish’i jätkamisel.",
       autoPublishExplainer:
-        "Autopilot avaldab kinnitatud kuuplaani artiklid automaatselt, kui WordPress on terve ja live publish on selle saidi jaoks lubatud.",
+        "Autopilot avaldab kinnitatud kuuplaani artiklid automaatselt, kui WordPress on terve ja autopublish on selle saidi jaoks lubatud.",
       noRankingGuarantee:
         "RankBoost ei taga kohti, liiklust ega tulu. Avaldamine on ainult operatiivne abi.",
       wordpressHealthLabel: "WordPress",
@@ -1597,7 +1598,17 @@ export const saasDictionary: SaasDictionary = {
         "Avaldatud artikleid saab mustandisse tagasi viia artikli lehelt või integratsioonide ajaloost.",
       lastPublishedUrlLabel: "Viimati avaldatud URL",
       scopedRolloutNote:
-        "Live publish on piiratud kinnitatud esimese kliendi saitidega. Paus peatab ainult live-avaldamise.",
+        "Autopublish töötab ainult saitidel, kus see on pärast plaani kinnitamist lubatud. Paus peatab ainult live-avaldamise.",
+      pilotChecklistTitle: "Piloodi valmisolek",
+      pilotWordpressConnected: "WordPress ühendatud",
+      pilotPlanApproved: "Kuuplaan kinnitatud",
+      pilotAutoPublishEnabled: "Autopublish selle saidi jaoks lubatud",
+      pilotAutoPublishPending: "Autopublish selle saidi jaoks pole veel lubatud",
+      pilotNextPublish: "Järgmise avaldamise kuupäev",
+      pilotPauseReady: "Pausinupp on saadaval",
+      pilotRollbackReady: "Tagasivõtmine on saadaval",
+      pilotSupportContact: "Tugi: info@rankboost.eu",
+      pilotSupportHint: "Küsimused piloodi kohta? Kirjutage meile — vastame tööpäevadel.",
     },
     planApproval: {
       title: "Plaani kinnitamine",

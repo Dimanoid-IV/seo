@@ -28,9 +28,9 @@ export const pricingFaqItems: FAQItem[] = [
       en: "What is the minimum subscription period?",
     },
     answer: {
-      ru: "Минимальный срок — 3 месяца. SEO требует времени для накопления эффекта. После первого квартала вы увидите первые измеримые результаты и сможете принять решение о продлении.",
-      et: "Minimaalne periood on 3 kuud. SEO vajab aega efekti kogumiseks. Pärast esimest kvartalit näete esimesi mõõdetavaid tulemusi.",
-      en: "Minimum period is 3 months. SEO needs time to build momentum. After the first quarter you'll see initial measurable results.",
+      ru: "Подписку можно отменить в любой момент по условиям биллинга в аккаунте. SEO требует времени — первые измеримые изменения обычно видны через несколько недель регулярной работы, но позиции не гарантируются.",
+      et: "Tellimuse saab tühistada igal ajal vastavalt konto arveldustingimustele. SEO vajab aega — esimesed mõõdetavad muutused ilmnevad tavaliselt mõne nädala jooksul, kuid positsioone ei garanteerita.",
+      en: "You can cancel anytime per your account billing terms. SEO needs time — early measurable changes usually appear after weeks of consistent work, but rankings are not guaranteed.",
     },
   },
   {

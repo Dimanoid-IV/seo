@@ -71,7 +71,7 @@ export const saasDictionary: SaasDictionary = {
     emailApprovalSafety:
       "Approval does not send the email. Sending always requires an explicit manual action.",
     wordpressDraftSafety:
-      "RankBoost currently creates WordPress drafts. You decide when to publish.",
+      "On WordPress, RankBoost can create drafts or publish approved monthly-plan articles after you confirm Auto-publish. You can pause and roll back.",
     billingCancelAnytime: "No long-term contracts. You can cancel anytime.",
     billingDataAvailability:
       "Your existing data stays available even if your subscription changes.",
@@ -243,27 +243,28 @@ export const saasDictionary: SaasDictionary = {
     monthlyAutopilot: {
       title: "Monthly autopilot is active",
       subtitle:
-        "RankBoost will prepare articles on schedule. Publishing only after your confirmation.",
+        "RankBoost prepares articles on schedule. On WordPress, approved plan articles can publish automatically after you confirm Auto-publish.",
       chipNextArticle: (date) => `Next article: ${date}`,
       chipNextArticleSoon: "Next article: soon",
       chipReadyForReview: (count) => `Ready for review: ${count}`,
       chipPublishManual: "Publishing: manual",
-      chipPublishWordpress: "Publishing: WordPress draft",
+      chipPublishWordpress: "Publishing: WordPress",
       chipPublishWebhook: "Publishing: webhook ready",
       openReview: "Review ready materials",
       openPlan: "Open monthly plan",
       setupPublishing: "Set up publishing",
       nudgeTitle: "Want less manual work?",
       nudgeDescription:
-        "Connect WordPress or a webhook. Until then, RankBoost prepares a package for manual publishing.",
-      safetyNote: "Nothing is published automatically.",
+        "Connect WordPress for auto-publish after plan confirmation, or a webhook for custom sites. Until then, RankBoost prepares a package for manual publishing.",
+      safetyNote:
+        "You confirm the plan once a month. Autopilot can be paused. Published WordPress posts can be rolled back.",
       worksInBackground: "RankBoost works in the background",
       nextPrep: (date) => `Next automatic preparation: ${date}`,
       nextPrepSoon: "Next automatic preparation: soon",
-      publishAfterConfirm: "Publishing only after your confirmation",
-      wordpressDraftOnly: "WordPress: we create a draft, we do not publish",
+      publishAfterConfirm: "Publishing follows the mode you chose when confirming the plan",
+      wordpressDraftOnly: "WordPress: drafts by default; auto-publish after plan confirmation",
       customSitePackage:
-        "Custom site: we prepare a package / developer email",
+        "Custom site: ready package / webhook — not the same as WordPress live publish",
     },
     activation: {
       title: "RankBoost is setting up your website",
@@ -666,15 +667,15 @@ export const saasDictionary: SaasDictionary = {
     benefitsTitle: "Why connect integrations?",
     benefits: [
       "Unlock real Google Search Console data and search opportunities",
-      "Create WordPress drafts for your review (you decide when to publish)",
-      "Prepare monthly growth summaries and review emails",
+      "Create WordPress drafts, or auto-publish approved plan articles after you confirm Auto-publish",
+      "Prepare monthly growth summaries",
       "Power growth plans with live website and search data",
     ],
     gscConnected: "Google Search Console connected successfully.",
     gscConnectionFailed:
       "Google Search Console is not ready to connect yet.",
     gscOauthNotConfigured:
-      "Google OAuth is not configured yet. Add GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, and GOOGLE_REDIRECT_URI.",
+      "Google connection is not ready yet. Contact support if you need help connecting Search Console.",
     connect: "Connect",
     manage: "Manage",
     comingSoon: "Coming soon",
@@ -803,10 +804,10 @@ export const saasDictionary: SaasDictionary = {
         'Click "Test connection" in WordPress.',
       ],
       draftOnlyMessage:
-        "RankBoost currently creates WordPress drafts — you decide when to publish.",
+        "By default RankBoost creates WordPress drafts. After you confirm a monthly plan with Auto-publish, approved articles can go live automatically.",
       connectionTitle: "WordPress connection",
       connectionDescription:
-        "Create an Application Password in WordPress. RankBoost will only create article drafts. Nothing is published automatically.",
+        "Create an Application Password in WordPress. Connect once — then choose drafts or Auto-publish when you confirm each monthly plan.",
       appPasswordGuideTitle: "How to create an Application Password",
       appPasswordGuideIntro:
         "This is a separate password only for RankBoost. You do not need to enter your normal admin password.",
@@ -829,7 +830,7 @@ export const saasDictionary: SaasDictionary = {
       testSuccess: (username: string) =>
         `Connection successful (${username}). You can save it now.`,
       saveSuccess:
-        "Connection saved. RankBoost will only create drafts.",
+        "Connection saved. Drafts work now; Auto-publish follows your monthly plan confirmation.",
       networkError: "Network error while contacting WordPress.",
       disconnect: "Disconnect",
       disconnectFailed: "Could not disconnect.",
@@ -837,13 +838,13 @@ export const saasDictionary: SaasDictionary = {
       disconnected: "WordPress disconnected.",
       createDraftsBullet: "Drafts supported",
       livePublishBullet:
-        "Live publish supported when plan permission is Auto-publish",
+        "Auto-publish after you confirm the monthly plan",
       updatesComingBullet: "Updates to existing pages coming later",
       manualPublishBullet: "Manual publishing after review",
       manualPublishNote:
-        "Drafts always work. Live publish runs only for approved AUTO_PUBLISH plans when Autopilot is on Autopublish.",
+        "Drafts always work. Auto-publish runs only for approved Auto-publish plans when Autopilot is on Autopublish.",
       livePublishSupportedNote:
-        "Live publish is plan-scoped — choose Auto-publish when confirming a monthly plan.",
+        "Choose Auto-publish when confirming a monthly plan — then approved articles can publish on schedule.",
       passwordHiddenNote:
         "The Application Password is not shown again after saving.",
       testConnection: "Test connection",
@@ -925,8 +926,8 @@ export const saasDictionary: SaasDictionary = {
     executionHistory: {
       title: "Integration execution history",
       description:
-        "Records of site actions. Live publish is RankBoost’s end state; it stays disabled until per-website permission, execution history, quality gates, rollback, and the kill switch are ready.",
-      safetyNote: "Secrets and passwords are never shown.",
+        "Records of site actions — drafts, publishes, and rollbacks. Secrets are never shown.",
+      safetyNote: "Passwords and API secrets are never shown here.",
       loading: "Loading history…",
       empty: "No execution jobs yet.",
       loadFailed: "Could not load execution history",
@@ -1501,7 +1502,7 @@ export const saasDictionary: SaasDictionary = {
     emptyNoPlanDescription:
       "Generate a plan to let RankBoost organize this month's SEO, content, and social growth actions.",
     reviewNote:
-      "This plan is prepared in Review Mode. Nothing is published automatically.",
+      "Confirm publishing mode when you approve. Review-only keeps drafts for your check; Auto-publish can publish approved WordPress articles after confirmation.",
     loadPlanFailed:
       "Could not load Autopilot plan. Please refresh the page.",
     statusBlock: {
@@ -1569,7 +1570,7 @@ export const saasDictionary: SaasDictionary = {
       nextLivePublishLabel: "Next live publish",
       noLivePublishScheduled: "No live publish scheduled",
       killSwitchPausedNote:
-        "Live publish is paused by the safety kill switch until enabled for this environment.",
+        "Automatic publishing is not enabled for this website yet. You can still prepare drafts and use the Review Queue.",
       pauseAutopilotCta: "Pause live publish",
       resumeAutopilotCta: "Resume live publish",
       pauseLivePublishOnlyNote:
@@ -1581,7 +1582,7 @@ export const saasDictionary: SaasDictionary = {
       resumeFailed: "Could not resume live publish.",
       resumeNetworkError: "Network error while resuming live publish.",
       autoPublishExplainer:
-        "Autopilot will publish approved monthly plan articles automatically when WordPress is healthy and live publish is enabled for this site.",
+        "Autopilot will publish approved monthly plan articles automatically when WordPress is healthy and auto-publish is enabled for this site.",
       noRankingGuarantee:
         "RankBoost does not guarantee rankings, traffic, or revenue. Publishing is an operational assist only.",
       wordpressHealthLabel: "WordPress",
@@ -1591,7 +1592,17 @@ export const saasDictionary: SaasDictionary = {
         "Published articles can be moved back to draft from the article page or Integrations history.",
       lastPublishedUrlLabel: "Last published URL",
       scopedRolloutNote:
-        "Live publish is limited to approved first-customer sites. Pause stops live publishing only.",
+        "Auto-publish runs only for sites where it is enabled after plan confirmation. Pause stops live publishing only.",
+      pilotChecklistTitle: "Pilot readiness",
+      pilotWordpressConnected: "WordPress connected",
+      pilotPlanApproved: "Monthly plan approved",
+      pilotAutoPublishEnabled: "Auto-publish enabled for this site",
+      pilotAutoPublishPending: "Auto-publish not enabled for this site yet",
+      pilotNextPublish: "Next publish date",
+      pilotPauseReady: "Pause button available",
+      pilotRollbackReady: "Rollback available",
+      pilotSupportContact: "Support: info@rankboost.eu",
+      pilotSupportHint: "Questions about the pilot? Email us — we reply on business days.",
     },
     planApproval: {
       title: "Plan approval",

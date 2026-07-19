@@ -159,3 +159,17 @@ WHERE id = '<website-uuid>';
 6. Watch Activity/Timeline + WP post URL; be ready to Pause/Rollback.
 
 Until step 2, **no customer publish**.
+
+---
+
+## L. Sales readiness (Prompt 11.56)
+
+Public + in-app positioning updated so Autopilot is no longer framed as draft-only forever or as a vague “future mode.”
+
+- Core promise: analyze → monthly plan → brand-voice articles → WordPress auto-publish after plan confirmation.
+- Safety: confirm monthly; pause; rollback.
+- Limits: WordPress auto-publish; custom = package/webhook; no backlinks yet; no ranking guarantees.
+- Customer-facing pilot checklist lives in Autopilot UI (no env names).
+- Full sales/pilot narrative: `docs/engineering/SALES-PILOT-READINESS.md`.
+
+**Still required before first real publish:** owner enablement for one website UUID (section F) + explicit publish approval.

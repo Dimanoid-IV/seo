@@ -71,7 +71,7 @@ export const saasDictionary: SaasDictionary = {
     emailApprovalSafety:
       "Одобрение не отправляет письмо. Отправка всегда требует отдельного действия.",
     wordpressDraftSafety:
-      "RankBoost сейчас создаёт черновики в WordPress. Вы решаете, когда публиковать.",
+      "На WordPress RankBoost может создавать черновики или публиковать одобренные статьи месячного плана после подтверждения автопубликации. Можно поставить на паузу и откатить.",
     billingCancelAnytime: "Без долгосрочных контрактов. Отмена в любой момент.",
     billingDataAvailability:
       "Ваши данные остаются доступными даже при смене подписки.",
@@ -243,27 +243,28 @@ export const saasDictionary: SaasDictionary = {
     monthlyAutopilot: {
       title: "Автопилот месяца активен",
       subtitle:
-        "RankBoost будет готовить статьи по расписанию. Публикация — только после вашего подтверждения.",
+        "RankBoost готовит статьи по расписанию. На WordPress одобренные статьи плана могут публиковаться автоматически после подтверждения автопубликации.",
       chipNextArticle: (date) => `Следующая статья: ${date}`,
       chipNextArticleSoon: "Следующая статья: скоро",
       chipReadyForReview: (count) => `Готово к проверке: ${count}`,
       chipPublishManual: "Публикация: вручную",
-      chipPublishWordpress: "Публикация: WordPress draft",
+      chipPublishWordpress: "Публикация: WordPress",
       chipPublishWebhook: "Публикация: webhook ready",
       openReview: "Проверить готовые материалы",
       openPlan: "Открыть план месяца",
       setupPublishing: "Настроить публикацию",
       nudgeTitle: "Хотите меньше ручной работы?",
       nudgeDescription:
-        "Можно подключить WordPress или webhook. Пока подключение не настроено, RankBoost готовит пакет для ручной публикации.",
-      safetyNote: "Ничего не публикуется автоматически.",
+        "Подключите WordPress для автопубликации после подтверждения плана или webhook для custom-сайта. Пока не подключено — RankBoost готовит пакет для ручной публикации.",
+      safetyNote:
+        "Вы подтверждаете план один раз в месяц. Автопилот можно остановить. Публикации в WordPress можно откатить.",
       worksInBackground: "RankBoost работает в фоне",
       nextPrep: (date) => `Следующая автоматическая подготовка: ${date}`,
       nextPrepSoon: "Следующая автоматическая подготовка: скоро",
-      publishAfterConfirm: "Публикация только после вашего подтверждения",
-      wordpressDraftOnly: "WordPress: создаём черновик, не публикуем",
+      publishAfterConfirm: "Публикация следует режиму, выбранному при подтверждении плана",
+      wordpressDraftOnly: "WordPress: по умолчанию черновики; автопубликация после подтверждения плана",
       customSitePackage:
-        "Custom site: готовим пакет/письмо разработчику",
+        "Custom-сайт: готовый пакет / webhook — это не то же самое, что live-публикация WordPress",
     },
     activation: {
       title: "RankBoost настраивает ваш сайт",
@@ -666,15 +667,15 @@ export const saasDictionary: SaasDictionary = {
     benefitsTitle: "Зачем подключать интеграции?",
     benefits: [
       "Реальные данные Google Search Console и возможности поиска",
-      "Черновики WordPress для проверки (вы решаете, когда публиковать)",
-      "Месячные сводки роста и письма на проверку",
+      "Черновики WordPress или автопубликация одобренных статей плана после подтверждения Auto-publish",
+      "Месячные сводки роста",
       "Планы роста на основе данных сайта и поиска",
     ],
     gscConnected: "Google Search Console успешно подключён.",
     gscConnectionFailed:
       "Google Search Console пока не готов к подключению.",
     gscOauthNotConfigured:
-      "Google OAuth ещё не настроен. Добавьте GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET и GOOGLE_REDIRECT_URI.",
+      "Подключение Google ещё не готово. Напишите в поддержку, если нужна помощь с Search Console.",
     connect: "Подключить",
     manage: "Управлять",
     comingSoon: "Скоро",
@@ -803,10 +804,10 @@ export const saasDictionary: SaasDictionary = {
         "Нажмите «Проверить соединение» в WordPress.",
       ],
       draftOnlyMessage:
-        "RankBoost сейчас создаёт черновики в WordPress — вы решаете, когда публиковать.",
+        "По умолчанию RankBoost создаёт черновики WordPress. После подтверждения месячного плана с автопубликацией одобренные статьи могут выходить автоматически.",
       connectionTitle: "Подключение WordPress",
       connectionDescription:
-        "Создайте Application Password в WordPress. RankBoost будет создавать только черновики статей. Ничего не публикуется автоматически.",
+        "Создайте Application Password в WordPress. Подключите один раз — затем выбирайте черновики или автопубликацию при подтверждении месячного плана.",
       appPasswordGuideTitle: "Как создать Application Password",
       appPasswordGuideIntro:
         "Это безопасный отдельный пароль только для RankBoost. Обычный пароль администратора вводить не нужно.",
@@ -829,7 +830,7 @@ export const saasDictionary: SaasDictionary = {
       testSuccess: (username: string) =>
         `Соединение успешно (${username}). Можно сохранить.`,
       saveSuccess:
-        "Подключение сохранено. RankBoost будет создавать только черновики.",
+        "Подключение сохранено. Черновики уже работают; автопубликация следует подтверждению месячного плана.",
       networkError: "Сетевая ошибка при обращении к WordPress.",
       disconnect: "Отключить",
       disconnectFailed: "Не удалось отключить.",
@@ -837,13 +838,13 @@ export const saasDictionary: SaasDictionary = {
       disconnected: "WordPress отключён.",
       createDraftsBullet: "Черновики поддерживаются",
       livePublishBullet:
-        "Live publish доступен, если в плане выбран режим автопубликации",
+        "Автопубликация после подтверждения месячного плана",
       updatesComingBullet: "Обновления существующих страниц — позже",
       manualPublishBullet: "Публикация вручную после проверки",
       manualPublishNote:
-        "Черновики всегда работают. Live publish — только для одобренных планов AUTO_PUBLISH при режиме Autopublish.",
+        "Черновики всегда работают. Автопубликация — только для одобренных планов с автопубликацией при режиме Autopublish.",
       livePublishSupportedNote:
-        "Live publish зависит от плана — выберите автопубликацию при подтверждении месячного плана.",
+        "При подтверждении месячного плана выберите автопубликацию — тогда одобренные статьи могут выходить по расписанию.",
       passwordHiddenNote:
         "Application Password больше не отображается после сохранения.",
       testConnection: "Проверить подключение",
@@ -925,8 +926,8 @@ export const saasDictionary: SaasDictionary = {
     executionHistory: {
       title: "История заданий интеграций",
       description:
-        "Записи о действиях с сайтом. Live publish — целевой режим RankBoost; сейчас он выключен, пока не будут права на сайт, история, quality gate, rollback и kill switch.",
-      safetyNote: "Секреты и пароли никогда не показываются.",
+        "Записи о действиях с сайтом — черновики, публикации и откаты. Секреты не показываются.",
+      safetyNote: "Пароли и API-секреты здесь не отображаются.",
       loading: "Загружаем историю…",
       empty: "Пока нет заданий выполнения.",
       loadFailed: "Не удалось загрузить историю заданий",
@@ -1504,7 +1505,7 @@ export const saasDictionary: SaasDictionary = {
     emptyNoPlanDescription:
       "Создайте план, чтобы RankBoost организовал SEO, контент и соцсети на этот месяц.",
     reviewNote:
-      "Этот план подготовлен в режиме проверки. Ничего не публикуется автоматически.",
+      "При одобрении выберите режим публикации. «Только проверка» оставляет черновики; автопубликация может публиковать одобренные статьи WordPress после подтверждения.",
     loadPlanFailed:
       "Не удалось загрузить план автопилота. Попробуйте обновить страницу.",
     statusBlock: {
@@ -1572,7 +1573,7 @@ export const saasDictionary: SaasDictionary = {
       nextLivePublishLabel: "Следующая live-публикация",
       noLivePublishScheduled: "Live-публикация не запланирована",
       killSwitchPausedNote:
-        "Live publish приостановлен защитным kill switch до включения в этой среде.",
+        "Автоматическая публикация для этого сайта ещё не включена. Черновики и очередь проверки по-прежнему доступны.",
       pauseAutopilotCta: "Приостановить live publish",
       resumeAutopilotCta: "Возобновить live publish",
       pauseLivePublishOnlyNote:
@@ -1584,7 +1585,7 @@ export const saasDictionary: SaasDictionary = {
       resumeFailed: "Не удалось возобновить live publish.",
       resumeNetworkError: "Сетевая ошибка при возобновлении live publish.",
       autoPublishExplainer:
-        "Autopilot будет автоматически публиковать одобренные статьи месячного плана, когда WordPress здоров и live publish включён для этого сайта.",
+        "Autopilot будет автоматически публиковать одобренные статьи месячного плана, когда WordPress здоров и автопубликация включена для этого сайта.",
       noRankingGuarantee:
         "RankBoost не гарантирует позиции, трафик или выручку. Публикация — только операционная помощь.",
       wordpressHealthLabel: "WordPress",
@@ -1594,7 +1595,17 @@ export const saasDictionary: SaasDictionary = {
         "Опубликованные статьи можно вернуть в черновик на странице статьи или в истории интеграций.",
       lastPublishedUrlLabel: "Последний опубликованный URL",
       scopedRolloutNote:
-        "Live publish ограничен одобренными сайтами первого клиента. Пауза останавливает только live-публикацию.",
+        "Автопубликация работает только на сайтах, где она включена после подтверждения плана. Пауза останавливает только live-публикацию.",
+      pilotChecklistTitle: "Готовность к пилоту",
+      pilotWordpressConnected: "WordPress подключён",
+      pilotPlanApproved: "Месячный план одобрен",
+      pilotAutoPublishEnabled: "Автопубликация включена для этого сайта",
+      pilotAutoPublishPending: "Автопубликация для этого сайта ещё не включена",
+      pilotNextPublish: "Дата следующей публикации",
+      pilotPauseReady: "Кнопка паузы доступна",
+      pilotRollbackReady: "Откат доступен",
+      pilotSupportContact: "Поддержка: info@rankboost.eu",
+      pilotSupportHint: "Вопросы по пилоту? Напишите нам — отвечаем в рабочие дни.",
     },
     planApproval: {
       title: "Одобрение плана",
