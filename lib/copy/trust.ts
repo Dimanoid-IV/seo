@@ -7,7 +7,7 @@ export const EMAIL_APPROVAL_SAFETY_COPY =
   "Approval does not send the email. Sending always requires an explicit manual action.";
 
 export const WORDPRESS_DRAFT_SAFETY_COPY =
-  "RankBoost creates WordPress drafts only. You decide when to publish.";
+  "On WordPress, RankBoost creates drafts by default. After you confirm Auto-publish on a monthly plan, approved articles can publish when auto-publish is enabled for your site.";
 
 export const BILLING_CANCEL_ANYTIME_COPY =
   "No long-term contracts. You can cancel anytime.";

@@ -1228,7 +1228,7 @@ export const saasDictionary: SaasDictionary = {
     qualityUnknownLabel: "Kvaliteeti pole hinnatud",
     autopilotLinkedLabel: "Seotud Autopiloti plaaniga",
     autopilotUnlockHint:
-      "Kinnitamine avab järgmise plaanitud Autopiloti käigu (ainult WordPressi mustand — midagi automaatselt ei avaldata).",
+      "Kinnitamine avab järgmise plaanitud Autopiloti käigu. WordPressi mustandid töötavad alati; Autopublish ainult siis, kui see on selle saidi jaoks lubatud.",
     autopilotAlreadyApprovedHint:
       "Juba kinnitatud — Autopilot jätkab järgmisel tähtajal.",
     autoPublishGateBlockedTitle: "Autopublish vajab ülevaatust",
@@ -1238,7 +1238,7 @@ export const saasDictionary: SaasDictionary = {
       "Seda mustandit ei saa kinnitada enne, kui kvaliteedikontroll on läbitud.",
     approveArticle: "Kinnita artikkel",
     articleReadyHint:
-      "Saate artiklit redigeerida, tagasi lükata või kasutada materjale saidile avaldamiseks. RankBoost ei avalda midagi ilma teie kinnituseta.",
+      "Saate artiklit redigeerida, tagasi lükata või kasutada materjale saidile avaldamiseks. Autopublish ainult pärast selle režiimi valimist kuuplaanis.",
     qualityOutOf: (score) => `Kvaliteet ${score}/100`,
     publishManually: "Avalda käsitsi",
     downloadForSite: "Laadi alla / kopeeri saidile",
@@ -1520,7 +1520,7 @@ export const saasDictionary: SaasDictionary = {
       noApprovedActions: "Kinnitatud tegevusi pole",
       planApprovalStatus: "Plaani kinnitus",
       openReviewQueue: "Ava ülevaate järjekord",
-      comingSoon: "Peagi",
+      comingSoon: "Lülitatakse sisse kuuplaani kinnitamisel",
       modeChangeFailed: "Autopiloodi režiimi ei saanud uuendada.",
       modeChangeNetworkError: "Võrguviga režiimi uuendamisel.",
       modes: {
@@ -1637,9 +1637,9 @@ export const saasDictionary: SaasDictionary = {
         "Artiklid lähevad ülevaatusse. Live-avaldamine on selle plaani jaoks välja lülitatud.",
       publishingModeAutoPublishTitle: "Avalda automaatselt graafiku järgi",
       publishingModeAutoPublishDescription:
-        "Pärast quality gate’i avaldatakse selle kinnitatud plaani artiklid ilma iga artikli eraldi kinnituseta.",
+        "WordPressis võivad quality gate’i läbinud selle kinnitatud plaani artiklid ilmuda graafiku järgi, kui Autopublish on saidi jaoks lubatud. Paus on alati võimalik.",
       publishingModeAutoPublishWarning:
-        "Live-avaldamine on lubatud ainult selle kinnitatud plaani sees ja ainult quality gate’i läbinud artiklitele.",
+        "Ainult WordPress. Kohandatud saitidele pakett või webhook. Ilma positsioonide garantiita.",
       approveFailed: "Valitud plaani punkte ei saanud kinnitada.",
       approveNetworkError: "Võrguviga plaani kinnitamisel.",
       selectAtLeastOne: "Vali kinnitamiseks vähemalt üks punkt.",
@@ -1719,7 +1719,7 @@ export const saasDictionary: SaasDictionary = {
         qualityFailed: "Kvaliteet ebaõnnestus — vajab parandamist",
       },
       approvalSafetyNote:
-        "Pärast kinnitamist käivitab RankBoost valitud tegevused graafiku järgi. Ilma sinu lõpliku kinnituseta midagi ei avaldata.",
+        "Pärast kinnitamist käivitab RankBoost valitud tegevused graafiku järgi. Ülevaatus jätab mustandid; Autopublish võib WordPressis ilmuda, kui see on saidi jaoks lubatud.",
       itemTypeHints: {
         TASK_FIX: "RankBoost valmistab lehe paranduse ülevaate järjekorda.",
         SEO_FIX: "RankBoost valmistab SEO paranduse ülevaate järjekorda.",

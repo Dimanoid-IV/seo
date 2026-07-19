@@ -1222,17 +1222,17 @@ export const saasDictionary: SaasDictionary = {
     qualityUnknownLabel: "Quality not scored",
     autopilotLinkedLabel: "Linked to Autopilot plan",
     autopilotUnlockHint:
-      "Approving unlocks the next scheduled Autopilot run (WordPress draft only — nothing is published automatically).",
+      "Approving unlocks the next scheduled Autopilot run. WordPress drafts always work; Auto-publish plans can go live only when auto-publish is enabled for this site.",
     autopilotAlreadyApprovedHint:
       "Already approved — Autopilot will continue on the next due run.",
     autoPublishGateBlockedTitle: "Auto-publish needs your review",
     autoPublishGateBlockedHint:
-      "This article was on an Auto-publish plan, but live publish was blocked. Review and publish manually, or fix the blocker and re-run Autopilot.",
+      "This article was on an Auto-publish plan, but publishing was blocked. Review and publish manually, or fix the blocker and re-run Autopilot.",
     approveBlockedQuality:
       "This draft cannot be approved until quality checks pass.",
     approveArticle: "Approve article",
     articleReadyHint:
-      "You can edit the article, reject it, or use the materials to publish on your site. RankBoost never publishes without your confirmation.",
+      "You can edit the article, reject it, or use the materials to publish on your site. Auto-publish only runs after you confirm that mode on the monthly plan.",
     qualityOutOf: (score) => `Quality ${score}/100`,
     publishManually: "Publish manually",
     downloadForSite: "Download / copy for your site",
@@ -1514,7 +1514,7 @@ export const saasDictionary: SaasDictionary = {
       noApprovedActions: "No approved actions",
       planApprovalStatus: "Plan approval",
       openReviewQueue: "Open Review Queue",
-      comingSoon: "Coming soon",
+      comingSoon: "Enable when confirming a monthly plan",
       modeChangeFailed: "Could not update autopilot mode.",
       modeChangeNetworkError: "Network error while updating autopilot mode.",
       modes: {
@@ -1630,9 +1630,9 @@ export const saasDictionary: SaasDictionary = {
         "Articles go to Review. Live publish stays off for this plan.",
       publishingModeAutoPublishTitle: "Publish automatically on schedule",
       publishingModeAutoPublishDescription:
-        "After the quality gate, articles from this approved plan publish without confirming each one.",
+        "On WordPress, quality-passed articles from this approved plan can publish on schedule when auto-publish is enabled for this site. You can pause anytime.",
       publishingModeAutoPublishWarning:
-        "Live publish is allowed only inside this approved plan and only for quality-passed articles.",
+        "WordPress only. Custom sites still get a package or webhook. No ranking guarantees.",
       approveFailed: "Could not approve selected plan items.",
       approveNetworkError: "Network error while approving plan.",
       selectAtLeastOne: "Select at least one item to approve.",
@@ -1712,7 +1712,7 @@ export const saasDictionary: SaasDictionary = {
         qualityFailed: "Quality failed — needs revision",
       },
       approvalSafetyNote:
-        "After you approve, RankBoost runs selected actions on schedule. Nothing is published without your final approval.",
+        "After you approve, RankBoost runs selected actions on schedule. Review-only keeps drafts for your check; Auto-publish can go live on WordPress when enabled for this site.",
       itemTypeHints: {
         TASK_FIX: "RankBoost will prepare a page fix in your Review Queue.",
         SEO_FIX: "RankBoost will prepare an SEO fix in your Review Queue.",

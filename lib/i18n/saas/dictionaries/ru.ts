@@ -1225,7 +1225,7 @@ export const saasDictionary: SaasDictionary = {
     qualityUnknownLabel: "Качество не оценено",
     autopilotLinkedLabel: "Связано с планом Autopilot",
     autopilotUnlockHint:
-      "Одобрение разблокирует следующий запланированный запуск Autopilot (только черновик WordPress — ничего не публикуется автоматически).",
+      "Одобрение разблокирует следующий запланированный запуск Autopilot. Черновики WordPress всегда работают; автопубликация — только если она включена для этого сайта.",
     autopilotAlreadyApprovedHint:
       "Уже одобрено — Autopilot продолжит на следующем запланированном запуске.",
     autoPublishGateBlockedTitle: "Автопубликация требует проверки",
@@ -1235,7 +1235,7 @@ export const saasDictionary: SaasDictionary = {
       "Черновик нельзя одобрить, пока не пройдены проверки качества.",
     approveArticle: "Одобрить статью",
     articleReadyHint:
-      "Вы можете отредактировать статью, отклонить её или использовать материалы для публикации на сайте. RankBoost ничего не публикует без вашего подтверждения.",
+      "Вы можете отредактировать статью, отклонить её или использовать материалы для публикации на сайте. Автопубликация только после выбора этого режима в месячном плане.",
     qualityOutOf: (score) => `Качество ${score}/100`,
     publishManually: "Опубликовать вручную",
     downloadForSite: "Скачать / скопировать для сайта",
@@ -1517,7 +1517,7 @@ export const saasDictionary: SaasDictionary = {
       noApprovedActions: "Нет одобренных действий",
       planApprovalStatus: "Статус плана",
       openReviewQueue: "Открыть очередь проверки",
-      comingSoon: "Скоро",
+      comingSoon: "Включается при подтверждении месячного плана",
       modeChangeFailed: "Не удалось обновить режим автопилота.",
       modeChangeNetworkError: "Сетевая ошибка при обновлении режима.",
       modes: {
@@ -1634,9 +1634,9 @@ export const saasDictionary: SaasDictionary = {
         "Статьи появятся на проверку. Live publish выключен для этого плана.",
       publishingModeAutoPublishTitle: "Публиковать автоматически по расписанию",
       publishingModeAutoPublishDescription:
-        "После quality gate статьи этого одобренного плана публикуются без отдельного подтверждения каждой.",
+        "На WordPress прошедшие quality gate статьи из этого одобренного плана могут публиковаться по расписанию, когда автопубликация включена для сайта. Паузу можно включить в любой момент.",
       publishingModeAutoPublishWarning:
-        "Live publish разрешён только внутри этого одобренного плана и только для статей, прошедших quality gate.",
+        "Только WordPress. Для custom-сайтов — пакет или webhook. Без гарантий позиций.",
       approveFailed: "Не удалось одобрить выбранные пункты плана.",
       approveNetworkError: "Сетевая ошибка при одобрении плана.",
       selectAtLeastOne: "Выберите хотя бы один пункт для одобрения.",
@@ -1716,7 +1716,7 @@ export const saasDictionary: SaasDictionary = {
         qualityFailed: "Качество не пройдено — нужна доработка",
       },
       approvalSafetyNote:
-        "После подтверждения RankBoost выполняет выбранные действия по расписанию. Публикации без вашего финального одобрения не будет.",
+        "После одобрения RankBoost выполняет выбранные действия по расписанию. Режим проверки оставляет черновики; автопубликация может выходить на WordPress, если включена для сайта.",
       itemTypeHints: {
         TASK_FIX: "RankBoost подготовит исправление страницы в очереди проверки.",
         SEO_FIX: "RankBoost подготовит SEO-исправление в очереди проверки.",

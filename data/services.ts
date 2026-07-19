@@ -166,19 +166,19 @@ export const services: Service[] = [
     id: "auto-publish-controls",
     icon: "Rocket",
     title: {
-      en: "Future auto-publishing controls",
-      ru: "Будущие настройки автопубликации",
-      et: "Tulevased automaattse avaldamise seaded",
+      en: "WordPress auto-publish controls",
+      ru: "Автопубликация на WordPress",
+      et: "WordPressi autopublish",
     },
     description: {
-      en: "Planned controlled Auto-Publish Mode — publish selected action types automatically only after you enable rules and integrations.",
-      ru: "Планируемый контролируемый Auto-Publish Mode — автоматическая публикация выбранных действий только после включения правил и интеграций.",
-      et: "Plaanitud kontrollitud Auto-Publish Mode — valitud tegevuste automaatne avaldamine ainult pärast reeglite ja integratsioonide lubamist.",
+      en: "After you confirm a monthly plan with Auto-publish, RankBoost can publish approved articles to WordPress on schedule. Pause and roll back anytime. Custom sites get a package or webhook instead.",
+      ru: "После подтверждения месячного плана с автопубликацией RankBoost может публиковать одобренные статьи на WordPress по расписанию. Пауза и откат в любой момент. Для custom-сайтов — пакет или webhook.",
+      et: "Pärast kuuplaani Autopublish kinnitamist saab RankBoost avaldada kinnitatud artikleid WordPressis graafiku järgi. Paus ja tagasivõtmine igal ajal. Kohandatud saitidele pakett või webhook.",
     },
     features: {
-      en: ["Explicitly enabled", "Rule-based", "Pause anytime", "Activity log"],
-      ru: ["Явное включение", "На основе правил", "Пауза в любой момент", "Журнал активности"],
-      et: ["Selge lubamine", "Reeglipõhine", "Peatamine igal ajal", "Tegevuste logi"],
+      en: ["Confirm the plan monthly", "WordPress connected", "Pause anytime", "Rollback available"],
+      ru: ["Подтверждение плана раз в месяц", "Подключённый WordPress", "Пауза в любой момент", "Откат доступен"],
+      et: ["Kuuplaani kinnitus", "WordPress ühendatud", "Paus igal ajal", "Tagasivõtmine saadaval"],
     },
   },
 ];
