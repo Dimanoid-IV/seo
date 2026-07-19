@@ -440,6 +440,51 @@ enum WordPressConnectionStatus {
   DISCONNECTED
 }
 
+/// Integration execution job source (Prompt 11.49 foundation — no live actions yet).
+enum IntegrationExecutionSourceType {
+  ARTICLE
+  TASK
+  PREPARED_FIX
+  AUTOPILOT_PLAN_ITEM
+  MANUAL
+}
+
+enum IntegrationExecutionAction {
+  CREATE_DRAFT
+  PUBLISH
+  UPDATE_ARTICLE
+  APPLY_SEO_FIX
+  SEND_WEBHOOK
+  PREPARE_PACKAGE
+  ROLLBACK
+  TEST_CONNECTION
+}
+
+enum IntegrationExecutionProvider {
+  WORDPRESS
+  CUSTOM_WEBHOOK
+  HOSTED_BLOG
+  MANUAL
+  OTHER
+}
+
+enum IntegrationExecutionMode {
+  REVIEW_ONLY
+  AUTO_DRAFT
+  AUTO_PUBLISH
+}
+
+enum IntegrationExecutionStatus {
+  QUEUED
+  RUNNING
+  SUCCEEDED
+  FAILED
+  PARTIALLY_APPLIED
+  WAITING
+  RETRYING
+  CANCELED
+}
+
 enum AIJobType {
   AUDIT_PREVIEW
   AUDIT_FULL
@@ -577,6 +622,8 @@ model User {
   usageCounters         UsageCounter[]
   onboardingState       OnboardingState?
   assistedSetupRequests AssistedSetupRequest[]
+  integrationExecutionsRequested IntegrationExecutionJob[] @relation("IntegrationExecutionRequestedBy")
+  integrationExecutionsApproved  IntegrationExecutionJob[] @relation("IntegrationExecutionApprovedBy")
 
   @@index([stripeCustomerId])
   @@index([googleAuthId])
@@ -620,6 +667,7 @@ model Organization {
   emailLogs             EmailLog[]
   adminNotes            AdminNote[]
   errorLogs             ErrorLog[]
+  integrationExecutionJobs IntegrationExecutionJob[]
 
   @@index([ownerUserId])
   @@index([billingUserId])
@@ -671,6 +719,7 @@ model Website {
   websiteUserStates       WebsiteUserState[]
   onboardingStates        OnboardingState[]
   assistedSetupRequests   AssistedSetupRequest[]
+  integrationExecutionJobs IntegrationExecutionJob[]
 
   @@unique([organizationId, url])
   @@index([organizationId])
@@ -1248,6 +1297,7 @@ model Integration {
   website      Website                @relation(fields: [websiteId], references: [id])
   organization Organization           @relation(fields: [organizationId], references: [id])
   googleData   GoogleIntegrationData?
+  executionJobs IntegrationExecutionJob[]
 
   @@unique([websiteId, provider])
   @@index([websiteId])
@@ -1297,6 +1347,7 @@ model WordPressConnection {
 
   website      Website      @relation(fields: [websiteId], references: [id])
   organization Organization @relation(fields: [organizationId], references: [id])
+  executionJobs IntegrationExecutionJob[]
 
   @@unique([websiteId, siteUrl])
   @@index([websiteId])
@@ -1304,6 +1355,70 @@ model WordPressConnection {
   @@index([status])
   @@index([siteUrl])
   @@map("wordpress_connections")
+}
+
+/// Queued/recorded integration adapter actions (foundation only — no live publish/webhook yet).
+model IntegrationExecutionJob {
+  id                     String                         @id @default(uuid()) @db.Uuid
+  organizationId         String                         @db.Uuid
+  websiteId              String                         @db.Uuid
+  integrationId          String?                        @db.Uuid
+  wordpressConnectionId  String?                        @db.Uuid
+  requestedByUserId      String?                        @db.Uuid
+  approvedByUserId       String?                        @db.Uuid
+  sourceType             IntegrationExecutionSourceType
+  sourceId               String
+  action                 IntegrationExecutionAction
+  provider               IntegrationExecutionProvider
+  mode                   IntegrationExecutionMode       @default(REVIEW_ONLY)
+  status                 IntegrationExecutionStatus     @default(QUEUED)
+  idempotencyKey         String                         @unique
+  capability             String
+  /// Sanitized preview only — never secrets or full HTML bodies.
+  requestPreviewJson     Json?
+  /// Sanitized result only — never secrets or full HTML bodies.
+  resultJson             Json?
+  externalId             String?
+  externalUrl            String?
+  errorCode              String?
+  errorMessage           String?
+  retryCount             Int                            @default(0)
+  maxRetries             Int                            @default(3)
+  createdAt              DateTime                       @default(now())
+  updatedAt              DateTime                       @updatedAt
+  startedAt              DateTime?
+  finishedAt             DateTime?
+
+  organization        Organization         @relation(fields: [organizationId], references: [id])
+  website             Website              @relation(fields: [websiteId], references: [id])
+  integration         Integration?         @relation(fields: [integrationId], references: [id], onDelete: SetNull)
+  wordpressConnection WordPressConnection? @relation(fields: [wordpressConnectionId], references: [id], onDelete: SetNull)
+  requestedByUser     User?                @relation("IntegrationExecutionRequestedBy", fields: [requestedByUserId], references: [id], onDelete: SetNull)
+  approvedByUser      User?                @relation("IntegrationExecutionApprovedBy", fields: [approvedByUserId], references: [id], onDelete: SetNull)
+  events              IntegrationExecutionEvent[]
+
+  @@index([organizationId, createdAt])
+  @@index([websiteId, createdAt])
+  @@index([status, createdAt])
+  @@index([provider, action])
+  @@index([sourceType, sourceId])
+  @@map("integration_execution_jobs")
+}
+
+model IntegrationExecutionEvent {
+  id           String                       @id @default(uuid()) @db.Uuid
+  jobId        String                       @db.Uuid
+  type         String
+  status       IntegrationExecutionStatus?
+  message      String?
+  /// Sanitized metadata only — never secrets.
+  metadataJson Json?
+  createdAt    DateTime                     @default(now())
+
+  job IntegrationExecutionJob @relation(fields: [jobId], references: [id], onDelete: Cascade)
+
+  @@index([jobId, createdAt])
+  @@map("integration_execution_events")
 }
 
 model AIJob {

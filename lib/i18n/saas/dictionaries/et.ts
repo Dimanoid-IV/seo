@@ -919,6 +919,16 @@ export const saasDictionary: SaasDictionary = {
         "Hiljem võib RankBoost soovitada turvalisi mainimisvõimalusi. Ilma ostetud linkideta, ilma skeemideta ja ilma Google’i kohtade lubadusteta.",
       badge: "Varsti",
     },
+    executionHistory: {
+      title: "Integratsioonide täitmise ajalugu",
+      description:
+        "Ettevalmistatud saiditoimingute kirjed. Ainult alus — ilma live-avaldamiseta ja ilma webhooki saatmiseta.",
+      safetyNote: "Saladusi ja paroole ei näidata kunagi.",
+      loading: "Laadime ajalugu…",
+      empty: "Täitmistöid veel pole.",
+      loadFailed: "Täitmise ajalugu ei õnnestunud laadida",
+      loadNetworkError: "Võrguviga täitmise ajaloo laadimisel",
+    },
   },
   reports: {
     title: "Aruanded",

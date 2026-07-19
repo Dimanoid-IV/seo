@@ -733,6 +733,15 @@ export type SaasDictionary = {
       description: string;
       badge: string;
     };
+    executionHistory: {
+      title: string;
+      description: string;
+      safetyNote: string;
+      loading: string;
+      empty: string;
+      loadFailed: string;
+      loadNetworkError: string;
+    };
   };
   reports: {
     title: string;

@@ -11,6 +11,7 @@ import { IntegrationGrid } from "@/components/integrations/IntegrationGrid";
 import { BrandVoiceCard } from "@/components/integrations/BrandVoiceCard";
 import { CustomWebsiteIntegrationPanel } from "@/components/integrations/CustomWebsiteIntegrationPanel";
 import { FutureMentionsCard } from "@/components/integrations/FutureMentionsCard";
+import { IntegrationExecutionHistory } from "@/components/integrations/IntegrationExecutionHistory";
 import { SiteTechHint } from "@/components/integrations/SiteTechHint";
 import { PageErrorState } from "@/components/shared/PageErrorState";
 import { PageHeader } from "@/components/shared/PageHeader";
@@ -256,6 +257,12 @@ export function IntegrationsPage() {
           description={i.futureMentions.description}
           badge={i.futureMentions.badge}
         />
+      ) : null}
+
+      {data.website?.id ? (
+        <div className="mb-8">
+          <IntegrationExecutionHistory websiteId={data.website.id} />
+        </div>
       ) : null}
 
       {banner ? (

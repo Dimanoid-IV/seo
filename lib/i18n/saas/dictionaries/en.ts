@@ -916,6 +916,16 @@ export const saasDictionary: SaasDictionary = {
         "Later, RankBoost may suggest safe mention opportunities. No paid link schemes, no guaranteed rankings.",
       badge: "Coming soon",
     },
+    executionHistory: {
+      title: "Integration execution history",
+      description:
+        "Records of prepared site actions. Foundation only — no live publish and no webhook send yet.",
+      safetyNote: "Secrets and passwords are never shown.",
+      loading: "Loading history…",
+      empty: "No execution jobs yet.",
+      loadFailed: "Could not load execution history",
+      loadNetworkError: "Network error while loading execution history",
+    },
   },
   reports: {
     title: "Reports",
