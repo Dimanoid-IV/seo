@@ -804,6 +804,46 @@ export const saasDictionary: SaasDictionary = {
       ],
       draftOnlyMessage:
         "RankBoost currently creates WordPress drafts — you decide when to publish.",
+      connectionTitle: "WordPress connection",
+      connectionDescription:
+        "Create an Application Password in WordPress. RankBoost will only create article drafts. Nothing is published automatically.",
+      appPasswordGuideTitle: "How to create an Application Password",
+      appPasswordGuideIntro:
+        "This is a separate password only for RankBoost. You do not need to enter your normal admin password.",
+      appPasswordSteps: [
+        "Open your site's WordPress admin.",
+        "Go to Users → Profile.",
+        "Find the Application Passwords block near the bottom of the page.",
+        'Enter the name "RankBoost" and click Add New Application Password.',
+        "Copy the generated password and paste it here. WordPress shows it only once.",
+        'Click "Test connection", then "Save connection".',
+      ],
+      appPasswordSafetyNote:
+        "If needed, you can delete this password in WordPress Profile without changing the site's main password.",
+      siteUrlLabel: "WordPress site URL",
+      usernameLabel: "Username",
+      applicationPasswordLabel: "Application Password",
+      fillRequired: "Fill in the URL, username and Application Password.",
+      testFailed: "Connection test failed.",
+      saveFailed: "Could not save the connection.",
+      testSuccess: (username: string) =>
+        `Connection successful (${username}). You can save it now.`,
+      saveSuccess:
+        "Connection saved. RankBoost will only create drafts.",
+      networkError: "Network error while contacting WordPress.",
+      disconnect: "Disconnect",
+      disconnectFailed: "Could not disconnect.",
+      disconnectNetworkError: "Network error while disconnecting.",
+      disconnected: "WordPress disconnected.",
+      createDraftsBullet: "Create WordPress drafts",
+      manualPublishBullet: "Manual publishing after review",
+      manualPublishNote: "Manual publishing after review. Live publish is off.",
+      passwordHiddenNote:
+        "The Application Password is not shown again after saving.",
+      testConnection: "Test connection",
+      saveConnection: "Save connection",
+      httpsWarning:
+        "This site does not use HTTPS. We recommend enabling HTTPS before production use.",
       permissions: {
         canCreateDrafts: "Create drafts",
         canUpdateMeta: "Update meta tags",

@@ -646,6 +646,32 @@ export type SaasDictionary = {
     wordpress: {
       setupSteps: string[];
       draftOnlyMessage: string;
+      connectionTitle: string;
+      connectionDescription: string;
+      appPasswordGuideTitle: string;
+      appPasswordGuideIntro: string;
+      appPasswordSteps: string[];
+      appPasswordSafetyNote: string;
+      siteUrlLabel: string;
+      usernameLabel: string;
+      applicationPasswordLabel: string;
+      fillRequired: string;
+      testFailed: string;
+      saveFailed: string;
+      testSuccess: (username: string) => string;
+      saveSuccess: string;
+      networkError: string;
+      disconnect: string;
+      disconnectFailed: string;
+      disconnectNetworkError: string;
+      disconnected: string;
+      createDraftsBullet: string;
+      manualPublishBullet: string;
+      manualPublishNote: string;
+      passwordHiddenNote: string;
+      testConnection: string;
+      saveConnection: string;
+      httpsWarning: string;
       permissions: {
         canCreateDrafts: string;
         canUpdateMeta: string;

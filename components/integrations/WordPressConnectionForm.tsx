@@ -67,7 +67,7 @@ export function WordPressConnectionForm({
       return;
     }
     if (!siteUrl.trim() || !username.trim() || !applicationPassword.trim()) {
-      setError("Заполните URL, имя пользователя и Application Password.");
+      setError(wp.fillRequired);
       return;
     }
 
@@ -93,7 +93,7 @@ export function WordPressConnectionForm({
         setError(
           await parseApiErrorMessage(
             response,
-            save ? "Не удалось сохранить подключение." : "Проверка не удалась."
+            save ? wp.saveFailed : wp.testFailed
           )
         );
         return;
@@ -104,8 +104,8 @@ export function WordPressConnectionForm({
       setTestPassed(true);
       setStatus(
         save
-          ? "Подключение сохранено. RankBoost будет создавать только черновики."
-          : `Соединение успешно (${body.data.userLogin}). Можно сохранить.`
+          ? wp.saveSuccess
+          : wp.testSuccess(body.data.userLogin)
       );
       if (save) {
         setApplicationPassword("");
@@ -113,7 +113,7 @@ export function WordPressConnectionForm({
       }
     } catch {
       setTestPassed(false);
-      setError("Сетевая ошибка при обращении к WordPress.");
+      setError(wp.networkError);
     } finally {
       setBusy(null);
     }
@@ -133,14 +133,14 @@ export function WordPressConnectionForm({
         }
       );
       if (!response.ok) {
-        setError(await parseApiErrorMessage(response, "Не удалось отключить."));
+        setError(await parseApiErrorMessage(response, wp.disconnectFailed));
         return;
       }
-      setStatus("WordPress отключён.");
+      setStatus(wp.disconnected);
       setTestPassed(false);
       onConnectionUpdated?.();
     } catch {
-      setError("Сетевая ошибка при отключении.");
+      setError(wp.disconnectNetworkError);
     } finally {
       setBusy(null);
     }
@@ -167,17 +167,15 @@ export function WordPressConnectionForm({
         </div>
 
         <ul className="space-y-1 text-sm text-slate-700">
-          <li>• Создавать черновики WordPress</li>
-          <li>• Публикация вручную после проверки</li>
+          <li>• {wp.createDraftsBullet}</li>
+          <li>• {wp.manualPublishBullet}</li>
         </ul>
 
-          <p className="text-xs text-slate-600">{wp.draftOnlyMessage}</p>
-          <p className="text-xs font-medium text-slate-700">
-            Публикация вручную после проверки. Live publish выключен.
-          </p>
-          <p className="text-xs text-slate-500">
-            Application Password больше не отображается после сохранения.
-          </p>
+        <p className="text-xs text-slate-600">{wp.draftOnlyMessage}</p>
+        <p className="text-xs font-medium text-slate-700">
+          {wp.manualPublishNote}
+        </p>
+        <p className="text-xs text-slate-500">{wp.passwordHiddenNote}</p>
 
         <Button
           type="button"
@@ -188,7 +186,7 @@ export function WordPressConnectionForm({
           {busy === "disconnect" ? (
             <Loader2 className="size-4 animate-spin" />
           ) : null}
-          Отключить
+          {wp.disconnect}
         </Button>
         {error ? <p className="text-xs text-red-600">{error}</p> : null}
         {status ? <p className="text-xs text-emerald-700">{status}</p> : null}
@@ -207,27 +205,35 @@ export function WordPressConnectionForm({
         <Lock className="mt-0.5 size-4 shrink-0 text-sky-700" />
         <div>
           <p className="text-sm font-medium text-slate-900">
-            Подключение WordPress
+            {wp.connectionTitle}
           </p>
           <p className="mt-1 text-sm text-slate-600">
-            Создайте Application Password в WordPress. RankBoost будет создавать
-            только черновики статей. Ничего не публикуется автоматически.
+            {wp.connectionDescription}
           </p>
         </div>
       </div>
 
-      <ol className="list-decimal space-y-1.5 pl-5 text-sm text-slate-600">
-        <li>WordPress admin → Users → Profile</li>
-        <li>Application Passwords</li>
-        <li>Create new password «RankBoost»</li>
-        <li>Скопируйте пароль в RankBoost</li>
-        <li>Нажмите «Проверить подключение»</li>
-      </ol>
+      <div className="rounded-lg border border-sky-200 bg-white p-3">
+        <p className="text-sm font-semibold text-slate-900">
+          {wp.appPasswordGuideTitle}
+        </p>
+        <p className="mt-1 text-xs text-slate-600">
+          {wp.appPasswordGuideIntro}
+        </p>
+        <ol className="mt-3 list-decimal space-y-2 pl-5 text-sm text-slate-700">
+          {wp.appPasswordSteps.map((step) => (
+            <li key={step}>{step}</li>
+          ))}
+        </ol>
+        <p className="mt-3 rounded-md bg-slate-50 px-3 py-2 text-xs text-slate-600">
+          {wp.appPasswordSafetyNote}
+        </p>
+      </div>
 
       <div className="space-y-3">
         <label className="block space-y-1">
           <span className="text-xs font-medium text-slate-700">
-            URL сайта WordPress
+            {wp.siteUrlLabel}
           </span>
           <input
             type="url"
@@ -242,7 +248,7 @@ export function WordPressConnectionForm({
         </label>
         <label className="block space-y-1">
           <span className="text-xs font-medium text-slate-700">
-            Имя пользователя
+            {wp.usernameLabel}
           </span>
           <input
             type="text"
@@ -257,7 +263,7 @@ export function WordPressConnectionForm({
         </label>
         <label className="block space-y-1">
           <span className="text-xs font-medium text-slate-700">
-            Application Password
+            {wp.applicationPasswordLabel}
           </span>
           <input
             type="password"
@@ -271,7 +277,7 @@ export function WordPressConnectionForm({
             className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:border-sky-400"
           />
           <span className="text-[11px] text-slate-500">
-            Не используйте обычный пароль администратора WordPress.
+            {wp.appPasswordGuideIntro}
           </span>
         </label>
       </div>
@@ -279,9 +285,7 @@ export function WordPressConnectionForm({
       {httpsWarning ? (
         <div className="flex items-start gap-2 text-amber-800">
           <AlertTriangle className="mt-0.5 size-4 shrink-0" />
-          <p className="text-xs">
-            Сайт без HTTPS. Рекомендуем включить HTTPS перед продакшен-использованием.
-          </p>
+          <p className="text-xs">{wp.httpsWarning}</p>
         </div>
       ) : null}
 
@@ -295,7 +299,7 @@ export function WordPressConnectionForm({
           {busy === "test" ? (
             <Loader2 className="size-4 animate-spin" />
           ) : null}
-          Проверить подключение
+          {wp.testConnection}
         </Button>
         <Button
           type="button"
@@ -305,7 +309,7 @@ export function WordPressConnectionForm({
           {busy === "save" ? (
             <Loader2 className="size-4 animate-spin" />
           ) : null}
-          Сохранить подключение
+          {wp.saveConnection}
         </Button>
       </div>
 

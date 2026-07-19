@@ -804,6 +804,47 @@ export const saasDictionary: SaasDictionary = {
       ],
       draftOnlyMessage:
         "RankBoost сейчас создаёт черновики в WordPress — вы решаете, когда публиковать.",
+      connectionTitle: "Подключение WordPress",
+      connectionDescription:
+        "Создайте Application Password в WordPress. RankBoost будет создавать только черновики статей. Ничего не публикуется автоматически.",
+      appPasswordGuideTitle: "Как создать Application Password",
+      appPasswordGuideIntro:
+        "Это безопасный отдельный пароль только для RankBoost. Обычный пароль администратора вводить не нужно.",
+      appPasswordSteps: [
+        "Откройте WordPress admin вашего сайта.",
+        "Перейдите в Users → Profile или Пользователи → Профиль.",
+        "Найдите блок Application Passwords внизу страницы.",
+        "Введите название «RankBoost» и нажмите Add New Application Password.",
+        "Скопируйте созданный пароль и вставьте его здесь. WordPress покажет его только один раз.",
+        "Нажмите «Проверить подключение», затем «Сохранить подключение».",
+      ],
+      appPasswordSafetyNote:
+        "Если что-то пойдёт не так, этот пароль можно удалить в WordPress Profile — основной пароль сайта не меняется.",
+      siteUrlLabel: "URL сайта WordPress",
+      usernameLabel: "Имя пользователя",
+      applicationPasswordLabel: "Application Password",
+      fillRequired: "Заполните URL, имя пользователя и Application Password.",
+      testFailed: "Проверка не удалась.",
+      saveFailed: "Не удалось сохранить подключение.",
+      testSuccess: (username: string) =>
+        `Соединение успешно (${username}). Можно сохранить.`,
+      saveSuccess:
+        "Подключение сохранено. RankBoost будет создавать только черновики.",
+      networkError: "Сетевая ошибка при обращении к WordPress.",
+      disconnect: "Отключить",
+      disconnectFailed: "Не удалось отключить.",
+      disconnectNetworkError: "Сетевая ошибка при отключении.",
+      disconnected: "WordPress отключён.",
+      createDraftsBullet: "Создавать черновики WordPress",
+      manualPublishBullet: "Публикация вручную после проверки",
+      manualPublishNote:
+        "Публикация вручную после проверки. Live publish выключен.",
+      passwordHiddenNote:
+        "Application Password больше не отображается после сохранения.",
+      testConnection: "Проверить подключение",
+      saveConnection: "Сохранить подключение",
+      httpsWarning:
+        "Сайт без HTTPS. Рекомендуем включить HTTPS перед продакшен-использованием.",
       permissions: {
         canCreateDrafts: "Создавать черновики",
         canUpdateMeta: "Обновлять meta-теги",

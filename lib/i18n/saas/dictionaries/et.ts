@@ -806,6 +806,47 @@ export const saasDictionary: SaasDictionary = {
       ],
       draftOnlyMessage:
         "RankBoost loob praegu WordPressi mustandeid — teie otsustate, millal avaldada.",
+      connectionTitle: "WordPressi ühendus",
+      connectionDescription:
+        "Looge WordPressis Application Password. RankBoost loob ainult artiklite mustandeid. Midagi ei avaldata automaatselt.",
+      appPasswordGuideTitle: "Kuidas luua Application Password",
+      appPasswordGuideIntro:
+        "See on eraldi parool ainult RankBoosti jaoks. Tavalist administraatori parooli ei ole vaja sisestada.",
+      appPasswordSteps: [
+        "Avage oma saidi WordPress admin.",
+        "Minge Users → Profile või Kasutajad → Profiil.",
+        "Leidke lehe allosas plokk Application Passwords.",
+        'Sisestage nimi "RankBoost" ja klõpsake Add New Application Password.',
+        "Kopeerige loodud parool ja kleepige see siia. WordPress näitab seda ainult ühe korra.",
+        'Klõpsake "Testi ühendust" ja seejärel "Salvesta ühendus".',
+      ],
+      appPasswordSafetyNote:
+        "Vajadusel saate selle parooli WordPressi profiilist kustutada ilma saidi põhiparooli muutmata.",
+      siteUrlLabel: "WordPressi saidi URL",
+      usernameLabel: "Kasutajanimi",
+      applicationPasswordLabel: "Application Password",
+      fillRequired: "Sisestage URL, kasutajanimi ja Application Password.",
+      testFailed: "Ühenduse test ebaõnnestus.",
+      saveFailed: "Ühendust ei õnnestunud salvestada.",
+      testSuccess: (username: string) =>
+        `Ühendus õnnestus (${username}). Võite selle salvestada.`,
+      saveSuccess:
+        "Ühendus salvestatud. RankBoost loob ainult mustandeid.",
+      networkError: "Võrguviga WordPressiga ühenduse võtmisel.",
+      disconnect: "Katkesta ühendus",
+      disconnectFailed: "Ühendust ei õnnestunud katkestada.",
+      disconnectNetworkError: "Võrguviga ühenduse katkestamisel.",
+      disconnected: "WordPressi ühendus katkestatud.",
+      createDraftsBullet: "Luua WordPressi mustandeid",
+      manualPublishBullet: "Käsitsi avaldamine pärast ülevaatust",
+      manualPublishNote:
+        "Käsitsi avaldamine pärast ülevaatust. Live publish on välja lülitatud.",
+      passwordHiddenNote:
+        "Application Passwordi pärast salvestamist enam ei näidata.",
+      testConnection: "Testi ühendust",
+      saveConnection: "Salvesta ühendus",
+      httpsWarning:
+        "Sait ei kasuta HTTPS-i. Soovitame HTTPS-i enne production-kasutust sisse lülitada.",
       permissions: {
         canCreateDrafts: "Luua mustandeid",
         canUpdateMeta: "Uuendada meta-silte",
