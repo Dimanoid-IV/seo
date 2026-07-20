@@ -1556,6 +1556,23 @@ export const saasDictionary: SaasDictionary = {
       "Confirm publishing mode when you approve. Review-only keeps drafts for your check; Auto-publish can publish approved WordPress articles after confirmation.",
     loadPlanFailed:
       "Could not load Autopilot plan. Please refresh the page.",
+    strategySnapshot: {
+      eyebrow: "Monthly strategy",
+      title: "Why RankBoost chose these articles",
+      descriptionWithResearch:
+        "This plan is grounded in your site, tasks, keywords, competitors, and prompts where your brand should appear in Google and AI search.",
+      descriptionBasic:
+        "RankBoost built this plan from your current site tasks. Search Console and new audits will make the strategy sharper over time.",
+      articles: "Articles",
+      fixes: "Fixes",
+      keywords: "Keywords",
+      noKeywords: "Keywords will appear after the research brief.",
+      competitors: "Competitors",
+      noCompetitors: "Competitors will appear after deeper research.",
+      geoPrompts: "AI/GEO prompts",
+      noGeoPrompts: "AI/GEO prompts will appear after topic research.",
+      articlePlan: "Publishing plan",
+    },
     statusBlock: {
       title: "Autopilot",
       approvalHint:

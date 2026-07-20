@@ -1562,6 +1562,23 @@ export const saasDictionary: SaasDictionary = {
       "Kinnitamisel valige avaldamise režiim. Ainult ülevaatus jätab mustandid; Autopublish võib pärast kinnitamist WordPressis avaldada.",
     loadPlanFailed:
       "Autopiloodi plaani laadimine ebaõnnestus. Värskenda lehte.",
+    strategySnapshot: {
+      eyebrow: "Kuu strateegia",
+      title: "Miks RankBoost need artiklid valis",
+      descriptionWithResearch:
+        "Plaan põhineb teie saidil, ülesannetel, märksõnadel, konkurentidel ja päringutel, kus bränd peaks Google'is ja AI-otsingus nähtav olema.",
+      descriptionBasic:
+        "RankBoost koostas plaani praeguste saidiülesannete põhjal. Search Console ja uued auditid muudavad strateegia täpsemaks.",
+      articles: "Artiklid",
+      fixes: "Parandused",
+      keywords: "Märksõnad",
+      noKeywords: "Märksõnad ilmuvad pärast research brief'i.",
+      competitors: "Konkurendid",
+      noCompetitors: "Konkurendid ilmuvad pärast sügavamat uurimist.",
+      geoPrompts: "AI/GEO päringud",
+      noGeoPrompts: "AI/GEO päringud ilmuvad pärast teema uurimist.",
+      articlePlan: "Avaldamisplaan",
+    },
     statusBlock: {
       title: "Autopiloot",
       approvalHint:

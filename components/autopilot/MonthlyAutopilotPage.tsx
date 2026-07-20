@@ -23,8 +23,10 @@ import { AutopilotSummaryCard } from "./AutopilotSummaryCard";
 import { FocusAreaCard } from "./FocusAreaCard";
 import { PlanApprovalPanel } from "./PlanApprovalPanel";
 import { RecommendedActionCard } from "./RecommendedActionCard";
+import { StrategySnapshotCard } from "./StrategySnapshotCard";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { PageLoadingState } from "@/components/shared/PageLoadingState";
+import { buildAutopilotStrategySnapshot } from "@/lib/autopilot/strategy-snapshot";
 import { useSaasTranslations } from "@/lib/i18n/saas/SaasLocaleProvider";
 import type { SaasLocale } from "@/lib/i18n/saas/locales";
 
@@ -202,6 +204,10 @@ export function MonthlyAutopilotPage() {
   }
 
   const monthLabel = formatMonthLabel(month, locale);
+  const strategySnapshot = useMemo(
+    () => buildAutopilotStrategySnapshot(data?.planItems ?? null),
+    [data?.planItems]
+  );
 
   if (loading && !data) {
     return <PageLoadingState message={a.loadingMonthly} />;
@@ -329,6 +335,10 @@ export function MonthlyAutopilotPage() {
           ) : null}
 
           <AutopilotSummaryCard plan={data.plan} monthLabel={monthLabel} />
+
+          {strategySnapshot ? (
+            <StrategySnapshotCard snapshot={strategySnapshot} />
+          ) : null}
 
           {data.planItems && data.planItems.items.length > 0 ? (
             <PlanApprovalPanel

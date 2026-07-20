@@ -1272,6 +1272,21 @@ export type SaasDictionary = {
     emptyNoPlanDescription: string;
     reviewNote: string;
     loadPlanFailed: string;
+    strategySnapshot: {
+      eyebrow: string;
+      title: string;
+      descriptionWithResearch: string;
+      descriptionBasic: string;
+      articles: string;
+      fixes: string;
+      keywords: string;
+      noKeywords: string;
+      competitors: string;
+      noCompetitors: string;
+      geoPrompts: string;
+      noGeoPrompts: string;
+      articlePlan: string;
+    };
     statusBlock: {
       title: string;
       approvalHint: string;

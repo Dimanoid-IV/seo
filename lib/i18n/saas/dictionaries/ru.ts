@@ -1559,6 +1559,23 @@ export const saasDictionary: SaasDictionary = {
       "При одобрении выберите режим публикации. «Только проверка» оставляет черновики; автопубликация может публиковать одобренные статьи WordPress после подтверждения.",
     loadPlanFailed:
       "Не удалось загрузить план автопилота. Попробуйте обновить страницу.",
+    strategySnapshot: {
+      eyebrow: "Стратегия месяца",
+      title: "Почему RankBoost выбрал эти статьи",
+      descriptionWithResearch:
+        "План основан на анализе сайта, задач, ключевых слов, конкурентов и запросов, по которым бренд должен быть заметен в Google и AI-поиске.",
+      descriptionBasic:
+        "RankBoost собрал план из текущих задач сайта. По мере подключения Search Console и новых аудитов стратегия станет точнее.",
+      articles: "Статьи",
+      fixes: "Исправления",
+      keywords: "Ключевые слова",
+      noKeywords: "Ключевые слова появятся после research brief.",
+      competitors: "Конкуренты",
+      noCompetitors: "Конкуренты появятся после расширенного ресерча.",
+      geoPrompts: "AI/GEO-запросы",
+      noGeoPrompts: "AI/GEO-запросы появятся после ресерча темы.",
+      articlePlan: "План публикаций",
+    },
     statusBlock: {
       title: "Автопилот",
       approvalHint:
