@@ -3,6 +3,8 @@ export type GrowthOpportunityType =
   | "SEO"
   | "TECHNICAL"
   | "GSC"
+  | "AUTHORITY"
+  | "COMMUNITY"
   | "MAINTENANCE";
 
 export type GrowthOpportunityImpact = "HIGH" | "MEDIUM" | "LOW";

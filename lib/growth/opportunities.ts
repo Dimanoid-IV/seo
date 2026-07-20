@@ -115,6 +115,35 @@ function collectTaskIdsWithArticles(
   return coveredTaskIds;
 }
 
+export function buildAuthorityGrowthOpportunities(input: {
+  publishedArticlesCount: number;
+}): GrowthOpportunity[] {
+  if (input.publishedArticlesCount <= 0) return [];
+
+  return [
+    buildOpportunity("authority:mention-opportunities", {
+      type: "AUTHORITY",
+      title: "Найти безопасные упоминания бренда",
+      description:
+        "На сайте уже есть опубликованный контент. Следующий шаг — найти релевантные каталоги, партнёров и медиа, где можно получить естественное упоминание без покупки ссылок.",
+      priority: "MEDIUM",
+      estimatedImpact: "HIGH",
+      estimatedEffort: "MEDIUM",
+      createdFrom: "published_content",
+    }),
+    buildOpportunity("community:reddit-discussions", {
+      type: "COMMUNITY",
+      title: "Найти обсуждения покупателей",
+      description:
+        "Используйте готовые статьи как базу для ответов в Reddit, Quora и нишевых сообществах. Это помогает бренду появляться в местах, которые читают люди и AI-поисковые системы.",
+      priority: "MEDIUM",
+      estimatedImpact: "MEDIUM",
+      estimatedEffort: "MEDIUM",
+      createdFrom: "published_content",
+    }),
+  ];
+}
+
 /**
  * Rule-based growth opportunities from existing website data (no AI).
  */
@@ -407,6 +436,10 @@ export async function findGrowthOpportunities(
         estimatedEffort: "MEDIUM",
         createdFrom: "article",
       })
+    );
+  } else {
+    opportunities.push(
+      ...buildAuthorityGrowthOpportunities({ publishedArticlesCount })
     );
   }
 

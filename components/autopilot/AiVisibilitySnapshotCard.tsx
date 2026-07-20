@@ -3,7 +3,6 @@
 import { Bot, CheckCircle2, CircleDashed, Gauge, MessageSquareText } from "lucide-react";
 
 import type {
-  AiVisibilityPlatform,
   AutopilotAiVisibilitySnapshot,
 } from "@/lib/autopilot/ai-visibility-snapshot";
 import { useSaasTranslations } from "@/lib/i18n/saas/SaasLocaleProvider";

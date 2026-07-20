@@ -969,10 +969,10 @@ export const saasDictionary: SaasDictionary = {
       },
     },
     futureMentions: {
-      title: "Mentions and partnership opportunities — later",
+      title: "Mentions and communities",
       description:
-        "Later, RankBoost may suggest safe mention opportunities. No paid link schemes, no guaranteed rankings.",
-      badge: "Coming soon",
+        "RankBoost suggests safe opportunities for brand mentions, partnerships, and buyer discussions. No paid link schemes, no guaranteed rankings.",
+      badge: "Active",
     },
     executionHistory: {
       title: "Integration execution history",

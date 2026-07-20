@@ -971,10 +971,10 @@ export const saasDictionary: SaasDictionary = {
       },
     },
     futureMentions: {
-      title: "Mainimised ja partnerlusvõimalused — hiljem",
+      title: "Mainimised ja kogukonnad",
       description:
-        "Hiljem võib RankBoost soovitada turvalisi mainimisvõimalusi. Ilma ostetud linkideta, ilma skeemideta ja ilma Google’i kohtade lubadusteta.",
-      badge: "Varsti",
+        "RankBoost soovitab turvalisi võimalusi brändi mainimisteks, partnerlusteks ja ostjate aruteludeks. Ilma ostetud linkideta, ilma skeemideta ja ilma kohtade lubadusteta.",
+      badge: "Aktiivne",
     },
     executionHistory: {
       title: "Integratsioonide täitmise ajalugu",

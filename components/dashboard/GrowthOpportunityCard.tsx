@@ -1,6 +1,8 @@
 import Link from "next/link";
 import {
   FileText,
+  Megaphone,
+  MessageCircle,
   RefreshCw,
   Search,
   Settings2,
@@ -27,6 +29,8 @@ const TYPE_ICONS: Record<GrowthOpportunityType, typeof FileText> = {
   SEO: TrendingUp,
   TECHNICAL: Settings2,
   GSC: Search,
+  AUTHORITY: Megaphone,
+  COMMUNITY: MessageCircle,
   MAINTENANCE: RefreshCw,
 };
 
@@ -35,6 +39,8 @@ const TYPE_LABELS: Record<GrowthOpportunityType, string> = {
   SEO: "SEO",
   TECHNICAL: "Техника",
   GSC: "Search Console",
+  AUTHORITY: "Упоминания",
+  COMMUNITY: "Сообщества",
   MAINTENANCE: "Поддержка",
 };
 
@@ -75,6 +81,10 @@ function resolveCta(opportunity: GrowthOpportunity): {
       return { label: "Запустить аудит", action: "audit" };
     case "GSC":
       return { label: "Открыть интеграции", href: "/app/integrations" };
+    case "AUTHORITY":
+      return { label: "Открыть план роста", href: "/app/autopilot" };
+    case "COMMUNITY":
+      return { label: "Подготовить ответы", href: "/app/content-plan" };
     case "MAINTENANCE":
     default:
       return { label: "Посмотреть", href: "/app/content-plan" };
