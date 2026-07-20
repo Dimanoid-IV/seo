@@ -1613,6 +1613,27 @@ export const saasDictionary: SaasDictionary = {
         ready: "The strategy covers AI-search prompts well.",
       },
     },
+    communityVisibility: {
+      eyebrow: "Mentions and communities",
+      title: "Where to use articles for off-site visibility",
+      description:
+        "RankBoost turns plan topics and keywords into safe search queries for Reddit, Quora, and niche forums. This helps find real discussions where an article can support a helpful answer.",
+      descriptionBasic:
+        "After research briefs, RankBoost will show more precise community queries. For now, this uses the article topics in the plan.",
+      sourcesTitle: "Source",
+      sourcesDescription: (count) =>
+        count === 1
+          ? "1 topic/keyword is used to find discussions."
+          : `${count} topics/keywords are used to find discussions.`,
+      searchQuery: "What to search",
+      safetyNote:
+        "RankBoost does not auto-post answers and does not build paid link schemes. Use this as a safe shortlist of places to give useful expert answers.",
+      channels: {
+        REDDIT: "Reddit",
+        QUORA: "Quora",
+        NICHE_FORUMS: "Forums",
+      },
+    },
     statusBlock: {
       title: "Autopilot",
       approvalHint:

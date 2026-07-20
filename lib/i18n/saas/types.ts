@@ -1319,6 +1319,21 @@ export type SaasDictionary = {
         ready: string;
       };
     };
+    communityVisibility: {
+      eyebrow: string;
+      title: string;
+      description: string;
+      descriptionBasic: string;
+      sourcesTitle: string;
+      sourcesDescription: (count: number) => string;
+      searchQuery: string;
+      safetyNote: string;
+      channels: {
+        REDDIT: string;
+        QUORA: string;
+        NICHE_FORUMS: string;
+      };
+    };
     statusBlock: {
       title: string;
       approvalHint: string;

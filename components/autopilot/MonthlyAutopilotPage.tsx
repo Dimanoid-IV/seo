@@ -21,6 +21,7 @@ import { AutopilotRisksCard } from "./AutopilotRisksCard";
 import { AutopilotStatusBlock } from "./AutopilotStatusBlock";
 import { AutopilotSummaryCard } from "./AutopilotSummaryCard";
 import { AiVisibilitySnapshotCard } from "./AiVisibilitySnapshotCard";
+import { CommunityVisibilityCard } from "./CommunityVisibilityCard";
 import { FocusAreaCard } from "./FocusAreaCard";
 import { PlanApprovalPanel } from "./PlanApprovalPanel";
 import { RecommendedActionCard } from "./RecommendedActionCard";
@@ -28,6 +29,7 @@ import { StrategySnapshotCard } from "./StrategySnapshotCard";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { PageLoadingState } from "@/components/shared/PageLoadingState";
 import { buildAutopilotStrategySnapshot } from "@/lib/autopilot/strategy-snapshot";
+import { buildCommunityVisibilitySnapshot } from "@/lib/autopilot/community-visibility";
 import { useSaasTranslations } from "@/lib/i18n/saas/SaasLocaleProvider";
 import type { SaasLocale } from "@/lib/i18n/saas/locales";
 
@@ -209,6 +211,10 @@ export function MonthlyAutopilotPage() {
     () => buildAutopilotStrategySnapshot(data?.planItems ?? null),
     [data?.planItems]
   );
+  const communityVisibility = useMemo(
+    () => buildCommunityVisibilitySnapshot(strategySnapshot),
+    [strategySnapshot]
+  );
 
   if (loading && !data) {
     return <PageLoadingState message={a.loadingMonthly} />;
@@ -343,6 +349,10 @@ export function MonthlyAutopilotPage() {
 
           {data.aiVisibility ? (
             <AiVisibilitySnapshotCard snapshot={data.aiVisibility} />
+          ) : null}
+
+          {communityVisibility ? (
+            <CommunityVisibilityCard snapshot={communityVisibility} />
           ) : null}
 
           {data.planItems && data.planItems.items.length > 0 ? (

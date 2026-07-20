@@ -1619,6 +1619,27 @@ export const saasDictionary: SaasDictionary = {
         ready: "Strateegia katab AI-otsingu päringuid hästi.",
       },
     },
+    communityVisibility: {
+      eyebrow: "Mainimised ja kogukonnad",
+      title: "Kus kasutada artikleid nähtavuse kasvatamiseks väljaspool saiti",
+      description:
+        "RankBoost muudab plaani teemad ja märksõnad turvalisteks otsingupäringuteks Redditi, Quora ja nišifoorumite jaoks. Nii leiate arutelud, kus artikkel saab toetada kasulikku vastust.",
+      descriptionBasic:
+        "Pärast research brief'e näitab RankBoost täpsemaid kogukonnapäringuid. Praegu kasutatakse plaani artikliteemasid.",
+      sourcesTitle: "Allikas",
+      sourcesDescription: (count) =>
+        count === 1
+          ? "Arutelude leidmiseks kasutatakse 1 teemat/märksõna."
+          : `Arutelude leidmiseks kasutatakse ${count} teemat/märksõna.`,
+      searchQuery: "Mida otsida",
+      safetyNote:
+        "RankBoost ei postita vastuseid automaatselt ega loo tasulisi lingiskeeme. Kasutage seda turvalise nimekirjana kohtadest, kus anda kasulik eksperdivastus.",
+      channels: {
+        REDDIT: "Reddit",
+        QUORA: "Quora",
+        NICHE_FORUMS: "Foorumid",
+      },
+    },
     statusBlock: {
       title: "Autopiloot",
       approvalHint:
