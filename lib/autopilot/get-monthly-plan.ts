@@ -10,6 +10,7 @@ import { isWebsiteOnLivePublishAllowlist } from "@/lib/integrations/live-publish
 
 import { getAutopilotSettings } from "./autopilot-settings";
 import { getAutopilotStatusSnapshot } from "./autopilot-status";
+import { buildAutopilotAiVisibilitySnapshot } from "./ai-visibility-snapshot";
 import { formatMonthlyAutopilotPlan } from "./format";
 import {
   buildPlanItemsFromRecommendedActions,
@@ -134,6 +135,11 @@ export async function getMonthlyAutopilotPlan(input: {
       });
     }
 
+    const aiVisibility = buildAutopilotAiVisibilitySnapshot({
+      document: planItems,
+      readinessScore: website.currentAIReadinessScore,
+    });
+
     return {
       plan: formattedPlan
         ? { ...formattedPlan, planItems: planItems ?? formattedPlan.planItems }
@@ -149,6 +155,7 @@ export async function getMonthlyAutopilotPlan(input: {
       lastPublishedUrl: lastPublished?.wordpressPublishedUrl ?? null,
       rollbackAvailable: true,
       livePublishScopedAllowed,
+      aiVisibility,
     };
   } catch {
     return {

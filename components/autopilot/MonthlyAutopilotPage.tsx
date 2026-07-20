@@ -20,6 +20,7 @@ import { AutopilotNextSteps } from "./AutopilotNextSteps";
 import { AutopilotRisksCard } from "./AutopilotRisksCard";
 import { AutopilotStatusBlock } from "./AutopilotStatusBlock";
 import { AutopilotSummaryCard } from "./AutopilotSummaryCard";
+import { AiVisibilitySnapshotCard } from "./AiVisibilitySnapshotCard";
 import { FocusAreaCard } from "./FocusAreaCard";
 import { PlanApprovalPanel } from "./PlanApprovalPanel";
 import { RecommendedActionCard } from "./RecommendedActionCard";
@@ -338,6 +339,10 @@ export function MonthlyAutopilotPage() {
 
           {strategySnapshot ? (
             <StrategySnapshotCard snapshot={strategySnapshot} />
+          ) : null}
+
+          {data.aiVisibility ? (
+            <AiVisibilitySnapshotCard snapshot={data.aiVisibility} />
           ) : null}
 
           {data.planItems && data.planItems.items.length > 0 ? (

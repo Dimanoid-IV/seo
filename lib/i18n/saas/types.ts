@@ -1287,6 +1287,31 @@ export type SaasDictionary = {
       noGeoPrompts: string;
       articlePlan: string;
     };
+    aiVisibilitySnapshot: {
+      eyebrow: string;
+      title: string;
+      description: string;
+      readiness: string;
+      buyerPrompts: string;
+      notMeasured: string;
+      samplePrompts: string;
+      noPrompts: string;
+      statusTitle: string;
+      statusHelp: string;
+      safetyNote: string;
+      platforms: {
+        CHATGPT: string;
+        CLAUDE: string;
+        PERPLEXITY: string;
+        GEMINI: string;
+      };
+      statuses: {
+        no_data: string;
+        needs_work: string;
+        building: string;
+        ready: string;
+      };
+    };
     statusBlock: {
       title: string;
       approvalHint: string;

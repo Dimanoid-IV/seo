@@ -1579,6 +1579,34 @@ export const saasDictionary: SaasDictionary = {
       noGeoPrompts: "AI/GEO päringud ilmuvad pärast teema uurimist.",
       articlePlan: "Avaldamisplaan",
     },
+    aiVisibilitySnapshot: {
+      eyebrow: "AI nähtavus",
+      title: "Kuidas plaan aitab AI-vastustesse jõuda",
+      description:
+        "RankBoost muudab artikliteemad ostjate küsimusteks ChatGPT, Claude'i, Perplexity ja Gemini jaoks. See ei ole live-vastuste kontroll; kaart näitab, milliseid AI-otsingu päringuid praegune strateegia katab.",
+      readiness: "Valmidus",
+      buyerPrompts: "AI-küsimused",
+      notMeasured: "-",
+      samplePrompts: "Näited ostja küsimustest",
+      noPrompts: "AI-küsimused ilmuvad pärast research brief'i.",
+      statusTitle: "Strateegia seis",
+      statusHelp:
+        "Mida rohkem asjakohaseid ostja päringuid ja platvorme on kaetud, seda paremini valmistab plaan brändi AI-otsinguks ette.",
+      safetyNote:
+        "RankBoost ei väida, et AI tööriistad juba teie saiti soovitavad. See kaart näitab sisu valmidust Google'i ja AI-otsingu jaoks.",
+      platforms: {
+        CHATGPT: "ChatGPT",
+        CLAUDE: "Claude",
+        PERPLEXITY: "Perplexity",
+        GEMINI: "Gemini",
+      },
+      statuses: {
+        no_data: "Kõigepealt on vaja teema uurimist.",
+        needs_work: "AI/GEO katvust tuleb tugevdada.",
+        building: "Katvust ehitatakse.",
+        ready: "Strateegia katab AI-otsingu päringuid hästi.",
+      },
+    },
     statusBlock: {
       title: "Autopiloot",
       approvalHint:

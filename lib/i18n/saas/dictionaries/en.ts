@@ -1573,6 +1573,34 @@ export const saasDictionary: SaasDictionary = {
       noGeoPrompts: "AI/GEO prompts will appear after topic research.",
       articlePlan: "Publishing plan",
     },
+    aiVisibilitySnapshot: {
+      eyebrow: "AI visibility",
+      title: "How this plan prepares you for AI answers",
+      description:
+        "RankBoost turns article topics into buyer questions for ChatGPT, Claude, Perplexity, and Gemini. This is not a live answer check; it shows which AI-search prompts the current strategy is built to cover.",
+      readiness: "Readiness",
+      buyerPrompts: "AI questions",
+      notMeasured: "-",
+      samplePrompts: "Sample buyer questions",
+      noPrompts: "AI questions will appear after the research brief.",
+      statusTitle: "Strategy status",
+      statusHelp:
+        "The more relevant buyer prompts and platforms are covered, the better the plan prepares your brand for AI search.",
+      safetyNote:
+        "RankBoost does not claim AI tools already recommend your site. This card shows content readiness for Google and AI search.",
+      platforms: {
+        CHATGPT: "ChatGPT",
+        CLAUDE: "Claude",
+        PERPLEXITY: "Perplexity",
+        GEMINI: "Gemini",
+      },
+      statuses: {
+        no_data: "Topic research is needed first.",
+        needs_work: "AI/GEO coverage needs strengthening.",
+        building: "Coverage is being built.",
+        ready: "The strategy covers AI-search prompts well.",
+      },
+    },
     statusBlock: {
       title: "Autopilot",
       approvalHint:

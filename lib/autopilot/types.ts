@@ -104,4 +104,5 @@ export type MonthlyAutopilotGetResponse = {
   rollbackAvailable?: boolean;
   /** Env allowlist and/or DB livePublishRolloutEnabled. */
   livePublishScopedAllowed?: boolean;
+  aiVisibility?: import("./ai-visibility-snapshot").AutopilotAiVisibilitySnapshot | null;
 };

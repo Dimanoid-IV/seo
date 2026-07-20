@@ -1576,6 +1576,34 @@ export const saasDictionary: SaasDictionary = {
       noGeoPrompts: "AI/GEO-запросы появятся после ресерча темы.",
       articlePlan: "План публикаций",
     },
+    aiVisibilitySnapshot: {
+      eyebrow: "AI visibility",
+      title: "Как план помогает попасть в AI-ответы",
+      description:
+        "RankBoost превращает темы статей в вопросы покупателей для ChatGPT, Claude, Perplexity и Gemini. Это не live-проверка ответов, а карта того, какие AI-запросы покрывает текущая стратегия.",
+      readiness: "Готовность",
+      buyerPrompts: "AI-вопросы",
+      notMeasured: "—",
+      samplePrompts: "Примеры вопросов покупателей",
+      noPrompts: "AI-вопросы появятся после research brief.",
+      statusTitle: "Статус стратегии",
+      statusHelp:
+        "Чем больше релевантных buyer prompts и покрытых платформ, тем лучше план готовит бренд к AI-поиску.",
+      safetyNote:
+        "RankBoost не обещает, что AI уже рекомендует сайт. Эта карточка показывает подготовленность контента к Google и AI-поиску.",
+      platforms: {
+        CHATGPT: "ChatGPT",
+        CLAUDE: "Claude",
+        PERPLEXITY: "Perplexity",
+        GEMINI: "Gemini",
+      },
+      statuses: {
+        no_data: "Нужен research brief по темам.",
+        needs_work: "Нужно усилить AI/GEO-покрытие.",
+        building: "Покрытие строится.",
+        ready: "Стратегия хорошо покрывает AI-запросы.",
+      },
+    },
     statusBlock: {
       title: "Автопилот",
       approvalHint:
