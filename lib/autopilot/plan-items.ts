@@ -8,7 +8,11 @@ import {
 } from "./plan-item-reconcile";
 
 import type { MonthlyAutopilotSourceData } from "./source-data";
-import { buildStrategicArticlePlanItems } from "./article-opportunities";
+import {
+  buildStrategicArticleOpportunities,
+  buildStrategicArticlePlanItems,
+  resolveTargetMonthlyArticleTopicCount,
+} from "./article-opportunities";
 import { assignEveryOtherDaySlots } from "./scheduling";
 import type { AutopilotRecommendedAction } from "./types";
 import {
@@ -39,6 +43,20 @@ function articleIntegration(
   integrations: ReturnType<typeof integrationContext>
 ): AutopilotPlanItemIntegration {
   return integrations.wordpressConnected ? "none" : "wordpress";
+}
+
+function normalizePlanTitle(value: string): string {
+  return value.trim().toLowerCase().replace(/\s+/g, " ");
+}
+
+function nextSupplementalItemId(existingIds: Set<string>): string {
+  let index = 1;
+  while (existingIds.has(`plan-item-auto-topic-${index}`)) {
+    index += 1;
+  }
+  const id = `plan-item-auto-topic-${index}`;
+  existingIds.add(id);
+  return id;
 }
 
 function buildTaskFixItem(
@@ -203,6 +221,61 @@ export function buildPlanItemsFromSource(
     version: AUTOPILOT_PLAN_ITEMS_VERSION,
     period,
     items: items.slice(0, 12),
+  };
+}
+
+export function ensureStrategicArticleTopicDepth(input: {
+  document: AutopilotPlanItemsDocument;
+  data: MonthlyAutopilotSourceData;
+  articleIntegration: AutopilotPlanItemIntegration;
+}): { document: AutopilotPlanItemsDocument; addedCount: number } {
+  const targetArticleCount = resolveTargetMonthlyArticleTopicCount(input.data);
+  const existingArticleCount = input.document.items.filter(
+    (item) => item.type === "ARTICLE"
+  ).length;
+  const needed = Math.max(0, targetArticleCount - existingArticleCount);
+  if (needed === 0) {
+    return { document: input.document, addedCount: 0 };
+  }
+
+  const existingIds = new Set(input.document.items.map((item) => item.id));
+  const existingTitles = new Set(
+    input.document.items.map((item) => normalizePlanTitle(item.title))
+  );
+  const additions = buildStrategicArticleOpportunities(
+    input.data,
+    targetArticleCount + input.document.items.length
+  )
+    .filter((opportunity) => {
+      const normalized = normalizePlanTitle(opportunity.title);
+      if (!normalized || existingTitles.has(normalized)) return false;
+      existingTitles.add(normalized);
+      return true;
+    })
+    .slice(0, needed)
+    .map((opportunity): AutopilotPlanItem => ({
+      id: nextSupplementalItemId(existingIds),
+      type: "ARTICLE",
+      title: opportunity.title,
+      reason: opportunity.reason,
+      riskLevel: opportunity.priority === "high" ? "medium" : "low",
+      needsIntegration: input.articleIntegration === "wordpress",
+      integrationType: input.articleIntegration,
+      status: "proposed",
+      selected: true,
+      reviewQueueHref: "/app/review",
+    }));
+
+  if (additions.length === 0) {
+    return { document: input.document, addedCount: 0 };
+  }
+
+  return {
+    document: {
+      ...input.document,
+      items: [...input.document.items, ...additions],
+    },
+    addedCount: additions.length,
   };
 }
 

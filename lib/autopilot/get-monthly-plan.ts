@@ -15,6 +15,8 @@ import { formatMonthlyAutopilotPlan } from "./format";
 import {
   buildPlanItemsFromRecommendedActions,
   enrichPlanItemsFromEntities,
+  ensureStrategicArticleTopicDepth,
+  planItemsToJson,
   resolvePlanItemsDocumentFromPlan,
 } from "./plan-items";
 import { reconcileMonthlyPlanMetrics } from "./plan-metrics-reconcile";
@@ -125,6 +127,21 @@ export async function getMonthlyAutopilotPlan(input: {
         articleIds: plan?.articleIds ?? [],
         socialPostIds: plan?.socialPostIds ?? [],
       });
+    }
+
+    if (plan && !plan.archivedAt && planItems) {
+      const replenished = ensureStrategicArticleTopicDepth({
+        document: planItems,
+        data: sourceData,
+        articleIntegration: wordpressConnected ? "none" : "wordpress",
+      });
+      if (replenished.addedCount > 0) {
+        planItems = replenished.document;
+        await prisma.monthlyAutopilotPlan.update({
+          where: { id: plan.id },
+          data: { planItemsJson: planItemsToJson(planItems) },
+        });
+      }
     }
 
     if (planItems) {

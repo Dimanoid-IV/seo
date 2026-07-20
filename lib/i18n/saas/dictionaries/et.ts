@@ -286,16 +286,16 @@ export const saasDictionary: SaasDictionary = {
     monthlyPlanPreview: {
       eyebrowNeedsApproval: "Plaan ootab teie otsust",
       eyebrowApproved: "Selle kuu plaan",
-      title: "Artiklite ja paranduste plaan",
+      title: "30 päeva artiklite ja paranduste strateegia",
       descriptionDraft:
-        "Vaadake artikliteemasid ja saidi parandusi. Pärast kinnitamist töötab RankBoost selle plaani järgi.",
+        "Vaadake artikliteemasid, saidi parandusi ja ajakava. Pärast kinnitamist valmistab RankBoost materjale selle kuuplaani järgi.",
       descriptionApproved:
-        "See on kinnitatud kuuplaan: RankBoost valmistab artikleid ja parandusi ajakava järgi.",
+        "See on kinnitatud 30 päeva strateegia: RankBoost valmistab artikleid ja parandusi ajakava järgi.",
       confirmPlan: "Vaata ja kinnita plaan",
       openPlan: "Ava täielik plaan",
       articleTopics: "Artikliteemad",
       siteFixes: "Saidi parandused",
-      noArticles: "Artikliteemasid valmistatakse veel ette.",
+      noArticles: "RankBoost valib kuu strateegia jaoks mitu artikliteemat.",
       noFixes: "Selles plaanis pole veel saidi parandusi.",
       draftNote:
         "Saate valida teemasid, eemaldada sobimatu või lubada WordPressi autopublishi kinnitamise ajal.",
@@ -1564,9 +1564,9 @@ export const saasDictionary: SaasDictionary = {
       "Autopiloodi plaani laadimine ebaõnnestus. Värskenda lehte.",
     strategySnapshot: {
       eyebrow: "Kuu strateegia",
-      title: "Miks RankBoost need artiklid valis",
+      title: "Miks RankBoost need kuuteemad valis",
       descriptionWithResearch:
-        "Plaan põhineb teie saidil, ülesannetel, märksõnadel, konkurentidel ja päringutel, kus bränd peaks Google'is ja AI-otsingus nähtav olema.",
+        "30 päeva plaan põhineb teie saidil, ülesannetel, märksõnadel, konkurentidel ja päringutel, kus bränd peaks Google'is ja AI-otsingus nähtav olema.",
       descriptionBasic:
         "RankBoost koostas plaani praeguste saidiülesannete põhjal. Search Console ja uued auditid muudavad strateegia täpsemaks.",
       articles: "Artiklid",

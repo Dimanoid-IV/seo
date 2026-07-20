@@ -286,16 +286,16 @@ export const saasDictionary: SaasDictionary = {
     monthlyPlanPreview: {
       eyebrowNeedsApproval: "Plan waiting for your decision",
       eyebrowApproved: "This month's plan",
-      title: "Article and site-fix plan",
+      title: "30-day article and site-fix strategy",
       descriptionDraft:
-        "Review the article topics and site improvements. After you confirm, RankBoost will work from this plan.",
+        "Review the article topics, site improvements, and schedule. After you confirm, RankBoost will prepare work from this monthly plan.",
       descriptionApproved:
-        "This is the approved monthly plan: RankBoost prepares articles and improvements on schedule.",
+        "This is the approved 30-day strategy: RankBoost prepares articles and improvements on schedule.",
       confirmPlan: "Review and confirm plan",
       openPlan: "Open full plan",
       articleTopics: "Article topics",
       siteFixes: "Site fixes",
-      noArticles: "Article topics are still being prepared.",
+      noArticles: "RankBoost is selecting several article topics for the monthly strategy.",
       noFixes: "No site fixes in this plan yet.",
       draftNote:
         "You can choose topics, remove anything you dislike, or enable WordPress auto-publish while confirming.",
@@ -1558,9 +1558,9 @@ export const saasDictionary: SaasDictionary = {
       "Could not load Autopilot plan. Please refresh the page.",
     strategySnapshot: {
       eyebrow: "Monthly strategy",
-      title: "Why RankBoost chose these articles",
+      title: "Why RankBoost chose these monthly topics",
       descriptionWithResearch:
-        "This plan is grounded in your site, tasks, keywords, competitors, and prompts where your brand should appear in Google and AI search.",
+        "This 30-day plan is grounded in your site, tasks, keywords, competitors, and prompts where your brand should appear in Google and AI search.",
       descriptionBasic:
         "RankBoost built this plan from your current site tasks. Search Console and new audits will make the strategy sharper over time.",
       articles: "Articles",

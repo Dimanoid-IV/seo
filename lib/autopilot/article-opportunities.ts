@@ -231,7 +231,7 @@ export function buildStrategicArticlePlanItems(input: {
   nextItemId: () => string;
   articleIntegration: AutopilotPlanItem["integrationType"];
 }): AutopilotPlanItem[] {
-  const targetArticleCount = Math.min(5, Math.max(3, input.data.sourceSummary.hasEnoughData ? 4 : 3));
+  const targetArticleCount = resolveTargetMonthlyArticleTopicCount(input.data);
   const needed = Math.max(0, targetArticleCount - input.existingArticleCount);
   if (needed === 0) return [];
 
@@ -247,4 +247,10 @@ export function buildStrategicArticlePlanItems(input: {
     selected: true,
     reviewQueueHref: "/app/review",
   }));
+}
+
+export function resolveTargetMonthlyArticleTopicCount(
+  data: MonthlyAutopilotSourceData
+): number {
+  return Math.min(5, Math.max(3, data.sourceSummary.hasEnoughData ? 4 : 3));
 }

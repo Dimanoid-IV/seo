@@ -1,6 +1,9 @@
 import assert from "node:assert/strict";
 
-import { buildPlanItemsFromSource } from "./plan-items";
+import {
+  buildPlanItemsFromSource,
+  ensureStrategicArticleTopicDepth,
+} from "./plan-items";
 import type { MonthlyAutopilotSourceData } from "./source-data";
 
 const baseSource: MonthlyAutopilotSourceData = {
@@ -118,6 +121,37 @@ assert.ok(
 assert.ok(
   articleItems.every((item) => /конкурент|GEO|AI|buyer query/i.test(item.reason)),
   "article reasons should explain competitor/GEO/research basis"
+);
+
+const legacyReplenished = ensureStrategicArticleTopicDepth({
+  document: {
+    version: 1,
+    period: "monthly",
+    items: [
+      {
+        id: "legacy-article-1",
+        type: "ARTICLE",
+        title: "портрет по фото на холсте",
+        reason: "Legacy single topic",
+        riskLevel: "low",
+        needsIntegration: false,
+        integrationType: "none",
+        status: "approved",
+      },
+    ],
+  },
+  data: baseSource,
+  articleIntegration: "none",
+});
+
+const replenishedArticles = legacyReplenished.document.items.filter(
+  (item) => item.type === "ARTICLE"
+);
+assert.ok(legacyReplenished.addedCount >= 2);
+assert.ok(replenishedArticles.length >= 3);
+assert.ok(
+  replenishedArticles.every((item) => !/слишком мало текста/i.test(item.title)),
+  "replenished legacy plan must not use audit symptoms as topics"
 );
 
 console.log("strategic article opportunities for monthly plan passed");
