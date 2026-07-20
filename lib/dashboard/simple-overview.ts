@@ -78,6 +78,23 @@ export type SimpleDashboardViewModel = {
     socialPostsCount: number;
     emailApprovalsCount: number;
   };
+  monthlyPlanPreview?: {
+    status?: string;
+    href: string;
+    articleTopics: Array<{
+      id: string;
+      title: string;
+      status: string;
+      scheduledFor?: string | null;
+    }>;
+    fixItems: Array<{
+      id: string;
+      title: string;
+      status: string;
+    }>;
+    totalItems: number;
+    isApproved: boolean;
+  };
   /** Prompt 11.44 — human-facing monthly autopilot status when plan is approved. */
   monthlyAutopilotActive?: {
     nextArticleDateLabel: string | null;
@@ -180,6 +197,32 @@ export function buildSimpleDashboardViewModel(input: {
     monthlyPlanStatus: control.monthlyPlan?.status,
     planItemTypes: control.monthlyPlan?.hasArticleTopics ? ["ARTICLE"] : [],
   });
+  const planPreviewItems = control.monthlyPlan?.previewItems ?? [];
+  const monthlyPlanPreview = control.monthlyPlan
+    ? {
+        status: control.monthlyPlan.status,
+        href: control.monthlyPlan.href,
+        articleTopics: planPreviewItems
+          .filter((item) => item.type === "ARTICLE")
+          .slice(0, 3)
+          .map((item) => ({
+            id: item.id,
+            title: item.title,
+            status: item.status,
+            scheduledFor: item.scheduledFor,
+          })),
+        fixItems: planPreviewItems
+          .filter((item) => item.type === "SEO_FIX" || item.type === "TASK_FIX")
+          .slice(0, 3)
+          .map((item) => ({
+            id: item.id,
+            title: item.title,
+            status: item.status,
+          })),
+        totalItems: planPreviewItems.length,
+        isApproved: planApproved,
+      }
+    : undefined;
 
   const reviewCount = input.reviewQueueCount ?? needsReviewCount;
   const publishChip = publishingPathChip(
@@ -245,6 +288,7 @@ export function buildSimpleDashboardViewModel(input: {
       socialPostsCount: control.metrics.readySocialPostsCount,
       emailApprovalsCount: control.metrics.pendingEmailsCount,
     },
+    monthlyPlanPreview,
     monthlyAutopilotActive,
     activation: input.activation,
     recentActivity: control.recentActivity.slice(0, 3).map((event) => ({

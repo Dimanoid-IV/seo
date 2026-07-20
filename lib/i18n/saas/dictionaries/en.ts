@@ -266,6 +266,38 @@ export const saasDictionary: SaasDictionary = {
       customSitePackage:
         "Custom site: ready package / webhook — not the same as WordPress live publish",
     },
+    monthlyPlanPreview: {
+      eyebrowNeedsApproval: "Plan waiting for your decision",
+      eyebrowApproved: "This month's plan",
+      title: "Article and site-fix plan",
+      descriptionDraft:
+        "Review the article topics and site improvements. After you confirm, RankBoost will work from this plan.",
+      descriptionApproved:
+        "This is the approved monthly plan: RankBoost prepares articles and improvements on schedule.",
+      confirmPlan: "Review and confirm plan",
+      openPlan: "Open full plan",
+      articleTopics: "Article topics",
+      siteFixes: "Site fixes",
+      noArticles: "Article topics are still being prepared.",
+      noFixes: "No site fixes in this plan yet.",
+      draftNote:
+        "You can choose topics, remove anything you dislike, or enable WordPress auto-publish while confirming.",
+      approvedNote:
+        "Open the full plan to change mode, pause autopilot, or see details.",
+      status: (status) => {
+        const labels: Record<string, string> = {
+          proposed: "Proposed",
+          approved: "Approved",
+          scheduled: "Scheduled",
+          prepared: "Prepared",
+          published: "Published",
+          executed: "Done",
+          skipped: "Skipped",
+          blocked: "Needs attention",
+        };
+        return labels[status] ?? status;
+      },
+    },
     activation: {
       title: "RankBoost is setting up your website",
       subtitle: "First setup runs automatically — nothing to click.",

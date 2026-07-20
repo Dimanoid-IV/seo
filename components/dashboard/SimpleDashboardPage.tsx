@@ -11,6 +11,7 @@ import { DashboardHero } from "@/components/dashboard/DashboardHero";
 import { DashboardMetricCard } from "@/components/dashboard/DashboardMetricCard";
 import { FindingsCard } from "@/components/dashboard/FindingsCard";
 import { MonthlyAutopilotActiveCard } from "@/components/dashboard/MonthlyAutopilotActiveCard";
+import { MonthlyPlanPreviewCard } from "@/components/dashboard/MonthlyPlanPreviewCard";
 import { ActivationProgressCard } from "@/components/dashboard/ActivationProgressCard";
 import { NextBestActionCard } from "@/components/dashboard/NextBestActionCard";
 import { PreparedForYouCard } from "@/components/dashboard/PreparedForYouCard";
@@ -270,6 +271,10 @@ export function SimpleDashboardPage() {
                 simple.monthlyAutopilotActive.showPublishingNudge
               }
             />
+          ) : null}
+
+          {simple.hasAudit && simple.monthlyPlanPreview ? (
+            <MonthlyPlanPreviewCard plan={simple.monthlyPlanPreview} />
           ) : null}
 
           {simple.hasAudit && nextAction && !simple.monthlyAutopilotActive ? (

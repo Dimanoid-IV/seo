@@ -266,6 +266,38 @@ export const saasDictionary: SaasDictionary = {
       customSitePackage:
         "Custom-сайт: готовый пакет / webhook — это не то же самое, что live-публикация WordPress",
     },
+    monthlyPlanPreview: {
+      eyebrowNeedsApproval: "План ждёт вашего решения",
+      eyebrowApproved: "План месяца",
+      title: "План статей и исправлений",
+      descriptionDraft:
+        "Проверьте темы статей и улучшения сайта. После подтверждения RankBoost будет работать по этому плану.",
+      descriptionApproved:
+        "Это утверждённый план месяца: RankBoost готовит статьи и улучшения по расписанию.",
+      confirmPlan: "Проверить и подтвердить план",
+      openPlan: "Открыть полный план",
+      articleTopics: "Темы статей",
+      siteFixes: "Исправления сайта",
+      noArticles: "Темы статей ещё готовятся.",
+      noFixes: "Исправлений в этом плане пока нет.",
+      draftNote:
+        "Вы можете выбрать темы, убрать лишнее или включить автопубликацию WordPress при подтверждении.",
+      approvedNote:
+        "Изменить режим, остановить автопилот или посмотреть детали можно в полном плане.",
+      status: (status) => {
+        const labels: Record<string, string> = {
+          proposed: "Предложено",
+          approved: "Одобрено",
+          scheduled: "Запланировано",
+          prepared: "Подготовлено",
+          published: "Опубликовано",
+          executed: "Выполнено",
+          skipped: "Пропущено",
+          blocked: "Требует внимания",
+        };
+        return labels[status] ?? status;
+      },
+    },
     activation: {
       title: "RankBoost настраивает ваш сайт",
       subtitle: "Первый запуск идёт автоматически — вам не нужно ничего нажимать.",

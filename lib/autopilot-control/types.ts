@@ -37,6 +37,13 @@ export type ControlCenterMonthlyPlan = {
   nextScheduledArticleAt?: string | null;
   /** Count of articles ready for publishing handoff. */
   readyToPublishCount?: number;
+  previewItems?: Array<{
+    id: string;
+    type: "ARTICLE" | "SEO_FIX" | "TASK_FIX" | "SOCIAL_POST" | "EMAIL";
+    title: string;
+    status: string;
+    scheduledFor?: string | null;
+  }>;
 };
 
 export type ApprovalQueueItem = {

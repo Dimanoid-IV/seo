@@ -285,6 +285,20 @@ export async function getAutopilotControlCenter(input: {
           Boolean(item.universalPackagePreparedAt) ||
           Boolean(item.wordpressDraftCreatedAt))
     ).length ?? 0;
+  const previewItems =
+    planItemsDocument?.items
+      .filter((item) =>
+        ["ARTICLE", "SEO_FIX", "TASK_FIX", "SOCIAL_POST", "EMAIL"].includes(
+          item.type
+        )
+      )
+      .map((item) => ({
+        id: item.id,
+        type: item.type,
+        title: item.title,
+        status: item.status,
+        scheduledFor: item.scheduledFor ?? item.plannedPublishAt ?? null,
+      })) ?? [];
 
   const gscSelectedProperty =
     gscIntegration?.googleData?.searchConsoleSiteUrl ?? null;
@@ -594,6 +608,7 @@ export async function getAutopilotControlCenter(input: {
           hasArticleTopics,
           nextScheduledArticleAt,
           readyToPublishCount,
+          previewItems,
         }
       : undefined,
     approvalQueue,

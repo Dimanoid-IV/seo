@@ -266,6 +266,38 @@ export const saasDictionary: SaasDictionary = {
       customSitePackage:
         "Kohandatud sait: valmis pakett / webhook — see ei ole sama mis WordPressi live-avaldamine",
     },
+    monthlyPlanPreview: {
+      eyebrowNeedsApproval: "Plaan ootab teie otsust",
+      eyebrowApproved: "Selle kuu plaan",
+      title: "Artiklite ja paranduste plaan",
+      descriptionDraft:
+        "Vaadake artikliteemasid ja saidi parandusi. Pärast kinnitamist töötab RankBoost selle plaani järgi.",
+      descriptionApproved:
+        "See on kinnitatud kuuplaan: RankBoost valmistab artikleid ja parandusi ajakava järgi.",
+      confirmPlan: "Vaata ja kinnita plaan",
+      openPlan: "Ava täielik plaan",
+      articleTopics: "Artikliteemad",
+      siteFixes: "Saidi parandused",
+      noArticles: "Artikliteemasid valmistatakse veel ette.",
+      noFixes: "Selles plaanis pole veel saidi parandusi.",
+      draftNote:
+        "Saate valida teemasid, eemaldada sobimatu või lubada WordPressi autopublishi kinnitamise ajal.",
+      approvedNote:
+        "Avage täielik plaan, et muuta režiimi, peatada autopiloot või näha detaile.",
+      status: (status) => {
+        const labels: Record<string, string> = {
+          proposed: "Pakutud",
+          approved: "Kinnitatud",
+          scheduled: "Ajastatud",
+          prepared: "Valmistatud",
+          published: "Avaldatud",
+          executed: "Tehtud",
+          skipped: "Vahele jäetud",
+          blocked: "Vajab tähelepanu",
+        };
+        return labels[status] ?? status;
+      },
+    },
     activation: {
       title: "RankBoost seadistab teie saiti",
       subtitle: "Esimene seadistus käivitub automaatselt — midagi klõpsata ei pea.",
