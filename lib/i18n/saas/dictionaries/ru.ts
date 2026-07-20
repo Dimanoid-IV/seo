@@ -1288,6 +1288,9 @@ export const saasDictionary: SaasDictionary = {
     articleReadyHint:
       "Вы можете отредактировать статью, отклонить её или использовать материалы для публикации на сайте. Автопубликация только после выбора этого режима в месячном плане.",
     qualityOutOf: (score) => `Качество ${score}/100`,
+    publishToCustomSite: "Опубликовать на сайте",
+    customPublishFailed: "Не удалось отправить статью на сайт.",
+    customPublishNetworkError: "Сетевая ошибка при отправке статьи на сайт.",
     publishManually: "Опубликовать вручную",
     downloadForSite: "Скачать / скопировать для сайта",
     actionGroups: {
@@ -1307,6 +1310,10 @@ export const saasDictionary: SaasDictionary = {
     ],
     customPackageHint:
       "Для вашего сайта RankBoost подготовил готовый пакет: HTML, Markdown, SEO title, meta description и письмо разработчику.",
+    customConnectedHint: (host) =>
+      host
+        ? `Custom-публикация подключена к ${host}. Можно отправить статью на сайт прямо отсюда.`
+        : "Custom-публикация подключена. Можно отправить статью на сайт прямо отсюда.",
     publishPathLabels: {
       wordpress_draft: "Черновик WordPress",
       wordpress_live: "Опубликовано в WordPress",

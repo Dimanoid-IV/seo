@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { ClipboardCheck, Globe, Pencil, X } from "lucide-react";
+import { ClipboardCheck, Globe, Pencil, Send, X } from "lucide-react";
 
 import { useDashboardMode } from "@/components/dashboard/DashboardModeProvider";
 import { EmptyState } from "@/components/dashboard/EmptyState";
@@ -14,6 +14,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { trackClientEvent } from "@/lib/analytics/client";
 import { authFetch, parseApiErrorMessage } from "@/lib/auth/client-session";
 import { useSaasTranslations } from "@/lib/i18n/saas/SaasLocaleProvider";
+import { canPublishArticleToCustomSiteFromReview } from "@/lib/review-queue/article-publish-action";
 import type {
   ReviewActionNeeded,
   ReviewItemGroup,
@@ -200,6 +201,36 @@ export function ReviewPage() {
       await reload();
     } catch {
       setActionError(t.updateFailed);
+    } finally {
+      setActionLoadingId(null);
+    }
+  }
+
+  async function publishToCustomSite(item: ReviewQueueItem) {
+    if (!canPublishArticleToCustomSiteFromReview(item)) return;
+
+    setActionLoadingId(item.id);
+    setActionError(null);
+
+    try {
+      const response = await authFetch(
+        `/api/articles/${encodeURIComponent(item.sourceId)}/custom-publish`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ dryRun: false }),
+        }
+      );
+
+      if (!response.ok) {
+        const message = await parseApiErrorMessage(response, t.customPublishFailed);
+        setActionError(message);
+        return;
+      }
+
+      await reload();
+    } catch {
+      setActionError(t.customPublishNetworkError);
     } finally {
       setActionLoadingId(null);
     }
@@ -488,6 +519,17 @@ export function ReviewPage() {
                       ) : null}
                       {item.canApprove && item.editHref ? (
                         <div className="flex flex-wrap gap-2 pt-1">
+                          {canPublishArticleToCustomSiteFromReview(item) ? (
+                            <button
+                              type="button"
+                              disabled={isLoading}
+                              onClick={() => void publishToCustomSite(item)}
+                              className="inline-flex items-center gap-1.5 rounded-md border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-xs font-semibold text-emerald-800 hover:bg-emerald-100 disabled:cursor-not-allowed disabled:opacity-60"
+                            >
+                              <Send className="size-3.5" />
+                              {t.publishToCustomSite}
+                            </button>
+                          ) : null}
                           <Link
                             href={item.editHref}
                             className="inline-flex items-center rounded-md border border-blue-200 bg-blue-50 px-2.5 py-1 text-xs font-medium text-blue-800 hover:bg-blue-100"
@@ -516,7 +558,11 @@ export function ReviewPage() {
                         (!item.articleContext.wordpressDraftCreated &&
                           item.articleContext.publishPath !== "wordpress_draft") ? (
                           <p className="mt-2 text-xs leading-relaxed text-indigo-800">
-                            {t.customPackageHint}
+                            {item.articleContext.customPublishingConnected
+                              ? t.customConnectedHint(
+                                  item.articleContext.customPublishingHost ?? ""
+                                )
+                              : t.customPackageHint}
                           </p>
                         ) : null}
                         {pipelineLabelForState(

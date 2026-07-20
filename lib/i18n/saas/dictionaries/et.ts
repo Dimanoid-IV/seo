@@ -1291,6 +1291,9 @@ export const saasDictionary: SaasDictionary = {
     articleReadyHint:
       "Saate artiklit redigeerida, tagasi lükata või kasutada materjale saidile avaldamiseks. Autopublish ainult pärast selle režiimi valimist kuuplaanis.",
     qualityOutOf: (score) => `Kvaliteet ${score}/100`,
+    publishToCustomSite: "Avalda saidil",
+    customPublishFailed: "Artiklit ei õnnestunud saidile saata.",
+    customPublishNetworkError: "Võrguviga artikli saidile saatmisel.",
     publishManually: "Avalda käsitsi",
     downloadForSite: "Laadi alla / kopeeri saidile",
     actionGroups: {
@@ -1310,6 +1313,10 @@ export const saasDictionary: SaasDictionary = {
     ],
     customPackageHint:
       "Teie saidi jaoks valmistas RankBoost paketi: HTML, Markdown, SEO pealkiri, meta kirjeldus ja kiri arendajale.",
+    customConnectedHint: (host) =>
+      host
+        ? `Custom-avaldamine on ühendatud hostiga ${host}. Artikli saab saidile saata otse siit.`
+        : "Custom-avaldamine on ühendatud. Artikli saab saidile saata otse siit.",
     publishPathLabels: {
       wordpress_draft: "WordPressi mustand",
       wordpress_live: "Avaldatud WordPressis",

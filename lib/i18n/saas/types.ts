@@ -1028,6 +1028,9 @@ export type SaasDictionary = {
     approveArticle: string;
     articleReadyHint: string;
     qualityOutOf: (score: number) => string;
+    publishToCustomSite: string;
+    customPublishFailed: string;
+    customPublishNetworkError: string;
     publishManually: string;
     downloadForSite: string;
     actionGroups: {
@@ -1041,6 +1044,7 @@ export type SaasDictionary = {
     whatsNextTitle: string;
     whatsNextSteps: string[];
     customPackageHint: string;
+    customConnectedHint: (host: string) => string;
     publishPathLabels: {
       wordpress_draft: string;
       wordpress_live: string;

@@ -1285,6 +1285,9 @@ export const saasDictionary: SaasDictionary = {
     articleReadyHint:
       "You can edit the article, reject it, or use the materials to publish on your site. Auto-publish only runs after you confirm that mode on the monthly plan.",
     qualityOutOf: (score) => `Quality ${score}/100`,
+    publishToCustomSite: "Publish to site",
+    customPublishFailed: "Could not send the article to your site.",
+    customPublishNetworkError: "Network error while sending the article to your site.",
     publishManually: "Publish manually",
     downloadForSite: "Download / copy for your site",
     actionGroups: {
@@ -1304,6 +1307,10 @@ export const saasDictionary: SaasDictionary = {
     ],
     customPackageHint:
       "For your site RankBoost prepared a ready package: HTML, Markdown, SEO title, meta description, and a developer email.",
+    customConnectedHint: (host) =>
+      host
+        ? `Custom publishing is connected to ${host}. You can send the article to the site from here.`
+        : "Custom publishing is connected. You can send the article to the site from here.",
     publishPathLabels: {
       wordpress_draft: "WordPress draft",
       wordpress_live: "WordPress live",

@@ -14,6 +14,7 @@ import { getPrisma } from "@/lib/db";
 import { parsePlanItemsDocument } from "@/lib/autopilot/plan-items";
 import type { AutopilotPlanItem } from "@/lib/autopilot/plan-item-types";
 import { parsePreparedFix } from "@/lib/tasks/prepared-fix";
+import { getCustomPublishingConfig } from "@/lib/publishing/custom-webhook-config";
 
 import type {
   ReviewActionNeeded,
@@ -146,7 +147,14 @@ export async function getReviewQueue(
   const userId = currentUser.id;
   const organizationId = organization.id;
 
-  const [emails, articles, socialPosts, tasksWithFixes, autopilotPlans] =
+  const [
+    emails,
+    articles,
+    socialPosts,
+    tasksWithFixes,
+    autopilotPlans,
+    customPublishing,
+  ] =
     await Promise.all([
     prisma.emailApproval.findMany({
       where: {
@@ -250,7 +258,12 @@ export async function getReviewQueue(
         publishingMode: true,
       },
     }),
+    getCustomPublishingConfig(website.id),
   ]);
+
+  const customPublishingConnected = Boolean(
+    customPublishing?.endpointConfigured && customPublishing.testedAt
+  );
 
   const autopilotByArticleId = new Map<
     string,
@@ -370,6 +383,8 @@ export async function getReviewQueue(
         wordpressDraftCreated: Boolean(
           autopilotMeta?.wordpressDraftCreated || article.wordpressPostId
         ),
+        customPublishingConnected,
+        customPublishingHost: customPublishing?.endpointHost ?? null,
         livePublishBlockedReason: autopilotMeta?.blockedReasonKey ?? null,
         planPublishingMode: autopilotMeta?.planPublishingMode ?? null,
       },

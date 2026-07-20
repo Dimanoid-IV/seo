@@ -55,6 +55,8 @@ export type ReviewQueueItem = {
     plannedDate?: string | null;
     nextAutomatedStep?: string | null;
     wordpressDraftCreated?: boolean;
+    customPublishingConnected?: boolean;
+    customPublishingHost?: string | null;
     /** When AUTO_PUBLISH plan item was blocked by the live-publish gate. */
     livePublishBlockedReason?: string | null;
     planPublishingMode?: string | null;
