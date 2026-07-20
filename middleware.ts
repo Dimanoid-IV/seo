@@ -10,6 +10,7 @@ export function middleware(request: NextRequest) {
     pathname.startsWith("/api") ||
     pathname.startsWith("/app") ||
     pathname.startsWith("/audit") ||
+    pathname.startsWith("/hosted-sitemap") ||
     pathname.startsWith("/hosted") ||
     pathname.startsWith("/login") ||
     pathname.startsWith("/register") ||
