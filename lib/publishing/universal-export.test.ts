@@ -61,4 +61,45 @@ assert.equal(pkg2.metaDescription, "");
 assert.ok(!pkg2.html.includes('name="description"'));
 assert.ok(pkg2.canonicalUrl.includes("/news/plain"));
 
+const branded = buildUniversalExport(
+  {
+    title: "Portrait gift guide",
+    contentHtml: "<h2>How to choose</h2><p>Helpful body.</p>",
+  },
+  {
+    websiteUrl: "https://popart.ee",
+    brandKit: {
+      primaryColor: "#ff3366",
+      secondaryColor: "#111827",
+      accentColor: "#18a058",
+      palette: ["#ff3366", "#111827", "#18a058"],
+    },
+  }
+);
+assert.ok(branded.html.includes("--rb-brand-primary: #ff3366"));
+assert.ok(branded.html.includes("--rb-brand-secondary: #111827"));
+assert.ok(branded.html.includes("--rb-brand-accent: #18a058"));
+assert.ok(branded.developerEmail.body.includes("Основной цвет бренда: #ff3366"));
+assert.deepEqual(branded.brandKit?.palette, [
+  "#ff3366",
+  "#111827",
+  "#18a058",
+]);
+
+const unsafeBrand = buildUniversalExport(
+  { title: "Safe CSS", contentHtml: "<p>Body</p>" },
+  {
+    websiteUrl: "https://example.com",
+    brandKit: {
+      primaryColor: "red; background:url(https://example.com/x)",
+      secondaryColor: "#123456",
+      accentColor: null,
+      palette: [],
+    },
+  }
+);
+assert.ok(!unsafeBrand.html.includes("background:url"));
+assert.ok(unsafeBrand.html.includes("--rb-brand-primary: #2563eb"));
+assert.ok(unsafeBrand.html.includes("--rb-brand-secondary: #123456"));
+
 console.log("universal export checks passed");

@@ -86,6 +86,7 @@ export function buildUniversalExport(
     canonicalUrl,
     language: article.language ?? "ru",
     bodyHtml,
+    brandKit: site.brandKit ?? null,
   });
 
   return {
@@ -165,10 +166,12 @@ interface StandaloneHtmlInput {
   canonicalUrl: string;
   language: string;
   bodyHtml: string;
+  brandKit?: UniversalExportSiteInput["brandKit"];
 }
 
 function buildStandaloneHtml(input: StandaloneHtmlInput): string {
   const lang = escapeAttr((input.language || "ru").toLowerCase());
+  const brandStyle = buildBrandStyle(input.brandKit ?? null);
   return [
     "<!doctype html>",
     `<html lang="${lang}">`,
@@ -180,6 +183,7 @@ function buildStandaloneHtml(input: StandaloneHtmlInput): string {
       ? `  <meta name="description" content="${escapeAttr(input.metaDescription)}" />`
       : null,
     `  <link rel="canonical" href="${escapeAttr(input.canonicalUrl)}" />`,
+    brandStyle,
     "</head>",
     "<body>",
     "  <article>",
@@ -191,6 +195,44 @@ function buildStandaloneHtml(input: StandaloneHtmlInput): string {
   ]
     .filter((line): line is string => line !== null)
     .join("\n");
+}
+
+function safeCssColor(value: string | null | undefined): string | null {
+  const color = value?.trim().toLowerCase();
+  if (!color) return null;
+  if (/^#(?:[0-9a-f]{3}|[0-9a-f]{6})$/.test(color)) return color;
+  return null;
+}
+
+function buildBrandStyle(
+  brandKit: UniversalExportSiteInput["brandKit"]
+): string {
+  const primary =
+    safeCssColor(brandKit?.primaryColor) ??
+    safeCssColor(brandKit?.palette?.[0]) ??
+    "#2563eb";
+  const secondary =
+    safeCssColor(brandKit?.secondaryColor) ??
+    safeCssColor(brandKit?.palette?.[1]) ??
+    "#0f172a";
+  const accent =
+    safeCssColor(brandKit?.accentColor) ??
+    safeCssColor(brandKit?.palette?.[2]) ??
+    primary;
+
+  return [
+    "  <style>",
+    `    :root { --rb-brand-primary: ${primary}; --rb-brand-secondary: ${secondary}; --rb-brand-accent: ${accent}; }`,
+    "    body { margin: 0; background: #ffffff; color: #0f172a; font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; line-height: 1.7; }",
+    "    article { box-sizing: border-box; width: min(760px, calc(100% - 32px)); margin: 48px auto; }",
+    "    h1 { color: var(--rb-brand-secondary); font-size: clamp(2rem, 5vw, 3.5rem); line-height: 1.08; margin: 0 0 28px; }",
+    "    h2, h3 { color: var(--rb-brand-secondary); margin-top: 2rem; line-height: 1.2; }",
+    "    h2::after { content: ''; display: block; width: 56px; height: 3px; margin-top: 10px; background: var(--rb-brand-accent); border-radius: 999px; }",
+    "    a { color: var(--rb-brand-primary); font-weight: 600; }",
+    "    blockquote { border-left: 4px solid var(--rb-brand-accent); margin-left: 0; padding-left: 1rem; color: #334155; }",
+    "    img { max-width: 100%; height: auto; border-radius: 8px; }",
+    "  </style>",
+  ].join("\n");
 }
 
 interface DeveloperEmailInput {
