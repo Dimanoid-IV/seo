@@ -948,6 +948,10 @@ export const saasDictionary: SaasDictionary = {
       editManual: "Настроить вручную",
       defaultHint: "Пока используем спокойный практичный стиль по умолчанию.",
       summary: (tone, audience) => `Тон: ${tone}. Аудитория: ${audience}.`,
+      visualStyle: (confidence) =>
+        confidence === "high"
+          ? "Визуальный стиль изучен: основные цвета бренда"
+          : "Найдены визуальные сигналы бренда",
       loadFailed: "Не удалось загрузить стиль бренда",
       loadNetworkError: "Сетевая ошибка при загрузке стиля бренда",
       refreshFailed: "Не удалось обновить стиль бренда",

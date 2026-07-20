@@ -13,6 +13,7 @@ import {
   readSiteTechFromBusinessGoals,
 } from "@/lib/onboarding/site-tech-persist";
 import { readBrandVoiceFromBusinessGoals } from "@/lib/brand-voice/business-goals";
+import { readBrandKitFromBusinessGoals } from "@/lib/brand-kit";
 
 export const maxDuration = 60;
 
@@ -48,6 +49,7 @@ export async function GET(request: Request) {
 
     const siteTech = readSiteTechFromBusinessGoals(website?.businessGoals);
     const brandVoice = readBrandVoiceFromBusinessGoals(website?.businessGoals);
+    const brandKit = readBrandKitFromBusinessGoals(website?.businessGoals);
 
     return authJsonResponse({
       data: {
@@ -60,6 +62,12 @@ export async function GET(request: Request) {
               confidence: brandVoice.confidence,
               tone: brandVoice.tone,
               audience: brandVoice.audience,
+            }
+          : null,
+        brandKit: brandKit
+          ? {
+              confidence: brandKit.confidence,
+              palette: brandKit.palette,
             }
           : null,
         website: website

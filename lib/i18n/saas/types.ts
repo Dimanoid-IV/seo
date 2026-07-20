@@ -747,6 +747,7 @@ export type SaasDictionary = {
       editManual: string;
       defaultHint: string;
       summary: (tone: string, audience: string) => string;
+      visualStyle: (confidence: string) => string;
       loadFailed: string;
       loadNetworkError: string;
       refreshFailed: string;

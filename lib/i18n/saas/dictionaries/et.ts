@@ -950,6 +950,10 @@ export const saasDictionary: SaasDictionary = {
       editManual: "Seadista käsitsi",
       defaultHint: "Praegu kasutame rahulikku praktilist vaikestiili.",
       summary: (tone, audience) => `Toon: ${tone}. Publik: ${audience}.`,
+      visualStyle: (confidence) =>
+        confidence === "high"
+          ? "Visuaalne stiil õpitud: peamised brändivärvid"
+          : "Leitud visuaalsed brändisignaalid",
       loadFailed: "Brändi stiili ei õnnestunud laadida",
       loadNetworkError: "Võrguviga brändi stiili laadimisel",
       refreshFailed: "Brändi stiili ei õnnestunud uuendada",

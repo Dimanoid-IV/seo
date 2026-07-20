@@ -6,6 +6,12 @@ import { resolveOwnedOrganization } from "@/lib/auth/queries";
 import type { CurrentUser } from "@/lib/auth/types";
 import { getPrisma } from "@/lib/db";
 import { AppError, ErrorCode } from "@/lib/errors";
+import {
+  extractBrandKitFromWebsite,
+  loadBrandKitForWebsite,
+  saveWebsiteBrandKit,
+  type BrandKitProfile,
+} from "@/lib/brand-kit";
 
 import { createDefaultBrandVoice } from "./default-voice";
 import { extractBrandVoiceFromWebsite } from "./extract-brand-voice";
@@ -61,6 +67,7 @@ export async function getBrandVoiceForUser(
   websiteId?: string | null
 ): Promise<{
   profile: BrandVoiceProfile;
+  brandKit: BrandKitProfile | null;
   website: { id: string; url: string; displayName: string | null };
   hasStoredProfile: boolean;
 }> {
@@ -79,6 +86,7 @@ export async function getBrandVoiceForUser(
 
   return {
     profile,
+    brandKit: await loadBrandKitForWebsite(website.id),
     website: {
       id: website.id,
       url: website.url,
@@ -91,22 +99,35 @@ export async function getBrandVoiceForUser(
 export async function refreshBrandVoiceForUser(
   currentUser: CurrentUser,
   websiteId?: string | null
-): Promise<BrandVoiceProfile> {
+): Promise<{ profile: BrandVoiceProfile; brandKit: BrandKitProfile | null }> {
   const { organization, website } = await resolveActiveWebsite(
     currentUser,
     websiteId
   );
 
-  const extracted = await extractBrandVoiceFromWebsite({
-    websiteUrl: website.url,
-    language: website.primaryLanguage.toLowerCase(),
-  });
+  const [extracted, brandKit] = await Promise.all([
+    extractBrandVoiceFromWebsite({
+      websiteUrl: website.url,
+      language: website.primaryLanguage.toLowerCase(),
+    }),
+    extractBrandKitFromWebsite({ websiteUrl: website.url }).catch(() => null),
+  ]);
 
-  return saveWebsiteBrandVoice({
+  const profile = await saveWebsiteBrandVoice({
     websiteId: website.id,
     organizationId: organization.id,
     profile: extracted,
   });
+
+  if (brandKit) {
+    await saveWebsiteBrandKit({
+      websiteId: website.id,
+      organizationId: organization.id,
+      profile: brandKit,
+    });
+  }
+
+  return { profile, brandKit };
 }
 
 export async function updateBrandVoiceForUser(

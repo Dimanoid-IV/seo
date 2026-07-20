@@ -10,6 +10,7 @@ import {
   buildCustomPublishingDisplayState,
   type CustomPublishingDisplayState,
 } from "./custom-publishing-display";
+import { loadBrandKitForWebsite } from "@/lib/brand-kit";
 
 export interface ArticleUniversalExportResult {
   articleId: string;
@@ -39,6 +40,7 @@ export async function getArticleUniversalExport({
   });
 
   const custom = await getCustomPublishingConfig(article.websiteId);
+  const brandKit = await loadBrandKitForWebsite(article.websiteId);
 
   const pkg = buildUniversalExport(
     {
@@ -50,7 +52,7 @@ export async function getArticleUniversalExport({
       targetKeyword: article.targetKeyword,
       language: article.language,
     },
-    { websiteUrl: website?.url ?? "" }
+    { websiteUrl: website?.url ?? "", brandKit }
   );
 
   return {

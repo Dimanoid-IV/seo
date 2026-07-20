@@ -11,6 +11,10 @@ import {
   readBrandVoiceFromBusinessGoals,
   saveWebsiteBrandVoice,
 } from "@/lib/brand-voice/persist";
+import {
+  extractBrandKitFromWebsite,
+  saveWebsiteBrandKit,
+} from "@/lib/brand-kit";
 import { generateMonthlyAutopilotPlan } from "@/lib/autopilot/generate-monthly-plan";
 import { getPrisma } from "@/lib/db";
 import { syncGrowthOpportunitiesForWebsite } from "@/lib/growth/sync-opportunities";
@@ -292,6 +296,16 @@ export async function runActivationPipeline(
           organizationId: input.organizationId,
           profile,
         });
+        const brandKit = await extractBrandKitFromWebsite({
+          websiteUrl: website.url,
+        }).catch(() => null);
+        if (brandKit) {
+          await saveWebsiteBrandKit({
+            websiteId: website.id,
+            organizationId: input.organizationId,
+            profile: brandKit,
+          });
+        }
         brandVoiceExtracted = true;
         activation = mergeStep(activation, website.id, "brandVoice", {
           status: "done",
@@ -301,6 +315,7 @@ export async function runActivationPipeline(
         trackActivationStep(input, "brandVoice", true, {
           confidence: profile.confidence,
           tone: profile.tone,
+          brandKitColors: brandKit?.palette.length ?? 0,
         });
         trackEventFireAndForget({
           event: "brand_voice_extracted",
@@ -310,6 +325,7 @@ export async function runActivationPipeline(
           properties: {
             confidence: profile.confidence,
             tone: profile.tone,
+            brandKitColors: brandKit?.palette.length ?? 0,
           },
         });
       } catch (error) {

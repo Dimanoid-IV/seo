@@ -948,6 +948,10 @@ export const saasDictionary: SaasDictionary = {
       editManual: "Edit manually",
       defaultHint: "Using a calm, practical default style for now.",
       summary: (tone, audience) => `Tone: ${tone}. Audience: ${audience}.`,
+      visualStyle: (confidence) =>
+        confidence === "high"
+          ? "Visual style learned: main brand colors"
+          : "Visual brand signals found",
       loadFailed: "Could not load brand voice",
       loadNetworkError: "Network error while loading brand voice",
       refreshFailed: "Could not refresh brand voice",

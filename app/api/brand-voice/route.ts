@@ -29,6 +29,7 @@ export async function GET(request: Request) {
     return authJsonResponse({
       data: {
         profile: result.profile,
+        brandKit: result.brandKit,
         website: result.website,
         hasStoredProfile: result.hasStoredProfile,
       },

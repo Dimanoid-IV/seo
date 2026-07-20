@@ -8,6 +8,7 @@ import { assertSafeUrl } from "@/lib/audit/ssrf";
 import { AppError, ErrorCode } from "@/lib/errors";
 import { getPrisma } from "@/lib/db";
 import { buildUniversalExport } from "@/lib/publishing/universal-export";
+import { loadBrandKitForWebsite } from "@/lib/brand-kit";
 import {
   getCustomPublishingConfig,
   getCustomPublishingSharedSecret,
@@ -100,6 +101,8 @@ export async function deliverCustomWebhook(input: {
     );
   }
 
+  const brandKit = await loadBrandKitForWebsite(input.websiteId);
+
   const pkg = buildUniversalExport(
     {
       title: article.title,
@@ -110,7 +113,7 @@ export async function deliverCustomWebhook(input: {
       targetKeyword: article.targetKeyword,
       language: article.language,
     },
-    { websiteUrl: website?.url ?? "" }
+    { websiteUrl: website?.url ?? "", brandKit }
   );
 
   const payload = input.dryRun
@@ -138,6 +141,7 @@ export async function deliverCustomWebhook(input: {
           language: String(article.language ?? "ru").toLowerCase(),
           targetKeyword: article.targetKeyword ?? "",
           qualityScore: article.qualityScore ?? null,
+          brandKit: pkg.brandKit ?? null,
         },
         website: {
           id: input.websiteId,

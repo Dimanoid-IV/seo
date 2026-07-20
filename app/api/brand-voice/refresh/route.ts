@@ -22,11 +22,11 @@ export async function POST(request: Request) {
       websiteId?: string;
     };
 
-    const profile = await refreshBrandVoiceForUser(
+    const result = await refreshBrandVoiceForUser(
       currentUser,
       body.websiteId
     );
-    return authJsonResponse({ data: { profile } });
+    return authJsonResponse({ data: result });
   } catch (error) {
     return authErrorResponse(request, error);
   }

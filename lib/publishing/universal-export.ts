@@ -25,6 +25,12 @@ export interface UniversalExportSiteInput {
   websiteUrl: string;
   /** Path segment articles live under; defaults to "blog". */
   blogPathSegment?: string;
+  brandKit?: {
+    primaryColor?: string | null;
+    secondaryColor?: string | null;
+    accentColor?: string | null;
+    palette?: string[];
+  } | null;
 }
 
 export interface UniversalExportCopyBlocks {
@@ -52,6 +58,12 @@ export interface UniversalExportPackage {
   markdown: string;
   copy: UniversalExportCopyBlocks;
   developerEmail: UniversalExportDeveloperEmail;
+  brandKit?: {
+    primaryColor: string | null;
+    secondaryColor: string | null;
+    accentColor: string | null;
+    palette: string[];
+  } | null;
 }
 
 export function buildUniversalExport(
@@ -97,7 +109,16 @@ export function buildUniversalExport(
       metaDescription,
       canonicalUrl,
       markdown,
+      brandKit: site.brandKit ?? null,
     }),
+    brandKit: site.brandKit
+      ? {
+          primaryColor: site.brandKit.primaryColor ?? null,
+          secondaryColor: site.brandKit.secondaryColor ?? null,
+          accentColor: site.brandKit.accentColor ?? null,
+          palette: site.brandKit.palette ?? [],
+        }
+      : null,
   };
 }
 
@@ -178,6 +199,7 @@ interface DeveloperEmailInput {
   metaDescription: string;
   canonicalUrl: string;
   markdown: string;
+  brandKit?: UniversalExportSiteInput["brandKit"];
 }
 
 function buildDeveloperEmail(input: DeveloperEmailInput): UniversalExportDeveloperEmail {
@@ -190,6 +212,12 @@ function buildDeveloperEmail(input: DeveloperEmailInput): UniversalExportDevelop
     `SEO-заголовок (title): ${input.metaTitle}`,
     input.metaDescription ? `Meta description: ${input.metaDescription}` : null,
     `Рекомендуемый адрес страницы (canonical): ${input.canonicalUrl}`,
+    input.brandKit?.primaryColor
+      ? `Основной цвет бренда: ${input.brandKit.primaryColor}`
+      : null,
+    input.brandKit?.palette?.length
+      ? `Палитра бренда: ${input.brandKit.palette.join(", ")}`
+      : null,
     "",
     "Инструкция:",
     "1. Создайте новую страницу/пост в блоге.",

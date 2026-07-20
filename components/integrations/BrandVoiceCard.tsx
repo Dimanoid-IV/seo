@@ -8,6 +8,7 @@ import type {
   BrandVoiceManualPatch,
   BrandVoiceProfile,
 } from "@/lib/brand-voice/types";
+import type { BrandKitProfile } from "@/lib/brand-kit";
 import { useSaasTranslations } from "@/lib/i18n/saas/SaasLocaleProvider";
 import { cn } from "@/lib/utils";
 
@@ -21,6 +22,7 @@ export function BrandVoiceCard({ websiteId }: BrandVoiceCardProps) {
   const { dict } = useSaasTranslations();
   const t = dict.integrations.brandVoice;
   const [profile, setProfile] = useState<BrandVoiceProfile | null>(null);
+  const [brandKit, setBrandKit] = useState<BrandKitProfile | null>(null);
   const [hasStored, setHasStored] = useState(false);
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState(false);
@@ -44,11 +46,13 @@ export function BrandVoiceCard({ websiteId }: BrandVoiceCardProps) {
         const body = (await response.json()) as {
           data: {
             profile: BrandVoiceProfile;
+            brandKit: BrandKitProfile | null;
             hasStoredProfile: boolean;
           };
         };
         if (cancelled) return;
         setProfile(body.data.profile);
+        setBrandKit(body.data.brandKit);
         setHasStored(body.data.hasStoredProfile);
         setError(null);
       } catch {
@@ -78,9 +82,10 @@ export function BrandVoiceCard({ websiteId }: BrandVoiceCardProps) {
         return;
       }
       const body = (await response.json()) as {
-        data: { profile: BrandVoiceProfile };
+        data: { profile: BrandVoiceProfile; brandKit: BrandKitProfile | null };
       };
       setProfile(body.data.profile);
+      setBrandKit(body.data.brandKit);
       setHasStored(true);
     } catch {
       setError(t.refreshNetworkError);
@@ -151,6 +156,27 @@ export function BrandVoiceCard({ websiteId }: BrandVoiceCardProps) {
               {t.summary(profile.tone, profile.audience)}
               {hasStored ? "" : ` ${t.defaultHint}`}
             </p>
+          ) : null}
+          {brandKit && brandKit.palette.length > 0 ? (
+            <div className="mt-3">
+              <p className="text-xs font-medium text-slate-500">
+                {t.visualStyle(brandKit.confidence)}
+              </p>
+              <div className="mt-2 flex flex-wrap gap-2">
+                {brandKit.palette.slice(0, 5).map((color) => (
+                  <span
+                    key={color}
+                    className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-2 py-1 text-xs font-medium text-slate-600"
+                  >
+                    <span
+                      className="size-4 rounded-full border border-slate-200"
+                      style={{ backgroundColor: color }}
+                    />
+                    {color}
+                  </span>
+                ))}
+              </div>
+            </div>
           ) : null}
         </div>
       </div>
