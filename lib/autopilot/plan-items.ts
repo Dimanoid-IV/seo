@@ -8,6 +8,7 @@ import {
 } from "./plan-item-reconcile";
 
 import type { MonthlyAutopilotSourceData } from "./source-data";
+import { buildStrategicArticlePlanItems } from "./article-opportunities";
 import { assignEveryOtherDaySlots } from "./scheduling";
 import type { AutopilotRecommendedAction } from "./types";
 import {
@@ -155,6 +156,16 @@ export function buildPlanItemsFromSource(
       blockedReasonKey: needsWp ? "wordpressNotConnected" : undefined,
     });
   }
+
+  const existingArticleCount = items.filter((item) => item.type === "ARTICLE").length;
+  items.push(
+    ...buildStrategicArticlePlanItems({
+      data,
+      existingArticleCount,
+      nextItemId,
+      articleIntegration: articleIntegration(integrations),
+    })
+  );
 
   for (const post of data.socialPosts.ready.slice(0, 3)) {
     items.push({

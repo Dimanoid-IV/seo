@@ -32,6 +32,7 @@ export type MonthlyAutopilotSourceData = {
     primaryLanguage: string;
     niche: string | null;
     currentGrowthScore: number | null;
+    businessGoals: unknown;
   };
   month: string;
   growthScore: {
@@ -138,6 +139,7 @@ export async function getMonthlyAutopilotSourceData(input: {
       primaryLanguage: true,
       niche: true,
       currentGrowthScore: true,
+      businessGoals: true,
     },
   });
 
@@ -370,6 +372,7 @@ export async function getMonthlyAutopilotSourceData(input: {
       primaryLanguage: website.primaryLanguage,
       niche: website.niche,
       currentGrowthScore: website.currentGrowthScore,
+      businessGoals: website.businessGoals,
     },
     month: input.month,
     growthScore: {
