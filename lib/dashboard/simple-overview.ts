@@ -105,6 +105,13 @@ export type SimpleDashboardViewModel = {
     primaryLabelKind: "review" | "plan";
     showPublishingNudge: boolean;
   };
+  readyToPublish?: {
+    id: string;
+    title: string;
+    href: string;
+    publishingPath: "manual" | "wordpress_draft" | "wordpress_live" | "webhook_ready";
+    siteLabel: string;
+  };
   /** Prompt 11.46 — first website activation progress */
   activation?: {
     state: ActivationState | null;
@@ -225,6 +232,9 @@ export function buildSimpleDashboardViewModel(input: {
 
   const reviewCount = input.reviewQueueCount ?? needsReviewCount;
   const publishChip = publishingPathChip(publishingState.publishPath);
+  const readyArticle = control.approvalQueue.find(
+    (item) => item.type === "ARTICLE" || item.type === "WORDPRESS_DRAFT"
+  );
 
   let nextArticleDateLabel: string | null = null;
   if (control.monthlyPlan?.nextScheduledArticleAt) {
@@ -285,6 +295,16 @@ export function buildSimpleDashboardViewModel(input: {
     },
     monthlyPlanPreview,
     monthlyAutopilotActive,
+    readyToPublish: readyArticle?.href
+      ? {
+          id: readyArticle.id,
+          title: readyArticle.title,
+          href: readyArticle.href,
+          publishingPath: publishChip,
+          siteLabel:
+            control.website?.domain ?? control.website?.name ?? "your site",
+        }
+      : undefined,
     activation: input.activation,
     recentActivity: control.recentActivity.slice(0, 3).map((event) => ({
       id: event.id,

@@ -266,6 +266,23 @@ export const saasDictionary: SaasDictionary = {
       customSitePackage:
         "Kohandatud sait: valmis pakett / webhook — see ei ole sama mis WordPressi live-avaldamine",
     },
+    readyToPublish: {
+      eyebrow: "Valmis avaldamiseks",
+      title: "Artikkel on saidi jaoks valmis",
+      descriptionWebhook: (site) =>
+        `${site} on ühendatud. Avage artikkel ja saatke see ühe nupuga blogisse.`,
+      descriptionWordpress:
+        "WordPress on ühendatud. Avage artikkel, kontrollige lõppversiooni ja looge mustand või avaldage kinnitatud plaani kaudu.",
+      descriptionManual:
+        "Avage artikkel: RankBoost valmistas HTML-i, Markdowni, SEO title'i ja meta description'i avaldamiseks.",
+      openArticle: "Ava ja avalda",
+      openReview: "Kõik ülevaatuse materjalid",
+      webhookChip: "Kohandatud sait ühendatud",
+      wordpressChip: "WordPress ühendatud",
+      manualChip: "Valmis pakett",
+      safetyNote:
+        "RankBoost näitab konkreetset valmis artiklit. Näete teksti enne saidile saatmist.",
+    },
     monthlyPlanPreview: {
       eyebrowNeedsApproval: "Plaan ootab teie otsust",
       eyebrowApproved: "Selle kuu plaan",

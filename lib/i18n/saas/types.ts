@@ -210,6 +210,19 @@ export type SaasDictionary = {
       wordpressDraftOnly: string;
       customSitePackage: string;
     };
+    readyToPublish: {
+      eyebrow: string;
+      title: string;
+      descriptionWebhook: (site: string) => string;
+      descriptionWordpress: string;
+      descriptionManual: string;
+      openArticle: string;
+      openReview: string;
+      webhookChip: string;
+      wordpressChip: string;
+      manualChip: string;
+      safetyNote: string;
+    };
     monthlyPlanPreview: {
       eyebrowNeedsApproval: string;
       eyebrowApproved: string;

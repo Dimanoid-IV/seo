@@ -266,6 +266,23 @@ export const saasDictionary: SaasDictionary = {
       customSitePackage:
         "Custom-сайт: готовый пакет / webhook — это не то же самое, что live-публикация WordPress",
     },
+    readyToPublish: {
+      eyebrow: "Готово к публикации",
+      title: "Статья готова для сайта",
+      descriptionWebhook: (site) =>
+        `Сайт ${site} подключён. Откройте статью и отправьте её в блог одной кнопкой.`,
+      descriptionWordpress:
+        "WordPress подключён. Откройте статью, проверьте финальный вид и создайте черновик или публикацию по разрешённому плану.",
+      descriptionManual:
+        "Откройте статью: RankBoost подготовил HTML, Markdown, SEO title и meta description для публикации.",
+      openArticle: "Открыть и опубликовать",
+      openReview: "Все материалы на проверке",
+      webhookChip: "Custom-сайт подключён",
+      wordpressChip: "WordPress подключён",
+      manualChip: "Готовый пакет",
+      safetyNote:
+        "RankBoost показывает конкретную готовую статью. Вы видите текст перед отправкой на сайт.",
+    },
     monthlyPlanPreview: {
       eyebrowNeedsApproval: "План ждёт вашего решения",
       eyebrowApproved: "План месяца",
