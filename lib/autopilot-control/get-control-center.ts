@@ -22,6 +22,7 @@ import { findNextScheduledArticleAt } from "@/lib/dashboard/primary-cta";
 import { getPrisma } from "@/lib/db";
 import { resolveGscConnectionState } from "@/lib/integrations/gsc-state";
 import { getSaasDictionary } from "@/lib/i18n/saas";
+import { getCustomPublishingConfig } from "@/lib/publishing/custom-webhook-config";
 import { formatTimelineEvent } from "@/lib/timeline/format";
 
 import {
@@ -130,6 +131,7 @@ export async function getAutopilotControlCenter(input: {
     latestAudit,
     gscIntegration,
     wpConnection,
+    customPublishing,
     hasAnyTasks,
     hasAnyArticles,
     autopilotStatus,
@@ -242,6 +244,7 @@ export async function getAutopilotControlCenter(input: {
       where: { websiteId: website.id },
       select: { status: true },
     }),
+    getCustomPublishingConfig(website.id),
     prisma.task.count({
       where: { websiteId: website.id, deletedAt: null },
     }),
@@ -315,6 +318,10 @@ export async function getAutopilotControlCenter(input: {
 
   const wordpressConnected =
     wpConnection?.status === WordPressConnectionStatus.CONNECTED;
+  const customPublishingConnected = Boolean(
+    customPublishing?.endpointConfigured && customPublishing.testedAt
+  );
+  const publishingConnected = wordpressConnected || customPublishingConnected;
   const wordpressError =
     wpConnection?.status === WordPressConnectionStatus.ERROR ||
     wpConnection?.status === WordPressConnectionStatus.DISCONNECTED;
@@ -340,7 +347,7 @@ export async function getAutopilotControlCenter(input: {
   let integrationIssuesCount = 0;
   if (!gscConnected) integrationIssuesCount += 1;
   if (gscError) integrationIssuesCount += 1;
-  if (!wordpressConnected) integrationIssuesCount += 1;
+  if (!publishingConnected) integrationIssuesCount += 1;
   if (wordpressError) integrationIssuesCount += 1;
 
   const dict = getSaasDictionary(locale);
@@ -380,6 +387,15 @@ export async function getAutopilotControlCenter(input: {
         : wordpressConnected
           ? integrationStrings.wpConnectedDesc
           : integrationStrings.wpNotConnectedDesc,
+      href: "/app/integrations",
+    },
+    {
+      key: "custom_publishing",
+      name: "Custom site publishing",
+      status: customPublishingConnected ? "CONNECTED" : "MISSING",
+      description: customPublishingConnected
+        ? integrationStrings.customPublishingConnectedDesc
+        : integrationStrings.customPublishingNotConnectedDesc,
       href: "/app/integrations",
     },
   ];

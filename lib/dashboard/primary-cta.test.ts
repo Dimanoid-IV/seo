@@ -4,6 +4,7 @@ import {
   findNextScheduledArticleAt,
   planHasApprovedArticleTopics,
   resolveDashboardPrimaryCta,
+  resolveDashboardPublishingState,
 } from "./primary-cta";
 
 // 1) No audit wins over everything else.
@@ -110,5 +111,26 @@ assert.equal(
   ),
   "2026-07-22T09:00:00.000Z"
 );
+
+assert.deepEqual(
+  resolveDashboardPublishingState([
+    { key: "wordpress", status: "MISSING" },
+    { key: "custom_publishing", status: "CONNECTED" },
+  ]),
+  { configured: true, publishPath: "webhook" }
+);
+
+assert.deepEqual(
+  resolveDashboardPublishingState([
+    { key: "wordpress", status: "CONNECTED" },
+    { key: "custom_publishing", status: "CONNECTED" },
+  ]),
+  { configured: true, publishPath: "wordpress_draft" }
+);
+
+assert.deepEqual(resolveDashboardPublishingState([]), {
+  configured: false,
+  publishPath: "universal_package",
+});
 
 console.log("dashboard primary-cta checks passed");

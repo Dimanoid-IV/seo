@@ -505,6 +505,8 @@ export type SaasDictionary = {
       wpConnectedDesc: string;
       wpErrorDesc: string;
       wpNotConnectedDesc: string;
+      customPublishingConnectedDesc: string;
+      customPublishingNotConnectedDesc: string;
       manageIntegrations: string;
     };
     activity: {

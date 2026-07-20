@@ -622,6 +622,8 @@ export const saasDictionary: SaasDictionary = {
       wpConnectedDesc: "Подключено",
       wpErrorDesc: "Подключение WordPress требует внимания",
       wpNotConnectedDesc: "Не подключено",
+      customPublishingConnectedDesc: "Custom-сайт подключён, статьи можно отправлять на сайт",
+      customPublishingNotConnectedDesc: "Для custom-сайта подключите endpoint публикации",
       manageIntegrations: "Управлять интеграциями",
     },
     activity: {

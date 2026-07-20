@@ -24,6 +24,7 @@ import {
 import {
   planHasApprovedArticleTopics,
   resolveDashboardPrimaryCta,
+  resolveDashboardPublishingState,
 } from "./primary-cta";
 import { publishingPathChip } from "@/lib/autopilot/human-pipeline-labels";
 import { getActivationStateForUser } from "@/lib/onboarding/activation-state";
@@ -158,11 +159,9 @@ export function buildSimpleDashboardViewModel(input: {
   const gscIntegration = control.integrations.find(
     (i) => i.key === "google_search_console"
   );
-  const wordpressIntegration = control.integrations.find(
-    (i) => i.key === "wordpress"
-  );
+  const publishingState = resolveDashboardPublishingState(control.integrations);
   const gscNeedsProperty = gscIntegration?.status === "NEEDS_SETUP";
-  const publishingConfigured = wordpressIntegration?.status === "CONNECTED";
+  const publishingConfigured = publishingState.configured;
 
   const primaryDecision = resolveDashboardPrimaryCta({
     hasAudit,
@@ -225,11 +224,7 @@ export function buildSimpleDashboardViewModel(input: {
     : undefined;
 
   const reviewCount = input.reviewQueueCount ?? needsReviewCount;
-  const publishChip = publishingPathChip(
-    wordpressIntegration?.status === "CONNECTED"
-      ? "wordpress_draft"
-      : "universal_package"
-  );
+  const publishChip = publishingPathChip(publishingState.publishPath);
 
   let nextArticleDateLabel: string | null = null;
   if (control.monthlyPlan?.nextScheduledArticleAt) {
@@ -253,7 +248,7 @@ export function buildSimpleDashboardViewModel(input: {
         primaryLabelKind: (reviewCount > 0 ? "review" : "plan") as
           | "review"
           | "plan",
-        showPublishingNudge: wordpressIntegration?.status !== "CONNECTED",
+        showPublishingNudge: !publishingConfigured,
       }
     : undefined;
 

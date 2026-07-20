@@ -622,6 +622,8 @@ export const saasDictionary: SaasDictionary = {
       wpConnectedDesc: "Ühendatud",
       wpErrorDesc: "WordPressi ühendus vajab tähelepanu",
       wpNotConnectedDesc: "Pole ühendatud",
+      customPublishingConnectedDesc: "Kohandatud sait on ühendatud; artikleid saab saidile saata",
+      customPublishingNotConnectedDesc: "Ühendage kohandatud saidi avaldamise endpoint",
       manageIntegrations: "Halda integratsioone",
     },
     activity: {

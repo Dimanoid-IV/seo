@@ -35,6 +35,39 @@ export type DashboardPrimaryCtaDecision = {
   readyToPublishCount?: number;
 };
 
+export type DashboardPublishingIntegration = {
+  key: string;
+  status: string;
+};
+
+export type DashboardPublishingState = {
+  configured: boolean;
+  publishPath: "wordpress_draft" | "webhook" | "universal_package";
+};
+
+export function resolveDashboardPublishingState(
+  integrations: DashboardPublishingIntegration[]
+): DashboardPublishingState {
+  const wordpressConnected = integrations.some(
+    (integration) =>
+      integration.key === "wordpress" && integration.status === "CONNECTED"
+  );
+  if (wordpressConnected) {
+    return { configured: true, publishPath: "wordpress_draft" };
+  }
+
+  const customPublishingConnected = integrations.some(
+    (integration) =>
+      integration.key === "custom_publishing" &&
+      integration.status === "CONNECTED"
+  );
+  if (customPublishingConnected) {
+    return { configured: true, publishPath: "webhook" };
+  }
+
+  return { configured: false, publishPath: "universal_package" };
+}
+
 /**
  * Pure priority resolver. First match wins.
  * 1. No audit → check site
