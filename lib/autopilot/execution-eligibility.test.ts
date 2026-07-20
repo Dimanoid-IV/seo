@@ -4,7 +4,7 @@
  */
 import assert from "node:assert/strict";
 
-import { ArticleStatus, AutopilotMode } from "@prisma/client";
+import { ArticleStatus, AutopilotMode, PlanPublishingMode } from "@prisma/client";
 
 import {
   classifyDryRunOutcome,
@@ -391,6 +391,65 @@ function runExecutionEligibilityChecks(): void {
   });
   assert.equal(autoPublishHandoff.action, "PREPARE_PUBLISHING_HANDOFF");
   assert.equal(autoPublishHandoff.reasonKey, "readyForPublishingHandoff");
+
+  const autoPublishCustomWebhook = resolvePlanItemExecutionEligibility({
+    item: baseArticleItem({
+      status: "prepared",
+      generatedArticleId: "article-custom-auto",
+      articleQualityPassed: true,
+      publishingPath: "webhook",
+    }),
+    now,
+    autopilotMode: AutopilotMode.AUTOPUBLISH,
+    wordpressConnected: false,
+    webhookConfiguredAndTested: true,
+    customWebhookAutoSendAllowed: true,
+    planPublishingMode: PlanPublishingMode.AUTO_PUBLISH,
+    websiteId,
+    organizationId,
+    article: {
+      id: "article-custom-auto",
+      status: ArticleStatus.WAITING_REVIEW,
+      qualityPassed: true,
+      websiteId,
+      organizationId,
+      wordpressPostId: null,
+    },
+  });
+  assert.equal(autoPublishCustomWebhook.action, "PREPARE_PUBLISHING_HANDOFF");
+  assert.equal(autoPublishCustomWebhook.summaryKey, "wouldSendWebhook");
+  assert.equal(classifyDryRunOutcome(autoPublishCustomWebhook), "wouldRun");
+
+  const autoPublishCustomWebhookNotAllowlisted =
+    resolvePlanItemExecutionEligibility({
+      item: baseArticleItem({
+        status: "prepared",
+        generatedArticleId: "article-custom-ready",
+        articleQualityPassed: true,
+        publishingPath: "webhook",
+      }),
+      now,
+      autopilotMode: AutopilotMode.AUTOPUBLISH,
+      wordpressConnected: false,
+      webhookConfiguredAndTested: true,
+      customWebhookAutoSendAllowed: false,
+      planPublishingMode: PlanPublishingMode.AUTO_PUBLISH,
+      websiteId,
+      organizationId,
+      article: {
+        id: "article-custom-ready",
+        status: ArticleStatus.WAITING_REVIEW,
+        qualityPassed: true,
+        websiteId,
+        organizationId,
+        wordpressPostId: null,
+      },
+    });
+  assert.equal(
+    autoPublishCustomWebhookNotAllowlisted.summaryKey,
+    "wouldPrepareWebhookReady"
+  );
+  assert.equal(autoPublishCustomWebhookNotAllowlisted.suggestedStatus, "prepared");
 
   // Prepare-for-review (REVIEW_FIRST) waits for human before handoff.
   const reviewFirstWait = resolvePlanItemExecutionEligibility({

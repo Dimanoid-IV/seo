@@ -31,7 +31,10 @@ import {
 import { findAutopilotPlanForUser } from "./resolve-website";
 import { assignEveryOtherDaySlots } from "./scheduling";
 import { formatMonthlyAutopilotPlan } from "./format";
-import { getCustomPublishingConfig } from "@/lib/publishing/custom-webhook-config";
+import {
+  getCustomPublishingConfig,
+  setCustomPublishingAutoSend,
+} from "@/lib/publishing/custom-webhook-config";
 import { updateAutopilotSettings } from "./autopilot-settings";
 import { trackEventFireAndForget } from "@/lib/analytics/track";
 
@@ -223,6 +226,17 @@ export async function approveSelectedPlanItems(input: {
     });
   } catch {
     // Mode update must not block approval.
+  }
+
+  if (webhookConfiguredAndTested) {
+    try {
+      await setCustomPublishingAutoSend({
+        websiteId: existing.websiteId,
+        enabled: publishingMode === "AUTO_PUBLISH",
+      });
+    } catch {
+      // Custom publish opt-in sync must not block plan approval.
+    }
   }
 
   if (wasApproved) {

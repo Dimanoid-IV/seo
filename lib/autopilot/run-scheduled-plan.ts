@@ -15,6 +15,7 @@ import { briefToJson } from "@/lib/content-research/parse";
 import { preparePublishingHandoff } from "@/lib/publishing/prepare-publishing-handoff";
 import { getCustomPublishingConfig } from "@/lib/publishing/custom-webhook-config";
 import { runWordPressLivePublishForPlanArticle } from "@/lib/integrations/adapters/wordpress/run-live-publish";
+import { resolveLivePublishScope } from "@/lib/integrations/live-publish-rollout";
 import { isPlanAutoPublishMode } from "./plan-publishing-mode";
 
 import {
@@ -158,6 +159,15 @@ export async function runScheduledAutopilotPlans(input: {
   const webhookConfiguredAndTested = Boolean(
     customPublishing?.testedAt && customPublishing.endpointConfigured
   );
+  const livePublishScope = resolveLivePublishScope({
+    websiteId: website.id,
+    dbRolloutEnabled: website.livePublishRolloutEnabled,
+  });
+  const websiteLivePublishPaused = website.autopilotLivePublishPaused === true;
+  const customWebhookAutoSendAllowed =
+    webhookConfiguredAndTested &&
+    livePublishScope.allowed &&
+    !websiteLivePublishPaused;
 
   report.plansScanned = plans.length;
   const budget = createDefaultRunBudget();
@@ -241,6 +251,9 @@ export async function runScheduledAutopilotPlans(input: {
           organizationId: plan.organizationId,
           article,
           webhookConfiguredAndTested,
+          customWebhookAutoSendAllowed:
+            customWebhookAutoSendAllowed &&
+            isPlanAutoPublishMode(plan.publishingMode),
           planPublishingMode: plan.publishingMode,
         });
 
@@ -391,6 +404,9 @@ export async function runScheduledAutopilotPlans(input: {
               autopilotMode: settings.mode,
               wordpressConnected,
               currentItem: afterDraft,
+              planId: plan.id,
+              planItemId: currentItem.id,
+              customWebhookAutoSendAllowed: false,
             });
             items = applyPlanItemUpdate(items, currentItem.id, handoff.patch);
             report.results.push({
@@ -478,6 +494,12 @@ export async function runScheduledAutopilotPlans(input: {
             autopilotMode: settings.mode,
             wordpressConnected,
             currentItem,
+            planId: plan.id,
+            planItemId: currentItem.id,
+            customWebhookAutoSendAllowed:
+              settings.mode === AutopilotMode.AUTOPUBLISH &&
+              isPlanAutoPublishMode(plan.publishingMode) &&
+              customWebhookAutoSendAllowed,
           });
 
           items = applyPlanItemUpdate(items, currentItem.id, handoff.patch);

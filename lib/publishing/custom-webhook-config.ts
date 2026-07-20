@@ -246,6 +246,51 @@ export async function disconnectCustomPublishingConfig(
   });
 }
 
+export async function setCustomPublishingAutoSend(input: {
+  websiteId: string;
+  enabled: boolean;
+}): Promise<CustomPublishingConfig | null> {
+  const prisma = getPrisma();
+  const integration = await prisma.integration.findFirst({
+    where: {
+      websiteId: input.websiteId,
+      provider: IntegrationProvider.OTHER,
+      displayName: CUSTOM_PUBLISHING_KIND,
+    },
+    select: { id: true, scopesJson: true },
+  });
+  if (!integration) return null;
+
+  const scopes = parseScopes(integration.scopesJson);
+  if (!scopes) return null;
+
+  const row = await prisma.integration.update({
+    where: { id: integration.id },
+    data: {
+      scopesJson: {
+        ...scopes,
+        autoSendEnabled: input.enabled,
+      } as unknown as Prisma.InputJsonValue,
+    },
+    select: {
+      id: true,
+      scopesJson: true,
+      apiKeyEncrypted: true,
+      refreshTokenEncrypted: true,
+    },
+  });
+
+  const parsed = parseScopes(row.scopesJson);
+  return {
+    integrationId: row.id,
+    endpointConfigured: Boolean(row.apiKeyEncrypted),
+    endpointHost: parsed?.endpointHost ?? null,
+    testedAt: parsed?.testedAt ?? null,
+    autoSendEnabled: parsed?.autoSendEnabled === true,
+    hasSharedSecret: Boolean(row.refreshTokenEncrypted),
+  };
+}
+
 export function isWebhookReadyForAutoSend(
   config: CustomPublishingConfig | null
 ): boolean {

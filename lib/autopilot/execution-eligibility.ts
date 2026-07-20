@@ -72,6 +72,8 @@ export type ExecutionEligibilityInput = {
   manualPreview?: boolean;
   /** Website-level custom webhook tested+configured. */
   webhookConfiguredAndTested?: boolean;
+  /** Approved AUTO_PUBLISH plan + scoped rollout policy allow real webhook send. */
+  customWebhookAutoSendAllowed?: boolean;
   /** Plan publishing mode from MonthlyAutopilotPlan.publishingMode. */
   planPublishingMode?: string | null;
 };
@@ -273,6 +275,16 @@ export function resolvePlanItemExecutionEligibility(
     (isArticleWaitingForReview(article.status) ||
       isArticleApprovedForPublish(article.status))
   ) {
+    if (!wordpressConnected && input.webhookConfiguredAndTested) {
+      return eligibleAction(
+        "PREPARE_PUBLISHING_HANDOFF",
+        "readyForPublishingHandoff",
+        input.customWebhookAutoSendAllowed
+          ? "wouldSendWebhook"
+          : "wouldPrepareWebhookReady",
+        input.customWebhookAutoSendAllowed ? "published" : "prepared"
+      );
+    }
     if (!wordpressConnected) {
       return blocked("wordpressNotConnected", "wordpressRequired");
     }
