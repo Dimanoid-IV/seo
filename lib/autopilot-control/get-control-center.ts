@@ -326,6 +326,7 @@ export async function getAutopilotControlCenter(input: {
         id: item.id,
         type: item.type,
         title: item.title,
+        reason: item.reason,
         status: item.status,
         scheduledFor: item.scheduledFor ?? item.plannedPublishAt ?? null,
       })) ?? [];

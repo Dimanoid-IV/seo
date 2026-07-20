@@ -41,6 +41,7 @@ export type ControlCenterMonthlyPlan = {
     id: string;
     type: "ARTICLE" | "SEO_FIX" | "TASK_FIX" | "SOCIAL_POST" | "EMAIL";
     title: string;
+    reason?: string;
     status: string;
     scheduledFor?: string | null;
   }>;

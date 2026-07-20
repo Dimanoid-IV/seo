@@ -81,6 +81,11 @@ export function MonthlyPlanPreviewCard({ plan }: MonthlyPlanPreviewCardProps) {
                     <p className="text-sm font-medium leading-snug text-slate-900">
                       {item.title}
                     </p>
+                    {item.reason ? (
+                      <p className="mt-1 line-clamp-2 text-xs leading-relaxed text-slate-600">
+                        {item.reason}
+                      </p>
+                    ) : null}
                     <div className="mt-1 flex flex-wrap items-center gap-2 text-xs text-slate-500">
                       <span className="inline-flex items-center gap-1">
                         <CheckCircle2 className="size-3.5" />

@@ -85,6 +85,7 @@ export type SimpleDashboardViewModel = {
     articleTopics: Array<{
       id: string;
       title: string;
+      reason?: string;
       status: string;
       scheduledFor?: string | null;
     }>;
@@ -214,6 +215,7 @@ export function buildSimpleDashboardViewModel(input: {
           .map((item) => ({
             id: item.id,
             title: item.title,
+            reason: item.reason,
             status: item.status,
             scheduledFor: item.scheduledFor,
           })),
