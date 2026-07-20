@@ -301,6 +301,11 @@ export const saasDictionary: SaasDictionary = {
         "Вы можете выбрать темы, убрать лишнее или включить автопубликацию WordPress при подтверждении.",
       approvedNote:
         "Изменить режим, остановить автопилот или посмотреть детали можно в полном плане.",
+      topicCount: (count) =>
+        count === 1 ? "1 тема статьи" : `${count} темы статей`,
+      fixCount: (count) =>
+        count === 1 ? "1 исправление сайта" : `${count} исправления сайта`,
+      moreItems: (count) => `+ ещё ${count} пунктов в полном плане`,
       status: (status) => {
         const labels: Record<string, string> = {
           proposed: "Предложено",

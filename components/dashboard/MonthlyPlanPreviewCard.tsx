@@ -26,9 +26,13 @@ export function MonthlyPlanPreviewCard({ plan }: MonthlyPlanPreviewCardProps) {
 
   const hasArticles = plan.articleTopics.length > 0;
   const hasFixes = plan.fixItems.length > 0;
+  const hiddenItemsCount = Math.max(
+    0,
+    plan.totalItems - plan.articleTopics.length - plan.fixItems.length
+  );
 
   return (
-    <section className="rounded-2xl border border-blue-200 bg-white p-5 shadow-sm sm:p-6">
+    <section className="rounded-2xl border border-blue-200 bg-gradient-to-br from-blue-50 via-white to-violet-50/50 p-5 shadow-sm sm:p-6">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div className="min-w-0">
           <p className="text-xs font-medium uppercase tracking-wide text-blue-700">
@@ -40,6 +44,19 @@ export function MonthlyPlanPreviewCard({ plan }: MonthlyPlanPreviewCardProps) {
           <p className="mt-2 max-w-2xl text-sm leading-relaxed text-slate-600">
             {plan.isApproved ? t.descriptionApproved : t.descriptionDraft}
           </p>
+          <div className="mt-3 flex flex-wrap gap-2 text-xs font-medium">
+            <span className="rounded-full border border-blue-200 bg-white/80 px-2.5 py-1 text-blue-800">
+              {t.topicCount(plan.articleTopics.length)}
+            </span>
+            <span className="rounded-full border border-amber-200 bg-white/80 px-2.5 py-1 text-amber-800">
+              {t.fixCount(plan.fixItems.length)}
+            </span>
+            {hiddenItemsCount > 0 ? (
+              <span className="rounded-full border border-slate-200 bg-white/80 px-2.5 py-1 text-slate-600">
+                {t.moreItems(hiddenItemsCount)}
+              </span>
+            ) : null}
+          </div>
         </div>
         <Link
           href={plan.href}

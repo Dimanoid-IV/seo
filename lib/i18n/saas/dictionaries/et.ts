@@ -301,6 +301,11 @@ export const saasDictionary: SaasDictionary = {
         "Saate valida teemasid, eemaldada sobimatu või lubada WordPressi autopublishi kinnitamise ajal.",
       approvedNote:
         "Avage täielik plaan, et muuta režiimi, peatada autopiloot või näha detaile.",
+      topicCount: (count) =>
+        count === 1 ? "1 artikliteema" : `${count} artikliteemat`,
+      fixCount: (count) =>
+        count === 1 ? "1 saidi parandus" : `${count} saidi parandust`,
+      moreItems: (count) => `+ veel ${count} punkti täisplaanis`,
       status: (status) => {
         const labels: Record<string, string> = {
           proposed: "Pakutud",

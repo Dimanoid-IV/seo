@@ -18,6 +18,7 @@ import type { CurrentUser } from "@/lib/auth/types";
 import { formatMonthlyAutopilotPlan } from "@/lib/autopilot/format";
 import { currentMonthKey } from "@/lib/autopilot/month-utils";
 import { parsePlanItemsDocument } from "@/lib/autopilot/plan-items";
+import { getMonthlyAutopilotSourceData } from "@/lib/autopilot/source-data";
 import { findNextScheduledArticleAt } from "@/lib/dashboard/primary-cta";
 import { getPrisma } from "@/lib/db";
 import { resolveGscConnectionState } from "@/lib/integrations/gsc-state";
@@ -40,6 +41,7 @@ import type {
 } from "./types";
 import { getAutopilotStatusSnapshot } from "@/lib/autopilot/autopilot-status";
 import { getAutopilotSettings, autopilotModeToClient } from "@/lib/autopilot/autopilot-settings";
+import { replenishControlCenterArticleTopics } from "./monthly-plan-topics";
 
 const IMPORTANT_SEVERITIES = new Set<TimelineEventSeverity>([
   TimelineEventSeverity.OPPORTUNITY,
@@ -262,14 +264,39 @@ export async function getAutopilotControlCenter(input: {
     }),
   ]);
 
+  const wordpressConnected =
+    wpConnection?.status === WordPressConnectionStatus.CONNECTED;
+
+  let planItemsDocument = monthlyPlanRecord?.planItemsJson
+    ? parsePlanItemsDocument(monthlyPlanRecord.planItemsJson)
+    : null;
+
+  if (monthlyPlanRecord && planItemsDocument) {
+    const sourceData = await getMonthlyAutopilotSourceData({
+      userId,
+      websiteId: website.id,
+      organizationId: website.organizationId,
+      month,
+    });
+    const replenished = replenishControlCenterArticleTopics({
+      document: planItemsDocument,
+      sourceData,
+      wordpressConnected,
+    });
+    planItemsDocument = replenished.document;
+    if (replenished.changed && replenished.json) {
+      await prisma.monthlyAutopilotPlan.update({
+        where: { id: monthlyPlanRecord.id },
+        data: { planItemsJson: replenished.json },
+      });
+    }
+  }
+
   const monthlyPlan = monthlyPlanRecord
     ? formatMonthlyAutopilotPlan(monthlyPlanRecord)
     : null;
   const monthlyPlanApproved =
     monthlyPlanRecord?.status === MonthlyAutopilotStatus.APPROVED;
-  const planItemsDocument = monthlyPlanRecord?.planItemsJson
-    ? parsePlanItemsDocument(monthlyPlanRecord.planItemsJson)
-    : null;
   const hasArticleTopics = Boolean(
     planItemsDocument?.items.some((item) => item.type === "ARTICLE")
   );
@@ -316,8 +343,6 @@ export async function getAutopilotControlCenter(input: {
   const gscNeedsProperty = gscState === "GOOGLE_CONNECTED_NO_PROPERTY";
   const gscError = gscState === "ERROR";
 
-  const wordpressConnected =
-    wpConnection?.status === WordPressConnectionStatus.CONNECTED;
   const customPublishingConnected = Boolean(
     customPublishing?.endpointConfigured && customPublishing.testedAt
   );

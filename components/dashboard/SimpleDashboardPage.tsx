@@ -253,6 +253,10 @@ export function SimpleDashboardPage() {
             </section>
           ) : null}
 
+          {simple.hasAudit && simple.monthlyPlanPreview ? (
+            <MonthlyPlanPreviewCard plan={simple.monthlyPlanPreview} />
+          ) : null}
+
           {simple.hasAudit && simple.monthlyAutopilotActive ? (
             <MonthlyAutopilotActiveCard
               nextArticleDateLabel={
@@ -276,10 +280,6 @@ export function SimpleDashboardPage() {
 
           {simple.hasAudit && simple.readyToPublish ? (
             <ReadyToPublishCard article={simple.readyToPublish} />
-          ) : null}
-
-          {simple.hasAudit && simple.monthlyPlanPreview ? (
-            <MonthlyPlanPreviewCard plan={simple.monthlyPlanPreview} />
           ) : null}
 
           {simple.hasAudit && nextAction && !simple.monthlyAutopilotActive ? (

@@ -301,6 +301,11 @@ export const saasDictionary: SaasDictionary = {
         "You can choose topics, remove anything you dislike, or enable WordPress auto-publish while confirming.",
       approvedNote:
         "Open the full plan to change mode, pause autopilot, or see details.",
+      topicCount: (count) =>
+        count === 1 ? "1 article topic" : `${count} article topics`,
+      fixCount: (count) =>
+        count === 1 ? "1 site fix" : `${count} site fixes`,
+      moreItems: (count) => `+ ${count} more items in the full plan`,
       status: (status) => {
         const labels: Record<string, string> = {
           proposed: "Proposed",

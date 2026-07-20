@@ -237,6 +237,9 @@ export type SaasDictionary = {
       noFixes: string;
       draftNote: string;
       approvedNote: string;
+      topicCount: (count: number) => string;
+      fixCount: (count: number) => string;
+      moreItems: (count: number) => string;
       status: (status: string) => string;
     };
     activation: {
