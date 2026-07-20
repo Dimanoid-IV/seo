@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { Check, Copy, Download, Loader2, Mail } from "lucide-react";
+import { Check, Copy, Download, ExternalLink, Loader2, Mail, Send, Webhook } from "lucide-react";
 
 import { CustomPublishingSetup } from "@/components/integrations/CustomPublishingSetup";
 import { Button } from "@/components/ui/button";
@@ -14,6 +14,13 @@ type ExportResponse = {
     articleId: string;
     wordpressConnected: boolean;
     webhookTested: boolean;
+    customPublishing?: {
+      connected: boolean;
+      tested: boolean;
+      hostLabel: string | null;
+      hasSharedSecret: boolean;
+      connectedBanner: string | null;
+    };
     export: UniversalExportPackage;
   };
 };
@@ -78,6 +85,11 @@ export function ArticlePublishPanel({
   const [downloading, setDownloading] = useState<"html" | "md" | null>(null);
   const [rollingBack, setRollingBack] = useState(false);
   const [rollbackMessage, setRollbackMessage] = useState<string | null>(null);
+  const [customHost, setCustomHost] = useState<string | null>(null);
+  const [customConnected, setCustomConnected] = useState(false);
+  const [publishing, setPublishing] = useState<"test" | "send" | null>(null);
+  const [publishMessage, setPublishMessage] = useState<string | null>(null);
+  const [publishError, setPublishError] = useState<string | null>(null);
 
   const isLivePublished =
     articleStatus === "PUBLISHED" && Boolean(wordpressPostId);
@@ -101,6 +113,8 @@ export function ArticlePublishPanel({
         if (!cancelled) {
           setPkg(body.data.export);
           setWebhookTested(body.data.webhookTested === true);
+          setCustomConnected(body.data.customPublishing?.connected === true);
+          setCustomHost(body.data.customPublishing?.hostLabel ?? null);
         }
       } catch {
         if (!cancelled) setError("Сетевая ошибка при подготовке материалов.");
@@ -179,6 +193,56 @@ export function ArticlePublishPanel({
       setRollbackMessage("Network error while rolling back.");
     } finally {
       setRollingBack(false);
+    }
+  }
+
+  async function handleCustomPublish(dryRun: boolean) {
+    setPublishing(dryRun ? "test" : "send");
+    setPublishMessage(null);
+    setPublishError(null);
+    try {
+      const response = await authFetch(`/api/articles/${articleId}/custom-publish`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ dryRun }),
+      });
+      const body = (await response.json().catch(() => ({}))) as {
+        data?: {
+          delivered?: boolean;
+          statusCode?: number;
+          error?: string | null;
+        };
+        error?: { message?: string };
+      };
+      if (!response.ok) {
+        setPublishError(
+          body.error?.message ??
+            (dryRun
+              ? "Не удалось проверить подключение сайта."
+              : "Не удалось опубликовать статью на сайте.")
+        );
+        return;
+      }
+      if (body.data?.delivered) {
+        setPublishMessage(
+          dryRun
+            ? `Связь с ${customHost ?? "сайтом"} работает.`
+            : `Статья отправлена на ${customHost ?? "сайт"}. Она появится после деплоя сайта.`
+        );
+      } else {
+        setPublishError(
+          body.data?.error ??
+            `Сайт ответил статусом ${body.data?.statusCode ?? "unknown"}.`
+        );
+      }
+    } catch {
+      setPublishError(
+        dryRun
+          ? "Сетевая ошибка при проверке сайта."
+          : "Сетевая ошибка при отправке статьи."
+      );
+    } finally {
+      setPublishing(null);
     }
   }
 
@@ -279,12 +343,77 @@ export function ArticlePublishPanel({
         <h3 className="text-sm font-semibold text-white">Публикация статьи</h3>
         <p className="mt-1 text-xs text-slate-400">
           {publishPriority === "wordpress_draft"
-            ? "1) WordPress draft (приоритет). 2) Webhook если протестирован. 3) Универсальный пакет HTML/Markdown. Без live publish."
+            ? "WordPress подключён: RankBoost может создать черновик или публиковать через автопилот, если это разрешено в плане."
             : publishPriority === "webhook"
-              ? "1) Custom webhook готов. 2) Универсальный пакет HTML/Markdown / письмо разработчику. Без автоотправки."
-              : "Универсальный пакет HTML/Markdown / письмо разработчику — запасной путь для любого сайта."}
+              ? "Сайт подключён через Custom Webhook. Можно отправить статью прямо в блог сайта."
+              : "Подключите WordPress или Custom Webhook, чтобы публиковать без ручного копирования."}
         </p>
       </div>
+
+      {customConnected ? (
+        <div className="rounded-xl border border-emerald-500/25 bg-emerald-500/10 p-4">
+          <div className="flex items-start gap-3">
+            <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-emerald-400/15">
+              <Webhook className="size-4 text-emerald-200" />
+            </div>
+            <div className="min-w-0 flex-1">
+              <p className="text-sm font-semibold text-emerald-50">
+                Сайт подключён: {customHost ?? "Custom Webhook"}
+              </p>
+              <p className="mt-1 text-xs leading-relaxed text-emerald-100/80">
+                RankBoost отправит статью в блог сайта. Для popart.ee это создаёт
+                JSON-файл статьи в репозитории и запускает деплой сайта.
+              </p>
+            </div>
+          </div>
+          <div className="mt-4 flex flex-wrap gap-2">
+            <Button
+              type="button"
+              size="sm"
+              variant="outline"
+              disabled={publishing !== null}
+              onClick={() => void handleCustomPublish(true)}
+              className="border-emerald-300/30 bg-white/5 text-emerald-50 hover:bg-white/10"
+            >
+              {publishing === "test" ? (
+                <Loader2 className="size-4 animate-spin" />
+              ) : null}
+              Проверить связь
+            </Button>
+            <Button
+              type="button"
+              size="sm"
+              disabled={publishing !== null}
+              onClick={() => void handleCustomPublish(false)}
+              className="bg-emerald-500 text-white hover:bg-emerald-400"
+            >
+              {publishing === "send" ? (
+                <Loader2 className="size-4 animate-spin" />
+              ) : (
+                <Send className="size-4" />
+              )}
+              Опубликовать на сайте
+            </Button>
+          </div>
+          {publishMessage ? (
+            <p className="mt-3 text-xs text-emerald-100">{publishMessage}</p>
+          ) : null}
+          {publishError ? (
+            <p className="mt-3 text-xs text-red-200">{publishError}</p>
+          ) : null}
+          {customHost ? (
+            <a
+              href={`https://${customHost}`}
+              target="_blank"
+              rel="noreferrer"
+              className="mt-3 inline-flex items-center gap-1 text-xs text-emerald-100 underline"
+            >
+              Открыть сайт
+              <ExternalLink className="size-3" />
+            </a>
+          ) : null}
+        </div>
+      ) : null}
 
       <div className="space-y-2">
         <p className="text-xs font-medium uppercase tracking-wide text-slate-500">
@@ -359,7 +488,7 @@ export function ArticlePublishPanel({
         </p>
       </div>
 
-      <CustomPublishingSetup articleId={articleId} />
+      {!customConnected ? <CustomPublishingSetup articleId={articleId} /> : null}
     </div>
   );
 }

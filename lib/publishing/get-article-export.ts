@@ -6,11 +6,16 @@ import { getPrisma } from "@/lib/db";
 
 import { buildUniversalExport, type UniversalExportPackage } from "./universal-export";
 import { getCustomPublishingConfig } from "./custom-webhook-config";
+import {
+  buildCustomPublishingDisplayState,
+  type CustomPublishingDisplayState,
+} from "./custom-publishing-display";
 
 export interface ArticleUniversalExportResult {
   articleId: string;
   wordpressConnected: boolean;
   webhookTested: boolean;
+  customPublishing: CustomPublishingDisplayState;
   export: UniversalExportPackage;
 }
 
@@ -52,6 +57,12 @@ export async function getArticleUniversalExport({
     articleId: article.id,
     wordpressConnected: article.wordpressConnected,
     webhookTested: Boolean(custom?.endpointConfigured && custom.testedAt),
+    customPublishing: buildCustomPublishingDisplayState({
+      endpointConfigured: custom?.endpointConfigured,
+      endpointHost: custom?.endpointHost,
+      testedAt: custom?.testedAt,
+      hasSharedSecret: custom?.hasSharedSecret,
+    }),
     export: pkg,
   };
 }
