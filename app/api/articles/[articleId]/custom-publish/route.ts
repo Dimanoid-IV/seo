@@ -102,6 +102,16 @@ export async function POST(request: Request, context: RouteContext) {
       persistOnSuccess: false,
     });
 
+    if (!dryRun && result.delivered) {
+      await prisma.article.update({
+        where: { id: article.id },
+        data: {
+          status: "PUBLISHED",
+          publishedAt: new Date(),
+        },
+      });
+    }
+
     const config = await getCustomPublishingConfig(article.websiteId);
     return authJsonResponse({ data: { ...result, config } });
   } catch (error) {

@@ -210,19 +210,35 @@ export function CustomWebsiteIntegrationPanel({
         <Webhook className="mt-0.5 size-4 shrink-0 text-violet-700" />
         <div>
           <p className="text-sm font-medium text-slate-900">
-            Для сайта без CMS
+            Подключить публикацию на custom-сайт
           </p>
           <p className="mt-1 text-sm text-slate-600">
-            Webhook для разработчика или готовый пакет HTML/Markdown. Custom
-            сайт поддерживается — без тупика. Без автоматической публикации.
+            Если сайт не на WordPress, добавьте один защищённый endpoint. После
+            этого в каждой готовой статье появится кнопка «Опубликовать на
+            сайте».
           </p>
         </div>
       </div>
 
-      <ul className="space-y-1 text-sm text-slate-700">
-        <li>• Webhook для разработчика</li>
-        <li>• Готовый пакет HTML/Markdown</li>
-        <li>• Проверить соединение перед отправкой</li>
+      <ul className="grid gap-2 text-sm text-slate-700 sm:grid-cols-3">
+        <li className="rounded-lg border border-violet-100 bg-white/70 p-3">
+          <span className="font-medium text-slate-900">1. Endpoint на сайте</span>
+          <span className="mt-1 block text-xs text-slate-600">
+            Например /api/rankboost/articles.
+          </span>
+        </li>
+        <li className="rounded-lg border border-violet-100 bg-white/70 p-3">
+          <span className="font-medium text-slate-900">2. Проверка связи</span>
+          <span className="mt-1 block text-xs text-slate-600">
+            RankBoost отправляет тест без статьи.
+          </span>
+        </li>
+        <li className="rounded-lg border border-violet-100 bg-white/70 p-3">
+          <span className="font-medium text-slate-900">3. Публикация</span>
+          <span className="mt-1 block text-xs text-slate-600">
+            Готовая статья отправляется одной кнопкой.
+          </span>
+        </li>
       </ul>
 
       {showConnectedState ? (
@@ -231,11 +247,11 @@ export function CustomWebsiteIntegrationPanel({
             <CheckCircle2 className="mt-0.5 size-4 shrink-0" />
             <div>
               <p className="text-sm font-medium">
-                {display.connectedBanner ?? "Webhook подключён"}
+                {display.connectedBanner ?? "Публикация на сайт подключена"}
               </p>
               <p className="mt-1 text-xs text-emerald-700/90">
-                Полный URL и shared secret не отображаются. Автоотправка
-                выключена — только тест или явная отправка.
+                В готовой статье будет кнопка «Опубликовать на сайте». Полный
+                URL и secret не отображаются.
               </p>
               {display.hasSharedSecret ? (
                 <p className="mt-1 text-xs text-slate-600">
@@ -285,13 +301,13 @@ export function CustomWebsiteIntegrationPanel({
 
           <label className="block space-y-1">
             <span className="text-xs font-medium text-slate-700">
-              Endpoint URL
+              URL для публикации
             </span>
             <input
               type="url"
               value={endpointUrl}
               onChange={(e) => setEndpointUrl(e.target.value)}
-              placeholder="https://ваш-сайт.ru/api/rankboost"
+              placeholder="https://ваш-сайт.ru/api/rankboost/articles"
               className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:border-violet-400"
             />
           </label>
@@ -325,7 +341,7 @@ export function CustomWebsiteIntegrationPanel({
               {busy === "test" ? (
                 <Loader2 className="size-4 animate-spin" />
               ) : null}
-              Проверить соединение
+              Проверить и сохранить
             </Button>
             {replacing ? (
               <Button
@@ -352,14 +368,16 @@ export function CustomWebsiteIntegrationPanel({
         <summary className="cursor-pointer text-sm font-medium text-slate-800">
           <span className="inline-flex items-center gap-1.5">
             <Code2 className="size-3.5" />
-            Для разработчика
+            Технические детали для разработчика
           </span>
         </summary>
         <div className="mt-3 space-y-3 text-xs text-slate-600">
           <p>
-            Тест шлёт <code>event: &quot;rankboost.test&quot;</code>. Реальная
-            отправка — <code>article.ready</code> только после явного действия
-            пользователя. Ожидайте HTTP 2xx. URL не логируется.
+            Endpoint должен принимать POST JSON и отвечать HTTP 2xx. Тест шлёт{" "}
+            <code>event: &quot;rankboost.test&quot;</code>. Реальная отправка —{" "}
+            <code>article.ready</code> только после явного действия пользователя
+            или после включения Auto-publish в подтверждённом месячном плане.
+            URL и secret не логируются.
           </p>
           <p className="font-medium text-slate-800">Payload пример</p>
           <pre className="overflow-x-auto rounded bg-slate-900 p-3 text-[11px] text-slate-100">

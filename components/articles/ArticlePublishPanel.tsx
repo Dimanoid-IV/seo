@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import Link from "next/link";
 import { Check, Copy, Download, ExternalLink, Loader2, Mail, Send, Webhook } from "lucide-react";
 
 import { CustomPublishingSetup } from "@/components/integrations/CustomPublishingSetup";
@@ -91,8 +92,10 @@ export function ArticlePublishPanel({
   const [publishMessage, setPublishMessage] = useState<string | null>(null);
   const [publishError, setPublishError] = useState<string | null>(null);
 
-  const isLivePublished =
+  const isWordPressLivePublished =
     articleStatus === "PUBLISHED" && Boolean(wordpressPostId);
+  const isCustomPublished =
+    articleStatus === "PUBLISHED" && !wordpressPostId;
 
   useEffect(() => {
     let cancelled = false;
@@ -227,7 +230,7 @@ export function ArticlePublishPanel({
         setPublishMessage(
           dryRun
             ? `Связь с ${customHost ?? "сайтом"} работает.`
-            : `Статья отправлена на ${customHost ?? "сайт"}. Она появится после деплоя сайта.`
+            : `Статья отправлена на ${customHost ?? "сайт"}. Если endpoint запускает деплой, она появится после деплоя.`
         );
       } else {
         setPublishError(
@@ -288,7 +291,7 @@ export function ArticlePublishPanel({
 
   return (
     <div className="space-y-4 rounded-xl border border-white/10 bg-white/[0.02] p-4">
-      {isLivePublished ? (
+      {isWordPressLivePublished ? (
         <div className="rounded-xl border border-emerald-500/25 bg-emerald-500/10 p-3 text-xs text-emerald-50">
           <p className="font-semibold text-emerald-100">Published on WordPress</p>
           {wordpressPublishedUrl ? (
@@ -339,14 +342,37 @@ export function ArticlePublishPanel({
         </div>
       ) : null}
 
+      {isCustomPublished ? (
+        <div className="rounded-xl border border-emerald-500/25 bg-emerald-500/10 p-3 text-xs text-emerald-50">
+          <p className="font-semibold text-emerald-100">
+            Статья отправлена на сайт
+          </p>
+          <p className="mt-1 text-emerald-100/80">
+            RankBoost получил успешный ответ от custom endpoint. Если сайт
+            публикуется через деплой, статья появится после завершения деплоя.
+          </p>
+          {customHost ? (
+            <a
+              href={`https://${customHost}`}
+              target="_blank"
+              rel="noreferrer"
+              className="mt-2 inline-flex items-center gap-1 underline"
+            >
+              Открыть сайт
+              <ExternalLink className="size-3" />
+            </a>
+          ) : null}
+        </div>
+      ) : null}
+
       <div>
         <h3 className="text-sm font-semibold text-white">Публикация статьи</h3>
         <p className="mt-1 text-xs text-slate-400">
           {publishPriority === "wordpress_draft"
             ? "WordPress подключён: RankBoost может создать черновик или публиковать через автопилот, если это разрешено в плане."
             : publishPriority === "webhook"
-              ? "Сайт подключён через Custom Webhook. Можно отправить статью прямо в блог сайта."
-              : "Подключите WordPress или Custom Webhook, чтобы публиковать без ручного копирования."}
+              ? "Custom-сайт подключён. Нажмите «Опубликовать на сайте», и RankBoost отправит готовую статью в ваш блог."
+              : "Подключите WordPress или custom-сайт, чтобы публиковать без ручного копирования."}
         </p>
       </div>
 
@@ -361,25 +387,13 @@ export function ArticlePublishPanel({
                 Сайт подключён: {customHost ?? "Custom Webhook"}
               </p>
               <p className="mt-1 text-xs leading-relaxed text-emerald-100/80">
-                RankBoost отправит статью в блог сайта. Для popart.ee это создаёт
-                JSON-файл статьи в репозитории и запускает деплой сайта.
+                RankBoost отправит title, slug, HTML, Markdown, SEO title и meta
+                description в подключённый endpoint. Если endpoint связан с
+                репозиторием/деплоем, статья появится на сайте автоматически.
               </p>
             </div>
           </div>
           <div className="mt-4 flex flex-wrap gap-2">
-            <Button
-              type="button"
-              size="sm"
-              variant="outline"
-              disabled={publishing !== null}
-              onClick={() => void handleCustomPublish(true)}
-              className="border-emerald-300/30 bg-white/5 text-emerald-50 hover:bg-white/10"
-            >
-              {publishing === "test" ? (
-                <Loader2 className="size-4 animate-spin" />
-              ) : null}
-              Проверить связь
-            </Button>
             <Button
               type="button"
               size="sm"
@@ -393,6 +407,19 @@ export function ArticlePublishPanel({
                 <Send className="size-4" />
               )}
               Опубликовать на сайте
+            </Button>
+            <Button
+              type="button"
+              size="sm"
+              variant="outline"
+              disabled={publishing !== null}
+              onClick={() => void handleCustomPublish(true)}
+              className="border-emerald-300/30 bg-white/5 text-emerald-50 hover:bg-white/10"
+            >
+              {publishing === "test" ? (
+                <Loader2 className="size-4 animate-spin" />
+              ) : null}
+              Проверить связь
             </Button>
           </div>
           {publishMessage ? (
@@ -488,7 +515,29 @@ export function ArticlePublishPanel({
         </p>
       </div>
 
-      {!customConnected ? <CustomPublishingSetup articleId={articleId} /> : null}
+      {!customConnected ? (
+        <div className="space-y-3 rounded-xl border border-cyan-400/20 bg-cyan-400/10 p-4">
+          <div className="flex items-start gap-3">
+            <Webhook className="mt-0.5 size-4 shrink-0 text-cyan-200" />
+            <div>
+              <p className="text-sm font-semibold text-cyan-50">
+                Хотите публиковать на custom-сайт одной кнопкой?
+              </p>
+              <p className="mt-1 text-xs leading-relaxed text-cyan-100/80">
+                Подключите один защищённый endpoint в интеграциях. После
+                проверки здесь появится кнопка «Опубликовать на сайте».
+              </p>
+            </div>
+          </div>
+          <Link
+            href="/app/integrations"
+            className="inline-flex items-center justify-center rounded-md bg-cyan-500 px-3 py-1.5 text-sm font-semibold text-white transition hover:bg-cyan-400"
+          >
+            Настроить публикацию на сайт
+          </Link>
+          <CustomPublishingSetup articleId={articleId} />
+        </div>
+      ) : null}
     </div>
   );
 }
