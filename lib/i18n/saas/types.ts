@@ -1038,6 +1038,14 @@ export type SaasDictionary = {
     publishHostedPage: string;
     hostedPublishFailed: string;
     hostedPublishNetworkError: string;
+    hostedPublishSuccessTitle: string;
+    hostedPublishSuccessDescription: (title: string) => string;
+    hostedPublishNextStep: string;
+    customPublishSuccessTitle: string;
+    customPublishSuccessDescription: (title: string, host: string) => string;
+    openHostedPage: string;
+    openPublishedSite: string;
+    connectRealPublishing: string;
     publishManually: string;
     downloadForSite: string;
     actionGroups: {

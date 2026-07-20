@@ -3,7 +3,10 @@
  */
 import assert from "node:assert/strict";
 
-import { canPublishArticleToCustomSiteFromReview } from "./article-publish-action";
+import {
+  canPublishArticleToCustomSiteFromReview,
+  canPublishArticleToHostedPageFromReview,
+} from "./article-publish-action";
 
 assert.equal(
   canPublishArticleToCustomSiteFromReview({
@@ -55,5 +58,46 @@ assert.equal(
   false
 );
 
-console.log("article-publish-action.test.ts: ok");
+assert.equal(
+  canPublishArticleToHostedPageFromReview({
+    type: "ARTICLE_DRAFT",
+    articleContext: {
+      qualityScore: 95,
+      qualityPassed: true,
+      linkedAutopilotPlanItem: true,
+      autopilotUnlockOnApprove: false,
+      customPublishingConnected: false,
+    },
+  }),
+  true
+);
 
+assert.equal(
+  canPublishArticleToHostedPageFromReview({
+    type: "ARTICLE_DRAFT",
+    articleContext: {
+      qualityScore: 95,
+      qualityPassed: true,
+      linkedAutopilotPlanItem: true,
+      autopilotUnlockOnApprove: false,
+      customPublishingConnected: true,
+    },
+  }),
+  false
+);
+
+assert.equal(
+  canPublishArticleToHostedPageFromReview({
+    type: "ARTICLE_DRAFT",
+    articleContext: {
+      qualityScore: 60,
+      qualityPassed: false,
+      linkedAutopilotPlanItem: true,
+      autopilotUnlockOnApprove: false,
+      customPublishingConnected: false,
+    },
+  }),
+  false
+);
+
+console.log("article-publish-action.test.ts: ok");

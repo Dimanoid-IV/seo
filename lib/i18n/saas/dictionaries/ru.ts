@@ -1303,6 +1303,19 @@ export const saasDictionary: SaasDictionary = {
     publishHostedPage: "Опубликовать страницу RankBoost",
     hostedPublishFailed: "Не удалось опубликовать hosted-страницу.",
     hostedPublishNetworkError: "Сетевая ошибка при публикации hosted-страницы.",
+    hostedPublishSuccessTitle: "Страница опубликована",
+    hostedPublishSuccessDescription: (title) =>
+      `«${title}» теперь доступна по публичной ссылке RankBoost.`,
+    hostedPublishNextStep:
+      "Чтобы следующая статья публиковалась сразу на вашем домене, подключите WordPress или custom endpoint.",
+    customPublishSuccessTitle: "Статья отправлена на сайт",
+    customPublishSuccessDescription: (title, host) =>
+      host
+        ? `«${title}» отправлена на ${host}. Если сайт запускает деплой, статья появится после завершения деплоя.`
+        : `«${title}» отправлена в подключённый endpoint.`,
+    openHostedPage: "Открыть страницу",
+    openPublishedSite: "Открыть сайт",
+    connectRealPublishing: "Подключить публикацию на домен",
     publishManually: "Опубликовать вручную",
     downloadForSite: "Скачать / скопировать для сайта",
     actionGroups: {

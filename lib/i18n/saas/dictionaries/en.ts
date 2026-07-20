@@ -1300,6 +1300,19 @@ export const saasDictionary: SaasDictionary = {
     publishHostedPage: "Publish RankBoost page",
     hostedPublishFailed: "Could not publish the hosted page.",
     hostedPublishNetworkError: "Network error while publishing the hosted page.",
+    hostedPublishSuccessTitle: "Page published",
+    hostedPublishSuccessDescription: (title) =>
+      `“${title}” is now available on a public RankBoost link.`,
+    hostedPublishNextStep:
+      "To publish the next article directly on your own domain, connect WordPress or a custom endpoint.",
+    customPublishSuccessTitle: "Article sent to site",
+    customPublishSuccessDescription: (title, host) =>
+      host
+        ? `“${title}” was sent to ${host}. If your site runs a deploy, the article will appear after the deploy finishes.`
+        : `“${title}” was sent to the connected endpoint.`,
+    openHostedPage: "Open page",
+    openPublishedSite: "Open site",
+    connectRealPublishing: "Connect domain publishing",
     publishManually: "Publish manually",
     downloadForSite: "Download / copy for your site",
     actionGroups: {

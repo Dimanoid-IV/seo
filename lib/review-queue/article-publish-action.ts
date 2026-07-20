@@ -10,3 +10,12 @@ export function canPublishArticleToCustomSiteFromReview(
   );
 }
 
+export function canPublishArticleToHostedPageFromReview(
+  item: Pick<ReviewQueueItem, "type" | "articleContext">
+): boolean {
+  return (
+    item.type === "ARTICLE_DRAFT" &&
+    item.articleContext?.qualityPassed === true &&
+    item.articleContext?.customPublishingConnected !== true
+  );
+}

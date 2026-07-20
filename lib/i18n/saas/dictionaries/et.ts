@@ -1306,6 +1306,19 @@ export const saasDictionary: SaasDictionary = {
     publishHostedPage: "Avalda RankBoosti leht",
     hostedPublishFailed: "Hosted-lehte ei õnnestunud avaldada.",
     hostedPublishNetworkError: "Võrguviga hosted-lehe avaldamisel.",
+    hostedPublishSuccessTitle: "Leht avaldatud",
+    hostedPublishSuccessDescription: (title) =>
+      `„${title}” on nüüd saadaval avaliku RankBoosti lingiga.`,
+    hostedPublishNextStep:
+      "Et järgmine artikkel avalduks otse teie domeenil, ühendage WordPress või custom endpoint.",
+    customPublishSuccessTitle: "Artikkel saadeti saidile",
+    customPublishSuccessDescription: (title, host) =>
+      host
+        ? `„${title}” saadeti hostile ${host}. Kui sait käivitab deploy, ilmub artikkel pärast deploy lõppu.`
+        : `„${title}” saadeti ühendatud endpointi.`,
+    openHostedPage: "Ava leht",
+    openPublishedSite: "Ava sait",
+    connectRealPublishing: "Ühenda domeenil avaldamine",
     publishManually: "Avalda käsitsi",
     downloadForSite: "Laadi alla / kopeeri saidile",
     actionGroups: {

@@ -14,7 +14,10 @@ import { Textarea } from "@/components/ui/textarea";
 import { trackClientEvent } from "@/lib/analytics/client";
 import { authFetch, parseApiErrorMessage } from "@/lib/auth/client-session";
 import { useSaasTranslations } from "@/lib/i18n/saas/SaasLocaleProvider";
-import { canPublishArticleToCustomSiteFromReview } from "@/lib/review-queue/article-publish-action";
+import {
+  canPublishArticleToCustomSiteFromReview,
+  canPublishArticleToHostedPageFromReview,
+} from "@/lib/review-queue/article-publish-action";
 import type {
   ReviewActionNeeded,
   ReviewItemGroup,
@@ -25,6 +28,13 @@ import type {
 import { cn } from "@/lib/utils";
 
 type TabKey = ReviewItemGroup | ReviewActionNeeded | "ACTION_ALL";
+
+type PublishSuccess = {
+  kind: "custom" | "hosted";
+  title: string;
+  url: string | null;
+  host: string | null;
+};
 
 const statusStyles = {
   AWAITING_REVIEW: "border-violet-200 bg-violet-50 text-violet-800",
@@ -97,6 +107,7 @@ export function ReviewPage() {
   const [activeTab, setActiveTab] = useState<TabKey>("ACTION_ALL");
   const [actionLoadingId, setActionLoadingId] = useState<string | null>(null);
   const [actionError, setActionError] = useState<string | null>(null);
+  const [publishSuccess, setPublishSuccess] = useState<PublishSuccess | null>(null);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editContent, setEditContent] = useState("");
 
@@ -177,6 +188,7 @@ export function ReviewPage() {
   ) {
     setActionLoadingId(item.id);
     setActionError(null);
+    setPublishSuccess(null);
 
     try {
       const response = await authFetch("/api/review", {
@@ -211,6 +223,7 @@ export function ReviewPage() {
 
     setActionLoadingId(item.id);
     setActionError(null);
+    setPublishSuccess(null);
 
     try {
       const response = await authFetch(
@@ -228,6 +241,14 @@ export function ReviewPage() {
         return;
       }
 
+      setPublishSuccess({
+        kind: "custom",
+        title: item.title,
+        url: item.articleContext?.customPublishingHost
+          ? `https://${item.articleContext.customPublishingHost}`
+          : null,
+        host: item.articleContext?.customPublishingHost ?? null,
+      });
       await reload();
     } catch {
       setActionError(t.customPublishNetworkError);
@@ -243,6 +264,7 @@ export function ReviewPage() {
 
     setActionLoadingId(item.id);
     setActionError(null);
+    setPublishSuccess(null);
 
     try {
       const response = await authFetch(
@@ -256,6 +278,15 @@ export function ReviewPage() {
         return;
       }
 
+      const body = (await response.json().catch(() => ({}))) as {
+        data?: { hostedUrl?: string };
+      };
+      setPublishSuccess({
+        kind: "hosted",
+        title: item.title,
+        url: body.data?.hostedUrl ?? null,
+        host: "RankBoost",
+      });
       await reload();
     } catch {
       setActionError(t.hostedPublishNetworkError);
@@ -313,6 +344,56 @@ export function ReviewPage() {
       <p className="mb-6 rounded-xl border border-violet-100 bg-violet-50/60 px-4 py-3 text-sm text-slate-700">
         {t.safetyNote}
       </p>
+
+      {publishSuccess ? (
+        <div className="mb-6 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-4 shadow-sm">
+          <div className="flex flex-wrap items-start justify-between gap-3">
+            <div>
+              <p className="text-sm font-semibold text-emerald-900">
+                {publishSuccess.kind === "hosted"
+                  ? t.hostedPublishSuccessTitle
+                  : t.customPublishSuccessTitle}
+              </p>
+              <p className="mt-1 text-sm leading-relaxed text-emerald-800">
+                {publishSuccess.kind === "hosted"
+                  ? t.hostedPublishSuccessDescription(publishSuccess.title)
+                  : t.customPublishSuccessDescription(
+                      publishSuccess.title,
+                      publishSuccess.host ?? ""
+                    )}
+              </p>
+              {publishSuccess.kind === "hosted" ? (
+                <p className="mt-2 text-xs leading-relaxed text-emerald-700">
+                  {t.hostedPublishNextStep}
+                </p>
+              ) : null}
+            </div>
+            <div className="flex shrink-0 flex-wrap gap-2">
+              {publishSuccess.url ? (
+                <a
+                  href={publishSuccess.url}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center gap-1.5 rounded-md bg-emerald-600 px-3 py-1.5 text-sm font-semibold text-white hover:bg-emerald-500"
+                >
+                  <Globe className="size-4" />
+                  {publishSuccess.kind === "hosted"
+                    ? t.openHostedPage
+                    : t.openPublishedSite}
+                </a>
+              ) : null}
+              {publishSuccess.kind === "hosted" ? (
+                <Link
+                  href="/app/integrations"
+                  className="inline-flex items-center rounded-md border border-emerald-200 bg-white px-3 py-1.5 text-sm font-semibold text-emerald-800 hover:bg-emerald-100"
+                >
+                  {t.connectRealPublishing}
+                </Link>
+              ) : null}
+            </div>
+          </div>
+        </div>
+      ) : null}
 
       <div className="mb-6 flex flex-wrap gap-2">
         {tabs.map((tab) => (
@@ -558,8 +639,7 @@ export function ReviewPage() {
                               {t.publishToCustomSite}
                             </button>
                           ) : null}
-                          {!canPublishArticleToCustomSiteFromReview(item) &&
-                          item.articleContext.qualityPassed === true ? (
+                          {canPublishArticleToHostedPageFromReview(item) ? (
                             <button
                               type="button"
                               disabled={isLoading}
