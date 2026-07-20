@@ -1035,6 +1035,9 @@ export type SaasDictionary = {
     publishToCustomSite: string;
     customPublishFailed: string;
     customPublishNetworkError: string;
+    publishHostedPage: string;
+    hostedPublishFailed: string;
+    hostedPublishNetworkError: string;
     publishManually: string;
     downloadForSite: string;
     actionGroups: {

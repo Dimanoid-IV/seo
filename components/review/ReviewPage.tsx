@@ -236,6 +236,34 @@ export function ReviewPage() {
     }
   }
 
+  async function publishToHostedPage(item: ReviewQueueItem) {
+    if (item.type !== "ARTICLE_DRAFT" || item.articleContext?.qualityPassed !== true) {
+      return;
+    }
+
+    setActionLoadingId(item.id);
+    setActionError(null);
+
+    try {
+      const response = await authFetch(
+        `/api/articles/${encodeURIComponent(item.sourceId)}/hosted-publish`,
+        { method: "POST" }
+      );
+
+      if (!response.ok) {
+        const message = await parseApiErrorMessage(response, t.hostedPublishFailed);
+        setActionError(message);
+        return;
+      }
+
+      await reload();
+    } catch {
+      setActionError(t.hostedPublishNetworkError);
+    } finally {
+      setActionLoadingId(null);
+    }
+  }
+
   function typeLabel(type: ReviewItemType): string {
     return t.types[type];
   }
@@ -528,6 +556,18 @@ export function ReviewPage() {
                             >
                               <Send className="size-3.5" />
                               {t.publishToCustomSite}
+                            </button>
+                          ) : null}
+                          {!canPublishArticleToCustomSiteFromReview(item) &&
+                          item.articleContext.qualityPassed === true ? (
+                            <button
+                              type="button"
+                              disabled={isLoading}
+                              onClick={() => void publishToHostedPage(item)}
+                              className="inline-flex items-center gap-1.5 rounded-md border border-blue-200 bg-blue-50 px-2.5 py-1 text-xs font-semibold text-blue-800 hover:bg-blue-100 disabled:cursor-not-allowed disabled:opacity-60"
+                            >
+                              <Globe className="size-3.5" />
+                              {t.publishHostedPage}
                             </button>
                           ) : null}
                           <Link

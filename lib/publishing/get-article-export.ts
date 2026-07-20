@@ -11,11 +11,16 @@ import {
   type CustomPublishingDisplayState,
 } from "./custom-publishing-display";
 import { loadBrandKitForWebsite } from "@/lib/brand-kit";
+import { buildHostedArticleUrl } from "@/lib/hosted-blog/urls";
 
 export interface ArticleUniversalExportResult {
   articleId: string;
   wordpressConnected: boolean;
   webhookTested: boolean;
+  hostedBlog: {
+    url: string;
+    published: boolean;
+  };
   customPublishing: CustomPublishingDisplayState;
   export: UniversalExportPackage;
 }
@@ -59,6 +64,22 @@ export async function getArticleUniversalExport({
     articleId: article.id,
     wordpressConnected: article.wordpressConnected,
     webhookTested: Boolean(custom?.endpointConfigured && custom.testedAt),
+    hostedBlog: {
+      url: buildHostedArticleUrl({
+        articleId: article.id,
+        slug: article.slug,
+        title: article.title,
+      }),
+      published:
+        article.status === "PUBLISHED" &&
+        article.wordpressPostId === null &&
+        article.wordpressPublishedUrl ===
+          buildHostedArticleUrl({
+            articleId: article.id,
+            slug: article.slug,
+            title: article.title,
+          }),
+    },
     customPublishing: buildCustomPublishingDisplayState({
       endpointConfigured: custom?.endpointConfigured,
       endpointHost: custom?.endpointHost,

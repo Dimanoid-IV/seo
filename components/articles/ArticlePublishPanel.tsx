@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
-import { Check, Copy, Download, ExternalLink, Loader2, Mail, Send, Webhook } from "lucide-react";
+import { Check, Copy, Download, ExternalLink, Globe2, Loader2, Mail, Send, Webhook } from "lucide-react";
 
 import { CustomPublishingSetup } from "@/components/integrations/CustomPublishingSetup";
 import { Button } from "@/components/ui/button";
@@ -15,6 +15,10 @@ type ExportResponse = {
     articleId: string;
     wordpressConnected: boolean;
     webhookTested: boolean;
+    hostedBlog?: {
+      url: string;
+      published: boolean;
+    };
     customPublishing?: {
       connected: boolean;
       tested: boolean;
@@ -89,8 +93,11 @@ export function ArticlePublishPanel({
   const [customHost, setCustomHost] = useState<string | null>(null);
   const [customConnected, setCustomConnected] = useState(false);
   const [publishing, setPublishing] = useState<"test" | "send" | null>(null);
+  const [hostedPublishing, setHostedPublishing] = useState(false);
   const [publishMessage, setPublishMessage] = useState<string | null>(null);
   const [publishError, setPublishError] = useState<string | null>(null);
+  const [hostedUrl, setHostedUrl] = useState<string | null>(null);
+  const [hostedPublished, setHostedPublished] = useState(false);
 
   const isWordPressLivePublished =
     articleStatus === "PUBLISHED" && Boolean(wordpressPostId);
@@ -118,6 +125,8 @@ export function ArticlePublishPanel({
           setWebhookTested(body.data.webhookTested === true);
           setCustomConnected(body.data.customPublishing?.connected === true);
           setCustomHost(body.data.customPublishing?.hostLabel ?? null);
+          setHostedUrl(body.data.hostedBlog?.url ?? null);
+          setHostedPublished(body.data.hostedBlog?.published === true);
         }
       } catch {
         if (!cancelled) setError("Сетевая ошибка при подготовке материалов.");
@@ -249,6 +258,42 @@ export function ArticlePublishPanel({
     }
   }
 
+  async function handleHostedPublish() {
+    setHostedPublishing(true);
+    setPublishMessage(null);
+    setPublishError(null);
+    try {
+      const response = await authFetch(`/api/articles/${articleId}/hosted-publish`, {
+        method: "POST",
+      });
+      const body = (await response.json().catch(() => ({}))) as {
+        data?: { hostedUrl?: string; alreadyPublished?: boolean };
+        error?: { message?: string };
+      };
+      if (!response.ok) {
+        setPublishError(
+          body.error?.message ??
+            "Не удалось опубликовать статью на hosted-странице."
+        );
+        return;
+      }
+      const url = body.data?.hostedUrl ?? hostedUrl;
+      if (url) {
+        setHostedUrl(url);
+      }
+      setHostedPublished(true);
+      setPublishMessage(
+        body.data?.alreadyPublished
+          ? "Статья уже опубликована на hosted-странице RankBoost."
+          : "Статья опубликована на hosted-странице RankBoost. Этот URL можно открыть или передать разработчику."
+      );
+    } catch {
+      setPublishError("Сетевая ошибка при публикации hosted-страницы.");
+    } finally {
+      setHostedPublishing(false);
+    }
+  }
+
   if (loading) {
     return (
       <div className="flex items-center gap-2 rounded-xl border border-white/10 bg-white/[0.02] p-4 text-sm text-slate-400">
@@ -345,13 +390,24 @@ export function ArticlePublishPanel({
       {isCustomPublished ? (
         <div className="rounded-xl border border-emerald-500/25 bg-emerald-500/10 p-3 text-xs text-emerald-50">
           <p className="font-semibold text-emerald-100">
-            Статья отправлена на сайт
+            {hostedPublished ? "Статья опубликована на RankBoost" : "Статья отправлена на сайт"}
           </p>
           <p className="mt-1 text-emerald-100/80">
-            RankBoost получил успешный ответ от custom endpoint. Если сайт
-            публикуется через деплой, статья появится после завершения деплоя.
+            {hostedPublished
+              ? "Это публичная hosted-страница. Для публикации на вашем домене подключите WordPress или custom endpoint."
+              : "RankBoost получил успешный ответ от custom endpoint. Если сайт публикуется через деплой, статья появится после завершения деплоя."}
           </p>
-          {customHost ? (
+          {hostedPublished && hostedUrl ? (
+            <a
+              href={hostedUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="mt-2 inline-flex items-center gap-1 underline"
+            >
+              Открыть hosted-страницу
+              <ExternalLink className="size-3" />
+            </a>
+          ) : customHost ? (
             <a
               href={`https://${customHost}`}
               target="_blank"
@@ -372,9 +428,57 @@ export function ArticlePublishPanel({
             ? "WordPress подключён: RankBoost может создать черновик или публиковать через автопилот, если это разрешено в плане."
             : publishPriority === "webhook"
               ? "Custom-сайт подключён. Нажмите «Опубликовать на сайте», и RankBoost отправит готовую статью в ваш блог."
-              : "Подключите WordPress или custom-сайт, чтобы публиковать без ручного копирования."}
+              : "Если WordPress или endpoint ещё не подключены, можно опубликовать временную hosted-страницу RankBoost в один клик."}
         </p>
       </div>
+
+      {!isWordPressLivePublished && !customConnected ? (
+        <div className="rounded-xl border border-blue-400/25 bg-blue-500/10 p-4">
+          <div className="flex items-start gap-3">
+            <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-blue-400/15">
+              <Globe2 className="size-4 text-blue-100" />
+            </div>
+            <div className="min-w-0 flex-1">
+              <p className="text-sm font-semibold text-blue-50">
+                Самый простой способ: hosted-страница RankBoost
+              </p>
+              <p className="mt-1 text-xs leading-relaxed text-blue-100/80">
+                RankBoost создаст публичную страницу статьи. Это не заменяет
+                публикацию на вашем домене, но позволяет сразу проверить и
+                использовать материал без разработчика.
+              </p>
+            </div>
+          </div>
+          <div className="mt-4 flex flex-wrap gap-2">
+            {hostedPublished && hostedUrl ? (
+              <a
+                href={hostedUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-2 rounded-md bg-blue-500 px-3 py-1.5 text-sm font-semibold text-white transition hover:bg-blue-400"
+              >
+                <ExternalLink className="size-4" />
+                Открыть страницу
+              </a>
+            ) : (
+              <Button
+                type="button"
+                size="sm"
+                disabled={hostedPublishing}
+                onClick={() => void handleHostedPublish()}
+                className="bg-blue-500 text-white hover:bg-blue-400"
+              >
+                {hostedPublishing ? (
+                  <Loader2 className="size-4 animate-spin" />
+                ) : (
+                  <Globe2 className="size-4" />
+                )}
+                Опубликовать hosted-страницу
+              </Button>
+            )}
+          </div>
+        </div>
+      ) : null}
 
       {customConnected ? (
         <div className="rounded-xl border border-emerald-500/25 bg-emerald-500/10 p-4">

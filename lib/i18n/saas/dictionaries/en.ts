@@ -1297,6 +1297,9 @@ export const saasDictionary: SaasDictionary = {
     publishToCustomSite: "Publish to site",
     customPublishFailed: "Could not send the article to your site.",
     customPublishNetworkError: "Network error while sending the article to your site.",
+    publishHostedPage: "Publish RankBoost page",
+    hostedPublishFailed: "Could not publish the hosted page.",
+    hostedPublishNetworkError: "Network error while publishing the hosted page.",
     publishManually: "Publish manually",
     downloadForSite: "Download / copy for your site",
     actionGroups: {

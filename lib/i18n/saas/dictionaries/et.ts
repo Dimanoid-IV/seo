@@ -1303,6 +1303,9 @@ export const saasDictionary: SaasDictionary = {
     publishToCustomSite: "Avalda saidil",
     customPublishFailed: "Artiklit ei õnnestunud saidile saata.",
     customPublishNetworkError: "Võrguviga artikli saidile saatmisel.",
+    publishHostedPage: "Avalda RankBoosti leht",
+    hostedPublishFailed: "Hosted-lehte ei õnnestunud avaldada.",
+    hostedPublishNetworkError: "Võrguviga hosted-lehe avaldamisel.",
     publishManually: "Avalda käsitsi",
     downloadForSite: "Laadi alla / kopeeri saidile",
     actionGroups: {
