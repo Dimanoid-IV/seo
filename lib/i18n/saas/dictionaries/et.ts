@@ -1851,9 +1851,9 @@ export const saasDictionary: SaasDictionary = {
         "Artiklid lähevad ülevaatusse. Live-avaldamine on selle plaani jaoks välja lülitatud.",
       publishingModeAutoPublishTitle: "Avalda automaatselt graafiku järgi",
       publishingModeAutoPublishDescription:
-        "WordPressis võivad quality gate’i läbinud selle kinnitatud plaani artiklid ilmuda graafiku järgi, kui Autopublish on saidi jaoks lubatud. Paus on alati võimalik.",
+        "Selle kinnitatud plaani quality gate’i läbinud artiklid võivad ilmuda graafiku järgi WordPressi või testitud custom endpointi kaudu. Paus on alati võimalik.",
       publishingModeAutoPublishWarning:
-        "Ainult WordPress. Kohandatud saitidele pakett või webhook. Ilma positsioonide garantiita.",
+        "Töötab WordPressi või testitud custom endpointiga. Ilma positsioonide garantiita.",
       approveFailed: "Valitud plaani punkte ei saanud kinnitada.",
       approveNetworkError: "Võrguviga plaani kinnitamisel.",
       selectAtLeastOne: "Vali kinnitamiseks vähemalt üks punkt.",

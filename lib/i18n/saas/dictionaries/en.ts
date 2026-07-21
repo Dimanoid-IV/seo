@@ -1844,9 +1844,9 @@ export const saasDictionary: SaasDictionary = {
         "Articles go to Review. Live publish stays off for this plan.",
       publishingModeAutoPublishTitle: "Publish automatically on schedule",
       publishingModeAutoPublishDescription:
-        "On WordPress, quality-passed articles from this approved plan can publish on schedule when auto-publish is enabled for this site. You can pause anytime.",
+        "Quality-passed articles from this approved plan can publish on schedule through WordPress or a tested custom endpoint. You can pause anytime.",
       publishingModeAutoPublishWarning:
-        "WordPress only. Custom sites still get a package or webhook. No ranking guarantees.",
+        "Works with WordPress or a tested custom endpoint. No ranking guarantees.",
       approveFailed: "Could not approve selected plan items.",
       approveNetworkError: "Network error while approving plan.",
       selectAtLeastOne: "Select at least one item to approve.",

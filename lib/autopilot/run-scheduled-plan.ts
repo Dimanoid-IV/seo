@@ -478,6 +478,40 @@ export async function runScheduledAutopilotPlans(input: {
             }
             continue;
           }
+
+          if (
+            qualityPassed &&
+            settings.mode === AutopilotMode.AUTOPUBLISH &&
+            isPlanAutoPublishMode(plan.publishingMode) &&
+            !wordpressConnected &&
+            webhookConfiguredAndTested &&
+            consumeBudgetForAction(budget, "PREPARE_PUBLISHING_HANDOFF")
+          ) {
+            const handoff = await preparePublishingHandoff({
+              articleId: draftResult.planItem.generatedArticleId,
+              userId: input.userId,
+              websiteId: plan.websiteId,
+              organizationId: plan.organizationId,
+              autopilotMode: settings.mode,
+              wordpressConnected,
+              currentItem: afterDraft,
+              planId: plan.id,
+              planItemId: currentItem.id,
+              customWebhookAutoSendAllowed: customWebhookAutoSendAllowed,
+            });
+
+            items = applyPlanItemUpdate(items, currentItem.id, handoff.patch);
+            report.results.push({
+              ...itemResult,
+              action: "PREPARE_PUBLISHING_HANDOFF",
+              reasonKey: "readyForPublishingHandoff",
+              summaryKey: handoff.summaryKey,
+              would: handoff.summaryKey,
+              nextStatus: handoff.patch.status,
+              executed: handoff.webhookDelivered === true || itemResult.executed,
+            });
+            continue;
+          }
         } else if (eligibility.action === "PREPARE_PUBLISHING_HANDOFF") {
           if (!currentItem.generatedArticleId) {
             throw new AppError(

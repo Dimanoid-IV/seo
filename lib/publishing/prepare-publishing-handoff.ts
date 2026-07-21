@@ -1,6 +1,7 @@
 /**
  * Safe publishing handoff after a quality-passed article draft.
- * Never live-publishes. WordPress → draft only. Webhook → ready (send only when allowed).
+ * WordPress → draft/live through the WP adapter. Custom webhook → ready/send
+ * only when a tested endpoint and plan-scoped AUTO_PUBLISH allow it.
  */
 import "server-only";
 

@@ -1848,9 +1848,9 @@ export const saasDictionary: SaasDictionary = {
         "Статьи появятся на проверку. Live publish выключен для этого плана.",
       publishingModeAutoPublishTitle: "Публиковать автоматически по расписанию",
       publishingModeAutoPublishDescription:
-        "На WordPress прошедшие quality gate статьи из этого одобренного плана могут публиковаться по расписанию, когда автопубликация включена для сайта. Паузу можно включить в любой момент.",
+        "Прошедшие quality gate статьи из этого одобренного плана могут публиковаться по расписанию через WordPress или проверенный custom endpoint. Паузу можно включить в любой момент.",
       publishingModeAutoPublishWarning:
-        "Только WordPress. Для custom-сайтов — пакет или webhook. Без гарантий позиций.",
+        "Работает для WordPress или проверенного custom endpoint. Без гарантий позиций.",
       approveFailed: "Не удалось одобрить выбранные пункты плана.",
       approveNetworkError: "Сетевая ошибка при одобрении плана.",
       selectAtLeastOne: "Выберите хотя бы один пункт для одобрения.",
