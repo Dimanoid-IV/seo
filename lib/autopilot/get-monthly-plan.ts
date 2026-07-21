@@ -7,6 +7,7 @@ import {
 import type { CurrentUser } from "@/lib/auth/types";
 import { getPrisma } from "@/lib/db";
 import { isWebsiteOnLivePublishAllowlist } from "@/lib/integrations/live-publish-rollout";
+import { getCustomPublishingConfig } from "@/lib/publishing/custom-webhook-config";
 
 import { getAutopilotSettings } from "./autopilot-settings";
 import { getAutopilotStatusSnapshot } from "./autopilot-status";
@@ -57,7 +58,14 @@ export async function getMonthlyAutopilotPlan(input: {
       month,
     });
 
-    const [autopilotSettings, autopilotStatus, wpConnection, tasks, lastPublished] =
+    const [
+      autopilotSettings,
+      autopilotStatus,
+      wpConnection,
+      customPublishing,
+      tasks,
+      lastPublished,
+    ] =
       await Promise.all([
         getAutopilotSettings({
           userId: input.currentUser.id,
@@ -72,6 +80,7 @@ export async function getMonthlyAutopilotPlan(input: {
           where: { websiteId: website.id },
           select: { status: true },
         }),
+        getCustomPublishingConfig(website.id),
         getPrisma().task.findMany({
           where: { websiteId: website.id, deletedAt: null },
           select: { id: true, recommendationJson: true, status: true },
@@ -90,6 +99,9 @@ export async function getMonthlyAutopilotPlan(input: {
 
     const wordpressConnected =
       wpConnection?.status === WordPressConnectionStatus.CONNECTED;
+    const customPublishingConnected = Boolean(
+      customPublishing?.endpointConfigured && customPublishing.testedAt
+    );
 
     const livePublishScopedAllowed = isWebsiteOnLivePublishAllowlist(
       website.id,
@@ -169,6 +181,7 @@ export async function getMonthlyAutopilotPlan(input: {
       autopilotStatus,
       autopilotSettings,
       wordpressConnected,
+      customPublishingConnected,
       lastPublishedUrl: lastPublished?.wordpressPublishedUrl ?? null,
       rollbackAvailable: true,
       livePublishScopedAllowed,
@@ -182,6 +195,7 @@ export async function getMonthlyAutopilotPlan(input: {
       websiteUrl: null,
       sourceSummary: null,
       wordpressConnected: false,
+      customPublishingConnected: false,
       lastPublishedUrl: null,
       rollbackAvailable: true,
       livePublishScopedAllowed: false,

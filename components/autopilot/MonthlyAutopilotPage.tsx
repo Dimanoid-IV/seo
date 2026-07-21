@@ -333,6 +333,7 @@ export function MonthlyAutopilotPage() {
                   data.autopilotSettings.livePublishRolloutEnabled
               )}
               wordpressConnected={Boolean(data.wordpressConnected)}
+              customPublishingConnected={Boolean(data.customPublishingConnected)}
               lastPublishedUrl={data.lastPublishedUrl ?? null}
               rollbackAvailable={data.rollbackAvailable !== false}
               onModeChange={() => void loadPlan(month)}

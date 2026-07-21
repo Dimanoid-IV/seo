@@ -31,6 +31,7 @@ type AutopilotStatusBlockProps = {
   /** Site is on first-customer allowlist / DB rollout flag. */
   livePublishRolloutEnabled?: boolean;
   wordpressConnected?: boolean;
+  customPublishingConnected?: boolean;
   lastPublishedUrl?: string | null;
   rollbackAvailable?: boolean;
   onModeChange?: (mode: string) => void;
@@ -66,6 +67,7 @@ export function AutopilotStatusBlock({
   livePublishPaused = false,
   livePublishRolloutEnabled = false,
   wordpressConnected = false,
+  customPublishingConnected = false,
   lastPublishedUrl = null,
   rollbackAvailable = true,
   onModeChange,
@@ -84,6 +86,8 @@ export function AutopilotStatusBlock({
   const [error, setError] = useState<string | null>(null);
   const mode = optimisticMode ?? settingsMode;
   const paused = pausedOverride ?? livePublishPaused;
+  const publishingIntegrationConnected =
+    wordpressConnected || customPublishingConnected;
 
   const dueCount = useMemo(
     () => (planItems?.items ? findDuePlanItems(planItems.items).length : 0),
@@ -380,7 +384,9 @@ export function AutopilotStatusBlock({
             <p className="mt-1 text-sm text-slate-800">
               {wordpressConnected
                 ? t.wordpressHealthConnected
-                : t.wordpressHealthDisconnected}
+                : customPublishingConnected
+                  ? t.customPublishingHealthConnected
+                  : t.wordpressHealthDisconnected}
             </p>
           </div>
 
@@ -415,7 +421,8 @@ export function AutopilotStatusBlock({
               </p>
               <ul className="mt-2 space-y-1 text-xs text-slate-700">
                 <li>
-                  {wordpressConnected ? "✓" : "○"} {t.pilotWordpressConnected}
+                  {publishingIntegrationConnected ? "✓" : "○"}{" "}
+                  {t.pilotPublishingConnected}
                 </li>
                 <li>
                   {status.planApprovalStatus === "approved" ? "✓" : "○"}{" "}

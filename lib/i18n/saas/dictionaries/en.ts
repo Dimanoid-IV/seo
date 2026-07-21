@@ -1796,12 +1796,13 @@ export const saasDictionary: SaasDictionary = {
       resumeFailed: "Could not resume live publish.",
       resumeNetworkError: "Network error while resuming live publish.",
       autoPublishExplainer:
-        "Autopilot will publish approved monthly plan articles automatically when WordPress is healthy and auto-publish is enabled for this site.",
+        "Autopilot will publish approved monthly plan articles automatically when WordPress or a tested custom endpoint is connected and auto-publish is enabled for this site.",
       noRankingGuarantee:
         "RankBoost does not guarantee rankings, traffic, or revenue. Publishing is an operational assist only.",
-      wordpressHealthLabel: "WordPress",
+      wordpressHealthLabel: "Publishing integration",
       wordpressHealthConnected: "Connected",
       wordpressHealthDisconnected: "Not connected",
+      customPublishingHealthConnected: "Custom endpoint connected",
       rollbackAvailableNote:
         "Published articles can be moved back to draft from the article page or Integrations history.",
       lastPublishedUrlLabel: "Last published URL",
@@ -1809,6 +1810,7 @@ export const saasDictionary: SaasDictionary = {
         "Auto-publish runs only for sites where it is enabled after plan confirmation. Pause stops live publishing only.",
       pilotChecklistTitle: "Pilot readiness",
       pilotWordpressConnected: "WordPress connected",
+      pilotPublishingConnected: "WordPress or custom endpoint connected",
       pilotPlanApproved: "Monthly plan approved",
       pilotAutoPublishEnabled: "Auto-publish enabled for this site",
       pilotAutoPublishPending: "Auto-publish not enabled for this site yet",

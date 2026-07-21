@@ -1799,12 +1799,13 @@ export const saasDictionary: SaasDictionary = {
       resumeFailed: "Не удалось возобновить live publish.",
       resumeNetworkError: "Сетевая ошибка при возобновлении live publish.",
       autoPublishExplainer:
-        "Autopilot будет автоматически публиковать одобренные статьи месячного плана, когда WordPress здоров и автопубликация включена для этого сайта.",
+        "Autopilot будет автоматически публиковать одобренные статьи месячного плана, когда подключён WordPress или проверенный custom endpoint и автопубликация включена для этого сайта.",
       noRankingGuarantee:
         "RankBoost не гарантирует позиции, трафик или выручку. Публикация — только операционная помощь.",
-      wordpressHealthLabel: "WordPress",
+      wordpressHealthLabel: "Интеграция публикации",
       wordpressHealthConnected: "Подключён",
       wordpressHealthDisconnected: "Не подключён",
+      customPublishingHealthConnected: "Custom endpoint подключён",
       rollbackAvailableNote:
         "Опубликованные статьи можно вернуть в черновик на странице статьи или в истории интеграций.",
       lastPublishedUrlLabel: "Последний опубликованный URL",
@@ -1812,6 +1813,7 @@ export const saasDictionary: SaasDictionary = {
         "Автопубликация работает только на сайтах, где она включена после подтверждения плана. Пауза останавливает только live-публикацию.",
       pilotChecklistTitle: "Готовность к пилоту",
       pilotWordpressConnected: "WordPress подключён",
+      pilotPublishingConnected: "WordPress или custom endpoint подключён",
       pilotPlanApproved: "Месячный план одобрен",
       pilotAutoPublishEnabled: "Автопубликация включена для этого сайта",
       pilotAutoPublishPending: "Автопубликация для этого сайта ещё не включена",

@@ -1471,11 +1471,13 @@ export type SaasDictionary = {
       wordpressHealthLabel: string;
       wordpressHealthConnected: string;
       wordpressHealthDisconnected: string;
+      customPublishingHealthConnected: string;
       rollbackAvailableNote: string;
       lastPublishedUrlLabel: string;
       scopedRolloutNote: string;
       pilotChecklistTitle: string;
       pilotWordpressConnected: string;
+      pilotPublishingConnected: string;
       pilotPlanApproved: string;
       pilotAutoPublishEnabled: string;
       pilotAutoPublishPending: string;

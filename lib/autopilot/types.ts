@@ -100,6 +100,7 @@ export type MonthlyAutopilotGetResponse = {
   autopilotStatus?: import("./autopilot-status").AutopilotStatusSnapshot;
   autopilotSettings?: import("./autopilot-settings").AutopilotSettingsView;
   wordpressConnected?: boolean;
+  customPublishingConnected?: boolean;
   lastPublishedUrl?: string | null;
   rollbackAvailable?: boolean;
   /** Env allowlist and/or DB livePublishRolloutEnabled. */

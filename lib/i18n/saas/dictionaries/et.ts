@@ -1802,12 +1802,13 @@ export const saasDictionary: SaasDictionary = {
       resumeFailed: "Live publish’i jätkamine ebaõnnestus.",
       resumeNetworkError: "Võrguviga live publish’i jätkamisel.",
       autoPublishExplainer:
-        "Autopilot avaldab kinnitatud kuuplaani artiklid automaatselt, kui WordPress on terve ja autopublish on selle saidi jaoks lubatud.",
+        "Autopilot avaldab kinnitatud kuuplaani artiklid automaatselt, kui WordPress või testitud custom endpoint on ühendatud ja autopublish on selle saidi jaoks lubatud.",
       noRankingGuarantee:
         "RankBoost ei taga kohti, liiklust ega tulu. Avaldamine on ainult operatiivne abi.",
-      wordpressHealthLabel: "WordPress",
+      wordpressHealthLabel: "Avaldamise integratsioon",
       wordpressHealthConnected: "Ühendatud",
       wordpressHealthDisconnected: "Pole ühendatud",
+      customPublishingHealthConnected: "Custom endpoint ühendatud",
       rollbackAvailableNote:
         "Avaldatud artikleid saab mustandisse tagasi viia artikli lehelt või integratsioonide ajaloost.",
       lastPublishedUrlLabel: "Viimati avaldatud URL",
@@ -1815,6 +1816,7 @@ export const saasDictionary: SaasDictionary = {
         "Autopublish töötab ainult saitidel, kus see on pärast plaani kinnitamist lubatud. Paus peatab ainult live-avaldamise.",
       pilotChecklistTitle: "Piloodi valmisolek",
       pilotWordpressConnected: "WordPress ühendatud",
+      pilotPublishingConnected: "WordPress või custom endpoint ühendatud",
       pilotPlanApproved: "Kuuplaan kinnitatud",
       pilotAutoPublishEnabled: "Autopublish selle saidi jaoks lubatud",
       pilotAutoPublishPending: "Autopublish selle saidi jaoks pole veel lubatud",
