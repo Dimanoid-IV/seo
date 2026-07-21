@@ -18,9 +18,11 @@ export type HostedPublicArticle = {
   language: string;
   metaTitle: string;
   metaDescription: string;
+  targetKeyword: string | null;
   canonicalUrl: string;
   bodyHtml: string;
   publishedAt: Date;
+  updatedAt: Date;
   websiteUrl: string;
   hostedUrl: string;
 };
@@ -50,8 +52,10 @@ export async function getHostedPublicArticle({
       language: true,
       metaTitle: true,
       metaDescription: true,
+      targetKeyword: true,
       contentHtml: true,
       publishedAt: true,
+      updatedAt: true,
       wordpressPublishedUrl: true,
       website: {
         select: {
@@ -107,9 +111,11 @@ export async function getHostedPublicArticle({
     language: article.language,
     metaTitle: pkg.metaTitle,
     metaDescription: pkg.metaDescription,
+    targetKeyword: article.targetKeyword,
     canonicalUrl: hostedUrl,
     bodyHtml: pkg.bodyHtml,
     publishedAt: article.publishedAt,
+    updatedAt: article.updatedAt,
     websiteUrl: article.website.url,
     hostedUrl,
   };

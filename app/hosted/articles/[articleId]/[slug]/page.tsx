@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
+import { JsonLdScript } from "@/components/seo/JsonLdScript";
+import { buildHostedArticleJsonLd } from "@/lib/hosted-blog/json-ld";
 import { getHostedPublicArticle } from "@/lib/hosted-blog/public-article";
 
 type PageProps = {
@@ -42,6 +44,7 @@ export default async function HostedArticlePage({ params }: PageProps) {
 
   return (
     <main className="min-h-screen bg-white text-slate-900">
+      <JsonLdScript data={buildHostedArticleJsonLd(article)} />
       <article className="mx-auto w-full max-w-3xl px-4 py-10 sm:px-6 lg:py-16">
         <p className="text-xs font-semibold uppercase tracking-[0.18em] text-blue-600">
           RankBoost Hosted Blog
