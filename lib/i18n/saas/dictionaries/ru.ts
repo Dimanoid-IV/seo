@@ -1361,6 +1361,22 @@ export const saasDictionary: SaasDictionary = {
     connectCustomPublishing: "Подключить мой сайт",
     connectCustomPublishingHint:
       "Для custom-сайта добавьте один защищённый endpoint. После проверки здесь появится кнопка «Опубликовать на сайте».",
+    publishingGuide: {
+      title: "Как опубликовать статью",
+      description:
+        "Выберите самый удобный путь. Для custom-сайта проще всего один раз подключить защищённый endpoint, после этого готовые статьи отправляются кнопкой «Опубликовать на сайте».",
+      wordpressTitle: "WordPress",
+      wordpressDescription:
+        "Подключите Application Password. RankBoost сможет создавать черновики и, если вы включите автопубликацию в месячном плане, публиковать по расписанию.",
+      customTitle: "Свой сайт",
+      customDescription:
+        "Добавьте endpoint вида /api/rankboost/articles. RankBoost отправит туда готовую статью с HTML, Markdown и SEO-полями.",
+      hostedTitle: "Без интеграции",
+      hostedDescription:
+        "Можно сразу опубликовать временную страницу RankBoost и позже перенести материал на свой домен.",
+      openIntegrations: "Открыть интеграции",
+      openCustomSetup: "Настроить свой сайт",
+    },
     publishManually: "Опубликовать вручную",
     downloadForSite: "Скачать / скопировать для сайта",
     actionGroups: {

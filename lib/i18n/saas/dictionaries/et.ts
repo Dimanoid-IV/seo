@@ -1364,6 +1364,22 @@ export const saasDictionary: SaasDictionary = {
     connectCustomPublishing: "Ühenda minu sait",
     connectCustomPublishingHint:
       "Kohandatud saidi jaoks lisage üks kaitstud endpoint. Pärast testi ilmub siia nupp saidil avaldamiseks.",
+    publishingGuide: {
+      title: "Kuidas artikkel avaldada",
+      description:
+        "Valige lihtsaim tee. Kohandatud saidi jaoks ühendage üks kaitstud endpoint; seejärel saab valmis artikleid saata nupuga Avalda saidil.",
+      wordpressTitle: "WordPress",
+      wordpressDescription:
+        "Ühendage Application Password. RankBoost saab luua mustandeid ja, kui kuuplaanis on Autopublish lubatud, avaldada graafiku järgi.",
+      customTitle: "Kohandatud sait",
+      customDescription:
+        "Lisage endpoint nagu /api/rankboost/articles. RankBoost saadab valmis artikli HTML-i, Markdowni ja SEO-väljadega.",
+      hostedTitle: "Ilma integratsioonita",
+      hostedDescription:
+        "Avaldage ajutine RankBoosti leht kohe ja viige materjal hiljem oma domeenile.",
+      openIntegrations: "Ava integratsioonid",
+      openCustomSetup: "Seadista kohandatud sait",
+    },
     publishManually: "Avalda käsitsi",
     downloadForSite: "Laadi alla / kopeeri saidile",
     actionGroups: {

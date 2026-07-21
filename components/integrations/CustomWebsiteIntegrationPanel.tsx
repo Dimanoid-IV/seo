@@ -55,6 +55,7 @@ export function CustomWebsiteIntegrationPanel({
   const [error, setError] = useState<string | null>(null);
   const [status, setStatus] = useState<string | null>(null);
   const [copiedBrief, setCopiedBrief] = useState(false);
+  const [copiedEndpoint, setCopiedEndpoint] = useState(false);
   const [loadedConfig, setLoadedConfig] = useState<CustomPublishingConfig | null>(
     null
   );
@@ -111,6 +112,18 @@ export function CustomWebsiteIntegrationPanel({
       setTimeout(() => setCopiedBrief(false), 2000);
     } catch {
       setError("Не удалось скопировать инструкцию.");
+    }
+  }
+
+  async function copyEndpointExample() {
+    try {
+      await navigator.clipboard?.writeText(
+        "https://your-domain.com/api/rankboost/articles"
+      );
+      setCopiedEndpoint(true);
+      setTimeout(() => setCopiedEndpoint(false), 2000);
+    } catch {
+      setError("Не удалось скопировать URL.");
     }
   }
 
@@ -239,6 +252,13 @@ export function CustomWebsiteIntegrationPanel({
           <span className="mt-1 block text-xs text-slate-600">
             Например /api/rankboost/articles.
           </span>
+          <button
+            type="button"
+            onClick={() => void copyEndpointExample()}
+            className="mt-2 text-xs font-semibold text-violet-700 hover:text-violet-900"
+          >
+            {copiedEndpoint ? "URL скопирован" : "Скопировать пример URL"}
+          </button>
         </li>
         <li className="rounded-lg border border-violet-100 bg-white/70 p-3">
           <span className="font-medium text-slate-900">2. Проверка связи</span>

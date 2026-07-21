@@ -1358,6 +1358,22 @@ export const saasDictionary: SaasDictionary = {
     connectCustomPublishing: "Connect my site",
     connectCustomPublishingHint:
       "For a custom site, add one protected endpoint. After the test passes, this card will show a Publish to site button.",
+    publishingGuide: {
+      title: "How to publish an article",
+      description:
+        "Choose the easiest path. For a custom site, connect one protected endpoint once; then ready articles can be sent with the Publish to site button.",
+      wordpressTitle: "WordPress",
+      wordpressDescription:
+        "Connect an Application Password. RankBoost can create drafts and, when Auto-publish is enabled on a monthly plan, publish on schedule.",
+      customTitle: "Custom site",
+      customDescription:
+        "Add an endpoint like /api/rankboost/articles. RankBoost sends the finished article with HTML, Markdown, and SEO fields.",
+      hostedTitle: "No integration",
+      hostedDescription:
+        "Publish a temporary RankBoost page now and move the material to your own domain later.",
+      openIntegrations: "Open integrations",
+      openCustomSetup: "Set up custom site",
+    },
     publishManually: "Publish manually",
     downloadForSite: "Download / copy for your site",
     actionGroups: {

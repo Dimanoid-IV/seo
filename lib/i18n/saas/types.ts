@@ -1082,6 +1082,18 @@ export type SaasDictionary = {
     connectRealPublishing: string;
     connectCustomPublishing: string;
     connectCustomPublishingHint: string;
+    publishingGuide: {
+      title: string;
+      description: string;
+      wordpressTitle: string;
+      wordpressDescription: string;
+      customTitle: string;
+      customDescription: string;
+      hostedTitle: string;
+      hostedDescription: string;
+      openIntegrations: string;
+      openCustomSetup: string;
+    };
     publishManually: string;
     downloadForSite: string;
     actionGroups: {

@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { ClipboardCheck, Globe, Pencil, Send, X } from "lucide-react";
+import { ClipboardCheck, Globe, Pencil, Send, Webhook, X } from "lucide-react";
 
 import { useDashboardMode } from "@/components/dashboard/DashboardModeProvider";
 import { EmptyState } from "@/components/dashboard/EmptyState";
@@ -181,6 +181,12 @@ export function ReviewPage() {
         ? data.items
         : data.items.filter((item) => item.actionNeeded === activeTab);
 
+  const hasReadyArticle = (data?.items ?? []).some(
+    (item) =>
+      item.type === "ARTICLE_DRAFT" &&
+      item.articleContext?.qualityPassed === true
+  );
+
   async function applyAction(
     item: ReviewQueueItem,
     action: "APPROVE" | "REJECT" | "EDIT" | "MARK_DONE",
@@ -344,6 +350,67 @@ export function ReviewPage() {
       <p className="mb-6 rounded-xl border border-violet-100 bg-violet-50/60 px-4 py-3 text-sm text-slate-700">
         {t.safetyNote}
       </p>
+
+      {hasReadyArticle ? (
+        <section className="mb-6 rounded-2xl border border-emerald-200 bg-gradient-to-br from-emerald-50 to-white p-5 shadow-sm">
+          <div className="flex flex-wrap items-start justify-between gap-4">
+            <div className="max-w-3xl">
+              <p className="text-xs font-semibold uppercase tracking-wide text-emerald-700">
+                {t.actionGroups.readyToPublishHandoff}
+              </p>
+              <h2 className="mt-1 text-lg font-semibold text-slate-950">
+                {t.publishingGuide.title}
+              </h2>
+              <p className="mt-2 text-sm leading-relaxed text-slate-700">
+                {t.publishingGuide.description}
+              </p>
+            </div>
+            <div className="flex shrink-0 flex-wrap gap-2">
+              <Link
+                href="/app/integrations#custom-publishing"
+                className="inline-flex items-center gap-2 rounded-md bg-emerald-600 px-3 py-2 text-sm font-semibold text-white transition hover:bg-emerald-500"
+              >
+                <Webhook className="size-4" />
+                {t.publishingGuide.openCustomSetup}
+              </Link>
+              <Link
+                href="/app/integrations"
+                className="inline-flex items-center gap-2 rounded-md border border-emerald-200 bg-white px-3 py-2 text-sm font-semibold text-emerald-800 transition hover:bg-emerald-50"
+              >
+                <Globe className="size-4" />
+                {t.publishingGuide.openIntegrations}
+              </Link>
+            </div>
+          </div>
+
+          <div className="mt-4 grid gap-3 md:grid-cols-3">
+            <div className="rounded-xl border border-emerald-100 bg-white p-3">
+              <p className="text-sm font-semibold text-slate-900">
+                {t.publishingGuide.wordpressTitle}
+              </p>
+              <p className="mt-1 text-xs leading-relaxed text-slate-600">
+                {t.publishingGuide.wordpressDescription}
+              </p>
+            </div>
+            <div className="rounded-xl border border-emerald-100 bg-white p-3">
+              <p className="text-sm font-semibold text-slate-900">
+                {t.publishingGuide.customTitle}
+              </p>
+              <p className="mt-1 text-xs leading-relaxed text-slate-600">
+                {t.publishingGuide.customDescription}
+              </p>
+            </div>
+            <div className="rounded-xl border border-emerald-100 bg-white p-3">
+              <p className="text-sm font-semibold text-slate-900">
+                {t.publishingGuide.hostedTitle}
+              </p>
+              <p className="mt-1 text-xs leading-relaxed text-slate-600">
+                {t.publishingGuide.hostedDescription}
+              </p>
+            </div>
+          </div>
+        </section>
+      ) : null}
 
       {publishSuccess ? (
         <div className="mb-6 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-4 shadow-sm">
