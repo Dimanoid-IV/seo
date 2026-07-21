@@ -1337,6 +1337,9 @@ export const saasDictionary: SaasDictionary = {
     openHostedPage: "Ava leht",
     openPublishedSite: "Ava sait",
     connectRealPublishing: "Ühenda domeenil avaldamine",
+    connectCustomPublishing: "Ühenda minu sait",
+    connectCustomPublishingHint:
+      "Kohandatud saidi jaoks lisage üks kaitstud endpoint. Pärast testi ilmub siia nupp saidil avaldamiseks.",
     publishManually: "Avalda käsitsi",
     downloadForSite: "Laadi alla / kopeeri saidile",
     actionGroups: {

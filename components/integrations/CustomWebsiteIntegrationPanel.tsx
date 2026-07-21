@@ -200,6 +200,7 @@ export function CustomWebsiteIntegrationPanel({
 
   return (
     <section
+      id="custom-publishing"
       className={cn(
         "space-y-4 rounded-xl border border-violet-200 bg-violet-50/40 p-4",
         className
@@ -216,6 +217,19 @@ export function CustomWebsiteIntegrationPanel({
             этого в каждой готовой статье появится кнопка «Опубликовать на
             сайте».
           </p>
+          <div className="mt-3">
+            <Button
+              type="button"
+              size="sm"
+              variant="outline"
+              onClick={() => void copyDeveloperBrief()}
+              className="border-violet-200 bg-white"
+            >
+              {copiedBrief
+                ? "Инструкция скопирована"
+                : "Скопировать задачу для разработчика"}
+            </Button>
+          </div>
         </div>
       </div>
 

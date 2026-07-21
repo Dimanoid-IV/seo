@@ -640,6 +640,15 @@ export function ReviewPage() {
                             </button>
                           ) : null}
                           {canPublishArticleToHostedPageFromReview(item) ? (
+                            <Link
+                              href="/app/integrations#custom-publishing"
+                              className="inline-flex items-center gap-1.5 rounded-md border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-xs font-semibold text-emerald-800 hover:bg-emerald-100"
+                            >
+                              <Globe className="size-3.5" />
+                              {t.connectCustomPublishing}
+                            </Link>
+                          ) : null}
+                          {canPublishArticleToHostedPageFromReview(item) ? (
                             <button
                               type="button"
                               disabled={isLoading}
@@ -677,13 +686,20 @@ export function ReviewPage() {
                         item.articleContext.publishPath === "webhook" ||
                         (!item.articleContext.wordpressDraftCreated &&
                           item.articleContext.publishPath !== "wordpress_draft") ? (
-                          <p className="mt-2 text-xs leading-relaxed text-indigo-800">
-                            {item.articleContext.customPublishingConnected
-                              ? t.customConnectedHint(
-                                  item.articleContext.customPublishingHost ?? ""
-                                )
-                              : t.customPackageHint}
-                          </p>
+                          <div className="mt-2 rounded-md border border-indigo-100 bg-indigo-50 px-2.5 py-2">
+                            <p className="text-xs leading-relaxed text-indigo-800">
+                              {item.articleContext.customPublishingConnected
+                                ? t.customConnectedHint(
+                                    item.articleContext.customPublishingHost ?? ""
+                                  )
+                                : t.customPackageHint}
+                            </p>
+                            {!item.articleContext.customPublishingConnected ? (
+                              <p className="mt-1 text-xs leading-relaxed text-indigo-700">
+                                {t.connectCustomPublishingHint}
+                              </p>
+                            ) : null}
+                          </div>
                         ) : null}
                         {pipelineLabelForState(
                           item.articleContext.pipelineState,

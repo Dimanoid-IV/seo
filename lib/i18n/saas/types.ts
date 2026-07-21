@@ -1063,6 +1063,8 @@ export type SaasDictionary = {
     openHostedPage: string;
     openPublishedSite: string;
     connectRealPublishing: string;
+    connectCustomPublishing: string;
+    connectCustomPublishingHint: string;
     publishManually: string;
     downloadForSite: string;
     actionGroups: {

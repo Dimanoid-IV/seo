@@ -1331,6 +1331,9 @@ export const saasDictionary: SaasDictionary = {
     openHostedPage: "Open page",
     openPublishedSite: "Open site",
     connectRealPublishing: "Connect domain publishing",
+    connectCustomPublishing: "Connect my site",
+    connectCustomPublishingHint:
+      "For a custom site, add one protected endpoint. After the test passes, this card will show a Publish to site button.",
     publishManually: "Publish manually",
     downloadForSite: "Download / copy for your site",
     actionGroups: {

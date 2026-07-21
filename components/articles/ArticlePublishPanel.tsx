@@ -433,6 +433,33 @@ export function ArticlePublishPanel({
       </div>
 
       {!isWordPressLivePublished && !customConnected ? (
+        <div className="rounded-xl border border-emerald-400/25 bg-emerald-500/10 p-4">
+          <div className="flex items-start gap-3">
+            <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-emerald-400/15">
+              <Webhook className="size-4 text-emerald-100" />
+            </div>
+            <div className="min-w-0 flex-1">
+              <p className="text-sm font-semibold text-emerald-50">
+                Публиковать прямо на своём сайте
+              </p>
+              <p className="mt-1 text-xs leading-relaxed text-emerald-100/80">
+                Для custom-сайта нужен один защищённый endpoint. После проверки
+                RankBoost сможет отправлять готовые статьи в ваш блог одной
+                кнопкой, а позже — по подтверждённому месячному плану.
+              </p>
+            </div>
+          </div>
+          <Link
+            href="/app/integrations#custom-publishing"
+            className="mt-4 inline-flex items-center gap-2 rounded-md bg-emerald-500 px-3 py-1.5 text-sm font-semibold text-white transition hover:bg-emerald-400"
+          >
+            <Webhook className="size-4" />
+            Подключить мой сайт
+          </Link>
+        </div>
+      ) : null}
+
+      {!isWordPressLivePublished && !customConnected ? (
         <div className="rounded-xl border border-blue-400/25 bg-blue-500/10 p-4">
           <div className="flex items-start gap-3">
             <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-blue-400/15">

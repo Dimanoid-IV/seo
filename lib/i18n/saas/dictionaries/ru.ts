@@ -1334,6 +1334,9 @@ export const saasDictionary: SaasDictionary = {
     openHostedPage: "Открыть страницу",
     openPublishedSite: "Открыть сайт",
     connectRealPublishing: "Подключить публикацию на домен",
+    connectCustomPublishing: "Подключить мой сайт",
+    connectCustomPublishingHint:
+      "Для custom-сайта добавьте один защищённый endpoint. После проверки здесь появится кнопка «Опубликовать на сайте».",
     publishManually: "Опубликовать вручную",
     downloadForSite: "Скачать / скопировать для сайта",
     actionGroups: {
