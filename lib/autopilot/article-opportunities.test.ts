@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import {
   buildPlanItemsFromSource,
   ensureStrategicArticleTopicDepth,
+  isNonStrategicArticlePlanItem,
 } from "./plan-items";
 import type { MonthlyAutopilotSourceData } from "./source-data";
 
@@ -152,6 +153,74 @@ assert.ok(replenishedArticles.length >= 3);
 assert.ok(
   replenishedArticles.every((item) => !/слишком мало текста/i.test(item.title)),
   "replenished legacy plan must not use audit symptoms as topics"
+);
+assert.equal(legacyReplenished.removedNonStrategicArticleCount, 0);
+
+const placeholderReplenished = ensureStrategicArticleTopicDepth({
+  document: {
+    version: 1,
+    period: "monthly",
+    items: [
+      {
+        id: "legacy-placeholder",
+        type: "ARTICLE",
+        title: "Опубликовать первую статью",
+        reason: "Legacy placeholder",
+        riskLevel: "low",
+        needsIntegration: false,
+        integrationType: "none",
+        status: "approved",
+      },
+      {
+        id: "legacy-audit-symptom",
+        type: "ARTICLE",
+        title: "На странице слишком мало текста",
+        reason: "Audit symptom accidentally mapped to article",
+        riskLevel: "low",
+        needsIntegration: false,
+        integrationType: "none",
+        status: "approved",
+      },
+    ],
+  },
+  data: baseSource,
+  articleIntegration: "none",
+});
+
+assert.equal(
+  placeholderReplenished.document.items.some(
+    (item) =>
+      item.type === "ARTICLE" &&
+      (/опубликовать первую статью/i.test(item.title) ||
+        /слишком мало текста/i.test(item.title))
+  ),
+  false,
+  "legacy placeholders and audit symptoms must be removed from article plan"
+);
+assert.ok(
+  placeholderReplenished.removedNonStrategicArticleCount >= 2,
+  "legacy placeholder/audit-symptom removal should be reported"
+);
+assert.ok(
+  placeholderReplenished.document.items.filter((item) => item.type === "ARTICLE")
+    .length >= 3,
+  "removed non-strategic topics should be replaced with strategic article topics"
+);
+assert.equal(
+  isNonStrategicArticlePlanItem({
+    type: "ARTICLE",
+    title: "На странице слишком мало текста",
+    status: "approved",
+  }),
+  true
+);
+assert.equal(
+  isNonStrategicArticlePlanItem({
+    type: "ARTICLE",
+    title: "портрет по фото на холсте",
+    status: "approved",
+  }),
+  false
 );
 
 console.log("strategic article opportunities for monthly plan passed");

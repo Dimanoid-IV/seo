@@ -7,6 +7,7 @@ import {
   type ReconcileTaskRow,
 } from "./plan-item-reconcile";
 
+import { isUnsafeArticleTopic } from "@/lib/content-research/keywords";
 import type { MonthlyAutopilotSourceData } from "./source-data";
 import {
   buildStrategicArticleOpportunities,
@@ -47,6 +48,28 @@ function articleIntegration(
 
 function normalizePlanTitle(value: string): string {
   return value.trim().toLowerCase().replace(/\s+/g, " ");
+}
+
+function isGenericArticlePlaceholder(value: string): boolean {
+  const normalized = normalizePlanTitle(value);
+  return [
+    "publish first article",
+    "publish the first article",
+    "create first article",
+    "create the first article",
+    "опубликовать первую статью",
+    "создать первую статью",
+    "lisa esimene artikkel",
+    "avalda esimene artikkel",
+  ].includes(normalized);
+}
+
+export function isNonStrategicArticlePlanItem(
+  item: Pick<AutopilotPlanItem, "type" | "title" | "status">
+): boolean {
+  if (item.type !== "ARTICLE") return false;
+  if (item.status === "published") return false;
+  return isGenericArticlePlaceholder(item.title) || isUnsafeArticleTopic(item.title);
 }
 
 function nextSupplementalItemId(existingIds: Set<string>): string {
@@ -228,23 +251,39 @@ export function ensureStrategicArticleTopicDepth(input: {
   document: AutopilotPlanItemsDocument;
   data: MonthlyAutopilotSourceData;
   articleIntegration: AutopilotPlanItemIntegration;
-}): { document: AutopilotPlanItemsDocument; addedCount: number } {
+}): {
+  document: AutopilotPlanItemsDocument;
+  addedCount: number;
+  removedNonStrategicArticleCount: number;
+} {
   const targetArticleCount = resolveTargetMonthlyArticleTopicCount(input.data);
-  const existingArticleCount = input.document.items.filter(
+  const retainedItems = input.document.items.filter(
+    (item) => !isNonStrategicArticlePlanItem(item)
+  );
+  const removedNonStrategicArticleCount =
+    input.document.items.length - retainedItems.length;
+  const existingArticleCount = retainedItems.filter(
     (item) => item.type === "ARTICLE"
   ).length;
   const needed = Math.max(0, targetArticleCount - existingArticleCount);
   if (needed === 0) {
-    return { document: input.document, addedCount: 0 };
+    return {
+      document:
+        removedNonStrategicArticleCount > 0
+          ? { ...input.document, items: retainedItems }
+          : input.document,
+      addedCount: 0,
+      removedNonStrategicArticleCount,
+    };
   }
 
-  const existingIds = new Set(input.document.items.map((item) => item.id));
+  const existingIds = new Set(retainedItems.map((item) => item.id));
   const existingTitles = new Set(
-    input.document.items.map((item) => normalizePlanTitle(item.title))
+    retainedItems.map((item) => normalizePlanTitle(item.title))
   );
   const additions = buildStrategicArticleOpportunities(
     input.data,
-    targetArticleCount + input.document.items.length
+    targetArticleCount + retainedItems.length
   )
     .filter((opportunity) => {
       const normalized = normalizePlanTitle(opportunity.title);
@@ -267,15 +306,23 @@ export function ensureStrategicArticleTopicDepth(input: {
     }));
 
   if (additions.length === 0) {
-    return { document: input.document, addedCount: 0 };
+    return {
+      document:
+        removedNonStrategicArticleCount > 0
+          ? { ...input.document, items: retainedItems }
+          : input.document,
+      addedCount: 0,
+      removedNonStrategicArticleCount,
+    };
   }
 
   return {
     document: {
       ...input.document,
-      items: [...input.document.items, ...additions],
+      items: [...retainedItems, ...additions],
     },
     addedCount: additions.length,
+    removedNonStrategicArticleCount,
   };
 }
 

@@ -24,7 +24,10 @@ export function replenishControlCenterArticleTopics(input: {
     articleIntegration: input.wordpressConnected ? "none" : "wordpress",
   });
 
-  if (replenished.addedCount === 0) {
+  if (
+    replenished.addedCount === 0 &&
+    replenished.removedNonStrategicArticleCount === 0
+  ) {
     return { document: input.document, changed: false };
   }
 
@@ -34,4 +37,3 @@ export function replenishControlCenterArticleTopics(input: {
     json: planItemsToJson(replenished.document),
   };
 }
-

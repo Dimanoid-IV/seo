@@ -117,6 +117,12 @@ assert.ok(replenished.document);
 assert.ok(
   replenished.document.items.filter((item) => item.type === "ARTICLE").length >= 3
 );
+assert.equal(
+  replenished.document.items.some(
+    (item) => item.type === "ARTICLE" && item.title === "Опубликовать первую статью"
+  ),
+  false
+);
 assert.ok(
   replenished.document.items.some((item) => item.id.startsWith("plan-item-auto-topic-"))
 );
