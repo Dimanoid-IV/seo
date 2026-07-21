@@ -108,6 +108,7 @@ export async function POST(request: Request, context: RouteContext) {
         data: {
           status: "PUBLISHED",
           publishedAt: new Date(),
+          wordpressPublishedUrl: result.externalUrl ?? undefined,
         },
       });
     }

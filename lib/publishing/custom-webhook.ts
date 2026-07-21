@@ -24,7 +24,41 @@ export type CustomWebhookDeliveryResult = {
   delivered: boolean;
   statusCode: number;
   error: string | null;
+  externalId?: string | null;
+  externalUrl?: string | null;
+  duplicate?: boolean;
 };
+
+async function readDeliveryResponse(
+  response: Response
+): Promise<Pick<CustomWebhookDeliveryResult, "externalId" | "externalUrl" | "duplicate">> {
+  const contentType = response.headers.get("content-type") ?? "";
+  if (!contentType.toLowerCase().includes("application/json")) {
+    return {};
+  }
+
+  try {
+    const body = (await response.json()) as {
+      externalId?: unknown;
+      url?: unknown;
+      publicUrl?: unknown;
+      duplicate?: unknown;
+    };
+    return {
+      externalId:
+        typeof body.externalId === "string" ? body.externalId.slice(0, 500) : null,
+      externalUrl:
+        typeof body.url === "string"
+          ? body.url.slice(0, 2000)
+          : typeof body.publicUrl === "string"
+            ? body.publicUrl.slice(0, 2000)
+            : null,
+      duplicate: body.duplicate === true,
+    };
+  } catch {
+    return {};
+  }
+}
 
 function requireHttpsUnlessLocalDev(url: URL): void {
   if (url.protocol === "https:") return;
@@ -168,6 +202,10 @@ export async function deliverCustomWebhook(input: {
   let statusCode = 0;
   let delivered = false;
   let deliveryError: string | null = null;
+  let deliveryResponse: Pick<
+    CustomWebhookDeliveryResult,
+    "externalId" | "externalUrl" | "duplicate"
+  > = {};
 
   try {
     const response = await fetch(parsedUrl.toString(), {
@@ -179,6 +217,9 @@ export async function deliverCustomWebhook(input: {
     });
     statusCode = response.status;
     delivered = response.status >= 200 && response.status < 300;
+    if (delivered) {
+      deliveryResponse = await readDeliveryResponse(response);
+    }
     if (!delivered) {
       deliveryError = `Эндпоинт вернул статус ${response.status}.`;
     }
@@ -202,7 +243,13 @@ export async function deliverCustomWebhook(input: {
     }
   }
 
-  return { dryRun: input.dryRun, delivered, statusCode, error: deliveryError };
+  return {
+    dryRun: input.dryRun,
+    delivered,
+    statusCode,
+    error: deliveryError,
+    ...deliveryResponse,
+  };
 }
 
 export async function assertWebhookReadyForExplicitSend(

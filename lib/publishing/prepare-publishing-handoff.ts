@@ -323,6 +323,7 @@ async function sendWebhookPackage(input: {
       data: {
         status: "PUBLISHED",
         publishedAt: new Date(),
+        wordpressPublishedUrl: result.externalUrl ?? undefined,
       },
     });
 
@@ -332,6 +333,9 @@ async function sendWebhookPackage(input: {
         statusCode: result.statusCode,
         articleId: article.id,
         publishedBy: "custom_webhook",
+        externalId: result.externalId ?? null,
+        externalUrl: result.externalUrl ?? null,
+        duplicate: result.duplicate === true,
       },
     });
     return true;
