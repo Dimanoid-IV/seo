@@ -325,6 +325,9 @@ export const saasDictionary: SaasDictionary = {
       confirmPlan: "Vaata ja kinnita plaan",
       openPlan: "Ava täielik plaan",
       setupPublishing: "Ühenda avaldamine",
+      publishingSetupTitle: "Kuhu need artiklid avaldada?",
+      publishingSetupDescription:
+        "Ühendage WordPress või üks custom endpoint ühe korra. Siis saab RankBoost pärast plaani kinnitamist valmis artiklid otse blogisse saata, mitte jätta neid failidena.",
       articlePlanLabel: "Kuu artikliplaan",
       articlePlanDescription:
         "Teemad peaksid põhinema teie saidil, brändil, otsingunõudlusel ja konkurentide kontekstil. Avage täielik plaan, et näha iga teema briefi ja struktuuri.",

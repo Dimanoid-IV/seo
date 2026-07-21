@@ -258,6 +258,8 @@ export type SaasDictionary = {
       confirmPlan: string;
       openPlan: string;
       setupPublishing: string;
+      publishingSetupTitle: string;
+      publishingSetupDescription: string;
       articlePlanLabel: string;
       articlePlanDescription: string;
       articleTopics: string;

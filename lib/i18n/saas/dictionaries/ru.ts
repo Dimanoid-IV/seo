@@ -325,6 +325,9 @@ export const saasDictionary: SaasDictionary = {
       confirmPlan: "Проверить и подтвердить план",
       openPlan: "Открыть полный план",
       setupPublishing: "Подключить публикацию",
+      publishingSetupTitle: "Куда публиковать эти статьи?",
+      publishingSetupDescription:
+        "Подключите WordPress или custom endpoint один раз. Тогда после подтверждения плана RankBoost сможет отправлять готовые статьи прямо в блог, а не оставлять их как файлы.",
       articlePlanLabel: "План статей на месяц",
       articlePlanDescription:
         "Темы должны быть основаны на сайте, бренде, поисковом спросе и конкурентном контексте. Нажмите тему в полном плане, чтобы увидеть brief и содержание.",

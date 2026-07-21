@@ -157,6 +157,24 @@ export function MonthlyPlanPreviewCard({ plan }: MonthlyPlanPreviewCardProps) {
         ) : (
           <p className="mt-3 text-sm text-slate-500">{t.noArticles}</p>
         )}
+
+        <div className="mt-4 flex flex-col gap-3 rounded-xl border border-emerald-200 bg-emerald-50/70 px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <p className="text-sm font-semibold text-emerald-950">
+              {t.publishingSetupTitle}
+            </p>
+            <p className="mt-1 max-w-2xl text-xs leading-relaxed text-emerald-800">
+              {t.publishingSetupDescription}
+            </p>
+          </div>
+          <Link
+            href="/app/integrations#custom-publishing"
+            className="inline-flex shrink-0 items-center justify-center gap-1.5 rounded-lg bg-emerald-600 px-3 py-2 text-xs font-semibold text-white transition hover:bg-emerald-500"
+          >
+            <Globe2 className="size-3.5" />
+            {t.setupPublishing}
+          </Link>
+        </div>
       </div>
 
       <div className="mt-4 rounded-xl border border-slate-200 bg-white/70 p-4">

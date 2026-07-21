@@ -325,6 +325,9 @@ export const saasDictionary: SaasDictionary = {
       confirmPlan: "Review and confirm plan",
       openPlan: "Open full plan",
       setupPublishing: "Connect publishing",
+      publishingSetupTitle: "Where should these articles be published?",
+      publishingSetupDescription:
+        "Connect WordPress or one custom endpoint once. Then, after the plan is approved, RankBoost can send finished articles directly to the blog instead of leaving them as files.",
       articlePlanLabel: "Monthly article plan",
       articlePlanDescription:
         "Topics should be grounded in your site, brand, search demand, and competitor context. Open the full plan to see each topic brief and outline.",
