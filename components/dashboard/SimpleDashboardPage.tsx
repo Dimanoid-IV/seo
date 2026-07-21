@@ -13,6 +13,7 @@ import { FindingsCard } from "@/components/dashboard/FindingsCard";
 import { MonthlyAutopilotActiveCard } from "@/components/dashboard/MonthlyAutopilotActiveCard";
 import { MonthlyPlanPreviewCard } from "@/components/dashboard/MonthlyPlanPreviewCard";
 import { AiVisibilityDashboardCard } from "@/components/dashboard/AiVisibilityDashboardCard";
+import { CommunityVisibilityDashboardCard } from "@/components/dashboard/CommunityVisibilityDashboardCard";
 import { ReadyToPublishCard } from "@/components/dashboard/ReadyToPublishCard";
 import { ActivationProgressCard } from "@/components/dashboard/ActivationProgressCard";
 import { NextBestActionCard } from "@/components/dashboard/NextBestActionCard";
@@ -314,6 +315,12 @@ export function SimpleDashboardPage() {
 
           {simple.hasAudit && simple.aiVisibility ? (
             <AiVisibilityDashboardCard snapshot={simple.aiVisibility} />
+          ) : null}
+
+          {simple.hasAudit && simple.communityVisibility ? (
+            <CommunityVisibilityDashboardCard
+              snapshot={simple.communityVisibility}
+            />
           ) : null}
 
           {simple.hasAudit && simple.monthlyAutopilotActive ? (

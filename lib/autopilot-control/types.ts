@@ -1,5 +1,6 @@
 import type { AutopilotStatusSnapshot } from "@/lib/autopilot/autopilot-status";
 import type { AutopilotAiVisibilitySnapshot } from "@/lib/autopilot/ai-visibility-snapshot";
+import type { CommunityVisibilitySnapshot } from "@/lib/autopilot/community-visibility";
 
 export type ControlCenterOverallStatus =
   | "READY"
@@ -48,6 +49,7 @@ export type ControlCenterMonthlyPlan = {
     researchBrief?: Record<string, unknown>;
   }>;
   aiVisibility?: AutopilotAiVisibilitySnapshot | null;
+  communityVisibility?: CommunityVisibilitySnapshot | null;
 };
 
 export type ApprovalQueueItem = {

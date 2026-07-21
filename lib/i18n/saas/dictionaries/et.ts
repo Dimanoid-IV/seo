@@ -244,6 +244,19 @@ export const saasDictionary: SaasDictionary = {
         ready: "Plaan katab AI-otsingu buyer prompt'e hästi.",
       },
     },
+    communityVisibility: {
+      eyebrow: "Mainimised ja kogukonnad",
+      title: "Kus artikleid väljaspool saiti kasutada",
+      description:
+        "RankBoost muudab plaani teemad turvalisteks otsingupäringuteks Redditi, Quora ja nišifoorumite jaoks. See pole automaatne spämm, vaid nimekiri kohtadest, kus kasulik ekspertvastus võib aidata.",
+      descriptionBasic:
+        "Päringud muutuvad pärast research briefi täpsemaks. Praegu kasutab RankBoost kuuplaani artikliteemasid.",
+      opportunityCount: (count) =>
+        count === 1 ? "1 võimalus" : `${count} võimalust`,
+      openPlan: "Ava täielik nimekiri",
+      safetyNote:
+        "RankBoost ei osta linke ega luba positsioone. See on turvaline white-hat tee mainimiste ja aruteludeni.",
+    },
     activity: {
       title: "Hiljutine tegevus",
       empty: "Tegevus ilmub, kui hakkate toiminguid üle vaatama ja kinnitama.",

@@ -37,6 +37,10 @@ import {
   buildDashboardAiVisibilitySummary,
   type DashboardAiVisibilitySummary,
 } from "./ai-visibility-summary";
+import {
+  buildDashboardCommunityVisibilitySummary,
+  type DashboardCommunityVisibilitySummary,
+} from "./community-visibility-summary";
 import { parseContentResearchBrief } from "@/lib/content-research/parse";
 import { toResearchBriefSummary } from "@/lib/content-research/types";
 
@@ -110,6 +114,7 @@ export type SimpleDashboardViewModel = {
     isApproved: boolean;
   };
   aiVisibility?: DashboardAiVisibilitySummary;
+  communityVisibility?: DashboardCommunityVisibilitySummary;
   /** Prompt 11.44 — human-facing monthly autopilot status when plan is approved. */
   monthlyAutopilotActive?: {
     nextArticleDateLabel: string | null;
@@ -262,6 +267,10 @@ export function buildSimpleDashboardViewModel(input: {
     snapshot: control.monthlyPlan?.aiVisibility,
     href: control.monthlyPlan?.href ?? "/app/autopilot",
   });
+  const communityVisibility = buildDashboardCommunityVisibilitySummary({
+    snapshot: control.monthlyPlan?.communityVisibility,
+    href: control.monthlyPlan?.href ?? "/app/autopilot",
+  });
 
   const reviewCount = input.reviewQueueCount ?? needsReviewCount;
   const publishChip = publishingPathChip(publishingState.publishPath);
@@ -328,6 +337,7 @@ export function buildSimpleDashboardViewModel(input: {
     },
     monthlyPlanPreview,
     aiVisibility,
+    communityVisibility,
     monthlyAutopilotActive,
     readyToPublish: readyArticle?.href
       ? {

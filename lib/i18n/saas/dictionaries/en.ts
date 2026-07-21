@@ -244,6 +244,19 @@ export const saasDictionary: SaasDictionary = {
         ready: "The plan covers buyer prompts for AI search well.",
       },
     },
+    communityVisibility: {
+      eyebrow: "Mentions and communities",
+      title: "Where to use articles off-site",
+      description:
+        "RankBoost turns plan topics into safe search queries for Reddit, Quora, and niche forums. This is not auto-spam; it is a shortlist of places where a useful expert answer may help.",
+      descriptionBasic:
+        "Queries become more precise after research briefs. For now, RankBoost uses the article topics in the monthly plan.",
+      opportunityCount: (count) =>
+        count === 1 ? "1 opportunity" : `${count} opportunities`,
+      openPlan: "Open full list",
+      safetyNote:
+        "RankBoost does not buy links or promise rankings. This is a safe white-hat path to mentions and discussions.",
+    },
     activity: {
       title: "Recent activity",
       empty: "Activity will appear here as you review and approve actions.",

@@ -43,6 +43,8 @@ import { getAutopilotStatusSnapshot } from "@/lib/autopilot/autopilot-status";
 import { getAutopilotSettings, autopilotModeToClient } from "@/lib/autopilot/autopilot-settings";
 import { replenishControlCenterArticleTopics } from "./monthly-plan-topics";
 import { buildAutopilotAiVisibilitySnapshot } from "@/lib/autopilot/ai-visibility-snapshot";
+import { buildCommunityVisibilitySnapshot } from "@/lib/autopilot/community-visibility";
+import { buildAutopilotStrategySnapshot } from "@/lib/autopilot/strategy-snapshot";
 
 const IMPORTANT_SEVERITIES = new Set<TimelineEventSeverity>([
   TimelineEventSeverity.OPPORTUNITY,
@@ -336,6 +338,9 @@ export async function getAutopilotControlCenter(input: {
     document: planItemsDocument,
     readinessScore: latestSnapshot?.score ?? null,
   });
+  const communityVisibility = buildCommunityVisibilitySnapshot(
+    buildAutopilotStrategySnapshot(planItemsDocument)
+  );
 
   const gscSelectedProperty =
     gscIntegration?.googleData?.searchConsoleSiteUrl ?? null;
@@ -658,6 +663,7 @@ export async function getAutopilotControlCenter(input: {
           readyToPublishCount,
           previewItems,
           aiVisibility,
+          communityVisibility,
         }
       : undefined,
     approvalQueue,

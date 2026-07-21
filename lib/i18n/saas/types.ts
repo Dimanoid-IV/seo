@@ -196,6 +196,15 @@ export type SaasDictionary = {
         ready: string;
       };
     };
+    communityVisibility: {
+      eyebrow: string;
+      title: string;
+      description: string;
+      descriptionBasic: string;
+      opportunityCount: (count: number) => string;
+      openPlan: string;
+      safetyNote: string;
+    };
     activity: { title: string; empty: string; openTimeline: string };
     billingNote: string;
     gscConnectHint: string;
