@@ -49,6 +49,8 @@ export async function deliverCustomWebhook(input: {
   sharedSecret?: string | null;
   /** Persist config only after successful dry-run. */
   persistOnSuccess?: boolean;
+  /** Enable only when a site already has an explicitly approved AUTO_PUBLISH plan. */
+  autoSendEnabledOnPersist?: boolean;
 }): Promise<CustomWebhookDeliveryResult> {
   let parsedUrl: URL;
   try {
@@ -192,7 +194,7 @@ export async function deliverCustomWebhook(input: {
         organizationId: input.organizationId,
         endpointUrl: parsedUrl.toString(),
         tested: true,
-        autoSendEnabled: false,
+        autoSendEnabled: input.autoSendEnabledOnPersist === true,
         sharedSecret: secret || null,
       });
     } catch {

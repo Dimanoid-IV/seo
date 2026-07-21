@@ -16,6 +16,7 @@ import {
   upsertCustomPublishingConfig,
 } from "@/lib/publishing/custom-webhook-config";
 import { assertSafeUrl } from "@/lib/audit/ssrf";
+import { shouldEnableCustomWebhookAutoSendFailClosed } from "@/lib/publishing/custom-webhook-autosend";
 
 function assertDatabaseConfigured(): void {
   if (!getServerEnv().DATABASE_URL) {
@@ -94,12 +95,18 @@ export async function POST(request: Request) {
       );
     }
 
+    const autoSendEnabled = await shouldEnableCustomWebhookAutoSendFailClosed({
+      userId: currentUser.id,
+      organizationId: website.organizationId,
+      websiteId: website.id,
+    });
+
     const config = await upsertCustomPublishingConfig({
       websiteId: website.id,
       organizationId: website.organizationId,
       endpointUrl: parsedUrl.toString(),
       tested: true,
-      autoSendEnabled: false,
+      autoSendEnabled,
       sharedSecret: parsed.data.sharedSecret ?? undefined,
     });
 

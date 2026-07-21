@@ -12,6 +12,7 @@ import { AppError, ErrorCode } from "@/lib/errors";
 import { getPrisma } from "@/lib/db";
 import { deliverCustomWebhook } from "@/lib/publishing/custom-webhook";
 import { getCustomPublishingConfig } from "@/lib/publishing/custom-webhook-config";
+import { shouldEnableCustomWebhookAutoSendFailClosed } from "@/lib/publishing/custom-webhook-autosend";
 
 function assertDatabaseConfigured(): void {
   if (!getServerEnv().DATABASE_URL) {
@@ -126,12 +127,18 @@ export async function POST(request: Request) {
       }
 
       if (delivered) {
+        const autoSendEnabled =
+          await shouldEnableCustomWebhookAutoSendFailClosed({
+            userId: currentUser.id,
+            organizationId: website.organizationId,
+            websiteId: website.id,
+          });
         await upsertCustomPublishingConfig({
           websiteId: website.id,
           organizationId: website.organizationId,
           endpointUrl: parsedUrl.toString(),
           tested: true,
-          autoSendEnabled: false,
+          autoSendEnabled,
           sharedSecret: parsed.data.sharedSecret ?? null,
         });
       }
@@ -156,6 +163,12 @@ export async function POST(request: Request) {
       dryRun: true,
       sharedSecret: parsed.data.sharedSecret ?? null,
       persistOnSuccess: true,
+      autoSendEnabledOnPersist:
+        await shouldEnableCustomWebhookAutoSendFailClosed({
+          userId: currentUser.id,
+          organizationId: website.organizationId,
+          websiteId: website.id,
+        }),
     });
 
     const config = await getCustomPublishingConfig(website.id);
