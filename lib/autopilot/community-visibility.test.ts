@@ -3,7 +3,10 @@
  */
 import assert from "node:assert/strict";
 
-import { buildCommunityVisibilitySnapshot } from "./community-visibility";
+import {
+  buildCommunitySearchUrl,
+  buildCommunityVisibilitySnapshot,
+} from "./community-visibility";
 import type { AutopilotStrategySnapshot } from "./strategy-snapshot";
 
 const strategy = {
@@ -31,6 +34,19 @@ assert.ok(snapshot.opportunities.some((item) => item.channel === "QUORA"));
 assert.ok(snapshot.opportunities.some((item) => item.channel === "NICHE_FORUMS"));
 assert.ok(snapshot.opportunities.every((item) => item.query.includes('"')));
 assert.ok(
+  snapshot.opportunities.every((item) =>
+    item.searchUrl.startsWith("https://www.google.com/search?q=")
+  )
+);
+assert.ok(
+  snapshot.opportunities.every(
+    (item) => item.searchUrl === buildCommunitySearchUrl(item.query)
+  )
+);
+assert.ok(
+  snapshot.opportunities.every((item) => !/javascript:/i.test(item.searchUrl))
+);
+assert.ok(
   snapshot.opportunities.every((item) => !/spam|buy links/i.test(item.angle))
 );
 
@@ -49,4 +65,3 @@ assert.equal(
 );
 
 console.log("community-visibility.test.ts: ok");
-

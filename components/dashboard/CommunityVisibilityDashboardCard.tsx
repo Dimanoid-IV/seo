@@ -1,7 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowRight, MessageSquareText, Search, ShieldCheck } from "lucide-react";
+import {
+  ArrowRight,
+  ExternalLink,
+  MessageSquareText,
+  Search,
+  ShieldCheck,
+} from "lucide-react";
 
 import type { SimpleDashboardViewModel } from "@/lib/dashboard/simple-overview";
 import { useSaasTranslations } from "@/lib/i18n/saas/SaasLocaleProvider";
@@ -69,6 +75,15 @@ export function CommunityVisibilityDashboardCard({
                 <Search className="mt-0.5 size-3 shrink-0 text-slate-400" />
                 {item.query}
               </p>
+              <a
+                href={item.searchUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="mt-2 inline-flex items-center gap-1.5 rounded-md border border-cyan-200 bg-cyan-50 px-2 py-1 text-xs font-semibold text-cyan-800 transition hover:bg-cyan-100"
+              >
+                {dict.autopilot.communityVisibility.openSearch}
+                <ExternalLink className="size-3" />
+              </a>
             </div>
           ))}
         </div>

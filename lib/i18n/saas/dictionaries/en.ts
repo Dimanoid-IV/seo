@@ -1710,6 +1710,7 @@ export const saasDictionary: SaasDictionary = {
           ? "1 topic/keyword is used to find discussions."
           : `${count} topics/keywords are used to find discussions.`,
       searchQuery: "What to search",
+      openSearch: "Open search",
       safetyNote:
         "RankBoost does not auto-post answers and does not build paid link schemes. Use this as a safe shortlist of places to give useful expert answers.",
       channels: {

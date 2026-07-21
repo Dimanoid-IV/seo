@@ -1716,6 +1716,7 @@ export const saasDictionary: SaasDictionary = {
           ? "Arutelude leidmiseks kasutatakse 1 teemat/märksõna."
           : `Arutelude leidmiseks kasutatakse ${count} teemat/märksõna.`,
       searchQuery: "Mida otsida",
+      openSearch: "Ava otsing",
       safetyNote:
         "RankBoost ei postita vastuseid automaatselt ega loo tasulisi lingiskeeme. Kasutage seda turvalise nimekirjana kohtadest, kus anda kasulik eksperdivastus.",
       channels: {

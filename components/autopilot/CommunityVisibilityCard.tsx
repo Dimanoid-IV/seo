@@ -1,6 +1,6 @@
 "use client";
 
-import { MessageSquareText, Search, ShieldCheck } from "lucide-react";
+import { ExternalLink, MessageSquareText, Search, ShieldCheck } from "lucide-react";
 
 import type {
   CommunityVisibilityChannel,
@@ -74,6 +74,15 @@ export function CommunityVisibilityCard({
             <p className="mt-3 text-sm leading-relaxed text-slate-600">
               {item.angle}
             </p>
+            <a
+              href={item.searchUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="mt-3 inline-flex items-center gap-1.5 rounded-lg border border-cyan-200 bg-white px-3 py-1.5 text-xs font-semibold text-cyan-800 transition hover:bg-cyan-50"
+            >
+              {t.openSearch}
+              <ExternalLink className="size-3.5" />
+            </a>
           </div>
         ))}
       </div>
@@ -85,4 +94,3 @@ export function CommunityVisibilityCard({
     </section>
   );
 }
-

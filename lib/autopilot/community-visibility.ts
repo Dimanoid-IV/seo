@@ -6,6 +6,7 @@ export type CommunityVisibilityOpportunity = {
   id: string;
   channel: CommunityVisibilityChannel;
   query: string;
+  searchUrl: string;
   angle: string;
 };
 
@@ -49,6 +50,10 @@ function primaryTerms(snapshot: AutopilotStrategySnapshot): string[] {
   );
 }
 
+export function buildCommunitySearchUrl(query: string): string {
+  return `https://www.google.com/search?q=${encodeURIComponent(query)}`;
+}
+
 export function buildCommunityVisibilitySnapshot(
   snapshot: AutopilotStrategySnapshot | null | undefined
 ): CommunityVisibilitySnapshot | null {
@@ -64,6 +69,9 @@ export function buildCommunityVisibilitySnapshot(
         id: `reddit:${term}`,
         channel: "REDDIT",
         query: `site:reddit.com "${term}" OR "${term} reddit"`,
+        searchUrl: buildCommunitySearchUrl(
+          `site:reddit.com "${term}" OR "${term} reddit"`
+        ),
         angle:
           "Find discussion threads where people compare options, then answer with a helpful summary and link only when it genuinely helps.",
       },
@@ -71,6 +79,7 @@ export function buildCommunityVisibilitySnapshot(
         id: `quora:${term}`,
         channel: "QUORA",
         query: `site:quora.com "${term}"`,
+        searchUrl: buildCommunitySearchUrl(`site:quora.com "${term}"`),
         angle:
           "Look for buyer questions and turn the approved article into a short, non-promotional expert answer.",
       },
@@ -78,6 +87,9 @@ export function buildCommunityVisibilitySnapshot(
         id: `forums:${term}`,
         channel: "NICHE_FORUMS",
         query: `"${term}" forum OR discussion OR community`,
+        searchUrl: buildCommunitySearchUrl(
+          `"${term}" forum OR discussion OR community`
+        ),
         angle:
           "Find niche communities and use the article as a source for a useful answer, not a copied sales pitch.",
       }
@@ -91,4 +103,3 @@ export function buildCommunityVisibilitySnapshot(
     hasEnoughSignal: snapshot.hasResearch || snapshot.keywords.length > 0,
   };
 }
-

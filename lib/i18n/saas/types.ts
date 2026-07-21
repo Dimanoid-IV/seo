@@ -1389,6 +1389,7 @@ export type SaasDictionary = {
       sourcesTitle: string;
       sourcesDescription: (count: number) => string;
       searchQuery: string;
+      openSearch: string;
       safetyNote: string;
       channels: {
         REDDIT: string;
