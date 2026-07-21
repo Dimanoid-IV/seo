@@ -9,6 +9,12 @@ import {
   buildCustomPublishingDisplayState,
   type CustomPublishingDisplayState,
 } from "@/lib/publishing/custom-publishing-display";
+import {
+  buildCustomWebhookDeveloperBrief,
+  CUSTOM_WEBHOOK_HEADERS_EXAMPLE,
+  CUSTOM_WEBHOOK_PAYLOAD_EXAMPLE,
+  CUSTOM_WEBHOOK_SUCCESS_RESPONSE_EXAMPLE,
+} from "@/lib/publishing/custom-webhook-contract";
 import { cn } from "@/lib/utils";
 
 type CustomPublishingConfig = {
@@ -24,24 +30,6 @@ type CustomWebsiteIntegrationPanelProps = {
   initialConfig?: CustomPublishingConfig | null;
   className?: string;
 };
-
-const PAYLOAD_EXAMPLE = `{
-  "event": "article.ready",
-  "article": {
-    "id": "...",
-    "title": "...",
-    "slug": "...",
-    "metaTitle": "...",
-    "metaDescription": "...",
-    "canonicalUrl": "...",
-    "html": "...",
-    "markdown": "...",
-    "language": "ru",
-    "targetKeyword": "...",
-    "qualityScore": 100
-  },
-  "website": { "id": "...", "url": "..." }
-}`;
 
 const HMAC_EXAMPLE = `const crypto = require("crypto");
 function verify(body, secret, header) {
@@ -66,6 +54,7 @@ export function CustomWebsiteIntegrationPanel({
   const [busy, setBusy] = useState<"test" | "disconnect" | "load" | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [status, setStatus] = useState<string | null>(null);
+  const [copiedBrief, setCopiedBrief] = useState(false);
   const [loadedConfig, setLoadedConfig] = useState<CustomPublishingConfig | null>(
     null
   );
@@ -114,6 +103,16 @@ export function CustomWebsiteIntegrationPanel({
     });
 
   const showConnectedState = display.connected && !replacing;
+
+  async function copyDeveloperBrief() {
+    try {
+      await navigator.clipboard?.writeText(buildCustomWebhookDeveloperBrief());
+      setCopiedBrief(true);
+      setTimeout(() => setCopiedBrief(false), 2000);
+    } catch {
+      setError("Не удалось скопировать инструкцию.");
+    }
+  }
 
   async function handleTest() {
     if (!websiteId) {
@@ -381,7 +380,15 @@ export function CustomWebsiteIntegrationPanel({
           </p>
           <p className="font-medium text-slate-800">Payload пример</p>
           <pre className="overflow-x-auto rounded bg-slate-900 p-3 text-[11px] text-slate-100">
-            {PAYLOAD_EXAMPLE}
+            {CUSTOM_WEBHOOK_PAYLOAD_EXAMPLE}
+          </pre>
+          <p className="font-medium text-slate-800">Headers</p>
+          <pre className="overflow-x-auto rounded bg-slate-900 p-3 text-[11px] text-slate-100">
+            {CUSTOM_WEBHOOK_HEADERS_EXAMPLE}
+          </pre>
+          <p className="font-medium text-slate-800">Успешный ответ</p>
+          <pre className="overflow-x-auto rounded bg-slate-900 p-3 text-[11px] text-slate-100">
+            {CUSTOM_WEBHOOK_SUCCESS_RESPONSE_EXAMPLE}
           </pre>
           <p className="font-medium text-slate-800">
             HMAC заголовок <code>X-RankBoost-Signature</code>
@@ -393,6 +400,14 @@ export function CustomWebsiteIntegrationPanel({
             Если webhook не настроен — используйте универсальный пакет
             (HTML/Markdown/email разработчику) в карточке статьи.
           </p>
+          <Button
+            type="button"
+            size="sm"
+            variant="outline"
+            onClick={() => void copyDeveloperBrief()}
+          >
+            {copiedBrief ? "Инструкция скопирована" : "Скопировать инструкцию разработчику"}
+          </Button>
         </div>
       </details>
     </section>
