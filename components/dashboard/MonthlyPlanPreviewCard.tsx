@@ -1,7 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import { CalendarDays, CheckCircle2, FileText, Wrench } from "lucide-react";
+import {
+  ArrowRight,
+  CalendarDays,
+  CheckCircle2,
+  FileText,
+  Globe2,
+  Wrench,
+} from "lucide-react";
 
 import { useSaasTranslations } from "@/lib/i18n/saas/SaasLocaleProvider";
 import type { SimpleDashboardViewModel } from "@/lib/dashboard/simple-overview";
@@ -66,69 +73,107 @@ export function MonthlyPlanPreviewCard({ plan }: MonthlyPlanPreviewCardProps) {
         </Link>
       </div>
 
-      <div className="mt-5 grid gap-4 lg:grid-cols-2">
-        <div className="rounded-xl border border-slate-200 bg-slate-50/80 p-4">
-          <div className="flex items-center gap-2 text-sm font-semibold text-slate-900">
-            <FileText className="size-4 text-blue-600" />
-            {t.articleTopics}
+      <div className="mt-5 rounded-xl border border-blue-200 bg-white/85 p-4">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+          <div>
+            <div className="flex items-center gap-2 text-sm font-semibold text-slate-900">
+              <FileText className="size-4 text-blue-600" />
+              {t.articlePlanLabel}
+            </div>
+            <p className="mt-1 max-w-2xl text-xs leading-relaxed text-slate-600">
+              {t.articlePlanDescription}
+            </p>
           </div>
-          {hasArticles ? (
-            <ul className="mt-3 space-y-2.5">
-              {plan.articleTopics.map((item) => {
-                const dateLabel = formatShortDate(item.scheduledFor, locale);
-                return (
-                  <li key={item.id} className="rounded-lg bg-white px-3 py-2">
-                    <p className="text-sm font-medium leading-snug text-slate-900">
-                      {item.title}
-                    </p>
-                    {item.reason ? (
-                      <p className="mt-1 line-clamp-2 text-xs leading-relaxed text-slate-600">
-                        {item.reason}
-                      </p>
-                    ) : null}
-                    <div className="mt-1 flex flex-wrap items-center gap-2 text-xs text-slate-500">
-                      <span className="inline-flex items-center gap-1">
-                        <CheckCircle2 className="size-3.5" />
-                        {t.status(item.status)}
-                      </span>
-                      {dateLabel ? (
-                        <span className="inline-flex items-center gap-1">
-                          <CalendarDays className="size-3.5" />
-                          {dateLabel}
-                        </span>
-                      ) : null}
-                    </div>
-                  </li>
-                );
-              })}
-            </ul>
-          ) : (
-            <p className="mt-3 text-sm text-slate-500">{t.noArticles}</p>
-          )}
+          <Link
+            href={plan.href}
+            className="inline-flex shrink-0 items-center justify-center gap-1.5 rounded-lg border border-blue-200 bg-blue-50 px-3 py-2 text-xs font-semibold text-blue-800 transition hover:bg-blue-100"
+          >
+            {plan.isApproved ? t.openPlan : t.confirmPlan}
+            <ArrowRight className="size-3.5" />
+          </Link>
         </div>
 
-        <div className="rounded-xl border border-slate-200 bg-slate-50/80 p-4">
-          <div className="flex items-center gap-2 text-sm font-semibold text-slate-900">
-            <Wrench className="size-4 text-amber-600" />
-            {t.siteFixes}
-          </div>
-          {hasFixes ? (
-            <ul className="mt-3 space-y-2.5">
-              {plan.fixItems.map((item) => (
-                <li key={item.id} className="rounded-lg bg-white px-3 py-2">
-                  <p className="text-sm font-medium leading-snug text-slate-900">
-                    {item.title}
-                  </p>
-                  <p className="mt-1 text-xs text-slate-500">
-                    {t.status(item.status)}
-                  </p>
+        {hasArticles ? (
+          <ul className="mt-4 grid gap-2 sm:grid-cols-2">
+            {plan.articleTopics.map((item, index) => {
+              const dateLabel = formatShortDate(item.scheduledFor, locale);
+              return (
+                <li
+                  key={item.id}
+                  className="rounded-lg border border-slate-100 bg-slate-50 px-3 py-3"
+                >
+                  <div className="flex items-start gap-2">
+                    <span className="mt-0.5 inline-flex size-6 shrink-0 items-center justify-center rounded-full bg-blue-100 text-xs font-semibold text-blue-800">
+                      {index + 1}
+                    </span>
+                    <div className="min-w-0">
+                      <p className="text-sm font-semibold leading-snug text-slate-900">
+                        {item.title}
+                      </p>
+                      {item.reason ? (
+                        <p className="mt-1 line-clamp-2 text-xs leading-relaxed text-slate-600">
+                          {item.reason}
+                        </p>
+                      ) : null}
+                      <div className="mt-2 flex flex-wrap items-center gap-2 text-xs text-slate-500">
+                        <span className="inline-flex items-center gap-1">
+                          <CheckCircle2 className="size-3.5" />
+                          {t.status(item.status)}
+                        </span>
+                        {dateLabel ? (
+                          <span className="inline-flex items-center gap-1">
+                            <CalendarDays className="size-3.5" />
+                            {dateLabel}
+                          </span>
+                        ) : null}
+                      </div>
+                    </div>
+                  </div>
                 </li>
-              ))}
-            </ul>
-          ) : (
-            <p className="mt-3 text-sm text-slate-500">{t.noFixes}</p>
-          )}
+              );
+            })}
+          </ul>
+        ) : (
+          <p className="mt-3 text-sm text-slate-500">{t.noArticles}</p>
+        )}
+      </div>
+
+      <div className="mt-4 rounded-xl border border-slate-200 bg-white/70 p-4">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+          <div>
+            <div className="flex items-center gap-2 text-sm font-semibold text-slate-900">
+              <Wrench className="size-4 text-amber-600" />
+              {t.siteFixes}
+            </div>
+            <p className="mt-1 max-w-2xl text-xs leading-relaxed text-slate-600">
+              {t.siteFixesDescription}
+            </p>
+          </div>
+          <Link
+            href="/app/integrations#custom-publishing"
+            className="inline-flex shrink-0 items-center justify-center gap-1.5 rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-xs font-semibold text-emerald-800 transition hover:bg-emerald-100"
+          >
+            <Globe2 className="size-3.5" />
+            {t.setupPublishing}
+          </Link>
         </div>
+
+        {hasFixes ? (
+          <ul className="mt-3 grid gap-2 sm:grid-cols-2">
+            {plan.fixItems.map((item) => (
+              <li key={item.id} className="rounded-lg bg-slate-50 px-3 py-2">
+                <p className="text-sm font-medium leading-snug text-slate-900">
+                  {item.title}
+                </p>
+                <p className="mt-1 text-xs text-slate-500">
+                  {t.status(item.status)}
+                </p>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="mt-3 text-sm text-slate-500">{t.noFixes}</p>
+        )}
       </div>
 
       <p className="mt-4 text-xs leading-relaxed text-slate-500">

@@ -216,7 +216,7 @@ export function buildSimpleDashboardViewModel(input: {
         href: control.monthlyPlan.href,
         articleTopics: planPreviewItems
           .filter((item) => item.type === "ARTICLE")
-          .slice(0, 3)
+          .slice(0, 6)
           .map((item) => ({
             id: item.id,
             title: item.title,
@@ -226,7 +226,7 @@ export function buildSimpleDashboardViewModel(input: {
           })),
         fixItems: planPreviewItems
           .filter((item) => item.type === "SEO_FIX" || item.type === "TASK_FIX")
-          .slice(0, 3)
+          .slice(0, 4)
           .map((item) => ({
             id: item.id,
             title: item.title,

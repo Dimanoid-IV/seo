@@ -311,8 +311,14 @@ export const saasDictionary: SaasDictionary = {
         "See on kinnitatud 30 päeva strateegia: RankBoost valmistab artikleid ja parandusi ajakava järgi.",
       confirmPlan: "Vaata ja kinnita plaan",
       openPlan: "Ava täielik plaan",
+      setupPublishing: "Ühenda avaldamine",
+      articlePlanLabel: "Kuu artikliplaan",
+      articlePlanDescription:
+        "Teemad peaksid põhinema teie saidil, brändil, otsingunõudlusel ja konkurentide kontekstil. Avage täielik plaan, et näha iga teema briefi ja struktuuri.",
       articleTopics: "Artikliteemad",
       siteFixes: "Saidi parandused",
+      siteFixesDescription:
+        "Saidi probleemid jäävad eraldi nimekirja. Neist ei tehta artikliteemasid.",
       noArticles: "RankBoost valib kuu strateegia jaoks mitu artikliteemat.",
       noFixes: "Selles plaanis pole veel saidi parandusi.",
       draftNote:

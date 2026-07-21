@@ -311,8 +311,14 @@ export const saasDictionary: SaasDictionary = {
         "This is the approved 30-day strategy: RankBoost prepares articles and improvements on schedule.",
       confirmPlan: "Review and confirm plan",
       openPlan: "Open full plan",
+      setupPublishing: "Connect publishing",
+      articlePlanLabel: "Monthly article plan",
+      articlePlanDescription:
+        "Topics should be grounded in your site, brand, search demand, and competitor context. Open the full plan to see each topic brief and outline.",
       articleTopics: "Article topics",
       siteFixes: "Site fixes",
+      siteFixesDescription:
+        "Site issues stay separate. They are not turned into article topics.",
       noArticles: "RankBoost is selecting several article topics for the monthly strategy.",
       noFixes: "No site fixes in this plan yet.",
       draftNote:
