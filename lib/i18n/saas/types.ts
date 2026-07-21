@@ -179,6 +179,23 @@ export type SaasDictionary = {
       cta: string;
       safetyNote: string;
     };
+    aiVisibility: {
+      eyebrow: string;
+      title: string;
+      description: string;
+      readiness: string;
+      prompts: string;
+      platforms: string;
+      notMeasured: string;
+      samplePrompts: string;
+      openPlan: string;
+      statuses: {
+        no_data: string;
+        needs_work: string;
+        building: string;
+        ready: string;
+      };
+    };
     activity: { title: string; empty: string; openTimeline: string };
     billingNote: string;
     gscConnectHint: string;

@@ -1,4 +1,5 @@
 import type { AutopilotStatusSnapshot } from "@/lib/autopilot/autopilot-status";
+import type { AutopilotAiVisibilitySnapshot } from "@/lib/autopilot/ai-visibility-snapshot";
 
 export type ControlCenterOverallStatus =
   | "READY"
@@ -45,6 +46,7 @@ export type ControlCenterMonthlyPlan = {
     status: string;
     scheduledFor?: string | null;
   }>;
+  aiVisibility?: AutopilotAiVisibilitySnapshot | null;
 };
 
 export type ApprovalQueueItem = {

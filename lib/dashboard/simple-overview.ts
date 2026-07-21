@@ -33,6 +33,10 @@ import { readSiteTechFromBusinessGoals } from "@/lib/onboarding/site-tech-persis
 import { readBrandVoiceFromBusinessGoals } from "@/lib/brand-voice/business-goals";
 import { getPrisma } from "@/lib/db";
 import { WebsiteStatus } from "@prisma/client";
+import {
+  buildDashboardAiVisibilitySummary,
+  type DashboardAiVisibilitySummary,
+} from "./ai-visibility-summary";
 
 export type SimpleDashboardTone = "GOOD" | "NEEDS_REVIEW" | "SETUP" | "NO_DATA";
 
@@ -97,6 +101,7 @@ export type SimpleDashboardViewModel = {
     totalItems: number;
     isApproved: boolean;
   };
+  aiVisibility?: DashboardAiVisibilitySummary;
   /** Prompt 11.44 — human-facing monthly autopilot status when plan is approved. */
   monthlyAutopilotActive?: {
     nextArticleDateLabel: string | null;
@@ -231,6 +236,10 @@ export function buildSimpleDashboardViewModel(input: {
         isApproved: planApproved,
       }
     : undefined;
+  const aiVisibility = buildDashboardAiVisibilitySummary({
+    snapshot: control.monthlyPlan?.aiVisibility,
+    href: control.monthlyPlan?.href ?? "/app/autopilot",
+  });
 
   const reviewCount = input.reviewQueueCount ?? needsReviewCount;
   const publishChip = publishingPathChip(publishingState.publishPath);
@@ -296,6 +305,7 @@ export function buildSimpleDashboardViewModel(input: {
       emailApprovalsCount: control.metrics.pendingEmailsCount,
     },
     monthlyPlanPreview,
+    aiVisibility,
     monthlyAutopilotActive,
     readyToPublish: readyArticle?.href
       ? {

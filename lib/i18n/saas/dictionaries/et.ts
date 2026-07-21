@@ -226,6 +226,24 @@ export const saasDictionary: SaasDictionary = {
       safetyNote:
         "Avaldatakse ainult pärast teie kinnitust.",
     },
+    aiVisibility: {
+      eyebrow: "AI visibility",
+      title: "Milliseid AI-küsimusi plaan katab",
+      description:
+        "RankBoost muudab artikliteemad ostjate küsimusteks ChatGPT, Claude'i, Perplexity ja Gemini jaoks.",
+      readiness: "Valmidus",
+      prompts: "AI-küsimused",
+      platforms: "Platvormid",
+      notMeasured: "—",
+      samplePrompts: "Näidisküsimused",
+      openPlan: "Ava plaan",
+      statuses: {
+        no_data: "AI/GEO-küsimused ilmuvad pärast research briefi.",
+        needs_work: "AI/GEO katvust tuleb tugevdada.",
+        building: "AI/GEO katvus ehitatakse koos plaaniga.",
+        ready: "Plaan katab AI-otsingu buyer prompt'e hästi.",
+      },
+    },
     activity: {
       title: "Hiljutine tegevus",
       empty: "Tegevus ilmub, kui hakkate toiminguid üle vaatama ja kinnitama.",

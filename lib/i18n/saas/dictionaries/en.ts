@@ -226,6 +226,24 @@ export const saasDictionary: SaasDictionary = {
       safetyNote:
         "Will only be published after your approval.",
     },
+    aiVisibility: {
+      eyebrow: "AI visibility",
+      title: "Which AI questions this plan covers",
+      description:
+        "RankBoost turns article topics into buyer questions for ChatGPT, Claude, Perplexity, and Gemini.",
+      readiness: "Readiness",
+      prompts: "AI questions",
+      platforms: "Platforms",
+      notMeasured: "-",
+      samplePrompts: "Sample questions",
+      openPlan: "Open plan",
+      statuses: {
+        no_data: "AI/GEO questions will appear after the research brief.",
+        needs_work: "AI/GEO coverage needs strengthening.",
+        building: "AI/GEO coverage is being built with the plan.",
+        ready: "The plan covers buyer prompts for AI search well.",
+      },
+    },
     activity: {
       title: "Recent activity",
       empty: "Activity will appear here as you review and approve actions.",
