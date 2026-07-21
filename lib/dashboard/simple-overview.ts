@@ -37,6 +37,8 @@ import {
   buildDashboardAiVisibilitySummary,
   type DashboardAiVisibilitySummary,
 } from "./ai-visibility-summary";
+import { parseContentResearchBrief } from "@/lib/content-research/parse";
+import { toResearchBriefSummary } from "@/lib/content-research/types";
 
 export type SimpleDashboardTone = "GOOD" | "NEEDS_REVIEW" | "SETUP" | "NO_DATA";
 
@@ -92,6 +94,12 @@ export type SimpleDashboardViewModel = {
       reason?: string;
       status: string;
       scheduledFor?: string | null;
+      research?: {
+        primaryKeyword: string;
+        geoPromptCount: number;
+        competitorCount: number;
+        competitorsUnavailable: boolean;
+      } | null;
     }>;
     fixItems: Array<{
       id: string;
@@ -217,13 +225,27 @@ export function buildSimpleDashboardViewModel(input: {
         articleTopics: planPreviewItems
           .filter((item) => item.type === "ARTICLE")
           .slice(0, 6)
-          .map((item) => ({
-            id: item.id,
-            title: item.title,
-            reason: item.reason,
-            status: item.status,
-            scheduledFor: item.scheduledFor,
-          })),
+          .map((item) => {
+            const brief = item.researchBrief
+              ? parseContentResearchBrief(item.researchBrief)
+              : null;
+            const summary = brief ? toResearchBriefSummary(brief) : null;
+            return {
+              id: item.id,
+              title: item.title,
+              reason: item.reason,
+              status: item.status,
+              scheduledFor: item.scheduledFor,
+              research: summary
+                ? {
+                    primaryKeyword: summary.primaryKeyword,
+                    geoPromptCount: summary.geoPromptCount,
+                    competitorCount: summary.competitorCount,
+                    competitorsUnavailable: summary.competitorsUnavailable,
+                  }
+                : null,
+            };
+          }),
         fixItems: planPreviewItems
           .filter((item) => item.type === "SEO_FIX" || item.type === "TASK_FIX")
           .slice(0, 4)

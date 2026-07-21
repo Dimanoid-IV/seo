@@ -330,6 +330,7 @@ export async function getAutopilotControlCenter(input: {
         reason: item.reason,
         status: item.status,
         scheduledFor: item.scheduledFor ?? item.plannedPublishAt ?? null,
+        researchBrief: item.researchBrief,
       })) ?? [];
   const aiVisibility = buildAutopilotAiVisibilitySnapshot({
     document: planItemsDocument,

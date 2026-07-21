@@ -45,6 +45,7 @@ export type ControlCenterMonthlyPlan = {
     reason?: string;
     status: string;
     scheduledFor?: string | null;
+    researchBrief?: Record<string, unknown>;
   }>;
   aiVisibility?: AutopilotAiVisibilitySnapshot | null;
 };

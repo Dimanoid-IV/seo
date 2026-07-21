@@ -30,6 +30,7 @@ function formatShortDate(value: string | null | undefined, locale: string) {
 export function MonthlyPlanPreviewCard({ plan }: MonthlyPlanPreviewCardProps) {
   const { dict, locale } = useSaasTranslations();
   const t = dict.dashboard.monthlyPlanPreview;
+  const researchLabels = dict.contentResearch;
 
   const hasArticles = plan.articleTopics.length > 0;
   const hasFixes = plan.fixItems.length > 0;
@@ -127,6 +128,26 @@ export function MonthlyPlanPreviewCard({ plan }: MonthlyPlanPreviewCardProps) {
                           </span>
                         ) : null}
                       </div>
+                      {item.research ? (
+                        <div className="mt-2 flex flex-wrap gap-1.5 text-[11px]">
+                          {item.research.primaryKeyword ? (
+                            <span className="rounded-full border border-blue-200 bg-white px-2 py-0.5 text-blue-800">
+                              {researchLabels.primaryKeyword}:{" "}
+                              {item.research.primaryKeyword}
+                            </span>
+                          ) : null}
+                          <span className="rounded-full border border-violet-200 bg-white px-2 py-0.5 text-violet-800">
+                            {researchLabels.geoPrompts}:{" "}
+                            {item.research.geoPromptCount}
+                          </span>
+                          <span className="rounded-full border border-slate-200 bg-white px-2 py-0.5 text-slate-700">
+                            {researchLabels.competitors}:{" "}
+                            {item.research.competitorsUnavailable
+                              ? researchLabels.competitorsUnavailable
+                              : item.research.competitorCount}
+                          </span>
+                        </div>
+                      ) : null}
                     </div>
                   </div>
                 </li>
