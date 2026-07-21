@@ -4,7 +4,6 @@ import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { Check, Copy, Download, ExternalLink, Globe2, Loader2, Mail, Send, Webhook } from "lucide-react";
 
-import { CustomPublishingSetup } from "@/components/integrations/CustomPublishingSetup";
 import { Button } from "@/components/ui/button";
 import { authFetch } from "@/lib/auth/client-session";
 import type { UniversalExportPackage } from "@/lib/publishing/universal-export";
@@ -661,12 +660,11 @@ export function ArticlePublishPanel({
             </div>
           </div>
           <Link
-            href="/app/integrations"
+            href="/app/integrations#custom-publishing"
             className="inline-flex items-center justify-center rounded-md bg-cyan-500 px-3 py-1.5 text-sm font-semibold text-white transition hover:bg-cyan-400"
           >
             Настроить публикацию на сайт
           </Link>
-          <CustomPublishingSetup articleId={articleId} />
         </div>
       ) : null}
     </div>
