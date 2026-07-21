@@ -258,6 +258,60 @@ export function SimpleDashboardPage() {
             <MonthlyPlanPreviewCard plan={simple.monthlyPlanPreview} />
           ) : null}
 
+          {simple.hasAudit && !simple.monthlyPlanPreview ? (
+            <section className="rounded-2xl border border-blue-200 bg-gradient-to-br from-blue-50 via-white to-violet-50/40 p-6 shadow-sm sm:p-8">
+              <p className="text-xs font-medium uppercase tracking-wide text-blue-700">
+                {d.monthlyPlanPreview.articlePlanLabel}
+              </p>
+              <h2 className="mt-2 text-lg font-semibold tracking-tight text-slate-900 sm:text-xl">
+                {d.monthlyPlanPreview.missingTitle}
+              </h2>
+              <p className="mt-2 max-w-2xl text-sm leading-relaxed text-slate-600">
+                {d.monthlyPlanPreview.missingDescription}
+              </p>
+              <div className="mt-5 flex flex-wrap gap-3">
+                <button
+                  type="button"
+                  disabled={actionLoading}
+                  onClick={() => {
+                    setActionLoading(true);
+                    setActionError(null);
+                    authFetch("/api/autopilot/monthly/generate", {
+                      method: "POST",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({}),
+                    })
+                      .then(async (response) => {
+                        if (!response.ok) {
+                          setActionError(
+                            await parseApiErrorMessage(
+                              response,
+                              d.generatePlanFailed
+                            )
+                          );
+                          return;
+                        }
+                        await refetch({ silent: true });
+                      })
+                      .catch(() => setActionError(d.generatePlanNetworkError))
+                      .finally(() => setActionLoading(false));
+                  }}
+                  className="inline-flex items-center justify-center rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-blue-700 disabled:opacity-60"
+                >
+                  {actionLoading
+                    ? dict.common.working
+                    : d.monthlyPlanPreview.generateNow}
+                </button>
+                <Link
+                  href="/app/autopilot"
+                  className="inline-flex items-center justify-center rounded-lg border border-slate-200 bg-white px-5 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
+                >
+                  {d.monthlyPlanPreview.openAutopilot}
+                </Link>
+              </div>
+            </section>
+          ) : null}
+
           {simple.hasAudit && simple.aiVisibility ? (
             <AiVisibilityDashboardCard snapshot={simple.aiVisibility} />
           ) : null}

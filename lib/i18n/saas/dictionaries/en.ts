@@ -321,6 +321,11 @@ export const saasDictionary: SaasDictionary = {
         "Site issues stay separate. They are not turned into article topics.",
       noArticles: "RankBoost is selecting several article topics for the monthly strategy.",
       noFixes: "No site fixes in this plan yet.",
+      missingTitle: "Create the monthly article plan",
+      missingDescription:
+        "After the site check, RankBoost should show article topics, site fixes, and a schedule. If the plan is not ready yet, create it now.",
+      generateNow: "Create plan now",
+      openAutopilot: "Open Autopilot",
       draftNote:
         "You can choose topics, remove anything you dislike, or enable WordPress auto-publish while confirming.",
       approvedNote:

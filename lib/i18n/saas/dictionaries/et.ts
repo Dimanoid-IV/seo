@@ -321,6 +321,11 @@ export const saasDictionary: SaasDictionary = {
         "Saidi probleemid jäävad eraldi nimekirja. Neist ei tehta artikliteemasid.",
       noArticles: "RankBoost valib kuu strateegia jaoks mitu artikliteemat.",
       noFixes: "Selles plaanis pole veel saidi parandusi.",
+      missingTitle: "Loo kuu artikliplaan",
+      missingDescription:
+        "Pärast saidi kontrolli peaks RankBoost näitama artikliteemasid, parandusi ja ajakava. Kui plaan pole veel valmis, looge see nüüd.",
+      generateNow: "Loo plaan nüüd",
+      openAutopilot: "Ava Autopilot",
       draftNote:
         "Saate valida teemasid, eemaldada sobimatu või lubada WordPressi autopublishi kinnitamise ajal.",
       approvedNote:

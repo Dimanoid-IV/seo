@@ -256,6 +256,10 @@ export type SaasDictionary = {
       siteFixesDescription: string;
       noArticles: string;
       noFixes: string;
+      missingTitle: string;
+      missingDescription: string;
+      generateNow: string;
+      openAutopilot: string;
       draftNote: string;
       approvedNote: string;
       topicCount: (count: number) => string;
