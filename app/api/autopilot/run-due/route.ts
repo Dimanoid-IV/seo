@@ -30,18 +30,26 @@ export async function POST(request: Request) {
   try {
     assertDatabaseConfigured();
     const currentUser = await requireUser(request);
-    const body = await parseJsonBody(request);
+    const url = new URL(request.url);
+    let body: unknown = {};
+    try {
+      body = await parseJsonBody(request);
+    } catch {
+      body = {};
+    }
     const parsed = postSchema.safeParse(body);
 
     if (!parsed.success) {
       throw validationErrorFromZod(parsed.error);
     }
 
+    const queryDryRun = url.searchParams.get("dryRun") === "true";
+
     const report = await runScheduledAutopilotPlans({
       userId: currentUser.id,
       organizationId: currentUser.organizationId,
       websiteId: parsed.data.websiteId,
-      dryRun: parsed.data.dryRun ?? false,
+      dryRun: queryDryRun || parsed.data.dryRun === true,
     });
 
     return authJsonResponse({ data: report });

@@ -422,6 +422,36 @@ function parsePlanItem(value: unknown): AutopilotPlanItem | null {
       ? record.integrationType
       : "none";
 
+  const publishingPath =
+    record.publishingPath === "wordpress_draft" ||
+    record.publishingPath === "wordpress_live" ||
+    record.publishingPath === "universal_package" ||
+    record.publishingPath === "webhook" ||
+    record.publishingPath === "none"
+      ? record.publishingPath
+      : undefined;
+
+  const pipelineState =
+    record.pipelineState === "PROPOSED_TOPIC" ||
+    record.pipelineState === "APPROVED_TOPIC" ||
+    record.pipelineState === "SCHEDULED_FOR_RESEARCH" ||
+    record.pipelineState === "RESEARCH_READY" ||
+    record.pipelineState === "SCHEDULED_FOR_DRAFT" ||
+    record.pipelineState === "DRAFT_GENERATING" ||
+    record.pipelineState === "DRAFT_READY_FOR_REVIEW" ||
+    record.pipelineState === "QUALITY_FAILED_NEEDS_REPAIR" ||
+    record.pipelineState === "READY_FOR_PUBLISHING_HANDOFF" ||
+    record.pipelineState === "WORDPRESS_DRAFT_CREATED" ||
+    record.pipelineState === "WORDPRESS_LIVE_PUBLISHED" ||
+    record.pipelineState === "UNIVERSAL_PACKAGE_READY" ||
+    record.pipelineState === "WEBHOOK_READY" ||
+    record.pipelineState === "WEBHOOK_SENT" ||
+    record.pipelineState === "PUBLISHED_MANUALLY_CONFIRMED" ||
+    record.pipelineState === "SKIPPED" ||
+    record.pipelineState === "FAILED"
+      ? record.pipelineState
+      : undefined;
+
   let sourceRef: AutopilotPlanItem["sourceRef"];
   if (record.sourceRef && typeof record.sourceRef === "object") {
     const ref = record.sourceRef as Record<string, unknown>;
@@ -475,6 +505,40 @@ function parsePlanItem(value: unknown): AutopilotPlanItem | null {
     linkedArticleApprovedAt:
       typeof record.linkedArticleApprovedAt === "string"
         ? record.linkedArticleApprovedAt
+        : undefined,
+    pipelineState,
+    plannedResearchAt:
+      typeof record.plannedResearchAt === "string"
+        ? record.plannedResearchAt
+        : undefined,
+    plannedDraftAt:
+      typeof record.plannedDraftAt === "string"
+        ? record.plannedDraftAt
+        : undefined,
+    plannedPublishAt:
+      typeof record.plannedPublishAt === "string"
+        ? record.plannedPublishAt
+        : undefined,
+    publishingPath,
+    universalPackagePreparedAt:
+      typeof record.universalPackagePreparedAt === "string"
+        ? record.universalPackagePreparedAt
+        : undefined,
+    webhookReadyAt:
+      typeof record.webhookReadyAt === "string"
+        ? record.webhookReadyAt
+        : undefined,
+    webhookSentAt:
+      typeof record.webhookSentAt === "string"
+        ? record.webhookSentAt
+        : undefined,
+    wordpressDraftCreatedAt:
+      typeof record.wordpressDraftCreatedAt === "string"
+        ? record.wordpressDraftCreatedAt
+        : undefined,
+    nextAutomatedStep:
+      typeof record.nextAutomatedStep === "string"
+        ? record.nextAutomatedStep
         : undefined,
   };
 }

@@ -9,6 +9,7 @@ import {
   assertWebhookReadyForExplicitSend,
   deliverCustomWebhook,
 } from "@/lib/publishing/custom-webhook";
+import { markArticlePublishedInMonthlyPlans } from "@/lib/autopilot/link-article-publication";
 import {
   getCustomPublishingConfig,
   getCustomPublishingWebhookUrl,
@@ -103,13 +104,20 @@ export async function POST(request: Request, context: RouteContext) {
     });
 
     if (!dryRun && result.delivered) {
+      const publishedAt = new Date();
       await prisma.article.update({
         where: { id: article.id },
         data: {
           status: "PUBLISHED",
-          publishedAt: new Date(),
+          publishedAt,
           wordpressPublishedUrl: result.externalUrl ?? undefined,
         },
+      });
+      await markArticlePublishedInMonthlyPlans({
+        articleId: article.id,
+        websiteId: article.websiteId,
+        publishedAt,
+        publishingPath: "webhook",
       });
     }
 
