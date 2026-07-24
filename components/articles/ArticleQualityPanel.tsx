@@ -44,7 +44,7 @@ export function ArticleQualityPanel({
   return (
     <section
       className={cn(
-        "space-y-3 rounded-xl border border-white/10 bg-white/[0.02] p-4",
+        "space-y-3 rounded-xl border border-slate-200 bg-white p-4 shadow-sm",
         className
       )}
     >
@@ -53,19 +53,19 @@ export function ArticleQualityPanel({
           <p className="text-xs font-medium uppercase tracking-wider text-slate-500">
             Quality Score
           </p>
-          <p className="text-2xl font-bold text-white">
+          <p className="text-2xl font-bold text-slate-900">
             {score}
             <span className="text-base font-normal text-slate-500"> / 100</span>
           </p>
         </div>
 
         {passed ? (
-          <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3 py-1 text-xs font-medium text-emerald-300">
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-medium text-emerald-800">
             <CheckCircle2 className="size-3.5" />
             Проверено RankBoost
           </span>
         ) : (
-          <span className="inline-flex items-center gap-1.5 rounded-full border border-amber-500/30 bg-amber-500/10 px-3 py-1 text-xs font-medium text-amber-300">
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-amber-200 bg-amber-50 px-3 py-1 text-xs font-medium text-amber-800">
             <ShieldAlert className="size-3.5" />
             Требует проверки
           </span>
@@ -77,7 +77,7 @@ export function ArticleQualityPanel({
           <button
             type="button"
             onClick={() => setShowIssues((current) => !current)}
-            className="inline-flex items-center gap-1.5 text-xs text-slate-300 hover:text-white"
+            className="inline-flex items-center gap-1.5 text-xs font-medium text-slate-600 hover:text-slate-900"
           >
             {showIssues ? (
               <ChevronUp className="size-3.5" />
@@ -95,10 +95,10 @@ export function ArticleQualityPanel({
                   className={cn(
                     "flex items-start gap-2",
                     item.status === "fixed"
-                      ? "text-emerald-300"
+                      ? "text-emerald-700"
                       : item.status === "warning"
-                        ? "text-amber-300"
-                        : "text-slate-400"
+                        ? "text-amber-700"
+                        : "text-slate-600"
                   )}
                 >
                   <span aria-hidden>

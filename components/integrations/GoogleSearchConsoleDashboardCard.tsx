@@ -38,21 +38,21 @@ export function GoogleSearchConsoleDashboardCard({
       </div>
 
       {!data.connected ? (
-        <p className="text-sm text-slate-400">
+        <p className="text-sm text-slate-600">
           Подключите Google Search Console, чтобы видеть реальные клики и показы.{" "}
           <Link
             href="/app/integrations"
-            className="text-cyan-400 underline-offset-2 hover:underline"
+            className="font-medium text-cyan-700 underline-offset-2 hover:underline"
           >
             Перейти к интеграциям
           </Link>
         </p>
       ) : !data.selectedProperty ? (
-        <p className="text-sm text-slate-400">
+        <p className="text-sm text-slate-600">
           Выберите сайт Search Console в{" "}
           <Link
             href="/app/integrations"
-            className="text-cyan-400 underline-offset-2 hover:underline"
+            className="font-medium text-cyan-700 underline-offset-2 hover:underline"
           >
             интеграциях
           </Link>
@@ -72,7 +72,7 @@ export function GoogleSearchConsoleDashboardCard({
             showExplainer
           />
           {data.tasksCreatedLastSync != null && data.tasksCreatedLastSync > 0 ? (
-            <p className="rounded-lg border border-violet-500/20 bg-violet-500/5 px-3 py-2 text-sm text-violet-200">
+            <p className="rounded-lg border border-violet-200 bg-violet-50 px-3 py-2 text-sm text-violet-800">
               На основе этих данных создано{" "}
               <span className="font-semibold text-slate-900">
                 {data.tasksCreatedLastSync}
@@ -82,11 +82,11 @@ export function GoogleSearchConsoleDashboardCard({
           ) : null}
         </div>
       ) : (
-        <p className="text-sm text-slate-400">
+        <p className="text-sm text-slate-600">
           Сайт выбран. Загрузите данные в{" "}
           <Link
             href="/app/integrations"
-            className="text-cyan-400 underline-offset-2 hover:underline"
+            className="font-medium text-cyan-700 underline-offset-2 hover:underline"
           >
             интеграциях
           </Link>
@@ -116,7 +116,7 @@ export function GscSyncButton({
       onClick={() => void onSync()}
       disabled={loading}
       className={cn(
-        "inline-flex w-full items-center justify-center gap-2 rounded-lg border border-blue-500/30 bg-blue-500/10 px-4 py-2.5 text-sm font-medium text-blue-200 transition hover:bg-blue-500/20 disabled:cursor-not-allowed disabled:opacity-60",
+        "inline-flex w-full items-center justify-center gap-2 rounded-lg border border-blue-200 bg-blue-50 px-4 py-2.5 text-sm font-medium text-blue-800 transition hover:bg-blue-100 disabled:cursor-not-allowed disabled:opacity-60",
         className
       )}
     >

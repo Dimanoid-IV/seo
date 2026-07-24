@@ -156,7 +156,7 @@ export function ArticleEditorForm({ article, onUpdated }: ArticleEditorFormProps
           <div className="flex flex-wrap items-center gap-2">
             <ArticleStatusBadge status={article.status} />
             {article.generatedByAIJobId ? (
-              <span className="rounded-full border border-violet-500/30 bg-violet-500/10 px-2.5 py-1 text-xs font-medium text-violet-300">
+              <span className="rounded-full border border-violet-200 bg-violet-50 px-2.5 py-1 text-xs font-medium text-violet-700">
                 Создано AI, проверьте перед публикацией
               </span>
             ) : null}
@@ -167,15 +167,15 @@ export function ArticleEditorForm({ article, onUpdated }: ArticleEditorFormProps
               </span>
             ) : null}
           </div>
-          <h1 className="text-2xl font-bold text-white sm:text-3xl">
+          <h1 className="text-2xl font-bold text-slate-900 sm:text-3xl">
             {article.title}
           </h1>
           {article.topic ? (
-            <p className="text-sm text-slate-400">{article.topic}</p>
+            <p className="text-sm text-slate-600">{article.topic}</p>
           ) : null}
-          <p className="text-xs text-violet-300/90">{AI_DRAFT_SAFETY_COPY}</p>
+          <p className="text-xs text-violet-700">{AI_DRAFT_SAFETY_COPY}</p>
           {article.generatedByAIJobId ? (
-            <p className="text-xs text-slate-400">{QUALITY_PIPELINE_SAFETY_COPY}</p>
+            <p className="text-xs text-slate-600">{QUALITY_PIPELINE_SAFETY_COPY}</p>
           ) : null}
         </div>
 
@@ -188,7 +188,7 @@ export function ArticleEditorForm({ article, onUpdated }: ArticleEditorFormProps
               className={buttonVariants({
                 variant: "outline",
                 className:
-                  "border-white/15 bg-white/5 text-slate-200 hover:bg-white/10",
+                  "border-slate-200 bg-white text-slate-700 hover:bg-slate-50",
               })}
             >
               Открыть в WordPress
@@ -219,7 +219,7 @@ export function ArticleEditorForm({ article, onUpdated }: ArticleEditorFormProps
       <div className="grid gap-8 xl:grid-cols-[minmax(0,1fr)_320px]">
         <div className="space-y-6">
           <div className="space-y-2">
-            <label htmlFor="article-title" className="text-sm font-medium text-white">
+            <label htmlFor="article-title" className="text-sm font-medium text-slate-800">
               Заголовок
             </label>
             <input
@@ -229,12 +229,12 @@ export function ArticleEditorForm({ article, onUpdated }: ArticleEditorFormProps
               onChange={(event) =>
                 setForm((current) => ({ ...current, title: event.target.value }))
               }
-              className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none focus:border-blue-500/50"
+              className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
             />
           </div>
 
           <div className="space-y-2">
-            <label htmlFor="article-slug" className="text-sm font-medium text-white">
+            <label htmlFor="article-slug" className="text-sm font-medium text-slate-800">
               Адрес страницы (slug)
             </label>
             <input
@@ -244,7 +244,7 @@ export function ArticleEditorForm({ article, onUpdated }: ArticleEditorFormProps
               onChange={(event) =>
                 setForm((current) => ({ ...current, slug: event.target.value }))
               }
-              className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none focus:border-blue-500/50"
+              className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
               placeholder="local-seo-estonia"
             />
           </div>
@@ -252,7 +252,7 @@ export function ArticleEditorForm({ article, onUpdated }: ArticleEditorFormProps
           <div className="space-y-2">
             <label
               htmlFor="article-meta-title"
-              className="text-sm font-medium text-white"
+              className="text-sm font-medium text-slate-800"
             >
               SEO-заголовок (meta title)
             </label>
@@ -266,14 +266,14 @@ export function ArticleEditorForm({ article, onUpdated }: ArticleEditorFormProps
                   metaTitle: event.target.value,
                 }))
               }
-              className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none focus:border-blue-500/50"
+              className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
             />
           </div>
 
           <div className="space-y-2">
             <label
               htmlFor="article-meta-description"
-              className="text-sm font-medium text-white"
+              className="text-sm font-medium text-slate-800"
             >
               SEO-описание (meta description)
             </label>
@@ -287,14 +287,14 @@ export function ArticleEditorForm({ article, onUpdated }: ArticleEditorFormProps
                 }))
               }
               rows={3}
-              className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none focus:border-blue-500/50"
+              className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
             />
           </div>
 
           <div className="space-y-2">
             <label
               htmlFor="article-content-html"
-              className="text-sm font-medium text-white"
+              className="text-sm font-medium text-slate-800"
             >
               Текст статьи (HTML)
             </label>
@@ -309,10 +309,10 @@ export function ArticleEditorForm({ article, onUpdated }: ArticleEditorFormProps
               }
               rows={16}
               className={cn(
-                "w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 font-mono text-sm text-slate-200 outline-none focus:border-blue-500/50"
+                "w-full rounded-lg border border-slate-200 bg-white px-3 py-2 font-mono text-sm text-slate-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
               )}
             />
-            <p className="text-xs text-amber-400/90">
+            <p className="text-xs text-amber-700">
               HTML будет очищен WordPress Connector при создании черновика.
             </p>
           </div>
@@ -333,7 +333,7 @@ export function ArticleEditorForm({ article, onUpdated }: ArticleEditorFormProps
             url={previewUrl}
           />
 
-          <div className="space-y-3 rounded-xl border border-white/10 bg-white/[0.02] p-4">
+          <div className="space-y-3 rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
             <Button
               type="button"
               onClick={handleSave}
@@ -356,7 +356,7 @@ export function ArticleEditorForm({ article, onUpdated }: ArticleEditorFormProps
                 variant="outline"
                 onClick={handleApprove}
                 disabled={saving || approving || archiving}
-                className="w-full border-emerald-500/30 bg-emerald-500/10 text-emerald-200 hover:bg-emerald-500/20"
+                className="w-full border-emerald-200 bg-emerald-50 text-emerald-800 hover:bg-emerald-100"
               >
                 {approving ? (
                   <>
@@ -370,7 +370,7 @@ export function ArticleEditorForm({ article, onUpdated }: ArticleEditorFormProps
             ) : null}
 
             {article.qualityPassed === false ? (
-              <p className="rounded-lg border border-amber-500/20 bg-amber-500/10 px-3 py-2 text-xs text-amber-100">
+              <p className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-800">
                 Черновик нельзя одобрить, пока он не пройдёт проверку качества.
               </p>
             ) : null}
@@ -381,7 +381,7 @@ export function ArticleEditorForm({ article, onUpdated }: ArticleEditorFormProps
                 variant="outline"
                 onClick={handleArchive}
                 disabled={saving || approving || archiving}
-                className="w-full border-slate-500/30 bg-slate-500/10 text-slate-200 hover:bg-slate-500/20"
+                className="w-full border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100"
               >
                 {archiving ? (
                   <>
@@ -397,8 +397,8 @@ export function ArticleEditorForm({ article, onUpdated }: ArticleEditorFormProps
               </Button>
             ) : null}
 
-            {error ? <p className="text-xs text-red-300">{error}</p> : null}
-            {success ? <p className="text-xs text-emerald-300">{success}</p> : null}
+            {error ? <p className="text-xs text-red-700">{error}</p> : null}
+            {success ? <p className="text-xs text-emerald-700">{success}</p> : null}
           </div>
 
           <ArticlePublishPanel

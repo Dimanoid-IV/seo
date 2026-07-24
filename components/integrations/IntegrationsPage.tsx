@@ -220,7 +220,7 @@ export function IntegrationsPage() {
       {data.website ? (
         <p className="-mt-4 mb-6 break-all text-xs text-slate-500">{data.website.url}</p>
       ) : (
-        <p className="-mt-4 mb-6 text-sm text-amber-300/90">{i.emptyDescription}</p>
+        <p className="-mt-4 mb-6 text-sm text-amber-700">{i.emptyDescription}</p>
       )}
 
       {data.website?.id ? (
@@ -270,8 +270,8 @@ export function IntegrationsPage() {
           className={cn(
             "mb-8 flex items-start gap-3 rounded-2xl border px-5 py-4 text-sm",
             banner.type === "success"
-              ? "border-emerald-500/20 bg-emerald-500/[0.06] text-emerald-100"
-              : "border-blue-500/15 bg-blue-500/[0.05] text-slate-700"
+              ? "border-emerald-200 bg-emerald-50 text-emerald-900"
+              : "border-blue-200 bg-blue-50 text-slate-700"
           )}
         >
           {banner.type === "success" ? (
@@ -306,7 +306,7 @@ export function IntegrationsPage() {
 
       <section className="saas-card-muted mt-12">
         <h2 className="text-base font-semibold text-slate-900">{i.benefitsTitle}</h2>
-        <ul className="mt-4 space-y-2 text-sm text-slate-400">
+        <ul className="mt-4 space-y-2 text-sm text-slate-600">
           {i.benefits.map((benefit) => (
             <li key={benefit} className="flex items-start gap-2">
               <span className="mt-1.5 size-1.5 shrink-0 rounded-full bg-cyan-400" />

@@ -117,23 +117,23 @@ export function WordPressConnectorPanel({
     return (
       <section
         className={cn(
-          "space-y-4 rounded-xl border border-emerald-500/20 bg-emerald-500/5 p-4",
+          "space-y-4 rounded-xl border border-emerald-200 bg-emerald-50 p-4",
           className
         )}
       >
-        <div className="flex items-start gap-2 text-emerald-200">
-          <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-emerald-400" />
+        <div className="flex items-start gap-2 text-emerald-900">
+          <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-emerald-700" />
           <div>
             <p className="text-sm font-medium">{wp.connected}</p>
             {wpConnection?.siteUrl ? (
-              <p className="mt-1 text-xs text-slate-400">{wpConnection.siteUrl}</p>
+              <p className="mt-1 text-xs text-slate-600">{wpConnection.siteUrl}</p>
             ) : null}
           </div>
         </div>
 
-        <p className="text-xs text-cyan-100/90">{wp.draftOnlyMessage}</p>
+        <p className="text-xs text-emerald-800">{wp.draftOnlyMessage}</p>
 
-        <dl className="grid gap-2 text-xs text-slate-400">
+        <dl className="grid gap-2 text-xs text-slate-600">
           {wpConnection?.pluginVersion ? (
             <div>
               <dt className="text-slate-500">{wp.pluginVersion}</dt>
@@ -155,7 +155,7 @@ export function WordPressConnectorPanel({
             <p className="mb-2 text-xs font-medium text-slate-600">
               {wp.permissionsTitle}
             </p>
-            <ul className="space-y-1 text-xs text-slate-400">
+            <ul className="space-y-1 text-xs text-slate-600">
               {Object.entries(wpConnection.permissions).map(([key, value]) => (
                 <li key={key}>{permissionLabel(key, value)}</li>
               ))}
@@ -170,24 +170,24 @@ export function WordPressConnectorPanel({
     return (
       <section
         className={cn(
-          "space-y-4 rounded-xl border border-amber-500/20 bg-amber-500/5 p-4",
+          "space-y-4 rounded-xl border border-amber-200 bg-amber-50 p-4",
           className
         )}
       >
         <div className="flex items-start gap-2">
           <Plug className="mt-0.5 size-4 shrink-0 text-amber-400" />
           <div>
-            <p className="text-sm font-medium text-amber-100">{wp.pendingTitle}</p>
-            <p className="mt-1 text-xs text-slate-400">{wp.pendingDescription}</p>
+            <p className="text-sm font-medium text-amber-900">{wp.pendingTitle}</p>
+            <p className="mt-1 text-xs text-slate-700">{wp.pendingDescription}</p>
             {wpConnection?.siteUrl ? (
               <p className="mt-2 text-xs text-slate-500">{wpConnection.siteUrl}</p>
             ) : null}
           </div>
         </div>
 
-        <p className="text-xs text-cyan-100/90">{wp.draftOnlyMessage}</p>
+        <p className="text-xs text-amber-800">{wp.draftOnlyMessage}</p>
 
-        <ol className="list-decimal space-y-2 pl-5 text-sm text-slate-400">
+        <ol className="list-decimal space-y-2 pl-5 text-sm text-slate-700">
           {wp.setupSteps.map((step) => (
             <li key={step}>{step}</li>
           ))}
@@ -199,12 +199,12 @@ export function WordPressConnectorPanel({
   return (
     <section
       className={cn(
-        "space-y-4 rounded-xl border border-sky-500/20 bg-sky-500/5 p-4",
+        "space-y-4 rounded-xl border border-sky-200 bg-sky-50 p-4",
         className
       )}
     >
       <p className="text-sm text-slate-600">{wp.createKeyDescription}</p>
-      <p className="text-xs text-cyan-100/90">{wp.draftOnlyMessage}</p>
+      <p className="text-xs text-sky-800">{wp.draftOnlyMessage}</p>
 
       <Button
         type="button"
@@ -223,18 +223,18 @@ export function WordPressConnectorPanel({
       </Button>
 
       {!websiteId ? (
-        <p className="text-xs text-amber-400/90">{wp.addWebsiteForKey}</p>
+        <p className="text-xs text-amber-700">{wp.addWebsiteForKey}</p>
       ) : null}
 
-      {error ? <p className="text-xs text-red-300">{error}</p> : null}
+      {error ? <p className="text-xs text-red-700">{error}</p> : null}
       {infoMessage ? (
-        <p className="text-xs text-amber-200">{infoMessage}</p>
+        <p className="text-xs text-amber-800">{infoMessage}</p>
       ) : null}
 
       {apiKey || apiSecret ? (
-        <div className="space-y-3 rounded-lg border border-amber-500/30 bg-amber-500/10 p-3">
-          <div className="flex items-start gap-2 text-amber-100">
-            <AlertTriangle className="mt-0.5 size-4 shrink-0 text-amber-400" />
+        <div className="space-y-3 rounded-lg border border-amber-200 bg-amber-50 p-3">
+          <div className="flex items-start gap-2 text-amber-900">
+            <AlertTriangle className="mt-0.5 size-4 shrink-0 text-amber-700" />
             <p className="text-xs">{wp.saveKeysNow}</p>
           </div>
 
@@ -242,7 +242,7 @@ export function WordPressConnectorPanel({
             <div className="space-y-1">
               <p className="text-xs font-medium text-slate-600">{wp.apiKey}</p>
               <div className="flex items-center gap-2">
-                <code className="flex-1 overflow-x-auto rounded bg-black/30 px-3 py-2 text-xs text-cyan-200">
+                <code className="flex-1 overflow-x-auto rounded bg-slate-900 px-3 py-2 text-xs text-cyan-100">
                   {apiKey}
                 </code>
                 <button
@@ -255,7 +255,7 @@ export function WordPressConnectorPanel({
                 </button>
               </div>
               {copiedField === "key" ? (
-                <p className="text-xs text-emerald-300">{wp.keyCopied}</p>
+                <p className="text-xs text-emerald-700">{wp.keyCopied}</p>
               ) : null}
             </div>
           ) : null}
@@ -264,7 +264,7 @@ export function WordPressConnectorPanel({
             <div className="space-y-1">
               <p className="text-xs font-medium text-slate-600">{wp.sharedSecret}</p>
               <div className="flex items-center gap-2">
-                <code className="flex-1 overflow-x-auto rounded bg-black/30 px-3 py-2 text-xs text-cyan-200">
+                <code className="flex-1 overflow-x-auto rounded bg-slate-900 px-3 py-2 text-xs text-cyan-100">
                   {apiSecret}
                 </code>
                 <button
@@ -277,7 +277,7 @@ export function WordPressConnectorPanel({
                 </button>
               </div>
               {copiedField === "secret" ? (
-                <p className="text-xs text-emerald-300">{wp.secretCopied}</p>
+                <p className="text-xs text-emerald-700">{wp.secretCopied}</p>
               ) : null}
             </div>
           ) : null}
@@ -286,7 +286,7 @@ export function WordPressConnectorPanel({
 
       <div>
         <p className="mb-2 text-sm font-medium text-slate-900">{wp.instructions}</p>
-        <ol className="list-decimal space-y-2 pl-5 text-sm text-slate-400">
+        <ol className="list-decimal space-y-2 pl-5 text-sm text-slate-600">
           {wp.setupSteps.map((step) => (
             <li key={step}>{step}</li>
           ))}

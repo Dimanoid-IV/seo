@@ -255,6 +255,10 @@ export function SimpleDashboardPage() {
             </section>
           ) : null}
 
+          {simple.hasAudit && simple.readyToPublish ? (
+            <ReadyToPublishCard article={simple.readyToPublish} />
+          ) : null}
+
           {simple.hasAudit && simple.monthlyPlanPreview ? (
             <MonthlyPlanPreviewCard plan={simple.monthlyPlanPreview} />
           ) : null}
@@ -342,10 +346,6 @@ export function SimpleDashboardPage() {
                 simple.monthlyAutopilotActive.showPublishingNudge
               }
             />
-          ) : null}
-
-          {simple.hasAudit && simple.readyToPublish ? (
-            <ReadyToPublishCard article={simple.readyToPublish} />
           ) : null}
 
           {simple.hasAudit && nextAction && !simple.monthlyAutopilotActive ? (

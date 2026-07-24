@@ -295,7 +295,7 @@ export function ArticlePublishPanel({
 
   if (loading) {
     return (
-      <div className="flex items-center gap-2 rounded-xl border border-white/10 bg-white/[0.02] p-4 text-sm text-slate-400">
+      <div className="flex items-center gap-2 rounded-xl border border-slate-200 bg-white p-4 text-sm text-slate-600 shadow-sm">
         <Loader2 className="size-4 animate-spin" />
         Готовим материалы…
       </div>
@@ -304,7 +304,7 @@ export function ArticlePublishPanel({
 
   if (error || !pkg) {
     return (
-      <div className="rounded-xl border border-amber-500/20 bg-amber-500/10 p-4 text-xs text-amber-100">
+      <div className="rounded-xl border border-amber-200 bg-amber-50 p-4 text-xs text-amber-800">
         {error ?? "Материалы недоступны."}
       </div>
     );
@@ -317,7 +317,7 @@ export function ArticlePublishPanel({
       variant="outline"
       disabled={!text}
       onClick={() => void handleCopy(key, text)}
-      className="justify-start border-white/15 bg-white/5 text-slate-200 hover:bg-white/10"
+      className="justify-start border-slate-200 bg-white text-slate-700 hover:bg-slate-50"
     >
       {copied === key ? (
         <Check className="size-4 text-emerald-300" />
@@ -334,10 +334,10 @@ export function ArticlePublishPanel({
   )}&body=${encodeURIComponent(pkg.developerEmail.body.slice(0, 1500))}`;
 
   return (
-    <div className="space-y-4 rounded-xl border border-white/10 bg-white/[0.02] p-4">
+    <div className="space-y-4 rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
       {isWordPressLivePublished ? (
-        <div className="rounded-xl border border-emerald-500/25 bg-emerald-500/10 p-3 text-xs text-emerald-50">
-          <p className="font-semibold text-emerald-100">Published on WordPress</p>
+        <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-3 text-xs text-emerald-800">
+          <p className="font-semibold text-emerald-900">Published on WordPress</p>
           {wordpressPublishedUrl ? (
             <p className="mt-1 break-all">
               <a
@@ -351,7 +351,7 @@ export function ArticlePublishPanel({
             </p>
           ) : null}
           {wordpressEditUrl ? (
-            <p className="mt-1 text-emerald-200/80">
+            <p className="mt-1 text-emerald-800">
               Edit:{" "}
               <a
                 href={wordpressEditUrl}
@@ -363,7 +363,7 @@ export function ArticlePublishPanel({
               </a>
             </p>
           ) : null}
-          <p className="mt-2 text-amber-100">
+          <p className="mt-2 text-amber-800">
             Moving back to draft changes the WordPress post status. The post is
             not deleted.
           </p>
@@ -371,7 +371,7 @@ export function ArticlePublishPanel({
             type="button"
             size="sm"
             variant="outline"
-            className="mt-2 border-white/20"
+            className="mt-2 border-emerald-200 bg-white text-emerald-800 hover:bg-emerald-100"
             disabled={rollingBack}
             onClick={() => void handleRollback()}
           >
@@ -381,17 +381,17 @@ export function ArticlePublishPanel({
             Move back to draft
           </Button>
           {rollbackMessage ? (
-            <p className="mt-2 text-emerald-100">{rollbackMessage}</p>
+            <p className="mt-2 text-emerald-800">{rollbackMessage}</p>
           ) : null}
         </div>
       ) : null}
 
       {isCustomPublished ? (
-        <div className="rounded-xl border border-emerald-500/25 bg-emerald-500/10 p-3 text-xs text-emerald-50">
-          <p className="font-semibold text-emerald-100">
+        <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-3 text-xs text-emerald-800">
+          <p className="font-semibold text-emerald-900">
             {hostedPublished ? "Статья опубликована на RankBoost" : "Статья отправлена на сайт"}
           </p>
-          <p className="mt-1 text-emerald-100/80">
+          <p className="mt-1 text-emerald-800">
             {hostedPublished
               ? "Это публичная hosted-страница. Для публикации на вашем домене подключите WordPress или custom endpoint."
               : "RankBoost получил успешный ответ от custom endpoint. Если сайт публикуется через деплой, статья появится после завершения деплоя."}
@@ -421,8 +421,8 @@ export function ArticlePublishPanel({
       ) : null}
 
       <div>
-        <h3 className="text-sm font-semibold text-white">Публикация статьи</h3>
-        <p className="mt-1 text-xs text-slate-400">
+        <h3 className="text-sm font-semibold text-slate-900">Публикация статьи</h3>
+        <p className="mt-1 text-xs text-slate-600">
           {publishPriority === "wordpress_draft"
             ? "WordPress подключён: RankBoost может создать черновик или публиковать через автопилот, если это разрешено в плане."
             : publishPriority === "webhook"
@@ -432,16 +432,16 @@ export function ArticlePublishPanel({
       </div>
 
       {!isWordPressLivePublished && !customConnected ? (
-        <div className="rounded-xl border border-emerald-400/25 bg-emerald-500/10 p-4">
+        <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-4">
           <div className="flex items-start gap-3">
-            <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-emerald-400/15">
-              <Webhook className="size-4 text-emerald-100" />
+            <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-emerald-100">
+              <Webhook className="size-4 text-emerald-700" />
             </div>
             <div className="min-w-0 flex-1">
-              <p className="text-sm font-semibold text-emerald-50">
+              <p className="text-sm font-semibold text-emerald-900">
                 Публиковать прямо на своём сайте
               </p>
-              <p className="mt-1 text-xs leading-relaxed text-emerald-100/80">
+              <p className="mt-1 text-xs leading-relaxed text-emerald-800">
                 Для custom-сайта нужен один защищённый endpoint. После проверки
                 RankBoost сможет отправлять готовые статьи в ваш блог одной
                 кнопкой, а позже — по подтверждённому месячному плану.
@@ -459,16 +459,16 @@ export function ArticlePublishPanel({
       ) : null}
 
       {!isWordPressLivePublished && !customConnected ? (
-        <div className="rounded-xl border border-blue-400/25 bg-blue-500/10 p-4">
+        <div className="rounded-xl border border-blue-200 bg-blue-50 p-4">
           <div className="flex items-start gap-3">
-            <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-blue-400/15">
-              <Globe2 className="size-4 text-blue-100" />
+            <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-blue-100">
+              <Globe2 className="size-4 text-blue-700" />
             </div>
             <div className="min-w-0 flex-1">
-              <p className="text-sm font-semibold text-blue-50">
+              <p className="text-sm font-semibold text-blue-900">
                 Самый простой способ: hosted-страница RankBoost
               </p>
-              <p className="mt-1 text-xs leading-relaxed text-blue-100/80">
+              <p className="mt-1 text-xs leading-relaxed text-blue-800">
                 RankBoost создаст публичную страницу статьи. Это не заменяет
                 публикацию на вашем домене, но позволяет сразу проверить и
                 использовать материал без разработчика.
@@ -507,16 +507,16 @@ export function ArticlePublishPanel({
       ) : null}
 
       {customConnected ? (
-        <div className="rounded-xl border border-emerald-500/25 bg-emerald-500/10 p-4">
+        <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-4">
           <div className="flex items-start gap-3">
-            <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-emerald-400/15">
-              <Webhook className="size-4 text-emerald-200" />
+            <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-emerald-100">
+              <Webhook className="size-4 text-emerald-700" />
             </div>
             <div className="min-w-0 flex-1">
-              <p className="text-sm font-semibold text-emerald-50">
+              <p className="text-sm font-semibold text-emerald-900">
                 Сайт подключён: {customHost ?? "Custom Webhook"}
               </p>
-              <p className="mt-1 text-xs leading-relaxed text-emerald-100/80">
+              <p className="mt-1 text-xs leading-relaxed text-emerald-800">
                 RankBoost отправит title, slug, HTML, Markdown, SEO title и meta
                 description в подключённый endpoint. Если endpoint связан с
                 репозиторием/деплоем, статья появится на сайте автоматически.
@@ -544,7 +544,7 @@ export function ArticlePublishPanel({
               variant="outline"
               disabled={publishing !== null}
               onClick={() => void handleCustomPublish(true)}
-              className="border-emerald-300/30 bg-white/5 text-emerald-50 hover:bg-white/10"
+              className="border-emerald-200 bg-white text-emerald-800 hover:bg-emerald-100"
             >
               {publishing === "test" ? (
                 <Loader2 className="size-4 animate-spin" />
@@ -553,17 +553,17 @@ export function ArticlePublishPanel({
             </Button>
           </div>
           {publishMessage ? (
-            <p className="mt-3 text-xs text-emerald-100">{publishMessage}</p>
+            <p className="mt-3 text-xs text-emerald-800">{publishMessage}</p>
           ) : null}
           {publishError ? (
-            <p className="mt-3 text-xs text-red-200">{publishError}</p>
+            <p className="mt-3 text-xs text-red-700">{publishError}</p>
           ) : null}
           {customHost ? (
             <a
               href={`https://${customHost}`}
               target="_blank"
               rel="noreferrer"
-              className="mt-3 inline-flex items-center gap-1 text-xs text-emerald-100 underline"
+              className="mt-3 inline-flex items-center gap-1 text-xs text-emerald-800 underline"
             >
               Открыть сайт
               <ExternalLink className="size-3" />
@@ -599,7 +599,7 @@ export function ArticlePublishPanel({
             variant="outline"
             disabled={downloading !== null}
             onClick={() => void handleDownload("html")}
-            className="border-white/15 bg-white/5 text-slate-200 hover:bg-white/10"
+            className="border-slate-200 bg-white text-slate-700 hover:bg-slate-50"
           >
             {downloading === "html" ? (
               <Loader2 className="size-4 animate-spin" />
@@ -614,7 +614,7 @@ export function ArticlePublishPanel({
             variant="outline"
             disabled={downloading !== null}
             onClick={() => void handleDownload("md")}
-            className="border-white/15 bg-white/5 text-slate-200 hover:bg-white/10"
+            className="border-slate-200 bg-white text-slate-700 hover:bg-slate-50"
           >
             {downloading === "md" ? (
               <Loader2 className="size-4 animate-spin" />
@@ -634,7 +634,7 @@ export function ArticlePublishPanel({
           {copyRow("email", "Скопировать письмо разработчику", developerEmailText)}
           <a
             href={mailtoHref}
-            className="inline-flex items-center gap-2 rounded-md border border-white/15 bg-white/5 px-3 py-1.5 text-sm text-slate-200 hover:bg-white/10"
+            className="inline-flex items-center gap-2 rounded-md border border-slate-200 bg-white px-3 py-1.5 text-sm text-slate-700 hover:bg-slate-50"
           >
             <Mail className="size-4" />
             Открыть письмо
@@ -646,14 +646,14 @@ export function ArticlePublishPanel({
       </div>
 
       {!customConnected ? (
-        <div className="space-y-3 rounded-xl border border-cyan-400/20 bg-cyan-400/10 p-4">
+        <div className="space-y-3 rounded-xl border border-cyan-200 bg-cyan-50 p-4">
           <div className="flex items-start gap-3">
-            <Webhook className="mt-0.5 size-4 shrink-0 text-cyan-200" />
+            <Webhook className="mt-0.5 size-4 shrink-0 text-cyan-700" />
             <div>
-              <p className="text-sm font-semibold text-cyan-50">
+              <p className="text-sm font-semibold text-cyan-900">
                 Хотите публиковать на custom-сайт одной кнопкой?
               </p>
-              <p className="mt-1 text-xs leading-relaxed text-cyan-100/80">
+              <p className="mt-1 text-xs leading-relaxed text-cyan-800">
                 Подключите один защищённый endpoint в интеграциях. После
                 проверки здесь появится кнопка «Опубликовать на сайте».
               </p>

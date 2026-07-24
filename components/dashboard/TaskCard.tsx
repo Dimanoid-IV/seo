@@ -27,10 +27,10 @@ type TaskCardProps = {
 };
 
 const priorityStyles: Record<TaskPriority, string> = {
-  low: "text-slate-400 bg-slate-500/10 border-slate-500/20",
-  medium: "text-blue-300 bg-blue-500/10 border-blue-500/20",
-  high: "text-amber-300 bg-amber-500/10 border-amber-500/20",
-  critical: "text-red-300 bg-red-500/10 border-red-500/20",
+  low: "text-slate-700 bg-slate-50 border-slate-200",
+  medium: "text-blue-800 bg-blue-50 border-blue-200",
+  high: "text-amber-800 bg-amber-50 border-amber-200",
+  critical: "text-red-700 bg-red-50 border-red-200",
 };
 
 const priorityLabels: Record<TaskPriority, string> = {
@@ -44,21 +44,21 @@ const statusConfig: Record<
   TaskStatus,
   { icon: typeof Clock; label: string; className: string }
 > = {
-  open: { icon: Clock, label: "Открыта", className: "text-slate-400" },
+  open: { icon: Clock, label: "Открыта", className: "text-slate-600" },
   in_progress: {
     icon: Loader2,
     label: "В работе",
-    className: "text-blue-400",
+    className: "text-blue-700",
   },
   waiting: {
     icon: AlertCircle,
     label: "На проверке",
-    className: "text-amber-400",
+    className: "text-amber-700",
   },
   completed: {
     icon: CheckCircle2,
     label: "Выполнена",
-    className: "text-emerald-400",
+    className: "text-emerald-700",
   },
   dismissed: {
     icon: ArrowUpRight,
@@ -95,7 +95,7 @@ export function TaskCard({
       )}
     >
       <div className="flex flex-wrap items-center gap-2">
-        <span className="rounded-md bg-white/5 px-2 py-0.5 text-xs text-slate-600">
+        <span className="rounded-md bg-slate-50 px-2 py-0.5 text-xs text-slate-600">
           {category}
         </span>
         <span
@@ -114,11 +114,11 @@ export function TaskCard({
       </div>
 
       <div>
-        <h3 className="font-semibold text-slate-900 group-hover:text-blue-100">
+        <h3 className="font-semibold text-slate-900 group-hover:text-blue-700">
           {title}
         </h3>
         {description ? (
-          <p className="mt-1 line-clamp-2 text-sm text-slate-400">{description}</p>
+          <p className="mt-1 line-clamp-2 text-sm text-slate-600">{description}</p>
         ) : null}
       </div>
 
@@ -158,7 +158,7 @@ export function TaskCard({
               type="button"
               onClick={onDismiss}
               disabled={actionLoading}
-              className="inline-flex items-center gap-1.5 rounded-md border border-slate-200 bg-white/5 px-3 py-1.5 text-xs font-medium text-slate-400 transition hover:bg-slate-100 hover:text-slate-600 disabled:cursor-not-allowed disabled:opacity-60"
+              className="inline-flex items-center gap-1.5 rounded-md border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-700 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-60"
             >
               Скрыть
             </button>

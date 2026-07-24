@@ -10,7 +10,7 @@ export function ArticleMetaPreview({
   url,
 }: ArticleMetaPreviewProps) {
   return (
-    <section className="rounded-xl border border-white/10 bg-white/[0.02] p-4">
+    <section className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
       <p className="mb-3 text-xs font-medium uppercase tracking-wider text-slate-500">
         Preview meta snippet
       </p>

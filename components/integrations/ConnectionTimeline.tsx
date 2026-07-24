@@ -56,9 +56,9 @@ export function ConnectionTimeline({
     <ul className={cn("space-y-2", className)}>
       {hasProperty ? (
         <li className="flex items-start gap-2 text-xs">
-          <CheckCircle2 className="mt-0.5 size-3.5 shrink-0 text-cyan-400" />
+          <CheckCircle2 className="mt-0.5 size-3.5 shrink-0 text-cyan-700" />
           <div className="min-w-0">
-            <p className="text-slate-400">Search Console property</p>
+            <p className="text-slate-600">Search Console property</p>
             <p className="truncate text-slate-500">
               {integration.selectedProperty}
             </p>
@@ -68,20 +68,20 @@ export function ConnectionTimeline({
       {events.map((event) => (
         <li key={event.label} className="flex items-start gap-2 text-xs">
           {event.tone === "success" ? (
-            <CheckCircle2 className="mt-0.5 size-3.5 shrink-0 text-emerald-400" />
+            <CheckCircle2 className="mt-0.5 size-3.5 shrink-0 text-emerald-700" />
           ) : event.tone === "error" ? (
-            <AlertCircle className="mt-0.5 size-3.5 shrink-0 text-red-400" />
+            <AlertCircle className="mt-0.5 size-3.5 shrink-0 text-red-700" />
           ) : (
             <RefreshCw className="mt-0.5 size-3.5 shrink-0 text-slate-500" />
           )}
           <div className="min-w-0">
-            <p className="text-slate-400">{event.label}</p>
+            <p className="text-slate-600">{event.label}</p>
             <p className="text-slate-500">{formatRelativeTime(event.at!)}</p>
           </div>
         </li>
       ))}
       {integration.lastErrorMessage ? (
-        <li className="flex items-start gap-2 text-xs text-red-300/80">
+        <li className="flex items-start gap-2 text-xs text-red-700">
           <Link2 className="mt-0.5 size-3.5 shrink-0" />
           <span className="line-clamp-2">{integration.lastErrorMessage}</span>
         </li>

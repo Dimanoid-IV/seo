@@ -64,7 +64,7 @@ export function ArticleEditorPage({ articleId }: ArticleEditorPageProps) {
     return (
       <main className="app-content mx-auto flex max-w-7xl flex-col items-center justify-center px-4 py-24 sm:px-6 lg:px-8">
         <Loader2 className="size-8 animate-spin text-blue-400" />
-        <p className="mt-3 text-sm text-slate-400">Загружаем статью…</p>
+        <p className="mt-3 text-sm text-slate-600">Загружаем статью…</p>
       </main>
     );
   }
@@ -74,12 +74,12 @@ export function ArticleEditorPage({ articleId }: ArticleEditorPageProps) {
       <main className="app-content mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
         <Link
           href="/app/content-plan"
-          className="mb-6 inline-flex items-center gap-2 text-sm text-slate-400 hover:text-white"
+          className="mb-6 inline-flex items-center gap-2 text-sm font-medium text-slate-600 hover:text-slate-900"
         >
           <ArrowLeft className="size-4" />
           К плану контента
         </Link>
-        <p className="text-sm text-red-300">{error ?? "Статья не найдена"}</p>
+        <p className="text-sm text-red-700">{error ?? "Статья не найдена"}</p>
       </main>
     );
   }
@@ -88,7 +88,7 @@ export function ArticleEditorPage({ articleId }: ArticleEditorPageProps) {
     <main className="app-content mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
       <Link
         href="/app/content-plan"
-        className="mb-6 inline-flex items-center gap-2 text-sm text-slate-400 hover:text-white"
+        className="mb-6 inline-flex items-center gap-2 text-sm font-medium text-slate-600 hover:text-slate-900"
       >
         <ArrowLeft className="size-4" />
         К плану контента

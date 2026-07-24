@@ -133,7 +133,7 @@ export function IntegrationCard({
   return (
     <article
       className={cn(
-        "group relative flex h-full flex-col overflow-hidden rounded-2xl border border-slate-200 bg-gradient-to-br from-white/[0.04] to-transparent p-6 shadow-[0_4px_24px_-8px_rgba(0,0,0,0.35)] transition-all duration-300 hover:border-white/[0.12] hover:bg-slate-50 sm:p-7",
+        "group relative flex h-full flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition-all duration-300 hover:border-blue-200 hover:bg-slate-50 sm:p-7",
         className
       )}
     >
@@ -157,27 +157,27 @@ export function IntegrationCard({
 
       <div className="relative mt-4 flex flex-1 flex-col">
         <h3 className="text-lg font-semibold text-slate-900">{integration.title}</h3>
-        <p className="mt-2 flex-1 text-sm leading-relaxed text-slate-400">
+        <p className="mt-2 flex-1 text-sm leading-relaxed text-slate-600">
           {integration.description}
         </p>
 
         <div className="mt-4 border-t border-slate-200 pt-4">
           {gscAwaitingProperty ? (
-            <p className="mb-3 text-xs text-amber-400/90">
+            <p className="mb-3 text-xs text-amber-700">
               {i.gscSiteNotSelected}
             </p>
           ) : null}
           {integration.provider === "google_search_console" &&
           integration.connected &&
           integration.selectedProperty ? (
-            <p className="mb-3 text-xs text-cyan-300/90">
+            <p className="mb-3 text-xs text-cyan-700">
               {i.searchConsoleSite} {integration.selectedProperty}
             </p>
           ) : null}
           {integration.provider === "google_search_console" &&
           integration.connected &&
           integration.metricsSummary ? (
-            <p className="mb-3 text-xs text-slate-400">
+            <p className="mb-3 text-xs text-slate-600">
               {integration.metricsSummary.clicks.toLocaleString(numberLocale)}{" "}
               {i.clicks} ·{" "}
               {integration.metricsSummary.impressions.toLocaleString(numberLocale)}{" "}
@@ -185,7 +185,7 @@ export function IntegrationCard({
             </p>
           ) : null}
           {integration.connected && integration.connectedAt ? (
-            <p className="mb-3 text-xs text-emerald-400/90">
+            <p className="mb-3 text-xs text-emerald-700">
               {i.connectedSince}{" "}
               {new Date(integration.connectedAt).toLocaleDateString(dateLocale, {
                 day: "numeric",
@@ -212,9 +212,9 @@ export function IntegrationCard({
           action.variant === "primary" &&
             "bg-gradient-to-r from-blue-600 to-violet-600 text-white shadow-[0_6px_20px_-6px_rgba(59,130,246,0.4)] hover:from-blue-500 hover:to-violet-500",
           action.variant === "secondary" &&
-            "border border-white/[0.1] bg-slate-50 text-slate-700 hover:bg-slate-100",
+            "border border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100",
           action.variant === "muted" &&
-            "border border-slate-200 bg-slate-50 text-slate-400",
+            "border border-slate-200 bg-slate-50 text-slate-500",
           action.disabled && "cursor-default opacity-80 hover:bg-inherit"
         )}
       >
