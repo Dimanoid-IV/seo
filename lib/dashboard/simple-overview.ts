@@ -4,6 +4,7 @@ import type { CurrentUser } from "@/lib/auth/types";
 import type { SaasLocale } from "@/lib/i18n/saas/locales";
 import { DEFAULT_SAAS_LOCALE } from "@/lib/i18n/saas/locales";
 import { getAutopilotControlCenter } from "@/lib/autopilot-control/get-control-center";
+import { isUserVisiblePlanItem } from "@/lib/autopilot/plan-item-types";
 import type {
   AutopilotControlCenterViewModel,
 } from "@/lib/autopilot-control/types";
@@ -222,7 +223,9 @@ export function buildSimpleDashboardViewModel(input: {
     monthlyPlanStatus: control.monthlyPlan?.status,
     planItemTypes: control.monthlyPlan?.hasArticleTopics ? ["ARTICLE"] : [],
   });
-  const planPreviewItems = control.monthlyPlan?.previewItems ?? [];
+  const planPreviewItems = (control.monthlyPlan?.previewItems ?? []).filter(
+    isUserVisiblePlanItem
+  );
   const monthlyPlanPreview = control.monthlyPlan
     ? {
         status: control.monthlyPlan.status,

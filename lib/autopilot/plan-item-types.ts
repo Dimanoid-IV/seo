@@ -108,6 +108,30 @@ export type AutopilotPlanItemsDocument = {
 
 export const AUTOPILOT_PLAN_ITEMS_VERSION = 1 as const;
 
+export function isUserVisiblePlanItem(
+  item: { type: string; status: string } & {
+    sourceRef?: AutopilotPlanItem["sourceRef"];
+  }
+): boolean {
+  if (item.type === "ARTICLE") {
+    return true;
+  }
+
+  if (item.sourceRef) {
+    return true;
+  }
+
+  // Legacy approved plans may contain navigation-style recommendations such as
+  // "Connect GSC" or "View monthly report" as plan items. They are still useful
+  // as recommended actions, but showing them inside the execution plan makes the
+  // user think Autopilot has a concrete site change to apply.
+  if (["approved", "executed", "skipped"].includes(item.status)) {
+    return false;
+  }
+
+  return true;
+}
+
 /** Maps legacy recommended action types to safe autopilot plan item types. */
 export function mapRecommendedActionTypeToPlanItemType(
   actionType: string

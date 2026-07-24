@@ -15,6 +15,7 @@ import type {
   AutopilotPlanItemsDocument,
   AutopilotPlanPeriod,
 } from "@/lib/autopilot/plan-item-types";
+import { isUserVisiblePlanItem } from "@/lib/autopilot/plan-item-types";
 import { isPlanItemDueNow } from "@/lib/autopilot/execution-eligibility";
 import type { SaasLocale } from "@/lib/i18n/saas/locales";
 import { localizePlanItemTitle } from "@/lib/i18n/saas/plan-display";
@@ -132,10 +133,12 @@ export function PlanApprovalPanel({
 
   const displayItems = useMemo(
     () =>
-      planItems.items.map((item) => ({
-        ...item,
-        ...(itemOverrides[item.id] ?? {}),
-      })),
+      planItems.items
+        .map((item) => ({
+          ...item,
+          ...(itemOverrides[item.id] ?? {}),
+        }))
+        .filter(isUserVisiblePlanItem),
     [itemOverrides, planItems.items]
   );
 
