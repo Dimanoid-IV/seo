@@ -49,7 +49,11 @@ function getArticleApprovalStateLabel(
     return t.articleApprovalState.qualityFailed;
   }
 
-  if (item.status === "executed" || item.status === "published") {
+  if (item.webhookSentAt || item.status === "published") {
+    return t.articleApprovalState.publishedOnSite;
+  }
+
+  if (item.wordpressDraftCreatedAt) {
     return t.articleApprovalState.wordpressDraft;
   }
 
@@ -83,7 +87,10 @@ function getSchedulerHint(
     if (item.articleQualityPassed === false) {
       return t.schedulerQualityFailed;
     }
-    if (item.status === "executed" || item.status === "published") {
+    if (item.webhookSentAt || item.status === "published") {
+      return t.schedulerPublishedOnSite;
+    }
+    if (item.wordpressDraftCreatedAt) {
       return t.schedulerWordPressDraftCreated;
     }
     if (item.linkedArticleApprovedAt) {

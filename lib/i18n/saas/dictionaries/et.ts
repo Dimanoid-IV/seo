@@ -1991,10 +1991,12 @@ export const saasDictionary: SaasDictionary = {
       schedulerReadyForNextRun:
         "Artikkel kinnitatud — valmis järgmiseks plaanitud Autopiloti käiguks",
       schedulerWordPressDraftCreated: "WordPressi mustand loodud",
+      schedulerPublishedOnSite: "Artikkel saadeti ühendatud saidile",
       articleApprovalState: {
         waitingReview: "Ootab kinnitust ülevaate järjekorras",
         readyForRun: "Kinnitatud — valmis järgmiseks tähtajaks",
         wordpressDraft: "WordPressi mustand loodud",
+        publishedOnSite: "Artikkel saadeti saidile",
         qualityFailed: "Kvaliteet ebaõnnestus — vajab parandamist",
       },
       approvalSafetyNote:
@@ -2003,7 +2005,7 @@ export const saasDictionary: SaasDictionary = {
         TASK_FIX: "RankBoost valmistab lehe paranduse ülevaate järjekorda.",
         SEO_FIX: "RankBoost valmistab SEO paranduse ülevaate järjekorda.",
         ARTICLE:
-          "RankBoost valmistab artikli mustandi. Saad seda enne WordPressi mustandit üle vaadata.",
+          "RankBoost valmistab artikli. Saad seda enne avaldamist või saidile saatmist üle vaadata.",
       },
       regenerateTopic: "Genereeri teema / uuring uuesti",
       regenerateTopicSuccess: "Teema ja uuring on selle artiklipunkti jaoks värskendatud.",

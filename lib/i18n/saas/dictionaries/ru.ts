@@ -1988,10 +1988,12 @@ export const saasDictionary: SaasDictionary = {
       schedulerReadyForNextRun:
         "Статья одобрена — готова к следующему запланированному запуску Autopilot",
       schedulerWordPressDraftCreated: "Черновик WordPress создан",
+      schedulerPublishedOnSite: "Статья отправлена на подключённый сайт",
       articleApprovalState: {
         waitingReview: "Ожидает одобрения в очереди проверки",
         readyForRun: "Одобрено — готово к следующему запуску",
         wordpressDraft: "Черновик WordPress создан",
+        publishedOnSite: "Статья отправлена на сайт",
         qualityFailed: "Качество не пройдено — нужна доработка",
       },
       approvalSafetyNote:
@@ -2000,7 +2002,7 @@ export const saasDictionary: SaasDictionary = {
         TASK_FIX: "RankBoost подготовит исправление страницы в очереди проверки.",
         SEO_FIX: "RankBoost подготовит SEO-исправление в очереди проверки.",
         ARTICLE:
-          "RankBoost подготовит черновик статьи. Вы сможете проверить его перед WordPress draft.",
+          "RankBoost подготовит статью. Вы сможете проверить её перед публикацией или отправкой на сайт.",
       },
       regenerateTopic: "Перегенерировать тему / исследование",
       regenerateTopicSuccess: "Тема и исследование обновлены для этого пункта.",

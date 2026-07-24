@@ -1984,10 +1984,12 @@ export const saasDictionary: SaasDictionary = {
       schedulerReadyForNextRun:
         "Article approved — ready for next scheduled Autopilot run",
       schedulerWordPressDraftCreated: "WordPress draft created",
+      schedulerPublishedOnSite: "Article sent to the connected site",
       articleApprovalState: {
         waitingReview: "Waiting for review approval",
         readyForRun: "Approved — ready for next due run",
         wordpressDraft: "WordPress draft created",
+        publishedOnSite: "Article sent to site",
         qualityFailed: "Quality failed — needs revision",
       },
       approvalSafetyNote:
@@ -1996,7 +1998,7 @@ export const saasDictionary: SaasDictionary = {
         TASK_FIX: "RankBoost will prepare a page fix in your Review Queue.",
         SEO_FIX: "RankBoost will prepare an SEO fix in your Review Queue.",
         ARTICLE:
-          "RankBoost will prepare an article draft. You can review it before any WordPress draft.",
+          "RankBoost will prepare an article. You can review it before publishing or sending it to the site.",
       },
       regenerateTopic: "Regenerate topic / research",
       regenerateTopicSuccess: "Topic and research refreshed for this article item.",

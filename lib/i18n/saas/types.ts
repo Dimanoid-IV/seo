@@ -1603,10 +1603,12 @@ export type SaasDictionary = {
       schedulerWordPressRequired: string;
       schedulerReadyForNextRun: string;
       schedulerWordPressDraftCreated: string;
+      schedulerPublishedOnSite: string;
       articleApprovalState: {
         waitingReview: string;
         readyForRun: string;
         wordpressDraft: string;
+        publishedOnSite: string;
         qualityFailed: string;
       };
       approvalSafetyNote: string;
