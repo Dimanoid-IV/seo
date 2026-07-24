@@ -76,6 +76,36 @@ function truncatePreview(text: string, max = 280): string {
   return `${normalized.slice(0, max - 1)}…`;
 }
 
+export function resolveReviewArticlePublishPath(input: {
+  wordpressDraftCreated?: boolean;
+  hasWordPressPostId?: boolean;
+  customPublishingConnected?: boolean;
+  autopilotPublishingPath?: AutopilotPlanItem["publishingPath"];
+}): NonNullable<
+  NonNullable<ReviewQueueItem["articleContext"]>["publishPath"]
+> {
+  if (
+    input.wordpressDraftCreated ||
+    input.hasWordPressPostId ||
+    input.autopilotPublishingPath === "wordpress_draft" ||
+    input.autopilotPublishingPath === "wordpress_live"
+  ) {
+    return input.autopilotPublishingPath === "wordpress_live"
+      ? "wordpress_live"
+      : "wordpress_draft";
+  }
+
+  if (input.customPublishingConnected) {
+    return "webhook";
+  }
+
+  if (input.autopilotPublishingPath === "none") {
+    return "none";
+  }
+
+  return "universal_package";
+}
+
 function countByGroup(items: ReviewQueueItem[]): ReviewQueueData["counts"] {
   const counts = {
     total: items.length,
@@ -329,6 +359,15 @@ export async function getReviewQueue(
     const autopilotMeta = autopilotByArticleId.get(article.id);
     const linkedAutopilotPlanItem = Boolean(autopilotMeta);
     const qualityPassed = article.qualityPassed;
+    const wordpressDraftCreated = Boolean(
+      autopilotMeta?.wordpressDraftCreated || article.wordpressPostId
+    );
+    const publishPath = resolveReviewArticlePublishPath({
+      wordpressDraftCreated,
+      hasWordPressPostId: Boolean(article.wordpressPostId),
+      customPublishingConnected,
+      autopilotPublishingPath: autopilotMeta?.publishingPath,
+    });
     const canApproveArticle =
       article.status === ArticleStatus.WAITING_REVIEW &&
       qualityPassed !== false;
@@ -336,7 +375,7 @@ export async function getReviewQueue(
     let actionNeeded: ReviewActionNeeded = "OTHER";
     if (qualityPassed === false) {
       actionNeeded = "QUALITY_NEEDS_REPAIR";
-    } else if (autopilotMeta?.wordpressDraftCreated || article.wordpressPostId) {
+    } else if (wordpressDraftCreated) {
       actionNeeded = "WORDPRESS_DRAFT_CREATED";
     } else if (
       autopilotMeta?.universalPackageReady ||
@@ -376,13 +415,11 @@ export async function getReviewQueue(
           linkedAutopilotPlanItem &&
           canApproveArticle &&
           qualityPassed === true,
-        publishPath: autopilotMeta?.publishingPath ?? "universal_package",
+        publishPath,
         pipelineState: autopilotMeta?.pipelineState,
         plannedDate: autopilotMeta?.plannedDate ?? null,
         nextAutomatedStep: autopilotMeta?.nextAutomatedStep ?? null,
-        wordpressDraftCreated: Boolean(
-          autopilotMeta?.wordpressDraftCreated || article.wordpressPostId
-        ),
+        wordpressDraftCreated,
         customPublishingConnected,
         customPublishingHost: customPublishing?.endpointHost ?? null,
         livePublishBlockedReason: autopilotMeta?.blockedReasonKey ?? null,
