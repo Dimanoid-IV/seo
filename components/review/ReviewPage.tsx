@@ -606,6 +606,15 @@ export function ReviewPage() {
 
                   {item.type === "ARTICLE_DRAFT" && item.articleContext ? (
                     <div className="space-y-2 rounded-lg border border-slate-100 bg-slate-50/80 px-3 py-2">
+                      {(() => {
+                        const isCustomPublishReady =
+                          canPublishArticleToCustomSiteFromReview(item);
+                        const whatsNextSteps = isCustomPublishReady
+                          ? t.whatsNextCustomSteps
+                          : t.whatsNextSteps;
+
+                        return (
+                          <>
                       <div className="flex flex-wrap items-center gap-2 text-xs">
                         {item.articleContext.qualityScore != null ? (
                           <span className="rounded-full border border-emerald-200 bg-emerald-50 px-2 py-0.5 font-semibold text-emerald-800">
@@ -673,10 +682,13 @@ export function ReviewPage() {
                       {item.status === "READY_TO_PUBLISH" ||
                       item.articleContext.qualityPassed === true ? (
                         <p className="text-xs leading-relaxed text-slate-600">
-                          {t.articleReadyHint}
+                          {isCustomPublishReady
+                            ? t.articleReadyCustomHint
+                            : t.articleReadyHint}
                         </p>
                       ) : null}
-                      {item.articleContext.autopilotUnlockOnApprove ? (
+                      {item.articleContext.autopilotUnlockOnApprove &&
+                      !isCustomPublishReady ? (
                         <p className="text-xs text-violet-700">
                           {t.autopilotUnlockHint}
                         </p>
@@ -745,7 +757,7 @@ export function ReviewPage() {
                           {t.whatsNextTitle}
                         </p>
                         <ol className="mt-1.5 list-decimal space-y-0.5 pl-4 text-xs leading-relaxed text-slate-600">
-                          {t.whatsNextSteps.map((step) => (
+                          {whatsNextSteps.map((step) => (
                             <li key={step}>{step}</li>
                           ))}
                         </ol>
@@ -780,6 +792,9 @@ export function ReviewPage() {
                           </p>
                         ) : null}
                       </div>
+                          </>
+                        );
+                      })()}
                     </div>
                   ) : null}
                 </div>

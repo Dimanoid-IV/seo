@@ -1277,7 +1277,7 @@ export const saasDictionary: SaasDictionary = {
       "Open a task and click “Prepare fix”.",
     openTasks: "Open tasks",
     safetyNote:
-      "Will only be published after your approval. Nothing is sent or published automatically.",
+      "Review the ready materials. If your site is connected, you can send the article with one button; auto-publish only runs inside a confirmed monthly plan.",
     fromTask: "From task",
     updatedLabel: "Updated",
     approve: "Approve",
@@ -1338,6 +1338,8 @@ export const saasDictionary: SaasDictionary = {
     approveArticle: "Approve article",
     articleReadyHint:
       "You can edit the article, reject it, or use the materials to publish on your site. Auto-publish only runs after you confirm that mode on the monthly plan.",
+    articleReadyCustomHint:
+      "Your site is connected. Review the text and click Publish to site to send the article directly to your blog.",
     qualityOutOf: (score) => `Quality ${score}/100`,
     publishToCustomSite: "Publish to site",
     customPublishFailed: "Could not send the article to your site.",
@@ -1393,6 +1395,12 @@ export const saasDictionary: SaasDictionary = {
       "Edit if needed",
       "Approve",
       "Copy/download materials or open the WordPress draft",
+    ],
+    whatsNextCustomSteps: [
+      "Review the article",
+      "Edit if needed",
+      "Click Publish to site",
+      "RankBoost sends the article to your connected blog",
     ],
     customPackageHint:
       "For your site RankBoost prepared a ready package: HTML, Markdown, SEO title, meta description, and a developer email.",

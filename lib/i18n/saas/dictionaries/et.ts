@@ -1283,7 +1283,7 @@ export const saasDictionary: SaasDictionary = {
       "Avage ülesanne ja valige „Valmista parandus“.",
     openTasks: "Ava ülesanded",
     safetyNote:
-      "Avaldatakse ainult pärast teie kinnitust. Midagi ei saadeta ega avaldata automaatselt.",
+      "Vaadake valmis materjalid üle. Kui sait on ühendatud, saab artikli ühe nupuga saata; autopublish töötab ainult kinnitatud kuuplaani sees.",
     fromTask: "Ülesandest",
     updatedLabel: "Uuendatud",
     approve: "Kinnita",
@@ -1344,6 +1344,8 @@ export const saasDictionary: SaasDictionary = {
     approveArticle: "Kinnita artikkel",
     articleReadyHint:
       "Saate artiklit redigeerida, tagasi lükata või kasutada materjale saidile avaldamiseks. Autopublish ainult pärast selle režiimi valimist kuuplaanis.",
+    articleReadyCustomHint:
+      "Sait on ühendatud. Vaadake tekst üle ja klõpsake Avalda saidil, et artikkel otse blogisse saata.",
     qualityOutOf: (score) => `Kvaliteet ${score}/100`,
     publishToCustomSite: "Avalda saidil",
     customPublishFailed: "Artiklit ei õnnestunud saidile saata.",
@@ -1399,6 +1401,12 @@ export const saasDictionary: SaasDictionary = {
       "Vajadusel muutke",
       "Kinnitage",
       "Kopeerige/laadige materjalid alla või avage WordPressi mustand",
+    ],
+    whatsNextCustomSteps: [
+      "Vaadake artikkel üle",
+      "Vajadusel muutke",
+      "Klõpsake Avalda saidil",
+      "RankBoost saadab artikli ühendatud blogisse",
     ],
     customPackageHint:
       "Teie saidi jaoks valmistas RankBoost paketi: HTML, Markdown, SEO pealkiri, meta kirjeldus ja kiri arendajale.",

@@ -1067,6 +1067,7 @@ export type SaasDictionary = {
     approveBlockedQuality: string;
     approveArticle: string;
     articleReadyHint: string;
+    articleReadyCustomHint: string;
     qualityOutOf: (score: number) => string;
     publishToCustomSite: string;
     customPublishFailed: string;
@@ -1108,6 +1109,7 @@ export type SaasDictionary = {
     };
     whatsNextTitle: string;
     whatsNextSteps: string[];
+    whatsNextCustomSteps: string[];
     customPackageHint: string;
     customConnectedHint: (host: string) => string;
     publishPathLabels: {
