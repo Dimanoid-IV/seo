@@ -1642,6 +1642,7 @@ export type SaasDictionary = {
         review_article: { title: string; description: string };
         continue_article: { title: string; description: string };
         high_priority_task: { title: string; description: string };
+        ready_articles_for_publishing: { title: string; description: string };
       };
       risks: {
         gsc_not_connected: { title: string; description: string };

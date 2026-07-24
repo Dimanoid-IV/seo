@@ -15,9 +15,9 @@ type RecommendedActionCardProps = {
 };
 
 const PRIORITY_STYLES: Record<string, string> = {
-  HIGH: "text-red-300",
-  MEDIUM: "text-amber-300",
-  LOW: "text-slate-400",
+  HIGH: "text-red-700",
+  MEDIUM: "text-amber-700",
+  LOW: "text-slate-600",
 };
 
 export function RecommendedActionCard({ action }: RecommendedActionCardProps) {
@@ -29,7 +29,7 @@ export function RecommendedActionCard({ action }: RecommendedActionCardProps) {
   const content = (
     <div className="flex flex-col gap-1 rounded-xl border border-slate-200 bg-slate-50 p-4 transition-colors hover:bg-slate-50">
       <div className="flex flex-wrap items-center gap-2 text-xs">
-        <span className="rounded-md bg-white/10 px-2 py-0.5 font-medium text-slate-600">
+        <span className="rounded-md bg-white px-2 py-0.5 font-medium text-slate-700 ring-1 ring-slate-200">
           {typeLabel}
         </span>
         <span className={PRIORITY_STYLES[action.priority] ?? "text-slate-400"}>
@@ -37,7 +37,7 @@ export function RecommendedActionCard({ action }: RecommendedActionCardProps) {
         </span>
       </div>
       <h4 className="font-medium text-slate-900">{copy.title}</h4>
-      <p className="text-sm text-slate-400">{copy.description}</p>
+      <p className="text-sm text-slate-600">{copy.description}</p>
     </div>
   );
 

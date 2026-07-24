@@ -227,13 +227,14 @@ export async function getMonthlyAutopilotSourceData(input: {
       status: true,
       lastErrorMessage: true,
       googleData: {
-        select: { metricsJson: true },
+        select: { metricsJson: true, searchConsoleSiteUrl: true },
       },
     },
   });
 
   const gscConnected =
-    gscIntegration?.status === IntegrationStatus.CONNECTED;
+    gscIntegration?.status === IntegrationStatus.CONNECTED &&
+    Boolean(gscIntegration.googleData?.searchConsoleSiteUrl?.trim());
   const gscError =
     gscIntegration?.status === IntegrationStatus.ERROR ||
     Boolean(gscIntegration?.lastErrorMessage);

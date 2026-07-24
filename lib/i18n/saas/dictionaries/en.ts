@@ -2047,6 +2047,11 @@ export const saasDictionary: SaasDictionary = {
           title: "{title}",
           description: "High-priority {category} task from {priority} queue.",
         },
+        ready_articles_for_publishing: {
+          title: "Review and publish ready articles",
+          description:
+            "{count} article draft(s) are ready. Open Review and send them to the connected site.",
+        },
       },
       risks: {
         gsc_not_connected: {

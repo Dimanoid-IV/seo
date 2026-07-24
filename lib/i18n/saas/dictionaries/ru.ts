@@ -2051,6 +2051,11 @@ export const saasDictionary: SaasDictionary = {
           title: "{title}",
           description: "Приоритетная задача ({category}) из очереди {priority}.",
         },
+        ready_articles_for_publishing: {
+          title: "Проверьте и опубликуйте готовые статьи",
+          description:
+            "{count} статья(и) уже готовы. Откройте проверку и отправьте их на подключённый сайт.",
+        },
       },
       risks: {
         gsc_not_connected: {

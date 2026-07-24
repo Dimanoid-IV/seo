@@ -21,6 +21,7 @@ import {
   resolvePlanItemsDocumentFromPlan,
 } from "./plan-items";
 import { reconcileMonthlyPlanMetrics } from "./plan-metrics-reconcile";
+import { reconcileMonthlyPlanView } from "./plan-view-reconcile";
 import { currentMonthKey, normalizeMonthKey } from "./month-utils";
 import { resolveWebsiteForAutopilot } from "./resolve-website";
 import { getMonthlyAutopilotSourceData } from "./source-data";
@@ -118,10 +119,15 @@ export async function getMonthlyAutopilotPlan(input: {
     // never make the Autopilot UI show phantom open tasks. Historical snapshot
     // counts (opportunities/warnings/drafts) are preserved.
     const formattedPlan = baseFormattedPlan
-      ? {
-          ...baseFormattedPlan,
-          metrics: reconcileMonthlyPlanMetrics(baseFormattedPlan.metrics, tasks),
-        }
+      ? reconcileMonthlyPlanView({
+          plan: {
+            ...baseFormattedPlan,
+            metrics: reconcileMonthlyPlanMetrics(baseFormattedPlan.metrics, tasks),
+          },
+          tasks,
+          readyArticleCount: sourceData.articles.waitingReview.length,
+          gscPropertySelected: sourceData.gsc.connected,
+        })
       : null;
 
     let planItems = resolvePlanItemsDocumentFromPlan({

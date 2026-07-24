@@ -2054,6 +2054,11 @@ export const saasDictionary: SaasDictionary = {
           title: "{title}",
           description: "Kõrge prioriteediga {category} ülesanne {priority} järjekorrast.",
         },
+        ready_articles_for_publishing: {
+          title: "Vaadake ja avaldage valmis artiklid",
+          description:
+            "{count} artikli mustand(it) on valmis. Avage ülevaatus ja saatke need ühendatud saidile.",
+        },
       },
       risks: {
         gsc_not_connected: {

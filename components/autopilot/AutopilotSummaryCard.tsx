@@ -24,12 +24,12 @@ export function AutopilotSummaryCard({ plan, monthLabel }: AutopilotSummaryCardP
     <section className="rounded-2xl border border-slate-200 bg-gradient-to-br from-violet-500/10 to-blue-500/5 p-6">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <p className="text-xs font-medium uppercase tracking-wide text-violet-300">
+          <p className="text-xs font-semibold uppercase tracking-wide text-violet-700">
             {monthLabel}
           </p>
           <h2 className="mt-1 text-xl font-semibold text-slate-900">{title}</h2>
         </div>
-        <span className="rounded-full border border-violet-400/30 bg-violet-500/10 px-3 py-1 text-xs font-medium text-violet-200">
+        <span className="rounded-full border border-violet-200 bg-violet-50 px-3 py-1 text-xs font-semibold text-violet-800">
           {statusLabel}
         </span>
       </div>
