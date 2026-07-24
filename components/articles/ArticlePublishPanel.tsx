@@ -238,7 +238,7 @@ export function ArticlePublishPanel({
         setPublishMessage(
           dryRun
             ? `Связь с ${customHost ?? "сайтом"} работает.`
-            : `Статья отправлена на ${customHost ?? "сайт"}. Если endpoint запускает деплой, она появится после деплоя.`
+            : `Статья отправлена на ${customHost ?? "сайт"}. Если сайт публикуется через деплой, она появится после деплоя.`
         );
       } else {
         setPublishError(
@@ -393,8 +393,8 @@ export function ArticlePublishPanel({
           </p>
           <p className="mt-1 text-emerald-800">
             {hostedPublished
-              ? "Это публичная hosted-страница. Для публикации на вашем домене подключите WordPress или custom endpoint."
-              : "RankBoost получил успешный ответ от custom endpoint. Если сайт публикуется через деплой, статья появится после завершения деплоя."}
+              ? "Это публичная hosted-страница. Для публикации на вашем домене подключите WordPress или свой сайт."
+              : "RankBoost получил успешный ответ от подключённого сайта. Если сайт публикуется через деплой, статья появится после завершения деплоя."}
           </p>
           {hostedPublished && hostedUrl ? (
             <a
@@ -427,7 +427,7 @@ export function ArticlePublishPanel({
             ? "WordPress подключён: RankBoost может создать черновик или публиковать через автопилот, если это разрешено в плане."
             : publishPriority === "webhook"
               ? "Custom-сайт подключён. Нажмите «Опубликовать на сайте», и RankBoost отправит готовую статью в ваш блог."
-              : "Если WordPress или endpoint ещё не подключены, можно опубликовать временную hosted-страницу RankBoost в один клик."}
+              : "Если WordPress или свой сайт ещё не подключены, можно опубликовать временную hosted-страницу RankBoost в один клик."}
         </p>
       </div>
 
@@ -442,7 +442,7 @@ export function ArticlePublishPanel({
                 Публиковать прямо на своём сайте
               </p>
               <p className="mt-1 text-xs leading-relaxed text-emerald-800">
-                Для custom-сайта нужен один защищённый endpoint. После проверки
+                Для своего сайта нужен один защищённый адрес публикации. После проверки
                 RankBoost сможет отправлять готовые статьи в ваш блог одной
                 кнопкой, а позже — по подтверждённому месячному плану.
               </p>
@@ -514,11 +514,11 @@ export function ArticlePublishPanel({
             </div>
             <div className="min-w-0 flex-1">
               <p className="text-sm font-semibold text-emerald-900">
-                Сайт подключён: {customHost ?? "Custom Webhook"}
+                Сайт подключён: {customHost ?? "свой сайт"}
               </p>
               <p className="mt-1 text-xs leading-relaxed text-emerald-800">
                 RankBoost отправит title, slug, HTML, Markdown, SEO title и meta
-                description в подключённый endpoint. Если endpoint связан с
+                description в подключённый сайт. Если сайт связан с
                 репозиторием/деплоем, статья появится на сайте автоматически.
               </p>
             </div>
@@ -654,7 +654,7 @@ export function ArticlePublishPanel({
                 Хотите публиковать на custom-сайт одной кнопкой?
               </p>
               <p className="mt-1 text-xs leading-relaxed text-cyan-800">
-                Подключите один защищённый endpoint в интеграциях. После
+                Подключите один защищённый адрес публикации в интеграциях. После
                 проверки здесь появится кнопка «Опубликовать на сайте».
               </p>
             </div>

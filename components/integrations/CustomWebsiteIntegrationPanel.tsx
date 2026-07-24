@@ -6,6 +6,7 @@ import { CheckCircle2, Code2, Loader2, Webhook } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { authFetch, parseApiErrorMessage } from "@/lib/auth/client-session";
+import { useSaasTranslations } from "@/lib/i18n/saas/SaasLocaleProvider";
 import {
   buildCustomPublishingDisplayState,
   type CustomPublishingDisplayState,
@@ -51,6 +52,8 @@ export function CustomWebsiteIntegrationPanel({
   initialConfig = null,
   className,
 }: CustomWebsiteIntegrationPanelProps) {
+  const { dict } = useSaasTranslations();
+  const t = dict.integrations.customWebsite;
   const [endpointUrl, setEndpointUrl] = useState("");
   const [sharedSecret, setSharedSecret] = useState("");
   const [busy, setBusy] = useState<"test" | "disconnect" | "load" | null>(null);
@@ -113,7 +116,7 @@ export function CustomWebsiteIntegrationPanel({
       setCopiedBrief(true);
       setTimeout(() => setCopiedBrief(false), 2000);
     } catch {
-      setError("Не удалось скопировать инструкцию.");
+      setError(t.errorCopyInstruction);
     }
   }
 
@@ -125,17 +128,17 @@ export function CustomWebsiteIntegrationPanel({
       setCopiedEndpoint(true);
       setTimeout(() => setCopiedEndpoint(false), 2000);
     } catch {
-      setError("Не удалось скопировать URL.");
+      setError(t.errorCopyUrl);
     }
   }
 
   async function handleTest() {
     if (!websiteId) {
-      setError("Добавьте сайт, чтобы настроить webhook.");
+      setError(t.addWebsiteFirst);
       return;
     }
     if (!endpointUrl.trim()) {
-      setError("Укажите URL эндпоинта.");
+      setError(t.endpointRequired);
       return;
     }
     setBusy("test");
@@ -155,7 +158,7 @@ export function CustomWebsiteIntegrationPanel({
         }
       );
       if (!response.ok) {
-        setError(await parseApiErrorMessage(response, "Тест не удался."));
+        setError(await parseApiErrorMessage(response, t.testFailed));
         return;
       }
       const body = (await response.json()) as {
@@ -167,9 +170,7 @@ export function CustomWebsiteIntegrationPanel({
       };
       if (body.data.delivered) {
         setSessionConfig(body.data.config);
-        setStatus(
-          "Соединение успешно. Конфиг сохранён. Реальная отправка статьи — только вручную. Live publish выключен."
-        );
+        setStatus(t.testSuccess);
         setSharedSecret("");
         setEndpointUrl("");
         setReplacing(false);
@@ -177,7 +178,7 @@ export function CustomWebsiteIntegrationPanel({
         setError(body.data.error ?? "Эндпоинт недоступен.");
       }
     } catch {
-      setError("Сетевая ошибка при проверке webhook.");
+      setError(t.testNetworkError);
     } finally {
       setBusy(null);
     }
@@ -197,7 +198,7 @@ export function CustomWebsiteIntegrationPanel({
         }
       );
       if (!response.ok) {
-        setError(await parseApiErrorMessage(response, "Не удалось отключить."));
+        setError(await parseApiErrorMessage(response, t.disconnectFailed));
         return;
       }
       setSessionConfig(null);
@@ -205,9 +206,9 @@ export function CustomWebsiteIntegrationPanel({
       setEndpointUrl("");
       setSharedSecret("");
       setReplacing(false);
-      setStatus("Webhook отключён. Секрет и URL удалены.");
+      setStatus(t.disconnectSuccess);
     } catch {
-      setError("Сетевая ошибка при отключении.");
+      setError(t.disconnectNetworkError);
     } finally {
       setBusy(null);
     }
@@ -225,12 +226,10 @@ export function CustomWebsiteIntegrationPanel({
         <Webhook className="mt-0.5 size-4 shrink-0 text-violet-700" />
         <div>
           <p className="text-sm font-medium text-slate-900">
-            Подключить публикацию на custom-сайт
+            {t.title}
           </p>
           <p className="mt-1 text-sm text-slate-600">
-            Если сайт не на WordPress, добавьте один защищённый endpoint. После
-            этого в каждой готовой статье появится кнопка «Опубликовать на
-            сайте».
+            {t.description}
           </p>
           <div className="mt-3">
             <Button
@@ -241,8 +240,8 @@ export function CustomWebsiteIntegrationPanel({
               className="border-violet-200 bg-white"
             >
               {copiedBrief
-                ? "Инструкция скопирована"
-                : "Скопировать задачу для разработчика"}
+                ? t.copiedDeveloperTask
+                : t.copyDeveloperTask}
             </Button>
           </div>
         </div>
@@ -250,28 +249,28 @@ export function CustomWebsiteIntegrationPanel({
 
       <ul className="grid gap-2 text-sm text-slate-700 sm:grid-cols-3">
         <li className="rounded-lg border border-violet-100 bg-white/70 p-3">
-          <span className="font-medium text-slate-900">1. Endpoint на сайте</span>
+          <span className="font-medium text-slate-900">{t.endpointStepTitle}</span>
           <span className="mt-1 block text-xs text-slate-600">
-            Например /api/rankboost/articles.
+            {t.endpointStepDescription}
           </span>
           <button
             type="button"
             onClick={() => void copyEndpointExample()}
             className="mt-2 text-xs font-semibold text-violet-700 hover:text-violet-900"
           >
-            {copiedEndpoint ? "URL скопирован" : "Скопировать пример URL"}
+            {copiedEndpoint ? t.copiedEndpointExample : t.copyEndpointExample}
           </button>
         </li>
         <li className="rounded-lg border border-violet-100 bg-white/70 p-3">
-          <span className="font-medium text-slate-900">2. Проверка связи</span>
+          <span className="font-medium text-slate-900">{t.testStepTitle}</span>
           <span className="mt-1 block text-xs text-slate-600">
-            RankBoost отправляет тест без статьи.
+            {t.testStepDescription}
           </span>
         </li>
         <li className="rounded-lg border border-violet-100 bg-white/70 p-3">
-          <span className="font-medium text-slate-900">3. Публикация</span>
+          <span className="font-medium text-slate-900">{t.publishStepTitle}</span>
           <span className="mt-1 block text-xs text-slate-600">
-            Готовая статья отправляется одной кнопкой.
+            {t.publishStepDescription}
           </span>
         </li>
       </ul>
@@ -282,16 +281,14 @@ export function CustomWebsiteIntegrationPanel({
             <CheckCircle2 className="mt-0.5 size-4 shrink-0" />
             <div>
               <p className="text-sm font-medium">
-                {display.connectedBanner ?? "Публикация на сайт подключена"}
+                {display.connectedBanner ?? t.connectedTitle}
               </p>
               <p className="mt-1 text-xs text-emerald-700/90">
-                Всё готово: откройте готовую статью и нажмите «Опубликовать на
-                сайте». RankBoost отправит материал прямо в подключённый блог.
-                Полный URL и secret не отображаются.
+                {t.connectedDescription}
               </p>
               {display.hasSharedSecret ? (
                 <p className="mt-1 text-xs text-slate-600">
-                  HMAC secret сохранён (не показывается).
+                  {t.secretSaved}
                 </p>
               ) : null}
             </div>
@@ -301,7 +298,7 @@ export function CustomWebsiteIntegrationPanel({
               href="/app/review"
               className="inline-flex h-9 items-center justify-center rounded-md bg-emerald-600 px-3 text-sm font-semibold text-white transition hover:bg-emerald-700"
             >
-              Открыть готовые статьи
+              {t.openReadyArticles}
             </Link>
             <Button
               type="button"
@@ -316,7 +313,7 @@ export function CustomWebsiteIntegrationPanel({
                 setError(null);
               }}
             >
-              Заменить endpoint
+              {t.replaceEndpoint}
             </Button>
             <Button
               type="button"
@@ -328,7 +325,7 @@ export function CustomWebsiteIntegrationPanel({
               {busy === "disconnect" ? (
                 <Loader2 className="size-4 animate-spin" />
               ) : null}
-              Отключить
+              {t.disconnect}
             </Button>
           </div>
         </div>
@@ -336,14 +333,13 @@ export function CustomWebsiteIntegrationPanel({
         <>
           {replacing && display.hostLabel ? (
             <p className="text-xs text-slate-600">
-              Сейчас подключено: {display.hostLabel}. Введите новый URL для
-              повторной проверки.
+              {t.currentlyConnected(display.hostLabel)}
             </p>
           ) : null}
 
           <label className="block space-y-1">
             <span className="text-xs font-medium text-slate-700">
-              URL для публикации
+              {t.endpointUrlLabel}
             </span>
             <input
               type="url"
@@ -356,7 +352,7 @@ export function CustomWebsiteIntegrationPanel({
 
           <label className="block space-y-1">
             <span className="text-xs font-medium text-slate-700">
-              Shared secret (опционально, HMAC)
+              {t.sharedSecretLabel}
             </span>
             <input
               type="password"
@@ -364,13 +360,13 @@ export function CustomWebsiteIntegrationPanel({
               onChange={(e) => setSharedSecret(e.target.value)}
               placeholder={
                 display.hasSharedSecret && replacing
-                  ? "Оставьте пустым, чтобы сохранить прежний secret"
-                  : "секретидляподписи"
+                  ? t.keepSecretPlaceholder
+                  : t.secretPlaceholder
               }
               className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:border-violet-400"
             />
             <span className="text-[11px] text-slate-500">
-              Secret никогда не показывается после сохранения.
+              {t.secretHiddenNote}
             </span>
           </label>
 
@@ -383,7 +379,7 @@ export function CustomWebsiteIntegrationPanel({
               {busy === "test" ? (
                 <Loader2 className="size-4 animate-spin" />
               ) : null}
-              Проверить и сохранить
+              {t.testAndSave}
             </Button>
             {replacing ? (
               <Button
@@ -396,7 +392,7 @@ export function CustomWebsiteIntegrationPanel({
                   setSharedSecret("");
                 }}
               >
-                Отмена
+                {t.cancel}
               </Button>
             ) : null}
           </div>
@@ -410,44 +406,39 @@ export function CustomWebsiteIntegrationPanel({
         <summary className="cursor-pointer text-sm font-medium text-slate-800">
           <span className="inline-flex items-center gap-1.5">
             <Code2 className="size-3.5" />
-            Технические детали для разработчика
+            {t.technicalDetails}
           </span>
         </summary>
         <div className="mt-3 space-y-3 text-xs text-slate-600">
           <p>
-            Endpoint должен принимать POST JSON и отвечать HTTP 2xx. Тест шлёт{" "}
-            <code>event: &quot;rankboost.test&quot;</code>. Реальная отправка —{" "}
-            <code>article.ready</code> только после явного действия пользователя
-            или после включения Auto-publish в подтверждённом месячном плане.
-            URL и secret не логируются.
+            {t.technicalIntro}
           </p>
           <p className="font-medium text-slate-800">
-            Готовый пример для Next.js / Vercel
+            {t.nextjsExample}
           </p>
           <pre className="overflow-x-auto rounded bg-slate-900 p-3 text-[11px] text-slate-100">
             {CUSTOM_WEBHOOK_NEXTJS_ROUTE_EXAMPLE}
           </pre>
-          <p className="font-medium text-slate-800">Payload пример</p>
+          <p className="font-medium text-slate-800">{t.payloadExample}</p>
           <pre className="overflow-x-auto rounded bg-slate-900 p-3 text-[11px] text-slate-100">
             {CUSTOM_WEBHOOK_PAYLOAD_EXAMPLE}
           </pre>
-          <p className="font-medium text-slate-800">Headers</p>
+          <p className="font-medium text-slate-800">{t.headers}</p>
           <pre className="overflow-x-auto rounded bg-slate-900 p-3 text-[11px] text-slate-100">
             {CUSTOM_WEBHOOK_HEADERS_EXAMPLE}
           </pre>
-          <p className="font-medium text-slate-800">Успешный ответ</p>
+          <p className="font-medium text-slate-800">{t.successResponse}</p>
           <pre className="overflow-x-auto rounded bg-slate-900 p-3 text-[11px] text-slate-100">
             {CUSTOM_WEBHOOK_SUCCESS_RESPONSE_EXAMPLE}
           </pre>
           <p className="font-medium text-slate-800">
-            HMAC заголовок <code>X-RankBoost-Signature</code>
+            {t.hmacHeader}
           </p>
           <pre className="overflow-x-auto rounded bg-slate-900 p-3 text-[11px] text-slate-100">
             {HMAC_EXAMPLE}
           </pre>
           <p>
-            Если webhook не настроен — используйте универсальный пакет
-            (HTML/Markdown/email разработчику) в карточке статьи.
+            {t.fallbackHint}
           </p>
           <Button
             type="button"
@@ -455,7 +446,7 @@ export function CustomWebsiteIntegrationPanel({
             variant="outline"
             onClick={() => void copyDeveloperBrief()}
           >
-            {copiedBrief ? "Инструкция скопирована" : "Скопировать инструкцию разработчику"}
+            {copiedBrief ? t.copiedInstruction : t.copyInstruction}
           </Button>
         </div>
       </details>
