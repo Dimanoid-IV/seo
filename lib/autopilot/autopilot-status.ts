@@ -10,6 +10,7 @@ import {
 
 import type { CurrentUser } from "@/lib/auth/types";
 import { getPrisma } from "@/lib/db";
+import { getCustomPublishingConfig } from "@/lib/publishing/custom-webhook-config";
 
 import { getAutopilotSettings, autopilotModeToClient } from "./autopilot-settings";
 import { currentMonthKey } from "./month-utils";
@@ -19,6 +20,7 @@ import {
   findNextScheduledItem,
   parsePlanItemsDocument,
 } from "./plan-items";
+import type { AutopilotPlanItem } from "./plan-item-types";
 import { resolveWebsiteForAutopilot } from "./resolve-website";
 
 export type AutopilotPlanApprovalStatus =
@@ -56,6 +58,28 @@ export type AutopilotStatusSnapshot = {
   itemsApprovedAt: string | null;
 };
 
+export function hasArticleAwaitingPublishingIntegration(
+  items: Pick<
+    AutopilotPlanItem,
+    "type" | "status" | "generatedArticleId" | "articleQualityPassed"
+  >[]
+): boolean {
+  return items.some(
+    (item) =>
+      item.type === "ARTICLE" &&
+      Boolean(item.generatedArticleId) &&
+      item.articleQualityPassed !== false &&
+      !["executed", "published", "skipped"].includes(item.status)
+  );
+}
+
+export function publishingIntegrationReady(input: {
+  wordpressConnected: boolean;
+  customPublishingConnected: boolean;
+}): boolean {
+  return input.wordpressConnected || input.customPublishingConnected;
+}
+
 export async function getAutopilotStatusSnapshot(input: {
   currentUser: CurrentUser;
   websiteId?: string | null;
@@ -82,7 +106,7 @@ export async function getAutopilotStatusSnapshot(input: {
 
   const prisma = getPrisma();
 
-  const [plan, gscIntegration, wpConnection, tasks] = await Promise.all([
+  const [plan, gscIntegration, wpConnection, customPublishing, tasks] = await Promise.all([
     prisma.monthlyAutopilotPlan.findUnique({
       where: {
         websiteId_month: { websiteId, month },
@@ -106,6 +130,7 @@ export async function getAutopilotStatusSnapshot(input: {
       where: { websiteId },
       select: { status: true },
     }),
+    getCustomPublishingConfig(websiteId),
     prisma.task.findMany({
       where: { websiteId, deletedAt: null },
       select: { id: true, recommendationJson: true, status: true },
@@ -115,6 +140,9 @@ export async function getAutopilotStatusSnapshot(input: {
 
   const wordpressConnected =
     wpConnection?.status === WordPressConnectionStatus.CONNECTED;
+  const customPublishingConnected = Boolean(
+    customPublishing?.endpointConfigured && customPublishing.testedAt
+  );
   const gscConnected = gscIntegration?.status === IntegrationStatus.CONNECTED;
 
   const parsedDoc = plan?.planItemsJson
@@ -139,15 +167,15 @@ export async function getAutopilotStatusSnapshot(input: {
     blockedReasonKeys.push("autopilotOff");
   }
 
-  const articleAwaitingWordPress = items.some(
-    (item) =>
-      item.type === "ARTICLE" &&
-      Boolean(item.generatedArticleId) &&
-      item.articleQualityPassed !== false &&
-      !["executed", "published", "skipped"].includes(item.status)
-  );
+  const articleAwaitingPublishing = hasArticleAwaitingPublishingIntegration(items);
 
-  if (!wordpressConnected && articleAwaitingWordPress) {
+  if (
+    articleAwaitingPublishing &&
+    !publishingIntegrationReady({
+      wordpressConnected,
+      customPublishingConnected,
+    })
+  ) {
     blockedReasonKeys.push("wordpressNotConnected");
   }
 
