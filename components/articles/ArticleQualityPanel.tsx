@@ -11,6 +11,12 @@ type ArticleQualityPanelProps = {
   qualityPassed: boolean | null;
   qualityIssuesJson: ArticleQualityIssuesSnapshot | null;
   className?: string;
+  labels?: {
+    title: string;
+    passed: string;
+    failed: string;
+    showIssues: string;
+  };
 };
 
 function parseQualityIssues(
@@ -27,6 +33,7 @@ export function ArticleQualityPanel({
   qualityPassed,
   qualityIssuesJson,
   className,
+  labels,
 }: ArticleQualityPanelProps) {
   const [showIssues, setShowIssues] = useState(false);
 
@@ -51,7 +58,7 @@ export function ArticleQualityPanel({
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <p className="text-xs font-medium uppercase tracking-wider text-slate-500">
-            Quality Score
+            {labels?.title ?? "Quality Score"}
           </p>
           <p className="text-2xl font-bold text-slate-900">
             {score}
@@ -62,12 +69,12 @@ export function ArticleQualityPanel({
         {passed ? (
           <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-medium text-emerald-800">
             <CheckCircle2 className="size-3.5" />
-            Проверено RankBoost
+            {labels?.passed ?? "Проверено RankBoost"}
           </span>
         ) : (
           <span className="inline-flex items-center gap-1.5 rounded-full border border-amber-200 bg-amber-50 px-3 py-1 text-xs font-medium text-amber-800">
             <ShieldAlert className="size-3.5" />
-            Требует проверки
+            {labels?.failed ?? "Требует проверки"}
           </span>
         )}
       </div>
@@ -84,7 +91,7 @@ export function ArticleQualityPanel({
             ) : (
               <ChevronDown className="size-3.5" />
             )}
-            Показать замечания
+            {labels?.showIssues ?? "Показать замечания"}
           </button>
 
           {showIssues ? (

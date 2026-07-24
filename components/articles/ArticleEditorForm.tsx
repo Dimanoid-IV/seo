@@ -10,7 +10,7 @@ import { ArticleStatusBadge } from "@/components/articles/ArticleStatusBadge";
 import { WordPressDraftButton } from "@/components/dashboard/WordPressDraftButton";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { authFetch, parseApiErrorMessage } from "@/lib/auth/client-session";
-import { AI_DRAFT_SAFETY_COPY, QUALITY_PIPELINE_SAFETY_COPY } from "@/lib/articles/constants";
+import { useSaasTranslations } from "@/lib/i18n/saas/SaasLocaleProvider";
 import type { ArticleResponse, SerializedArticle } from "@/lib/articles/types";
 import { cn } from "@/lib/utils";
 
@@ -42,7 +42,69 @@ function buildPreviewUrl(article: SerializedArticle, slug: string): string {
   return `example.com/${slugPart}`;
 }
 
+const ARTICLE_EDITOR_COPY = {
+  ru: {
+    aiDraftSafety:
+      "RankBoost готовит черновики и рекомендации. Вы решаете, что публиковать или отправлять.",
+    qualitySafety:
+      "RankBoost проверяет и улучшает AI-черновики до вашей проверки.",
+    htmlSanitized:
+      "Перед отправкой на WordPress или custom-сайт HTML очищается и подготавливается к публикации.",
+    qualityLabels: {
+      title: "Оценка качества",
+      passed: "Проверено RankBoost",
+      failed: "Требует проверки",
+      showIssues: "Показать замечания",
+    },
+    metaLabels: {
+      title: "Предпросмотр в Google",
+      fallbackTitle: "SEO-заголовок",
+      fallbackDescription: "SEO-описание появится здесь.",
+    },
+  },
+  en: {
+    aiDraftSafety:
+      "RankBoost prepares drafts and recommendations. You decide what gets published or sent.",
+    qualitySafety:
+      "RankBoost checks and improves AI drafts before you review them.",
+    htmlSanitized:
+      "Before sending to WordPress or a custom site, HTML is cleaned and prepared for publishing.",
+    qualityLabels: {
+      title: "Quality score",
+      passed: "Checked by RankBoost",
+      failed: "Needs review",
+      showIssues: "Show notes",
+    },
+    metaLabels: {
+      title: "Google preview",
+      fallbackTitle: "SEO title",
+      fallbackDescription: "SEO description will appear here.",
+    },
+  },
+  et: {
+    aiDraftSafety:
+      "RankBoost valmistab mustandid ja soovitused. Teie otsustate, mida avaldada või saata.",
+    qualitySafety:
+      "RankBoost kontrollib ja parandab AI-mustandeid enne teie ülevaatust.",
+    htmlSanitized:
+      "Enne WordPressi või kohandatud saidile saatmist HTML puhastatakse ja valmistatakse avaldamiseks ette.",
+    qualityLabels: {
+      title: "Kvaliteediskoor",
+      passed: "RankBoost kontrollitud",
+      failed: "Vajab ülevaatust",
+      showIssues: "Näita märkusi",
+    },
+    metaLabels: {
+      title: "Google'i eelvaade",
+      fallbackTitle: "SEO pealkiri",
+      fallbackDescription: "SEO kirjeldus ilmub siia.",
+    },
+  },
+} as const;
+
 export function ArticleEditorForm({ article, onUpdated }: ArticleEditorFormProps) {
+  const { locale } = useSaasTranslations();
+  const copy = ARTICLE_EDITOR_COPY[locale] ?? ARTICLE_EDITOR_COPY.en;
   const [form, setForm] = useState<FormState>(() => toFormState(article));
   const [saving, setSaving] = useState(false);
   const [approving, setApproving] = useState(false);
@@ -173,9 +235,9 @@ export function ArticleEditorForm({ article, onUpdated }: ArticleEditorFormProps
           {article.topic ? (
             <p className="text-sm text-slate-600">{article.topic}</p>
           ) : null}
-          <p className="text-xs text-violet-700">{AI_DRAFT_SAFETY_COPY}</p>
+          <p className="text-xs text-violet-700">{copy.aiDraftSafety}</p>
           {article.generatedByAIJobId ? (
-            <p className="text-xs text-slate-600">{QUALITY_PIPELINE_SAFETY_COPY}</p>
+            <p className="text-xs text-slate-600">{copy.qualitySafety}</p>
           ) : null}
         </div>
 
@@ -313,7 +375,7 @@ export function ArticleEditorForm({ article, onUpdated }: ArticleEditorFormProps
               )}
             />
             <p className="text-xs text-amber-700">
-              HTML будет очищен WordPress Connector при создании черновика.
+              {copy.htmlSanitized}
             </p>
           </div>
         </div>
@@ -324,6 +386,7 @@ export function ArticleEditorForm({ article, onUpdated }: ArticleEditorFormProps
               qualityScore={article.qualityScore}
               qualityPassed={article.qualityPassed}
               qualityIssuesJson={article.qualityIssuesJson}
+              labels={copy.qualityLabels}
             />
           ) : null}
 
@@ -331,6 +394,7 @@ export function ArticleEditorForm({ article, onUpdated }: ArticleEditorFormProps
             title={previewTitle}
             description={previewDescription}
             url={previewUrl}
+            labels={copy.metaLabels}
           />
 
           <div className="space-y-3 rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
