@@ -116,6 +116,7 @@ const safe = {
   dryRun: report.dryRun,
   plansScanned: report.plansScanned,
   dueItemsFound: report.dueItemsFound,
+  wouldRunCount: report.wouldRunCount,
   executedCount: report.executedCount,
   skippedCount: report.skippedCount,
   blockedCount: report.blockedCount,

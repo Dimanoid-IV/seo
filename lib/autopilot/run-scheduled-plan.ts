@@ -59,6 +59,8 @@ export type RunScheduledAutopilotReport = {
   dryRun: boolean;
   plansScanned: number;
   dueItemsFound: number;
+  /** Dry-run only: actions that would run if dryRun=false. */
+  wouldRunCount: number;
   executedCount: number;
   skippedCount: number;
   blockedCount: number;
@@ -125,6 +127,7 @@ export async function runScheduledAutopilotPlans(input: {
     dryRun,
     plansScanned: 0,
     dueItemsFound: 0,
+    wouldRunCount: 0,
     executedCount: 0,
     skippedCount: 0,
     blockedCount: 0,
@@ -297,7 +300,7 @@ export async function runScheduledAutopilotPlans(input: {
           const outcome = classifyDryRunOutcome(eligibility);
           itemResult.executed = false;
           if (outcome === "wouldRun") {
-            report.executedCount += 1;
+            report.wouldRunCount += 1;
           } else {
             report.skippedCount += 1;
             itemResult.eligible = false;

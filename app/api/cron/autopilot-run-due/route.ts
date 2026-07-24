@@ -88,6 +88,7 @@ export async function GET(request: Request) {
         websiteId: plan.websiteId,
         dryRun: report.dryRun,
         dueItemsFound: report.dueItemsFound,
+        wouldRunCount: report.wouldRunCount,
         executedCount: report.executedCount,
         skippedCount: report.skippedCount,
         blockedCount: report.blockedCount,
