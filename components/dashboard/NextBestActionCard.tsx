@@ -29,7 +29,7 @@ export function NextBestActionCard({
   const { dict } = useSaasTranslations();
   const d = dict.dashboard;
   const primaryClass =
-    "inline-flex min-h-12 w-full items-center justify-center rounded-xl bg-gradient-to-r from-blue-500 to-violet-600 px-5 py-3 text-sm font-medium text-white shadow-[0_8px_24px_-8px_rgba(59,130,246,0.45)] transition hover:from-blue-600 hover:to-violet-700 disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto";
+    "inline-flex min-h-12 w-full items-center justify-center rounded-xl bg-gradient-to-r from-blue-700 to-violet-700 px-5 py-3 text-sm font-semibold text-white shadow-[0_8px_24px_-8px_rgba(29,78,216,0.45)] transition hover:from-blue-800 hover:to-violet-800 disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto";
 
   return (
     <section className="saas-card-primary">

@@ -450,7 +450,7 @@ export function ArticlePublishPanel({
           </div>
           <Link
             href="/app/integrations#custom-publishing"
-            className="mt-4 inline-flex items-center gap-2 rounded-md bg-emerald-500 px-3 py-1.5 text-sm font-semibold text-white transition hover:bg-emerald-400"
+            className="mt-4 inline-flex items-center gap-2 rounded-md bg-emerald-700 px-3 py-1.5 text-sm font-semibold text-white transition hover:bg-emerald-800"
           >
             <Webhook className="size-4" />
             Подключить мой сайт
@@ -481,7 +481,7 @@ export function ArticlePublishPanel({
                 href={hostedUrl}
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex items-center gap-2 rounded-md bg-blue-500 px-3 py-1.5 text-sm font-semibold text-white transition hover:bg-blue-400"
+                className="inline-flex items-center gap-2 rounded-md bg-blue-700 px-3 py-1.5 text-sm font-semibold text-white transition hover:bg-blue-800"
               >
                 <ExternalLink className="size-4" />
                 Открыть страницу
@@ -492,7 +492,7 @@ export function ArticlePublishPanel({
                 size="sm"
                 disabled={hostedPublishing}
                 onClick={() => void handleHostedPublish()}
-                className="bg-blue-500 text-white hover:bg-blue-400"
+                className="bg-blue-700 text-white hover:bg-blue-800"
               >
                 {hostedPublishing ? (
                   <Loader2 className="size-4 animate-spin" />
@@ -529,7 +529,7 @@ export function ArticlePublishPanel({
               size="sm"
               disabled={publishing !== null}
               onClick={() => void handleCustomPublish(false)}
-              className="bg-emerald-500 text-white hover:bg-emerald-400"
+              className="bg-emerald-700 text-white hover:bg-emerald-800"
             >
               {publishing === "send" ? (
                 <Loader2 className="size-4 animate-spin" />
@@ -661,7 +661,7 @@ export function ArticlePublishPanel({
           </div>
           <Link
             href="/app/integrations#custom-publishing"
-            className="inline-flex items-center justify-center rounded-md bg-cyan-500 px-3 py-1.5 text-sm font-semibold text-white transition hover:bg-cyan-400"
+            className="inline-flex items-center justify-center rounded-md bg-cyan-700 px-3 py-1.5 text-sm font-semibold text-white transition hover:bg-cyan-800"
           >
             Настроить публикацию на сайт
           </Link>

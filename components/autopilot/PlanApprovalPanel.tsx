@@ -414,7 +414,7 @@ export function PlanApprovalPanel({
               className={cn(
                 "rounded-lg px-3 py-1.5 text-xs font-medium sm:text-sm",
                 period === value
-                  ? "bg-violet-500 text-white"
+                  ? "bg-violet-700 text-white"
                   : "text-slate-600 hover:bg-slate-50"
               )}
             >

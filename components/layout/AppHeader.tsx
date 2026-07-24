@@ -111,7 +111,7 @@ function AppHeaderContent() {
             nativeButton={false}
             type="button"
             size="sm"
-            className="rounded-xl bg-gradient-to-r from-blue-500 to-violet-600 px-4 text-white shadow-[0_4px_16px_-6px_rgba(59,130,246,0.4)] hover:from-blue-600 hover:to-violet-700"
+            className="rounded-xl bg-gradient-to-r from-blue-700 to-violet-700 px-4 text-white shadow-[0_4px_16px_-6px_rgba(29,78,216,0.4)] hover:from-blue-800 hover:to-violet-800"
           >
             {dict.header.upgradePlan}
           </Button>

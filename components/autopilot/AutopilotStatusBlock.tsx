@@ -307,7 +307,7 @@ export function AutopilotStatusBlock({
                   className={cn(
                     "rounded-xl border px-3 py-2 text-xs font-medium transition-colors sm:text-sm",
                     active
-                      ? "border-violet-500 bg-violet-500 text-white"
+                      ? "border-violet-700 bg-violet-700 text-white"
                       : "border-slate-200 bg-white text-slate-700 hover:border-violet-300",
                     disabled && "cursor-not-allowed opacity-50"
                   )}
