@@ -647,15 +647,15 @@ export function ReviewPage() {
                         {item.articleContext.publishPath === "wordpress_draft" ||
                         item.articleContext.wordpressDraftCreated ? (
                           <span className="rounded-full border border-sky-200 bg-sky-50 px-2 py-0.5 font-medium text-sky-800">
-                            WordPress draft
+                            {t.publishPathLabels.wordpress_draft}
                           </span>
                         ) : item.articleContext.publishPath === "webhook" ? (
                           <span className="rounded-full border border-cyan-200 bg-cyan-50 px-2 py-0.5 font-medium text-cyan-800">
-                            Webhook ready
+                            {t.publishPathLabels.webhook}
                           </span>
                         ) : item.articleContext.publishPath === "universal_package" ? (
                           <span className="rounded-full border border-indigo-200 bg-indigo-50 px-2 py-0.5 font-medium text-indigo-800">
-                            Universal package
+                            {t.publishPathLabels.universal_package}
                           </span>
                         ) : null}
                         {item.articleContext.plannedDate ? (
