@@ -9,6 +9,7 @@ import { EmptyState } from "@/components/dashboard/EmptyState";
 import { IntegrationActionSheet } from "@/components/integrations/IntegrationActionSheet";
 import { IntegrationGrid } from "@/components/integrations/IntegrationGrid";
 import { BrandVoiceCard } from "@/components/integrations/BrandVoiceCard";
+import { CompetitorSettingsCard } from "@/components/integrations/CompetitorSettingsCard";
 import { CustomWebsiteIntegrationPanel } from "@/components/integrations/CustomWebsiteIntegrationPanel";
 import { FutureMentionsCard } from "@/components/integrations/FutureMentionsCard";
 import { IntegrationExecutionHistory } from "@/components/integrations/IntegrationExecutionHistory";
@@ -249,6 +250,10 @@ export function IntegrationsPage() {
 
       {data.website?.id ? (
         <BrandVoiceCard websiteId={data.website.id} />
+      ) : null}
+
+      {data.website?.id ? (
+        <CompetitorSettingsCard websiteId={data.website.id} />
       ) : null}
 
       {data.website?.id ? (

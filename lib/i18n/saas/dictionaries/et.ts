@@ -1078,6 +1078,23 @@ export const saasDictionary: SaasDictionary = {
         warm: "Soe",
       },
     },
+    competitors: {
+      title: "Konkurendid ja turg",
+      description:
+        "Lisage konkurentide või sarnaste ettevõtete veebisaidid. RankBoost kasutab neid teemade, artikli struktuuri ja eristumise jaoks.",
+      fieldLabel: "Konkurentide veebisaidid",
+      placeholder: "https://example.com\nhttps://another-brand.com",
+      helper:
+        "Üks sait reale. Võite jätta tühjaks — RankBoost kasutab siis auditi, GSC ja saidi andmeid.",
+      save: "Salvesta konkurendid",
+      saving: "Salvestame…",
+      saveSuccess:
+        "Konkurendid salvestatud. Uuendage plaani teemat, et brief neid andmeid kasutaks.",
+      loadFailed: "Konkurente ei õnnestunud laadida",
+      loadNetworkError: "Võrguviga konkurentide laadimisel",
+      saveFailed: "Konkurente ei õnnestunud salvestada",
+      saveNetworkError: "Võrguviga konkurentide salvestamisel",
+    },
     futureMentions: {
       title: "Mainimised ja kogukonnad",
       description:

@@ -16,6 +16,13 @@ export type CompetitorDiscoveryResult = {
   placeholderReason?: string;
 };
 
+export type ManualCompetitor = {
+  domain: string;
+  url: string;
+};
+
+const MAX_MANUAL_COMPETITORS = 8;
+
 function domainToName(domain: string): string {
   const base = domain.split(".")[0] ?? domain;
   return base.charAt(0).toUpperCase() + base.slice(1);
@@ -117,11 +124,108 @@ export function extractDomainsFromJson(value: unknown): string[] {
   return [...new Set(domains.map((d) => d.toLowerCase().replace(/^www\./, "")))];
 }
 
+function asGoalsBag(value: unknown): Record<string, unknown> {
+  if (value && typeof value === "object" && !Array.isArray(value)) {
+    return { ...(value as Record<string, unknown>) };
+  }
+  if (Array.isArray(value)) {
+    return { goals: value };
+  }
+  return {};
+}
+
+export function normalizeManualCompetitors(input: {
+  competitors: string[];
+  websiteUrl: string;
+}): ManualCompetitor[] {
+  const ownDomain = extractDomainFromUrl(input.websiteUrl);
+  const seen = new Set<string>();
+  const result: ManualCompetitor[] = [];
+
+  for (const raw of input.competitors) {
+    const value = raw.trim();
+    if (!value) continue;
+
+    const domain = extractDomainFromUrl(value) ?? value.toLowerCase().replace(/^www\./, "");
+    const normalized = domain.toLowerCase().replace(/^www\./, "");
+    if (!normalized || normalized === ownDomain || seen.has(normalized)) {
+      continue;
+    }
+
+    seen.add(normalized);
+    result.push({
+      domain: normalized,
+      url: value.startsWith("http") ? value : `https://${normalized}`,
+    });
+
+    if (result.length >= MAX_MANUAL_COMPETITORS) {
+      break;
+    }
+  }
+
+  return result;
+}
+
 export function parseManualCompetitorsFromBusinessGoals(
   businessGoals: unknown
 ): string[] {
-  if (!businessGoals || typeof businessGoals !== "object") {
+  const bag = asGoalsBag(businessGoals);
+  const raw = bag.competitors;
+
+  if (!Array.isArray(raw)) {
     return [];
   }
-  return extractDomainsFromJson(businessGoals);
+
+  return raw
+    .flatMap((item) => {
+      if (typeof item === "string") {
+        return [item];
+      }
+      if (item && typeof item === "object") {
+        const record = item as Record<string, unknown>;
+        const value = record.url ?? record.domain;
+        return typeof value === "string" ? [value] : [];
+      }
+      return [];
+    })
+    .slice(0, MAX_MANUAL_COMPETITORS);
+}
+
+export function readManualCompetitorsFromBusinessGoals(
+  businessGoals: unknown
+): ManualCompetitor[] {
+  const bag = asGoalsBag(businessGoals);
+  const raw = bag.competitors;
+  if (!Array.isArray(raw)) return [];
+
+  return raw
+    .map((item) => {
+      if (typeof item === "string") {
+        const domain = extractDomainFromUrl(item) ?? item.toLowerCase().replace(/^www\./, "");
+        return { domain, url: item.startsWith("http") ? item : `https://${domain}` };
+      }
+      if (!item || typeof item !== "object") return null;
+      const record = item as Record<string, unknown>;
+      const domainValue = typeof record.domain === "string" ? record.domain : null;
+      const urlValue = typeof record.url === "string" ? record.url : null;
+      const domain = domainValue ?? (urlValue ? extractDomainFromUrl(urlValue) : null);
+      if (!domain) return null;
+      return {
+        domain: domain.toLowerCase().replace(/^www\./, ""),
+        url: urlValue ?? `https://${domain.toLowerCase().replace(/^www\./, "")}`,
+      };
+    })
+    .filter((item): item is ManualCompetitor => Boolean(item?.domain))
+    .slice(0, MAX_MANUAL_COMPETITORS);
+}
+
+export function writeManualCompetitorsIntoBusinessGoals(
+  businessGoals: unknown,
+  competitors: ManualCompetitor[]
+): Record<string, unknown> {
+  const bag = asGoalsBag(businessGoals);
+  return {
+    ...bag,
+    competitors: competitors.slice(0, MAX_MANUAL_COMPETITORS),
+  };
 }

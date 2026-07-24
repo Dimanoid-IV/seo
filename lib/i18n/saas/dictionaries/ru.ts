@@ -1076,6 +1076,23 @@ export const saasDictionary: SaasDictionary = {
         warm: "Тёплый",
       },
     },
+    competitors: {
+      title: "Конкуренты и рынок",
+      description:
+        "Добавьте сайты конкурентов или похожих бизнесов. RankBoost будет учитывать их при темах, структуре статьи и отличиях вашего предложения.",
+      fieldLabel: "Сайты конкурентов",
+      placeholder: "https://example.com\nhttps://another-brand.com",
+      helper:
+        "По одному сайту на строку. Можно оставить пустым — тогда RankBoost будет использовать аудит, GSC и данные сайта.",
+      save: "Сохранить конкурентов",
+      saving: "Сохраняем…",
+      saveSuccess:
+        "Конкуренты сохранены. Теперь обновите тему в плане, чтобы brief использовал эти данные.",
+      loadFailed: "Не удалось загрузить конкурентов",
+      loadNetworkError: "Сетевая ошибка при загрузке конкурентов",
+      saveFailed: "Не удалось сохранить конкурентов",
+      saveNetworkError: "Сетевая ошибка при сохранении конкурентов",
+    },
     futureMentions: {
       title: "Упоминания и сообщества",
       description:

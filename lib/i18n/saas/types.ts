@@ -850,6 +850,20 @@ export type SaasDictionary = {
       cancel: string;
       tones: Record<string, string>;
     };
+    competitors: {
+      title: string;
+      description: string;
+      fieldLabel: string;
+      placeholder: string;
+      helper: string;
+      save: string;
+      saving: string;
+      saveSuccess: string;
+      loadFailed: string;
+      loadNetworkError: string;
+      saveFailed: string;
+      saveNetworkError: string;
+    };
     futureMentions: {
       title: string;
       description: string;

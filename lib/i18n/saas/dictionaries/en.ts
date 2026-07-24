@@ -1076,6 +1076,23 @@ export const saasDictionary: SaasDictionary = {
         warm: "Warm",
       },
     },
+    competitors: {
+      title: "Competitors and market",
+      description:
+        "Add competitor or similar-business websites. RankBoost will use them for topic selection, article structure, and differentiation.",
+      fieldLabel: "Competitor websites",
+      placeholder: "https://example.com\nhttps://another-brand.com",
+      helper:
+        "One website per line. You can leave this empty — RankBoost will use audit, GSC, and site data instead.",
+      save: "Save competitors",
+      saving: "Saving…",
+      saveSuccess:
+        "Competitors saved. Refresh a plan topic so the brief uses this data.",
+      loadFailed: "Could not load competitors",
+      loadNetworkError: "Network error while loading competitors",
+      saveFailed: "Could not save competitors",
+      saveNetworkError: "Network error while saving competitors",
+    },
     futureMentions: {
       title: "Mentions and communities",
       description:

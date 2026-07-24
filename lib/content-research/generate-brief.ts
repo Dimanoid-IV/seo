@@ -2,7 +2,12 @@ import "server-only";
 
 import { randomUUID } from "crypto";
 
-import type { ContentResearchBrief, ContentResearchSource, ResearchEvidence } from "./types";
+import type {
+  CompetitorInsight,
+  ContentResearchBrief,
+  ContentResearchSource,
+  ResearchEvidence,
+} from "./types";
 import { generateGeoPrompts } from "./geo-prompts";
 import {
   keywordToBuyerQuestion,
@@ -81,7 +86,8 @@ function buildSchemaSuggestions(intent: string): string[] {
 
 function buildEvidence(
   context: ResearchSourceContext,
-  primarySource: string
+  primarySource: string,
+  competitors: CompetitorInsight[]
 ): ResearchEvidence[] {
   const evidence: ResearchEvidence[] = [];
 
@@ -117,7 +123,65 @@ function buildEvidence(
     });
   }
 
+  if (competitors.length > 0) {
+    evidence.push({
+      source: "COMPETITOR",
+      label: "Known competitors",
+      value: `${competitors.length} competitor site(s) added by settings or detected from metadata.`,
+    });
+  }
+
   return evidence.slice(0, 8);
+}
+
+function addKeywordAnglesToCompetitors(
+  competitors: CompetitorInsight[],
+  keyword: string,
+  locale: "en" | "ru" | "et"
+): CompetitorInsight[] {
+  return competitors.map((competitor) => {
+    if (competitor.contentAngles.length > 0 || competitor.observedStrengths.length > 0) {
+      return competitor;
+    }
+
+    const observedStrengths =
+      locale === "ru"
+        ? [
+            "Известный ориентир для сравнения предложения",
+            "Помогает понять, какие вопросы покупатель сравнивает перед заказом",
+          ]
+        : locale === "et"
+          ? [
+              "Tuntud võrdluspunkt pakkumise hindamiseks",
+              "Aitab mõista, mida ostja enne tellimist võrdleb",
+            ]
+          : [
+              "Known reference point for comparing the offer",
+              "Helps identify what buyers compare before ordering",
+            ];
+
+    const contentAngles =
+      locale === "ru"
+        ? [
+            `Показать, чем ваше предложение по «${keyword}» отличается по процессу, срокам и результату`,
+            "Добавить критерии выбора, примеры работ, FAQ и понятный CTA",
+          ]
+        : locale === "et"
+          ? [
+              `Näidata, kuidas teie „${keyword}" pakkumine erineb protsessi, aja ja tulemuse poolest`,
+              "Lisada valikukriteeriumid, tööde näited, FAQ ja selge CTA",
+            ]
+          : [
+              `Show how your "${keyword}" offer differs by process, timing, and result`,
+              "Add selection criteria, examples, FAQ, and a clear CTA",
+            ];
+
+    return {
+      ...competitor,
+      observedStrengths,
+      contentAngles,
+    };
+  });
 }
 
 function buildContentGapSummary(
@@ -227,7 +291,7 @@ export async function generateContentResearchBrief(
       faq: [],
       internalLinkSuggestions: ["/", "/blog"],
       schemaSuggestions: ["Article"],
-      evidence: buildEvidence(context, "none"),
+      evidence: buildEvidence(context, "none", []),
       qualityRequirements: buildQualityRequirements(),
       riskLevel: input.riskLevel ?? "MEDIUM",
       status: "BLOCKED",
@@ -250,6 +314,11 @@ export async function generateContentResearchBrief(
   const secondaryKeywords = pickSecondaryKeywords(keywordCandidates, primary);
 
   const competitorResult = resolveCompetitorsFromContext(context);
+  const competitors = addKeywordAnglesToCompetitors(
+    competitorResult.competitors,
+    primary.keyword,
+    locale
+  );
 
   const geoPrompts = generateGeoPrompts({
     primaryKeyword: primary.keyword,
@@ -270,7 +339,7 @@ export async function generateContentResearchBrief(
     searchIntent,
     buyerQuestion,
     geoPrompts,
-    competitors: competitorResult.competitors,
+    competitors,
     competitorsUnavailable: competitorResult.unavailable,
     contentGapSummary: buildContentGapSummary(
       primary.keyword,
@@ -288,7 +357,7 @@ export async function generateContentResearchBrief(
     schemaSuggestions: buildSchemaSuggestions(searchIntent),
     llmsTxtSuggestion: `Add a concise summary of "${primary.keyword}" to llms.txt for AI crawlers.`,
     aiReadableSummarySuggestion: `One-paragraph factual summary about ${primary.keyword} for ${context.website.displayName ?? "your business"}.`,
-    evidence: buildEvidence(context, primary.sourceLabel),
+    evidence: buildEvidence(context, primary.sourceLabel, competitors),
     qualityRequirements: buildQualityRequirements(),
     riskLevel: input.riskLevel ?? "MEDIUM",
     status: "READY_FOR_GENERATION",
