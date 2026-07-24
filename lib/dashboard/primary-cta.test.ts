@@ -44,7 +44,7 @@ assert.equal(
   "OPEN_REVIEW"
 );
 
-// 4) Approved plan active when review is empty.
+// 4) Approved article plan without publishing should guide the user to connect publishing.
 assert.equal(
   resolveDashboardPrimaryCta({
     hasAudit: true,
@@ -54,10 +54,35 @@ assert.equal(
     publishingConfigured: false,
     nextScheduledArticleAt: "2026-07-20T09:00:00.000Z",
   }).kind,
+  "SETUP_PUBLISHING"
+);
+
+assert.equal(
+  resolveDashboardPrimaryCta({
+    hasAudit: true,
+    reviewQueueCount: 0,
+    hasApprovedPlanWithArticleTopics: true,
+    gscNeedsProperty: true,
+    publishingConfigured: false,
+    nextScheduledArticleAt: "2026-07-20T09:00:00.000Z",
+  }).href,
+  "/app/integrations#custom-publishing"
+);
+
+// 5) Approved plan active when review is empty and publishing is configured.
+assert.equal(
+  resolveDashboardPrimaryCta({
+    hasAudit: true,
+    reviewQueueCount: 0,
+    hasApprovedPlanWithArticleTopics: true,
+    gscNeedsProperty: true,
+    publishingConfigured: true,
+    nextScheduledArticleAt: "2026-07-20T09:00:00.000Z",
+  }).kind,
   "AUTOPILOT_ACTIVE"
 );
 
-// 5) GSC property selection.
+// 6) GSC property selection.
 assert.deepEqual(
   resolveDashboardPrimaryCta({
     hasAudit: true,
@@ -69,7 +94,7 @@ assert.deepEqual(
   { kind: "SELECT_GSC", href: "/app/integrations" }
 );
 
-// 6) Publishing setup.
+// 7) Publishing setup.
 assert.deepEqual(
   resolveDashboardPrimaryCta({
     hasAudit: true,
@@ -78,10 +103,10 @@ assert.deepEqual(
     gscNeedsProperty: false,
     publishingConfigured: false,
   }),
-  { kind: "SETUP_PUBLISHING", href: "/app/integrations" }
+  { kind: "SETUP_PUBLISHING", href: "/app/integrations#custom-publishing" }
 );
 
-// 7) Fallback control center.
+// 8) Fallback control center.
 assert.deepEqual(
   resolveDashboardPrimaryCta({
     hasAudit: true,

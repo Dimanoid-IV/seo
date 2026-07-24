@@ -46,7 +46,7 @@ export const serverStringsRu: SaasServerStrings = {
         "Google уже подключён — выберите свойство сайта, чтобы открыть поисковые данные.",
       setupPublishingTitle: "Настроить публикацию",
       setupPublishingDesc:
-        "Подключите WordPress или настройте ручную публикацию (экспорт / письмо разработчику).",
+        "Подключите WordPress или свой сайт, чтобы RankBoost мог отправлять статьи прямо в блог.",
       openControlTitle: "Открыть центр управления",
       openControlDesc:
         "Посмотрите статус плана, задач и следующих шагов в одном месте.",
@@ -55,7 +55,7 @@ export const serverStringsRu: SaasServerStrings = {
         "RankBoost подготовит статьи по расписанию после вашего подтверждения.",
       autopilotActiveTitle: "Автопилот месяца активен",
       autopilotActiveDesc:
-        "RankBoost готовит статьи по расписанию. Ничего не публикуется без безопасного пути.",
+        "RankBoost готовит статьи по расписанию. Подключённый сайт сможет принимать публикации по утверждённому плану.",
       nextArticlePrepared: (date) => `Следующая статья будет подготовлена: ${date}`,
       readyToPublishCount: (count) => `Готово к публикации: ${count}`,
     },
@@ -72,7 +72,7 @@ export const serverStringsRu: SaasServerStrings = {
       openReview: "Открыть на проверку",
       openPlan: "Открыть план",
       selectGsc: "Выбрать сайт",
-      setupPublishing: "Настроить публикацию",
+      setupPublishing: "Подключить публикацию на сайт",
       openControl: "Открыть центр управления",
       checkSiteNow: "Проверить сайт сейчас",
       confirmPlan: "Подтвердить план",

@@ -46,7 +46,7 @@ export const serverStringsEn: SaasServerStrings = {
         "Google is connected — select the site property to unlock search data.",
       setupPublishingTitle: "Set up publishing",
       setupPublishingDesc:
-        "Connect WordPress or use manual publishing (export / developer handoff).",
+        "Connect WordPress or your own site so RankBoost can send articles straight to your blog.",
       openControlTitle: "Open control center",
       openControlDesc:
         "See plan status, tasks, and next steps in one place.",
@@ -55,7 +55,7 @@ export const serverStringsEn: SaasServerStrings = {
         "RankBoost will prepare articles on schedule after you confirm.",
       autopilotActiveTitle: "Monthly autopilot is active",
       autopilotActiveDesc:
-        "RankBoost prepares articles on schedule. Nothing goes live without a safe path.",
+        "RankBoost prepares articles on schedule. A connected site can receive approved-plan publications.",
       nextArticlePrepared: (date) => `Next article will be prepared: ${date}`,
       readyToPublishCount: (count) => `Ready to publish: ${count}`,
     },
@@ -72,7 +72,7 @@ export const serverStringsEn: SaasServerStrings = {
       openReview: "Open review queue",
       openPlan: "Open plan",
       selectGsc: "Choose site",
-      setupPublishing: "Set up publishing",
+      setupPublishing: "Connect site publishing",
       openControl: "Open control center",
       checkSiteNow: "Check my site now",
       confirmPlan: "Confirm plan",

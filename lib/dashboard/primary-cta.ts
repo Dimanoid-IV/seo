@@ -73,10 +73,10 @@ export function resolveDashboardPublishingState(
  * 1. No audit → check site
  * 2. Pending plan approval → confirm month
  * 3. Review queue has items → open review (ready materials)
- * 4. Approved plan active → show autopilot status
- * 5. Plan with topics but not in active automation path → open plan
- * 6. GSC property missing → select site
- * 7. Publishing not configured → setup publishing
+ * 4. Approved article plan but publishing is not connected → setup publishing
+ * 5. Approved plan active → show autopilot status
+ * 6. Plan with topics but not in active automation path → open plan
+ * 7. GSC property missing → select site
  * 8. Else → control center
  */
 export function resolveDashboardPrimaryCta(
@@ -101,6 +101,10 @@ export function resolveDashboardPrimaryCta(
     };
   }
 
+  if (input.hasApprovedPlanWithArticleTopics && !input.publishingConfigured) {
+    return { kind: "SETUP_PUBLISHING", href: "/app/integrations#custom-publishing" };
+  }
+
   if (input.hasApprovedPlanWithArticleTopics) {
     return {
       kind: "AUTOPILOT_ACTIVE",
@@ -115,7 +119,7 @@ export function resolveDashboardPrimaryCta(
   }
 
   if (!input.publishingConfigured) {
-    return { kind: "SETUP_PUBLISHING", href: "/app/integrations" };
+    return { kind: "SETUP_PUBLISHING", href: "/app/integrations#custom-publishing" };
   }
 
   return { kind: "OPEN_CONTROL_CENTER", href: "/app/autopilot-control" };

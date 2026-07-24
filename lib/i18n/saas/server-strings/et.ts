@@ -46,7 +46,7 @@ export const serverStringsEt: SaasServerStrings = {
         "Google on ühendatud — valige saidi omadus, et avada otsinguandmed.",
       setupPublishingTitle: "Seadista avaldamine",
       setupPublishingDesc:
-        "Ühendage WordPress või kasutage käsitsi avaldamist (eksport / arendaja üleandmine).",
+        "Ühendage WordPress või oma sait, et RankBoost saaks artiklid otse blogisse saata.",
       openControlTitle: "Ava juhtimiskeskus",
       openControlDesc:
         "Vaadake plaani olekut, ülesandeid ja järgmisi samme ühes kohas.",
@@ -55,7 +55,7 @@ export const serverStringsEt: SaasServerStrings = {
         "RankBoost valmistab artiklid ajakava järgi pärast teie kinnitust.",
       autopilotActiveTitle: "Kuu autopiloot on aktiivne",
       autopilotActiveDesc:
-        "RankBoost valmistab artikleid ajakava järgi. Midagi ei lähe live ilma turvalise teeta.",
+        "RankBoost valmistab artikleid ajakava järgi. Ühendatud sait saab kinnitatud plaani publikatsioonid vastu võtta.",
       nextArticlePrepared: (date) => `Järgmine artikkel valmistatakse: ${date}`,
       readyToPublishCount: (count) => `Valmis avaldamiseks: ${count}`,
     },
@@ -72,7 +72,7 @@ export const serverStringsEt: SaasServerStrings = {
       openReview: "Ava ülevaatus",
       openPlan: "Ava plaan",
       selectGsc: "Vali sait",
-      setupPublishing: "Seadista avaldamine",
+      setupPublishing: "Ühenda saidi avaldamine",
       openControl: "Ava juhtimiskeskus",
       checkSiteNow: "Kontrolli saiti kohe",
       confirmPlan: "Kinnita plaan",
