@@ -33,7 +33,7 @@ const patchSchema = z.object({
     "TASK_FIX",
   ]),
   sourceId: z.string().min(1),
-  action: z.enum(["APPROVE", "REJECT", "EDIT", "MARK_DONE"]),
+  action: z.enum(["APPROVE", "REJECT", "EDIT", "MARK_DONE", "APPLY_TO_SITE"]),
   content: z.string().max(20000).optional(),
 });
 

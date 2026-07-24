@@ -189,7 +189,7 @@ export function ReviewPage() {
 
   async function applyAction(
     item: ReviewQueueItem,
-    action: "APPROVE" | "REJECT" | "EDIT" | "MARK_DONE",
+    action: "APPROVE" | "REJECT" | "EDIT" | "MARK_DONE" | "APPLY_TO_SITE",
     content?: string
   ) {
     setActionLoadingId(item.id);
@@ -836,6 +836,17 @@ export function ReviewPage() {
                     </>
                   ) : (
                     <>
+                      {item.preparedFix?.customPublishingConnected ? (
+                        <Button
+                          type="button"
+                          disabled={isLoading}
+                          onClick={() => void applyAction(item, "APPLY_TO_SITE")}
+                          className="bg-emerald-600 text-white hover:bg-emerald-500"
+                        >
+                          <Send className="size-4" />
+                          {t.applyToSite}
+                        </Button>
+                      ) : null}
                       {item.canApprove ? (
                         <Button
                           type="button"

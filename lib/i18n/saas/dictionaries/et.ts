@@ -1287,6 +1287,7 @@ export const saasDictionary: SaasDictionary = {
     fromTask: "Ülesandest",
     updatedLabel: "Uuendatud",
     approve: "Kinnita",
+    applyToSite: "Rakenda saidil",
     edit: "Muuda",
     reject: "Lükka tagasi",
     markDone: "Märgi tehtuks",

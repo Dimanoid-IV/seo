@@ -1015,6 +1015,7 @@ export type SaasDictionary = {
     fromTask: string;
     updatedLabel: string;
     approve: string;
+    applyToSite: string;
     edit: string;
     reject: string;
     markDone: string;

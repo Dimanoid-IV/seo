@@ -20,6 +20,11 @@ import {
   parseTaskRecommendationWithFix,
   updatePreparedFixStatus,
 } from "@/lib/tasks/prepared-fix";
+import {
+  assertWebhookReadyForExplicitSend,
+  deliverCustomFixWebhook,
+} from "@/lib/publishing/custom-webhook";
+import { getCustomPublishingWebhookUrl } from "@/lib/publishing/custom-webhook-config";
 
 import type { ReviewAction, ReviewItemType } from "./types";
 import { trackEventFireAndForget } from "@/lib/analytics/track";
@@ -223,6 +228,8 @@ async function applyTaskFixAction(input: ReviewActionInput) {
       id: true,
       recommendationJson: true,
       status: true,
+      websiteId: true,
+      organizationId: true,
     },
   });
 
@@ -251,6 +258,66 @@ async function applyTaskFixAction(input: ReviewActionInput) {
     });
 
     return { taskId: task.id, status: "APPROVED" as const };
+  }
+
+  if (input.action === "APPLY_TO_SITE") {
+    await assertWebhookReadyForExplicitSend(task.websiteId);
+    const url = await getCustomPublishingWebhookUrl(task.websiteId);
+    if (!url) {
+      throw new AppError(ErrorCode.VALIDATION_ERROR, "Webhook URL не настроен.");
+    }
+
+    const result = await deliverCustomFixWebhook({
+      taskId: task.id,
+      websiteId: task.websiteId,
+      organizationId: task.organizationId,
+      endpointUrl: url,
+      dryRun: false,
+      fix: {
+        id: parsed.preparedFix.id,
+        type: parsed.preparedFix.type,
+        field: parsed.preparedFix.field,
+        title: parsed.preparedFix.title,
+        preview: parsed.preparedFix.preview,
+        suggestedValue: parsed.preparedFix.suggestedValue,
+        summary: parsed.preparedFix.summary,
+        whyItMatters: parsed.preparedFix.whyItMatters,
+        implementationNotes: parsed.preparedFix.implementationNotes,
+        riskLevel: parsed.preparedFix.riskLevel,
+      },
+    });
+
+    if (!result.delivered || result.applied !== true) {
+      throw new AppError(
+        ErrorCode.VALIDATION_ERROR,
+        result.error ??
+          "Сайт принял запрос, но не подтвердил применение исправления."
+      );
+    }
+
+    const recommendationJson = updatePreparedFixStatus(
+      task.recommendationJson,
+      "APPROVED"
+    );
+
+    await prisma.task.update({
+      where: { id: task.id },
+      data: {
+        recommendationJson: recommendationJson as Prisma.InputJsonValue,
+      },
+    });
+
+    await completeTask({
+      taskId: task.id,
+      currentUser: input.currentUser,
+    });
+
+    return {
+      taskId: task.id,
+      status: "APPLIED" as const,
+      externalId: result.externalId ?? null,
+      externalUrl: result.externalUrl ?? null,
+    };
   }
 
   if (input.action === "REJECT") {

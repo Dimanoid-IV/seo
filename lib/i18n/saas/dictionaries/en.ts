@@ -1281,6 +1281,7 @@ export const saasDictionary: SaasDictionary = {
     fromTask: "From task",
     updatedLabel: "Updated",
     approve: "Approve",
+    applyToSite: "Apply on site",
     edit: "Edit",
     reject: "Reject",
     markDone: "Mark as done",

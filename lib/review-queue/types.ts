@@ -69,6 +69,8 @@ export type ReviewQueueItem = {
     implementationNotes?: string;
     riskLevel?: PreparedFixRiskLevel;
     approvalRequired: boolean;
+    customPublishingConnected?: boolean;
+    customPublishingHost?: string | null;
   };
 };
 
@@ -117,4 +119,9 @@ export type PreparedFix = {
   updatedAt: string;
 };
 
-export type ReviewAction = "APPROVE" | "REJECT" | "EDIT" | "MARK_DONE";
+export type ReviewAction =
+  | "APPROVE"
+  | "REJECT"
+  | "EDIT"
+  | "MARK_DONE"
+  | "APPLY_TO_SITE";

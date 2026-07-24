@@ -9,6 +9,34 @@ export const CUSTOM_WEBHOOK_SUCCESS_RESPONSE_EXAMPLE = `{
   "url": "https://example.com/blog/article-slug"
 }`;
 
+export const CUSTOM_FIX_WEBHOOK_PAYLOAD_EXAMPLE = `{
+  "event": "site.fix.ready",
+  "dryRun": false,
+  "task": {
+    "id": "task_uuid"
+  },
+  "fix": {
+    "id": "fix_uuid",
+    "type": "META_FIX",
+    "field": "meta_description",
+    "title": "Improve homepage meta description",
+    "suggestedValue": "New SEO description",
+    "summary": "What will change",
+    "implementationNotes": "Where to apply it"
+  },
+  "website": {
+    "id": "website_uuid",
+    "url": "https://example.com"
+  }
+}`;
+
+export const CUSTOM_FIX_WEBHOOK_SUCCESS_RESPONSE_EXAMPLE = `{
+  "ok": true,
+  "applied": true,
+  "externalId": "fix_123",
+  "url": "https://example.com"
+}`;
+
 export const CUSTOM_WEBHOOK_NEXTJS_ROUTE_EXAMPLE = `import crypto from "node:crypto";
 import { NextResponse } from "next/server";
 
@@ -91,7 +119,8 @@ export function buildCustomWebhookDeveloperBrief(): string {
     "- Для теста принимать event = rankboost.test и не создавать контент.",
     "- Для реальной публикации обрабатывать event = article.ready.",
     "- Если задан shared secret, проверять X-RankBoost-Signature до записи контента (verify X-RankBoost-Signature).",
-    "- Сохранять или публиковать article.html / article.markdown и SEO-поля.",
+    "- Для статьи сохранять или публиковать article.html / article.markdown и SEO-поля.",
+    "- Для исправлений обрабатывать event = site.fix.ready и возвращать applied: true только после реального применения.",
     "- Не публиковать дубликат, если idempotency/article.id уже был обработан.",
     "",
     "Самый простой вариант для Next.js / Vercel — файл app/api/rankboost/articles/route.ts:",
@@ -105,5 +134,11 @@ export function buildCustomWebhookDeveloperBrief(): string {
     "",
     "Success response example:",
     CUSTOM_WEBHOOK_SUCCESS_RESPONSE_EXAMPLE,
+    "",
+    "Fix payload:",
+    CUSTOM_FIX_WEBHOOK_PAYLOAD_EXAMPLE,
+    "",
+    "Fix success response example:",
+    CUSTOM_FIX_WEBHOOK_SUCCESS_RESPONSE_EXAMPLE,
   ].join("\n");
 }

@@ -27,11 +27,17 @@ export type CustomWebhookDeliveryResult = {
   externalId?: string | null;
   externalUrl?: string | null;
   duplicate?: boolean;
+  applied?: boolean;
 };
 
 async function readDeliveryResponse(
   response: Response
-): Promise<Pick<CustomWebhookDeliveryResult, "externalId" | "externalUrl" | "duplicate">> {
+): Promise<
+  Pick<
+    CustomWebhookDeliveryResult,
+    "externalId" | "externalUrl" | "duplicate" | "applied"
+  >
+> {
   const contentType = response.headers.get("content-type") ?? "";
   if (!contentType.toLowerCase().includes("application/json")) {
     return {};
@@ -43,6 +49,7 @@ async function readDeliveryResponse(
       url?: unknown;
       publicUrl?: unknown;
       duplicate?: unknown;
+      applied?: unknown;
     };
     return {
       externalId:
@@ -54,10 +61,141 @@ async function readDeliveryResponse(
             ? body.publicUrl.slice(0, 2000)
             : null,
       duplicate: body.duplicate === true,
+      applied: body.applied === true,
     };
   } catch {
     return {};
   }
+}
+
+export async function deliverCustomFixWebhook(input: {
+  taskId: string;
+  websiteId: string;
+  organizationId: string;
+  endpointUrl: string;
+  dryRun: boolean;
+  fix: {
+    id: string;
+    type: "META_FIX" | "SEO_FIX" | "TASK_FIX";
+    field?: string;
+    title: string;
+    preview: string;
+    suggestedValue: string;
+    summary?: string;
+    whyItMatters?: string;
+    implementationNotes?: string;
+    riskLevel?: "low" | "medium" | "high";
+  };
+}): Promise<CustomWebhookDeliveryResult> {
+  let parsedUrl: URL;
+  try {
+    parsedUrl = new URL(input.endpointUrl.trim());
+  } catch {
+    throw new AppError(ErrorCode.VALIDATION_ERROR, "Некорректный URL webhook.");
+  }
+
+  if (parsedUrl.protocol !== "https:" && parsedUrl.protocol !== "http:") {
+    throw new AppError(
+      ErrorCode.VALIDATION_ERROR,
+      "URL должен использовать http или https."
+    );
+  }
+
+  requireHttpsUnlessLocalDev(parsedUrl);
+  await assertSafeUrl(parsedUrl);
+
+  const prisma = getPrisma();
+  const website = await prisma.website.findFirst({
+    where: {
+      id: input.websiteId,
+      organizationId: input.organizationId,
+      deletedAt: null,
+    },
+    select: { id: true, url: true },
+  });
+  if (!website) {
+    throw new AppError(ErrorCode.NOT_FOUND, "Сайт не найден");
+  }
+
+  const payload = input.dryRun
+    ? {
+        event: "rankboost.test",
+        dryRun: true,
+        fix: {
+          id: input.fix.id,
+          type: input.fix.type,
+          field: input.fix.field ?? null,
+        },
+      }
+    : {
+        event: "site.fix.ready",
+        dryRun: false,
+        task: { id: input.taskId },
+        fix: {
+          id: input.fix.id,
+          type: input.fix.type,
+          field: input.fix.field ?? null,
+          title: input.fix.title,
+          preview: input.fix.preview,
+          suggestedValue: input.fix.suggestedValue,
+          summary: input.fix.summary ?? null,
+          whyItMatters: input.fix.whyItMatters ?? null,
+          implementationNotes: input.fix.implementationNotes ?? null,
+          riskLevel: input.fix.riskLevel ?? null,
+        },
+        website: {
+          id: input.websiteId,
+          url: website.url,
+        },
+      };
+
+  const body = JSON.stringify(payload);
+  const secret = await getCustomPublishingSharedSecret(input.websiteId);
+  const headers: Record<string, string> = {
+    "Content-Type": "application/json",
+    "User-Agent": "RankBoost-Webhook/1.0",
+    "X-RankBoost-Event": payload.event,
+  };
+  if (secret) {
+    headers["X-RankBoost-Signature"] = signWebhookPayload(body, secret);
+  }
+
+  let statusCode = 0;
+  let delivered = false;
+  let deliveryError: string | null = null;
+  let deliveryResponse: Pick<
+    CustomWebhookDeliveryResult,
+    "externalId" | "externalUrl" | "duplicate" | "applied"
+  > = {};
+
+  try {
+    const response = await fetch(parsedUrl.toString(), {
+      method: "POST",
+      headers,
+      body,
+      signal: AbortSignal.timeout(WEBHOOK_TIMEOUT_MS),
+      redirect: "manual",
+    });
+    statusCode = response.status;
+    delivered = response.status >= 200 && response.status < 300;
+    if (delivered) {
+      deliveryResponse = await readDeliveryResponse(response);
+    }
+    if (!delivered) {
+      deliveryError = `Эндпоинт вернул статус ${response.status}.`;
+    }
+  } catch {
+    deliveryError =
+      "Не удалось связаться с эндпоинтом. Проверьте URL и доступность.";
+  }
+
+  return {
+    dryRun: input.dryRun,
+    delivered,
+    statusCode,
+    error: deliveryError,
+    ...deliveryResponse,
+  };
 }
 
 function requireHttpsUnlessLocalDev(url: URL): void {

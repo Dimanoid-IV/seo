@@ -483,6 +483,8 @@ export async function getReviewQueue(
         implementationNotes: preparedFix.implementationNotes,
         riskLevel: preparedFix.riskLevel,
         approvalRequired: preparedFix.approvalRequired,
+        customPublishingConnected,
+        customPublishingHost: customPublishing?.endpointHost ?? null,
       },
     });
   }
