@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { CheckCircle2, Code2, Loader2, Webhook } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -12,6 +13,7 @@ import {
 import {
   buildCustomWebhookDeveloperBrief,
   CUSTOM_WEBHOOK_HEADERS_EXAMPLE,
+  CUSTOM_WEBHOOK_NEXTJS_ROUTE_EXAMPLE,
   CUSTOM_WEBHOOK_PAYLOAD_EXAMPLE,
   CUSTOM_WEBHOOK_SUCCESS_RESPONSE_EXAMPLE,
 } from "@/lib/publishing/custom-webhook-contract";
@@ -283,8 +285,9 @@ export function CustomWebsiteIntegrationPanel({
                 {display.connectedBanner ?? "Публикация на сайт подключена"}
               </p>
               <p className="mt-1 text-xs text-emerald-700/90">
-                В готовой статье будет кнопка «Опубликовать на сайте». Полный
-                URL и secret не отображаются.
+                Всё готово: откройте готовую статью и нажмите «Опубликовать на
+                сайте». RankBoost отправит материал прямо в подключённый блог.
+                Полный URL и secret не отображаются.
               </p>
               {display.hasSharedSecret ? (
                 <p className="mt-1 text-xs text-slate-600">
@@ -294,6 +297,12 @@ export function CustomWebsiteIntegrationPanel({
             </div>
           </div>
           <div className="flex flex-wrap gap-2">
+            <Link
+              href="/app/review"
+              className="inline-flex h-9 items-center justify-center rounded-md bg-emerald-600 px-3 text-sm font-semibold text-white transition hover:bg-emerald-700"
+            >
+              Открыть готовые статьи
+            </Link>
             <Button
               type="button"
               variant="outline"
@@ -412,6 +421,12 @@ export function CustomWebsiteIntegrationPanel({
             или после включения Auto-publish в подтверждённом месячном плане.
             URL и secret не логируются.
           </p>
+          <p className="font-medium text-slate-800">
+            Готовый пример для Next.js / Vercel
+          </p>
+          <pre className="overflow-x-auto rounded bg-slate-900 p-3 text-[11px] text-slate-100">
+            {CUSTOM_WEBHOOK_NEXTJS_ROUTE_EXAMPLE}
+          </pre>
           <p className="font-medium text-slate-800">Payload пример</p>
           <pre className="overflow-x-auto rounded bg-slate-900 p-3 text-[11px] text-slate-100">
             {CUSTOM_WEBHOOK_PAYLOAD_EXAMPLE}

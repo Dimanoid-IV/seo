@@ -1377,7 +1377,7 @@ export const saasDictionary: SaasDictionary = {
       openIntegrations: "Open integrations",
       openCustomSetup: "Set up custom site",
     },
-    publishManually: "Publish manually",
+    publishManually: "Open article and materials",
     downloadForSite: "Download / copy for your site",
     actionGroups: {
       all: "All",

@@ -1380,7 +1380,7 @@ export const saasDictionary: SaasDictionary = {
       openIntegrations: "Открыть интеграции",
       openCustomSetup: "Настроить свой сайт",
     },
-    publishManually: "Опубликовать вручную",
+    publishManually: "Открыть статью и материалы",
     downloadForSite: "Скачать / скопировать для сайта",
     actionGroups: {
       all: "Все",

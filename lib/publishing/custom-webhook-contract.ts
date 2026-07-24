@@ -9,6 +9,47 @@ export const CUSTOM_WEBHOOK_SUCCESS_RESPONSE_EXAMPLE = `{
   "url": "https://example.com/blog/article-slug"
 }`;
 
+export const CUSTOM_WEBHOOK_NEXTJS_ROUTE_EXAMPLE = `import crypto from "node:crypto";
+import { NextResponse } from "next/server";
+
+export const runtime = "nodejs";
+
+function verifySignature(body: string, secret: string, header: string | null) {
+  const expected =
+    "sha256=" + crypto.createHmac("sha256", secret).update(body).digest("hex");
+  return header === expected;
+}
+
+export async function POST(request: Request) {
+  const body = await request.text();
+  const secret = process.env.RANKBOOST_WEBHOOK_SECRET;
+
+  if (secret && !verifySignature(body, secret, request.headers.get("x-rankboost-signature"))) {
+    return NextResponse.json({ ok: false }, { status: 401 });
+  }
+
+  const payload = JSON.parse(body);
+
+  if (payload.event === "rankboost.test") {
+    return NextResponse.json({ ok: true });
+  }
+
+  if (payload.event !== "article.ready") {
+    return NextResponse.json({ ok: false }, { status: 400 });
+  }
+
+  const article = payload.article;
+
+  // TODO: Save article.html, article.metaTitle and article.metaDescription
+  // into your CMS/database and trigger your deploy/revalidation.
+
+  return NextResponse.json({
+    ok: true,
+    externalId: article.id,
+    url: \`https://YOUR_DOMAIN/blog/\${article.slug}\`,
+  });
+}`;
+
 export const CUSTOM_WEBHOOK_PAYLOAD_EXAMPLE = `{
   "event": "article.ready",
   "dryRun": false,
@@ -49,9 +90,12 @@ export function buildCustomWebhookDeveloperBrief(): string {
     "- Возвращать любой HTTP 2xx, если статья принята.",
     "- Для теста принимать event = rankboost.test и не создавать контент.",
     "- Для реальной публикации обрабатывать event = article.ready.",
-    "- Если задан shared secret, проверять X-RankBoost-Signature до записи контента.",
+    "- Если задан shared secret, проверять X-RankBoost-Signature до записи контента (verify X-RankBoost-Signature).",
     "- Сохранять или публиковать article.html / article.markdown и SEO-поля.",
     "- Не публиковать дубликат, если idempotency/article.id уже был обработан.",
+    "",
+    "Самый простой вариант для Next.js / Vercel — файл app/api/rankboost/articles/route.ts:",
+    CUSTOM_WEBHOOK_NEXTJS_ROUTE_EXAMPLE,
     "",
     "Headers:",
     CUSTOM_WEBHOOK_HEADERS_EXAMPLE,

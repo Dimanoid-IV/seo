@@ -700,7 +700,7 @@ export function ReviewPage() {
                               type="button"
                               disabled={isLoading}
                               onClick={() => void publishToCustomSite(item)}
-                              className="inline-flex items-center gap-1.5 rounded-md border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-xs font-semibold text-emerald-800 hover:bg-emerald-100 disabled:cursor-not-allowed disabled:opacity-60"
+                              className="inline-flex items-center gap-1.5 rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-60"
                             >
                               <Send className="size-3.5" />
                               {t.publishToCustomSite}
@@ -728,7 +728,7 @@ export function ReviewPage() {
                           ) : null}
                           <Link
                             href={item.editHref}
-                            className="inline-flex items-center rounded-md border border-blue-200 bg-blue-50 px-2.5 py-1 text-xs font-medium text-blue-800 hover:bg-blue-100"
+                            className="inline-flex items-center rounded-md border border-slate-200 bg-white px-2.5 py-1 text-xs font-medium text-slate-700 hover:bg-slate-50"
                           >
                             {t.publishManually}
                           </Link>

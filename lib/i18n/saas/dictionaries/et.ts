@@ -1383,7 +1383,7 @@ export const saasDictionary: SaasDictionary = {
       openIntegrations: "Ava integratsioonid",
       openCustomSetup: "Seadista kohandatud sait",
     },
-    publishManually: "Avalda käsitsi",
+    publishManually: "Ava artikkel ja materjalid",
     downloadForSite: "Laadi alla / kopeeri saidile",
     actionGroups: {
       all: "Kõik",
