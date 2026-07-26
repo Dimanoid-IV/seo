@@ -27,8 +27,8 @@ export function SolutionSection({ dict }: SolutionSectionProps) {
             const Icon = icons[index] ?? Search;
             return (
               <div key={item.title} className="marketing-card">
-                <div className="mb-4 flex size-11 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500/10 to-violet-500/10 ring-1 ring-blue-500/10">
-                  <Icon className="size-5 text-blue-600" />
+                <div className="mb-4 flex size-11 items-center justify-center rounded-xl bg-gradient-to-br from-[#c9bfff]/10 to-violet-500/10 ring-1 ring-[#c9bfff]/35">
+                  <Icon className="size-5 text-[#8169ff]" />
                 </div>
                 <h3 className="text-lg font-semibold text-slate-900">
                   {item.title}

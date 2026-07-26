@@ -32,7 +32,7 @@ export function AutopilotNextSteps({ steps }: AutopilotNextStepsProps) {
               {step.href ? (
                 <Link
                   href={step.href}
-                  className="font-medium text-blue-400 hover:text-blue-300"
+                  className="font-medium text-violet-600 hover:text-violet-700"
                 >
                   {copy.title}
                 </Link>

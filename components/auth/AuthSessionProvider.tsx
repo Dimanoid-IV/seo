@@ -156,7 +156,7 @@ export function AuthSessionProvider({
   if (loading || !user) {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center gap-3 bg-[#050816]">
-        <Loader2 className="size-8 animate-spin text-blue-400" />
+        <Loader2 className="size-8 animate-spin text-violet-600" />
         <p className="text-sm text-slate-400">{dict.auth.loadingDashboard}</p>
       </div>
     );

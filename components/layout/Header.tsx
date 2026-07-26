@@ -34,10 +34,10 @@ export function Header({ locale, dict }: HeaderProps) {
   return (
     <header
       className={cn(
-        "sticky top-0 z-50 backdrop-blur-xl",
+        "sticky top-0 z-50",
         isLight
-          ? "border-b border-slate-200/80 bg-white/85"
-          : "border-b border-white/5 bg-[#050816]/80"
+          ? "bg-white"
+          : "bg-white"
       )}
     >
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
@@ -46,14 +46,14 @@ export function Header({ locale, dict }: HeaderProps) {
           href="/"
           className={cn(
             "flex items-center gap-2.5 font-bold",
-            isLight ? "text-slate-900" : "text-white"
+            "text-[#181818]"
           )}
         >
-          <div className="flex size-9 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-violet-600 shadow-[0_4px_14px_-4px_rgba(59,130,246,0.45)]">
+          <div className="flex size-9 items-center justify-center rounded-xl bg-[#8169ff]">
             <Sparkles className="size-4 text-white" />
           </div>
           <span className="text-lg tracking-tight">
-            Rank<span className="text-blue-600">Boost</span>
+            Rank<span className="text-[#8169ff]">Boost</span>
           </span>
         </LocaleLink>
 
@@ -65,9 +65,7 @@ export function Header({ locale, dict }: HeaderProps) {
               href={item.href}
               className={cn(
                 "rounded-lg px-3 py-2 text-sm transition-colors",
-                isLight
-                  ? "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
-                  : "text-slate-300 hover:bg-white/5 hover:text-white"
+                "text-[#181818] hover:bg-black/[0.08]"
               )}
             >
               {dict.nav[item.key]}
@@ -83,9 +81,7 @@ export function Header({ locale, dict }: HeaderProps) {
             eventProperties={{ cta: "header" }}
             className={cn(
               "rounded-lg px-3 py-2 text-sm transition-colors",
-              isLight
-                ? "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
-                : "text-slate-300 hover:bg-white/5 hover:text-white"
+              "text-[#8169ff] hover:bg-black/[0.08]"
             )}
           >
             {dict.nav.login}
@@ -96,7 +92,7 @@ export function Header({ locale, dict }: HeaderProps) {
             eventProperties={{ cta: "header" }}
             className={cn(
               buttonVariants({ size: "sm" }),
-              "rounded-xl bg-gradient-to-r from-blue-600 to-violet-600 hover:from-blue-500 hover:to-violet-500"
+              "rounded-xl bg-[#8169ff] text-white hover:bg-[#6d4ff0]"
             )}
           >
             {dict.nav.cta}
@@ -109,9 +105,7 @@ export function Header({ locale, dict }: HeaderProps) {
             <SheetTrigger
               className={cn(
                 "inline-flex size-9 items-center justify-center rounded-lg",
-                isLight
-                  ? "text-slate-700 hover:bg-slate-100"
-                  : "text-white hover:bg-white/10"
+                "text-[#181818] hover:bg-black/[0.08]"
               )}
             >
               {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
@@ -148,7 +142,7 @@ export function Header({ locale, dict }: HeaderProps) {
                   onClick={() => setOpen(false)}
                   className={cn(
                     buttonVariants(),
-                    "mt-4 rounded-xl bg-gradient-to-r from-blue-600 to-violet-600"
+                    "mt-4 rounded-xl bg-[#8169ff] text-white hover:bg-[#6d4ff0]"
                   )}
                 >
                   {dict.nav.cta}

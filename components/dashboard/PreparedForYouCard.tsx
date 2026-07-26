@@ -60,7 +60,7 @@ export function PreparedForYouCard({
       </div>
       <Link
         href="/app/autopilot-control"
-        className="mt-5 inline-flex items-center gap-1.5 text-sm font-medium text-blue-300 transition hover:text-blue-200"
+        className="mt-5 inline-flex items-center gap-1.5 text-sm font-medium text-violet-700 transition hover:text-violet-700"
       >
         {p.openControlCenter}
         <ArrowRight className="size-4" />

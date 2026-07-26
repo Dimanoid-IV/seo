@@ -17,7 +17,7 @@ const ACCENT: Record<
   { value: string; icon: string; Icon: LucideIcon }
 > = {
   emerald: { value: "text-emerald-600", icon: "text-emerald-500", Icon: TrendingUp },
-  cyan: { value: "text-cyan-600", icon: "text-cyan-500", Icon: BarChart3 },
+  cyan: { value: "text-violet-600", icon: "text-violet-600", Icon: BarChart3 },
   amber: { value: "text-amber-600", icon: "text-amber-500", Icon: ClipboardCheck },
 };
 

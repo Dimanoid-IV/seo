@@ -191,7 +191,7 @@ export function ContactForm({ locale, dict }: ContactFormProps) {
       <Button
         type="submit"
         disabled={status === "loading"}
-        className="w-full rounded-xl bg-gradient-to-r from-blue-600 to-violet-600 hover:from-blue-500 hover:to-violet-500"
+        className="w-full rounded-xl bg-[#8169ff] hover:bg-[#6d4ff0]"
       >
         {status === "loading" ? (
           dict.contact.form.submitting

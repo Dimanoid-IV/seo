@@ -46,7 +46,7 @@ export default async function HostedArticlePage({ params }: PageProps) {
     <main className="min-h-screen bg-white text-slate-900">
       <JsonLdScript data={buildHostedArticleJsonLd(article)} />
       <article className="mx-auto w-full max-w-3xl px-4 py-10 sm:px-6 lg:py-16">
-        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-blue-600">
+        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#8169ff]">
           RankBoost Hosted Blog
         </p>
         <h1 className="mt-4 text-3xl font-bold leading-tight text-slate-950 sm:text-5xl">
@@ -56,14 +56,14 @@ export default async function HostedArticlePage({ params }: PageProps) {
           <span>{formattedDate}</span>
           <a
             href={article.websiteUrl}
-            className="text-blue-600 hover:text-blue-700"
+            className="text-[#8169ff] hover:text-[#6d4ff0]"
           >
             {article.websiteUrl}
           </a>
         </div>
         <div className="my-8 h-px bg-slate-200" />
         <div
-          className="prose prose-slate max-w-none prose-a:text-blue-600 prose-img:rounded-lg"
+          className="prose prose-slate max-w-none prose-a:text-[#8169ff] prose-img:rounded-lg"
           dangerouslySetInnerHTML={{ __html: article.bodyHtml }}
         />
       </article>

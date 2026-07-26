@@ -459,16 +459,16 @@ export function ArticlePublishPanel({
       ) : null}
 
       {!isWordPressLivePublished && !customConnected ? (
-        <div className="rounded-xl border border-blue-200 bg-blue-50 p-4">
+        <div className="rounded-xl border border-[#c9bfff]/55 bg-[#c9bfff]/20 p-4">
           <div className="flex items-start gap-3">
-            <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-blue-100">
-              <Globe2 className="size-4 text-blue-700" />
+            <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-[#c9bfff]/35">
+              <Globe2 className="size-4 text-[#6d4ff0]" />
             </div>
             <div className="min-w-0 flex-1">
-              <p className="text-sm font-semibold text-blue-900">
+              <p className="text-sm font-semibold text-[#181818]">
                 Самый простой способ: hosted-страница RankBoost
               </p>
-              <p className="mt-1 text-xs leading-relaxed text-blue-800">
+              <p className="mt-1 text-xs leading-relaxed text-[#6d4ff0]">
                 RankBoost создаст публичную страницу статьи. Это не заменяет
                 публикацию на вашем домене, но позволяет сразу проверить и
                 использовать материал без разработчика.
@@ -481,7 +481,7 @@ export function ArticlePublishPanel({
                 href={hostedUrl}
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex items-center gap-2 rounded-md bg-blue-700 px-3 py-1.5 text-sm font-semibold text-white transition hover:bg-blue-800"
+                className="inline-flex items-center gap-2 rounded-md bg-[#6d4ff0] px-3 py-1.5 text-sm font-semibold text-white transition hover:bg-[#6d4ff0]"
               >
                 <ExternalLink className="size-4" />
                 Открыть страницу
@@ -492,7 +492,7 @@ export function ArticlePublishPanel({
                 size="sm"
                 disabled={hostedPublishing}
                 onClick={() => void handleHostedPublish()}
-                className="bg-blue-700 text-white hover:bg-blue-800"
+                className="bg-[#6d4ff0] text-white hover:bg-[#6d4ff0]"
               >
                 {hostedPublishing ? (
                   <Loader2 className="size-4 animate-spin" />
@@ -646,14 +646,14 @@ export function ArticlePublishPanel({
       </div>
 
       {!customConnected ? (
-        <div className="space-y-3 rounded-xl border border-cyan-200 bg-cyan-50 p-4">
+        <div className="space-y-3 rounded-xl border border-[#c9bfff]/55 bg-[#c9bfff]/20 p-4">
           <div className="flex items-start gap-3">
-            <Webhook className="mt-0.5 size-4 shrink-0 text-cyan-700" />
+            <Webhook className="mt-0.5 size-4 shrink-0 text-[#6d4ff0]" />
             <div>
-              <p className="text-sm font-semibold text-cyan-900">
+              <p className="text-sm font-semibold text-[#181818]">
                 Хотите публиковать на custom-сайт одной кнопкой?
               </p>
-              <p className="mt-1 text-xs leading-relaxed text-cyan-800">
+              <p className="mt-1 text-xs leading-relaxed text-[#6d4ff0]">
                 Подключите один защищённый адрес публикации в интеграциях. После
                 проверки здесь появится кнопка «Опубликовать на сайте».
               </p>
@@ -661,7 +661,7 @@ export function ArticlePublishPanel({
           </div>
           <Link
             href="/app/integrations#custom-publishing"
-            className="inline-flex items-center justify-center rounded-md bg-cyan-700 px-3 py-1.5 text-sm font-semibold text-white transition hover:bg-cyan-800"
+            className="inline-flex items-center justify-center rounded-md bg-[#6d4ff0] px-3 py-1.5 text-sm font-semibold text-white transition hover:bg-[#6d4ff0]"
           >
             Настроить публикацию на сайт
           </Link>

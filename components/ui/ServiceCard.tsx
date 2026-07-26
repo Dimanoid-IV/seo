@@ -54,13 +54,13 @@ export function ServiceCard({
       className={cn(
         "group flex flex-col p-6 transition-all duration-300",
         isMarketing
-          ? "marketing-card hover:border-blue-300 hover:shadow-[0_12px_40px_-16px_rgba(59,130,246,0.2)]"
-          : "glass-card hover:border-blue-500/30 hover:glow-sm",
+          ? "marketing-card hover:border-[#c9bfff]/70 hover:shadow-[0_12px_40px_-16px_rgba(59,130,246,0.2)]"
+          : "glass-card hover:border-[#c9bfff]/45 hover:glow-sm",
         detailed && "h-full"
       )}
     >
-      <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500/20 to-violet-500/20 ring-1 ring-blue-500/20">
-        <Icon className={cn("h-6 w-6", isMarketing ? "text-blue-600" : "text-blue-400")} />
+      <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-[#c9bfff]/20 to-violet-500/20 ring-1 ring-[#c9bfff]/35">
+        <Icon className={cn("h-6 w-6", isMarketing ? "text-[#8169ff]" : "text-violet-600")} />
       </div>
       <h3
         className={cn(
@@ -97,7 +97,7 @@ export function ServiceCard({
               isMarketing ? "text-slate-600" : "text-slate-400"
             )}
           >
-            <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-cyan-400" />
+            <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[#8169ff]" />
             {feature}
           </li>
         ))}
@@ -106,7 +106,7 @@ export function ServiceCard({
         locale={locale}
         href="/register"
         className={cn(
-          "mt-auto w-full rounded-xl bg-gradient-to-r from-blue-600 to-violet-600 hover:from-blue-500 hover:to-violet-500",
+          "mt-auto w-full rounded-xl bg-[#8169ff] hover:bg-[#6d4ff0]",
           !detailed && "w-auto self-start px-4"
         )}
         size={detailed ? "default" : "sm"}

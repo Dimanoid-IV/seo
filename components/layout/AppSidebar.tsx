@@ -52,8 +52,8 @@ function NavLink({
     "flex items-center gap-3 rounded-xl px-3.5 py-3 text-sm font-medium transition-all duration-200",
     compact && "flex-col gap-1 px-2 py-2.5 text-[10px]",
     active
-      ? "bg-blue-50 text-blue-700 ring-1 ring-blue-100 shadow-sm"
-      : "text-slate-600 hover:bg-slate-50 hover:text-slate-900",
+      ? "bg-[#c9bfff]/25 text-[#6d4ff0] ring-1 ring-[#c9bfff]/45"
+      : "text-[#555555] hover:bg-black/[0.04] hover:text-[#181818]",
     !item.enabled && "pointer-events-none opacity-40"
   );
 
@@ -103,14 +103,14 @@ export function AppSidebar() {
   return (
     <>
       <aside className="app-sidebar hidden lg:flex lg:w-64 lg:flex-col lg:fixed lg:inset-y-0 lg:left-0 lg:z-30">
-        <div className="flex h-full flex-col border-r border-slate-200 bg-white/95 backdrop-blur-xl">
-          <div className="flex items-center gap-3 border-b border-slate-200 px-6 py-6">
-            <div className="flex size-10 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-500 to-violet-600 shadow-[0_8px_24px_-8px_rgba(59,130,246,0.35)]">
+        <div className="flex h-full flex-col border-r border-[#999999]/25 bg-white/95 backdrop-blur-xl">
+          <div className="flex items-center gap-3 px-6 py-6">
+            <div className="flex size-10 items-center justify-center rounded-2xl bg-[#8169ff]">
               <Sparkles className="size-4 text-white" />
             </div>
             <div>
-              <p className="text-sm font-bold tracking-tight text-slate-900">RankBoost</p>
-              <p className="text-[11px] text-slate-500">{nav.brandSubtitle}</p>
+              <p className="font-[var(--font-gilroy)] text-sm font-bold tracking-normal text-black">RankBoost</p>
+              <p className="text-[11px] text-[#555555]">{nav.brandSubtitle}</p>
             </div>
           </div>
 
@@ -124,7 +124,7 @@ export function AppSidebar() {
 
               return (
                 <div key={groupKey}>
-                  <p className="mb-3 px-3.5 text-[10px] font-semibold uppercase tracking-[0.16em] text-slate-400">
+                  <p className="mb-3 px-3.5 text-[10px] font-semibold uppercase tracking-[0.16em] text-[#999999]">
                     {nav.groups[groupKey]}
                   </p>
                   <div className="space-y-1.5">
@@ -143,16 +143,16 @@ export function AppSidebar() {
             })}
           </nav>
 
-          <div className="space-y-3 border-t border-slate-200 px-5 py-5">
+          <div className="space-y-3 border-t border-[#999999]/25 px-5 py-5">
             <DashboardModeToggle />
             <LanguageSwitcher className="w-full justify-between" />
-            <p className="text-xs leading-relaxed text-slate-500">{nav.trustFooter}</p>
+            <p className="text-xs leading-relaxed text-[#555555]">{nav.trustFooter}</p>
           </div>
         </div>
       </aside>
 
       <nav
-        className="app-bottom-nav fixed inset-x-0 bottom-0 z-50 flex items-stretch justify-around border-t border-slate-200 bg-white/95 px-2 pb-[env(safe-area-inset-bottom)] backdrop-blur-xl lg:hidden"
+        className="app-bottom-nav fixed inset-x-0 bottom-0 z-50 flex items-stretch justify-around border-t border-[#999999]/25 bg-white/95 px-2 pb-[env(safe-area-inset-bottom)] backdrop-blur-xl lg:hidden"
         aria-label={nav.menu}
       >
         {mobilePrimary.map((item) => {
@@ -168,7 +168,7 @@ export function AppSidebar() {
 
           const itemClass = cn(
             "flex flex-1 flex-col items-center justify-center gap-1 py-2.5 text-[10px] font-medium transition-colors",
-            active ? "text-blue-600" : "text-slate-500",
+            active ? "text-[#8169ff]" : "text-[#555555]",
             !item.enabled && "opacity-40"
           );
 

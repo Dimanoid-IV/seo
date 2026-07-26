@@ -83,8 +83,8 @@ export function BlogContent({ sections, theme = "dark" }: BlogContentProps) {
                       className={cn(
                         "rounded-lg border px-4 py-2 text-sm transition-colors",
                         isMarketing
-                          ? "border-blue-200 bg-blue-50 text-blue-700 hover:bg-blue-100"
-                          : "border-blue-500/30 bg-blue-500/10 text-blue-300 hover:bg-blue-500/20 hover:text-white"
+                          ? "border-[#c9bfff]/55 bg-[#c9bfff]/20 text-[#6d4ff0] hover:bg-[#c9bfff]/35"
+                          : "border-[#c9bfff]/45 bg-[#c9bfff]/10 text-violet-700 hover:bg-[#c9bfff]/20 hover:text-white"
                       )}
                     >
                       {item.label} →
@@ -100,8 +100,8 @@ export function BlogContent({ sections, theme = "dark" }: BlogContentProps) {
                 className={cn(
                   "my-10 rounded-2xl border p-8 text-center",
                   isMarketing
-                    ? "border-blue-200 bg-gradient-to-br from-blue-50 to-violet-50"
-                    : "border-blue-500/30 bg-gradient-to-br from-blue-600/20 to-violet-600/10 glow-sm"
+                    ? "border-[#c9bfff]/55 bg-gradient-to-br from-[#c9bfff]/20 to-violet-50"
+                    : "border-[#c9bfff]/45 bg-gradient-to-br from-[#8169ff]/15 to-violet-600/10 glow-sm"
                 )}
               >
                 <h3
@@ -129,7 +129,7 @@ export function BlogContent({ sections, theme = "dark" }: BlogContentProps) {
                           source: "blog-cta",
                         })
                   }
-                  className="mt-6 inline-flex h-11 items-center rounded-lg bg-gradient-to-r from-blue-600 to-violet-600 px-8 text-sm font-medium text-white transition-all hover:from-blue-500 hover:to-violet-500"
+                  className="mt-6 inline-flex h-11 items-center rounded-lg bg-[#8169ff] px-8 text-sm font-medium text-white transition-all hover:bg-[#6d4ff0]"
                 >
                   {section.buttonLabel}
                 </Link>

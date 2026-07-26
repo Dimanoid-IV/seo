@@ -50,7 +50,7 @@ export function SaasPricingSection({
                 className={cn(
                   isMarketing
                     ? index === 0
-                      ? "marketing-card relative flex h-full flex-col border-blue-200/80 bg-gradient-to-br from-blue-50/80 to-white"
+                      ? "marketing-card relative flex h-full flex-col border-[#c9bfff]/55 bg-gradient-to-br from-[#c9bfff]/20/80 to-white"
                       : "marketing-card relative flex h-full flex-col"
                     : "relative flex h-full flex-col rounded-2xl border border-slate-200 bg-white p-6",
                   isPro &&
@@ -59,7 +59,7 @@ export function SaasPricingSection({
                 )}
               >
                 {isPro && isMarketing ? (
-                  <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-gradient-to-r from-blue-600 to-violet-600 px-3 py-1 text-xs font-semibold text-white shadow-sm">
+                  <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-[#8169ff] px-3 py-1 text-xs font-semibold text-white shadow-sm">
                     {pricing.popular}
                   </span>
                 ) : null}
@@ -94,8 +94,8 @@ export function SaasPricingSection({
                       href="/register"
                       className={
                         isMarketing
-                          ? "inline-flex min-h-10 w-full items-center justify-center rounded-xl bg-blue-600 px-4 text-sm font-medium text-white hover:bg-blue-700"
-                          : "inline-flex min-h-10 w-full items-center justify-center rounded-xl bg-gradient-to-r from-blue-500 to-violet-600 px-4 text-sm font-medium text-white"
+                          ? "inline-flex min-h-10 w-full items-center justify-center rounded-xl bg-[#8169ff] px-4 text-sm font-medium text-white hover:bg-[#6d4ff0]"
+                          : "inline-flex min-h-10 w-full items-center justify-center rounded-xl bg-[#8169ff] px-4 text-sm font-medium text-white"
                       }
                     >
                       {pricing.startFree}
@@ -130,8 +130,8 @@ export function SaasPricingSection({
             href="/register"
             className={
               isMarketing
-                ? "rounded-xl bg-blue-600 px-6 text-white hover:bg-blue-700"
-                : "rounded-xl bg-gradient-to-r from-blue-500 to-violet-600 px-6 text-white"
+                ? "rounded-xl bg-[#8169ff] px-6 text-white hover:bg-[#6d4ff0]"
+                : "rounded-xl bg-[#8169ff] px-6 text-white"
             }
           >
             {pricing.startFree}

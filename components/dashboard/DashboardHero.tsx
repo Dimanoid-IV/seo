@@ -18,7 +18,7 @@ const TONE_STYLES: Record<
 > = {
   GOOD: "border-emerald-200 from-emerald-50/90 to-blue-50/50",
   NEEDS_REVIEW: "border-amber-200 from-amber-50/90 to-violet-50/40",
-  SETUP: "border-blue-200 from-blue-50/90 to-violet-50/40",
+  SETUP: "border-[#c9bfff]/55 from-[#c9bfff]/20/90 to-violet-50/40",
   NO_DATA: "border-slate-200 from-slate-50/90 to-blue-50/30",
 };
 
@@ -35,8 +35,8 @@ export function DashboardHero({ status, websiteDomain }: DashboardHeroProps) {
     >
       <div className="flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
         <div className="flex min-w-0 items-start gap-4">
-          <div className="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-blue-50 ring-1 ring-blue-100">
-            <Sparkles className="size-5 text-blue-600" />
+          <div className="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-[#c9bfff]/20 ring-1 ring-[#c9bfff]/45">
+            <Sparkles className="size-5 text-[#8169ff]" />
           </div>
           <div className="min-w-0 flex-1">
             <p className="saas-eyebrow">{d.heroUi.eyebrow}</p>
@@ -58,7 +58,7 @@ export function DashboardHero({ status, websiteDomain }: DashboardHeroProps) {
         {d.heroUi.monitoringNote}{" "}
         <Link
           href="/app/autopilot-control"
-          className="inline-flex items-center gap-1 font-medium text-blue-600 transition hover:text-blue-700"
+          className="inline-flex items-center gap-1 font-medium text-[#8169ff] transition hover:text-[#6d4ff0]"
         >
           {d.prepared.openControlCenter}
           <ArrowRight className="size-3.5" />

@@ -40,7 +40,7 @@ const STATUS_CONFIG: Record<
   },
   WORDPRESS_DRAFT_CREATED: {
     label: "В WordPress",
-    className: "border-cyan-200 bg-cyan-50 text-cyan-800",
+    className: "border-[#c9bfff]/55 bg-[#c9bfff]/20 text-[#6d4ff0]",
     icon: Globe,
   },
   PUBLISHED: {

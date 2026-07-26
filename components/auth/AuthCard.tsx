@@ -25,7 +25,7 @@ export function AuthCard({
           href="/en"
           className="mb-6 flex items-center gap-2 text-slate-600 transition-colors hover:text-slate-900"
         >
-          <div className="flex size-10 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-violet-600">
+          <div className="flex size-10 items-center justify-center rounded-xl bg-[#8169ff]">
             <Sparkles className="size-5 text-white" />
           </div>
           <span className="text-lg font-bold text-slate-900">RankBoost</span>

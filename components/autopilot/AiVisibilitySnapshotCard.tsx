@@ -78,8 +78,8 @@ export function AiVisibilitySnapshotCard({
                 : `${snapshot.readinessScore}/100`}
             </p>
           </div>
-          <div className="rounded-xl border border-cyan-100 bg-cyan-50 px-3 py-2">
-            <p className="text-xs text-cyan-700">{t.buyerPrompts}</p>
+          <div className="rounded-xl border border-[#c9bfff]/45 bg-[#c9bfff]/20 px-3 py-2">
+            <p className="text-xs text-[#6d4ff0]">{t.buyerPrompts}</p>
             <p className="text-xl font-semibold text-slate-900">
               {snapshot.promptCount}
             </p>
@@ -119,7 +119,7 @@ export function AiVisibilitySnapshotCard({
 
         <div className="rounded-xl border border-slate-200 bg-slate-50/70 p-4">
           <div className="flex items-center gap-2 text-sm font-semibold text-slate-900">
-            <Gauge className="size-4 text-cyan-600" />
+            <Gauge className="size-4 text-violet-600" />
             {t.statusTitle}
           </div>
           <p className="mt-3 text-sm font-medium text-slate-900">

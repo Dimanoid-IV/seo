@@ -63,7 +63,7 @@ export function MarketingPlanAuthDialog({
           <Button
             render={<Link href={loginPathForPlan(plan)} />}
             nativeButton={false}
-            className="min-h-11 flex-1 rounded-xl bg-gradient-to-r from-blue-600 to-violet-600 text-white hover:from-blue-700 hover:to-violet-700"
+            className="min-h-11 flex-1 rounded-xl bg-[#8169ff] text-white hover:bg-[#6d4ff0]"
           >
             {copy.login}
           </Button>

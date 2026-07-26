@@ -26,8 +26,8 @@ const statusConfig: Record<
   connecting: {
     icon: Loader2,
     label: "Подключение…",
-    className: "text-blue-400",
-    dot: "bg-blue-400 animate-pulse",
+    className: "text-violet-600",
+    dot: "bg-[#8169ff] animate-pulse",
   },
   disconnected: {
     icon: Unplug,

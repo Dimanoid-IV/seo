@@ -40,10 +40,10 @@ export function MonthlyPlanPreviewCard({ plan }: MonthlyPlanPreviewCardProps) {
   );
 
   return (
-    <section className="rounded-2xl border border-blue-200 bg-gradient-to-br from-blue-50 via-white to-violet-50/50 p-5 shadow-sm sm:p-6">
+    <section className="rounded-2xl border border-[#c9bfff]/55 bg-gradient-to-br from-[#c9bfff]/20 via-white to-violet-50/50 p-5 shadow-sm sm:p-6">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div className="min-w-0">
-          <p className="text-xs font-medium uppercase tracking-wide text-blue-700">
+          <p className="text-xs font-medium uppercase tracking-wide text-[#6d4ff0]">
             {plan.isApproved ? t.eyebrowApproved : t.eyebrowNeedsApproval}
           </p>
           <h2 className="mt-1 text-lg font-semibold tracking-tight text-slate-900 sm:text-xl">
@@ -53,7 +53,7 @@ export function MonthlyPlanPreviewCard({ plan }: MonthlyPlanPreviewCardProps) {
             {plan.isApproved ? t.descriptionApproved : t.descriptionDraft}
           </p>
           <div className="mt-3 flex flex-wrap gap-2 text-xs font-medium">
-            <span className="rounded-full border border-blue-200 bg-white/80 px-2.5 py-1 text-blue-800">
+            <span className="rounded-full border border-[#c9bfff]/55 bg-white/80 px-2.5 py-1 text-[#6d4ff0]">
               {t.topicCount(plan.articleTopics.length)}
             </span>
             <span className="rounded-full border border-amber-200 bg-white/80 px-2.5 py-1 text-amber-800">
@@ -68,17 +68,17 @@ export function MonthlyPlanPreviewCard({ plan }: MonthlyPlanPreviewCardProps) {
         </div>
         <Link
           href={plan.href}
-          className="inline-flex shrink-0 items-center justify-center rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-blue-700"
+          className="inline-flex shrink-0 items-center justify-center rounded-lg bg-[#8169ff] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[#6d4ff0]"
         >
           {plan.isApproved ? t.openPlan : t.confirmPlan}
         </Link>
       </div>
 
-      <div className="mt-5 rounded-xl border border-blue-200 bg-white/85 p-4">
+      <div className="mt-5 rounded-xl border border-[#c9bfff]/55 bg-white/85 p-4">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
           <div>
             <div className="flex items-center gap-2 text-sm font-semibold text-slate-900">
-              <FileText className="size-4 text-blue-600" />
+              <FileText className="size-4 text-[#8169ff]" />
               {t.articlePlanLabel}
             </div>
             <p className="mt-1 max-w-2xl text-xs leading-relaxed text-slate-600">
@@ -87,7 +87,7 @@ export function MonthlyPlanPreviewCard({ plan }: MonthlyPlanPreviewCardProps) {
           </div>
           <Link
             href={plan.href}
-            className="inline-flex shrink-0 items-center justify-center gap-1.5 rounded-lg border border-blue-200 bg-blue-50 px-3 py-2 text-xs font-semibold text-blue-800 transition hover:bg-blue-100"
+            className="inline-flex shrink-0 items-center justify-center gap-1.5 rounded-lg border border-[#c9bfff]/55 bg-[#c9bfff]/20 px-3 py-2 text-xs font-semibold text-[#6d4ff0] transition hover:bg-[#c9bfff]/35"
           >
             {plan.isApproved ? t.openPlan : t.confirmPlan}
             <ArrowRight className="size-3.5" />
@@ -104,7 +104,7 @@ export function MonthlyPlanPreviewCard({ plan }: MonthlyPlanPreviewCardProps) {
                   className="rounded-lg border border-slate-100 bg-slate-50 px-3 py-3"
                 >
                   <div className="flex items-start gap-2">
-                    <span className="mt-0.5 inline-flex size-6 shrink-0 items-center justify-center rounded-full bg-blue-100 text-xs font-semibold text-blue-800">
+                    <span className="mt-0.5 inline-flex size-6 shrink-0 items-center justify-center rounded-full bg-[#c9bfff]/35 text-xs font-semibold text-[#6d4ff0]">
                       {index + 1}
                     </span>
                     <div className="min-w-0">
@@ -131,7 +131,7 @@ export function MonthlyPlanPreviewCard({ plan }: MonthlyPlanPreviewCardProps) {
                       {item.research ? (
                         <div className="mt-2 flex flex-wrap gap-1.5 text-[11px]">
                           {item.research.primaryKeyword ? (
-                            <span className="rounded-full border border-blue-200 bg-white px-2 py-0.5 text-blue-800">
+                            <span className="rounded-full border border-[#c9bfff]/55 bg-white px-2 py-0.5 text-[#6d4ff0]">
                               {researchLabels.primaryKeyword}:{" "}
                               {item.research.primaryKeyword}
                             </span>

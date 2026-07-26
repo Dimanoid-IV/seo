@@ -15,7 +15,7 @@ type AuditScoreSummaryProps = {
 const labelAccent: Record<ScoreLabel, string> = {
   poor: "text-red-600",
   needs_work: "text-amber-600",
-  good: "text-cyan-600",
+  good: "text-violet-600",
   strong: "text-emerald-600",
 };
 

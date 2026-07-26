@@ -35,7 +35,7 @@ export default async function ContactPage({ params }: PageProps) {
 
   return (
     <div className="marketing-page min-h-screen">
-      <div className="border-b border-slate-200/80 bg-gradient-to-b from-blue-50/80 to-white py-16">
+      <div className="border-b border-slate-200/80 bg-gradient-to-b from-[#c9bfff]/20/80 to-white py-16">
         <div className="mx-auto max-w-7xl px-4 text-center sm:px-6 lg:px-8">
           <h1 className="text-4xl font-bold text-slate-900 md:text-5xl">
             {dict.contact.title}
@@ -61,7 +61,7 @@ export default async function ContactPage({ params }: PageProps) {
                     <p className="text-sm text-slate-500">{dict.contact.info.email}</p>
                     <a
                       href={`mailto:${PUBLIC_EMAIL}`}
-                      className="mt-1 flex items-center gap-2 text-blue-600 hover:text-blue-700"
+                      className="mt-1 flex items-center gap-2 text-[#8169ff] hover:text-[#6d4ff0]"
                     >
                       <Mail className="h-4 w-4" />
                       {PUBLIC_EMAIL}
@@ -72,12 +72,12 @@ export default async function ContactPage({ params }: PageProps) {
                       {dict.contact.info.response}
                     </p>
                     <p className="mt-1 flex items-center gap-2 text-slate-700">
-                      <Clock className="h-4 w-4 text-blue-600" />
+                      <Clock className="h-4 w-4 text-[#8169ff]" />
                       {dict.contact.info.responseTime}
                     </p>
                   </div>
                 </div>
-                <div className="rounded-xl border border-blue-200/80 bg-blue-50/80 p-4">
+                <div className="rounded-xl border border-[#c9bfff]/55 bg-[#c9bfff]/20/80 p-4">
                   <p className="text-sm text-slate-600">{dict.cta.note}</p>
                 </div>
               </div>

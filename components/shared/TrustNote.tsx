@@ -14,8 +14,8 @@ type TrustNoteProps = {
 const VARIANT_STYLES: Record<TrustNoteVariant, string> = {
   billing: "border-emerald-200 bg-emerald-50 text-emerald-800",
   ai: "border-violet-200 bg-violet-50 text-violet-800",
-  email: "border-blue-200 bg-blue-50 text-blue-800",
-  wordpress: "border-cyan-200 bg-cyan-50 text-cyan-800",
+  email: "border-[#c9bfff]/55 bg-[#c9bfff]/20 text-[#6d4ff0]",
+  wordpress: "border-[#c9bfff]/55 bg-[#c9bfff]/20 text-[#6d4ff0]",
   info: "border-slate-200 bg-slate-50 text-slate-700",
 };
 

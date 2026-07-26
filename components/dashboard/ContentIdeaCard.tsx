@@ -44,7 +44,7 @@ export function ContentIdeaCard({
     >
       <div className="flex items-start gap-3">
         <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-white/5">
-          <Icon className="size-4 text-blue-400" aria-hidden />
+          <Icon className="size-4 text-violet-600" aria-hidden />
         </div>
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-2">
@@ -76,7 +76,7 @@ export function ContentIdeaCard({
           </div>
           <h3 className="mt-1 font-semibold text-slate-900">
             {href ? (
-              <Link href={href} className="hover:text-cyan-300">
+              <Link href={href} className="hover:text-violet-700">
                 {title}
               </Link>
             ) : (

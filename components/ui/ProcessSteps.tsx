@@ -22,7 +22,7 @@ export function ProcessSteps({ steps, theme = "dark" }: ProcessStepsProps) {
                 : "glass-card h-full p-6"
             }
           >
-            <div className="mb-4 flex size-10 items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-violet-600 text-sm font-bold text-white shadow-[0_4px_14px_-4px_rgba(59,130,246,0.5)]">
+            <div className="mb-4 flex size-10 items-center justify-center rounded-full bg-[#8169ff] text-sm font-bold text-white shadow-[0_4px_14px_-4px_rgba(59,130,246,0.5)]">
               {index + 1}
             </div>
             <h3

@@ -77,15 +77,15 @@ export function SiteTechHint({
     detection.platform !== "unknown" ? PLATFORM_LABEL[detection.platform] : null;
 
   return (
-    <div className="flex items-start gap-2 rounded-xl border border-blue-200 bg-blue-50 px-4 py-3 text-sm text-slate-700">
-      <Info className="mt-0.5 size-4 shrink-0 text-blue-500" />
+    <div className="flex items-start gap-2 rounded-xl border border-[#c9bfff]/55 bg-[#c9bfff]/20 px-4 py-3 text-sm text-slate-700">
+      <Info className="mt-0.5 size-4 shrink-0 text-violet-600" />
       <div className="space-y-1">
         {isWordPress ? (
           <p>
             Похоже, сайт сделан на WordPress —{" "}
             <Link
               href={wordpressConnectHref}
-              className="font-medium text-blue-600 hover:text-blue-700"
+              className="font-medium text-[#8169ff] hover:text-[#6d4ff0]"
             >
               подключите WordPress
             </Link>{" "}

@@ -70,7 +70,9 @@ export function LoginForm({ selectedPlan = "" }: { selectedPlan?: string }) {
       {error ? <AuthError message={error} /> : null}
 
       <div className="space-y-2">
-        <Label htmlFor="login-email">{auth.email}</Label>
+        <Label htmlFor="login-email" className="text-sm font-medium text-[#181818]">
+          {auth.email}
+        </Label>
         <Input
           id="login-email"
           type="email"
@@ -80,12 +82,14 @@ export function LoginForm({ selectedPlan = "" }: { selectedPlan?: string }) {
           onChange={(event) => setEmail(event.target.value)}
           placeholder="you@company.com"
           disabled={loading}
-          className="border-slate-200 bg-white text-slate-900"
+          className="border-[#999999]/35 bg-white text-[#181818] placeholder:text-[#999999] focus:border-[#8169ff] focus:ring-2 focus:ring-[#c9bfff]/45"
         />
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="login-password">{auth.password}</Label>
+        <Label htmlFor="login-password" className="text-sm font-medium text-[#181818]">
+          {auth.password}
+        </Label>
         <Input
           id="login-password"
           type="password"
@@ -95,13 +99,13 @@ export function LoginForm({ selectedPlan = "" }: { selectedPlan?: string }) {
           onChange={(event) => setPassword(event.target.value)}
           placeholder="••••••••"
           disabled={loading}
-          className="border-slate-200 bg-white text-slate-900"
+          className="border-[#999999]/35 bg-white text-[#181818] placeholder:text-[#999999] focus:border-[#8169ff] focus:ring-2 focus:ring-[#c9bfff]/45"
         />
       </div>
 
       <Button
         type="submit"
-        className="w-full rounded-xl bg-gradient-to-r from-blue-600 to-violet-600 text-white hover:from-blue-500 hover:to-violet-500"
+        className="w-full rounded-xl bg-[#8169ff] text-white hover:bg-[#6d4ff0]"
         disabled={loading}
       >
         {loading ? (
@@ -128,7 +132,7 @@ export function LoginForm({ selectedPlan = "" }: { selectedPlan?: string }) {
         {auth.noAccount}{" "}
         <Link
           href={`/register${planQuerySuffix(normalizedPlan)}`}
-          className="text-blue-600 hover:text-blue-700"
+          className="text-[#8169ff] hover:text-[#6d4ff0]"
         >
           {auth.register}
         </Link>

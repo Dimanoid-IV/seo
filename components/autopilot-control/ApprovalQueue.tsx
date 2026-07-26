@@ -10,7 +10,7 @@ import { ControlEmptyState } from "./ControlEmptyState";
 
 const PRIORITY_STYLES: Record<string, string> = {
   HIGH: "text-amber-300",
-  MEDIUM: "text-blue-300/80",
+  MEDIUM: "text-violet-700/80",
   LOW: "text-slate-400",
 };
 
@@ -64,7 +64,7 @@ export function ApprovalQueueItemCard({ item }: ApprovalQueueItemCardProps) {
         </p>
       ) : null}
       {item.actionLabel ? (
-        <p className="mt-2.5 text-xs font-medium text-blue-300">
+        <p className="mt-2.5 text-xs font-medium text-violet-700">
           {item.actionLabel} →
         </p>
       ) : null}

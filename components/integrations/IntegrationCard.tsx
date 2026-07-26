@@ -29,8 +29,8 @@ const PROVIDER_ICONS: Record<
 > = {
   google_search_console: {
     icon: Search,
-    accent: "from-blue-500 to-cyan-500",
-    glow: "shadow-blue-500/20",
+    accent: "from-[#8169ff] to-[#8169ff]",
+    glow: "shadow-[#8169ff]/20",
   },
   google_analytics: {
     icon: BarChart3,
@@ -133,11 +133,11 @@ export function IntegrationCard({
   return (
     <article
       className={cn(
-        "group relative flex h-full flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition-all duration-300 hover:border-blue-200 hover:bg-slate-50 sm:p-7",
+        "group relative flex h-full flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition-all duration-300 hover:border-[#c9bfff]/55 hover:bg-slate-50 sm:p-7",
         className
       )}
     >
-      <div className="pointer-events-none absolute -right-10 -top-10 size-32 rounded-full bg-gradient-to-br from-blue-500/10 to-violet-500/10 opacity-60 blur-2xl transition-opacity group-hover:opacity-80" />
+      <div className="pointer-events-none absolute -right-10 -top-10 size-32 rounded-full bg-gradient-to-br from-[#c9bfff]/10 to-violet-500/10 opacity-60 blur-2xl transition-opacity group-hover:opacity-80" />
 
       <div className="relative flex items-start justify-between gap-3">
         <div
@@ -170,7 +170,7 @@ export function IntegrationCard({
           {integration.provider === "google_search_console" &&
           integration.connected &&
           integration.selectedProperty ? (
-            <p className="mb-3 text-xs text-cyan-700">
+            <p className="mb-3 text-xs text-[#6d4ff0]">
               {i.searchConsoleSite} {integration.selectedProperty}
             </p>
           ) : null}
@@ -210,7 +210,7 @@ export function IntegrationCard({
         className={cn(
           "relative mt-6 inline-flex min-h-11 w-full items-center justify-center rounded-xl px-4 py-2.5 text-sm font-medium transition",
           action.variant === "primary" &&
-            "bg-gradient-to-r from-blue-600 to-violet-600 text-white shadow-[0_6px_20px_-6px_rgba(59,130,246,0.4)] hover:from-blue-500 hover:to-violet-500",
+            "bg-[#8169ff] text-white shadow-[0_6px_20px_-6px_rgba(59,130,246,0.4)] hover:bg-[#6d4ff0]",
           action.variant === "secondary" &&
             "border border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100",
           action.variant === "muted" &&

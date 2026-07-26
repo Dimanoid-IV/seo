@@ -41,7 +41,7 @@ const statusStyles = {
   APPROVED: "border-emerald-200 bg-emerald-50 text-emerald-800",
   REJECTED: "border-red-200 bg-red-50 text-red-700",
   DRAFT: "border-slate-200 bg-slate-50 text-slate-600",
-  READY_TO_PUBLISH: "border-blue-200 bg-blue-50 text-blue-800",
+  READY_TO_PUBLISH: "border-[#c9bfff]/55 bg-[#c9bfff]/20 text-[#6d4ff0]",
 } as const;
 
 const ACTION_TABS: Array<{ key: TabKey; labelKey: string }> = [
@@ -650,7 +650,7 @@ export function ReviewPage() {
                             {t.publishPathLabels.wordpress_draft}
                           </span>
                         ) : item.articleContext.publishPath === "webhook" ? (
-                          <span className="rounded-full border border-cyan-200 bg-cyan-50 px-2 py-0.5 font-medium text-cyan-800">
+                          <span className="rounded-full border border-[#c9bfff]/55 bg-[#c9bfff]/20 px-2 py-0.5 font-medium text-[#6d4ff0]">
                             {t.publishPathLabels.webhook}
                           </span>
                         ) : item.articleContext.publishPath === "universal_package" ? (
@@ -732,7 +732,7 @@ export function ReviewPage() {
                               type="button"
                               disabled={isLoading}
                               onClick={() => void publishToHostedPage(item)}
-                              className="inline-flex items-center gap-1.5 rounded-md border border-blue-200 bg-blue-50 px-2.5 py-1 text-xs font-semibold text-blue-800 hover:bg-blue-100 disabled:cursor-not-allowed disabled:opacity-60"
+                              className="inline-flex items-center gap-1.5 rounded-md border border-[#c9bfff]/55 bg-[#c9bfff]/20 px-2.5 py-1 text-xs font-semibold text-[#6d4ff0] hover:bg-[#c9bfff]/35 disabled:cursor-not-allowed disabled:opacity-60"
                             >
                               <Globe className="size-3.5" />
                               {t.publishHostedPage}
@@ -802,7 +802,7 @@ export function ReviewPage() {
                 {isAdvanced && item.editHref ? (
                   <p className="mt-2 text-xs text-slate-500">
                     {t.advancedEditHint}{" "}
-                    <Link href={item.editHref} className="text-blue-600 hover:text-blue-700">
+                    <Link href={item.editHref} className="text-[#8169ff] hover:text-[#6d4ff0]">
                       {t.openFullEditor}
                     </Link>
                   </p>

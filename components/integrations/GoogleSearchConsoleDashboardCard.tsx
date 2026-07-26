@@ -26,7 +26,7 @@ export function GoogleSearchConsoleDashboardCard({
       )}
     >
       <div className="mb-4 flex items-start gap-3">
-        <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-cyan-500">
+        <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[#8169ff] to-[#8169ff]">
           <Search className="size-5 text-white" aria-hidden />
         </div>
         <div className="min-w-0 flex-1">
@@ -42,7 +42,7 @@ export function GoogleSearchConsoleDashboardCard({
           Подключите Google Search Console, чтобы видеть реальные клики и показы.{" "}
           <Link
             href="/app/integrations"
-            className="font-medium text-cyan-700 underline-offset-2 hover:underline"
+            className="font-medium text-[#6d4ff0] underline-offset-2 hover:underline"
           >
             Перейти к интеграциям
           </Link>
@@ -52,7 +52,7 @@ export function GoogleSearchConsoleDashboardCard({
           Выберите сайт Search Console в{" "}
           <Link
             href="/app/integrations"
-            className="font-medium text-cyan-700 underline-offset-2 hover:underline"
+            className="font-medium text-[#6d4ff0] underline-offset-2 hover:underline"
           >
             интеграциях
           </Link>
@@ -86,7 +86,7 @@ export function GoogleSearchConsoleDashboardCard({
           Сайт выбран. Загрузите данные в{" "}
           <Link
             href="/app/integrations"
-            className="font-medium text-cyan-700 underline-offset-2 hover:underline"
+            className="font-medium text-[#6d4ff0] underline-offset-2 hover:underline"
           >
             интеграциях
           </Link>
@@ -116,7 +116,7 @@ export function GscSyncButton({
       onClick={() => void onSync()}
       disabled={loading}
       className={cn(
-        "inline-flex w-full items-center justify-center gap-2 rounded-lg border border-blue-200 bg-blue-50 px-4 py-2.5 text-sm font-medium text-blue-800 transition hover:bg-blue-100 disabled:cursor-not-allowed disabled:opacity-60",
+        "inline-flex w-full items-center justify-center gap-2 rounded-lg border border-[#c9bfff]/55 bg-[#c9bfff]/20 px-4 py-2.5 text-sm font-medium text-[#6d4ff0] transition hover:bg-[#c9bfff]/35 disabled:cursor-not-allowed disabled:opacity-60",
         className
       )}
     >

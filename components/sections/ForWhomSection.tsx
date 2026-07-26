@@ -23,8 +23,8 @@ export function ForWhomSection({ dict }: ForWhomSectionProps) {
                 key={item}
                 className="flex items-start gap-3 rounded-xl border border-white/5 bg-white/[0.03] p-4"
               >
-                <div className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-cyan-500/20">
-                  <Check className="h-3 w-3 text-cyan-400" />
+                <div className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#c9bfff]/20">
+                  <Check className="h-3 w-3 text-violet-600" />
                 </div>
                 <span className="text-slate-300">{item}</span>
               </li>

@@ -58,12 +58,12 @@ const EFFORT_LABELS: Record<GrowthOpportunityEffort, string> = {
 
 const IMPACT_STYLES: Record<GrowthOpportunityImpact, string> = {
   HIGH: "border-emerald-500/30 bg-emerald-500/10 text-emerald-300",
-  MEDIUM: "border-blue-500/30 bg-blue-500/10 text-blue-300",
+  MEDIUM: "border-[#c9bfff]/45 bg-[#c9bfff]/10 text-violet-700",
   LOW: "border-slate-500/30 bg-slate-500/10 text-slate-600",
 };
 
 const EFFORT_STYLES: Record<GrowthOpportunityEffort, string> = {
-  SMALL: "border-cyan-500/30 bg-cyan-500/10 text-cyan-300",
+  SMALL: "border-[#c9bfff]/45 bg-[#c9bfff]/10 text-violet-700",
   MEDIUM: "border-violet-500/30 bg-violet-500/10 text-violet-300",
   LARGE: "border-amber-500/30 bg-amber-500/10 text-amber-300",
 };
@@ -109,7 +109,7 @@ export function GrowthOpportunityCard({
     >
       <div className="flex items-start gap-3">
         <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-white/5">
-          <Icon className="size-4 text-blue-400" aria-hidden />
+          <Icon className="size-4 text-violet-600" aria-hidden />
         </div>
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-2">
@@ -147,7 +147,7 @@ export function GrowthOpportunityCard({
             type="button"
             onClick={onRunAudit}
             disabled={auditLoading}
-            className="inline-flex items-center rounded-lg border border-blue-500/40 bg-blue-500/10 px-3 py-1.5 text-sm font-medium text-blue-300 transition hover:bg-blue-500/20 disabled:cursor-not-allowed disabled:opacity-60"
+            className="inline-flex items-center rounded-lg border border-[#8169ff]/45 bg-[#c9bfff]/10 px-3 py-1.5 text-sm font-medium text-violet-700 transition hover:bg-[#c9bfff]/20 disabled:cursor-not-allowed disabled:opacity-60"
           >
             {cta.label}
           </button>

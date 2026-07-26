@@ -36,12 +36,12 @@ export function MarketingHomePricingCards({
             className={cn(
               "marketing-card relative flex h-full flex-col",
               index === 0 &&
-                "border-blue-200/80 bg-gradient-to-br from-blue-50/80 to-white",
+                "border-[#c9bfff]/55 bg-gradient-to-br from-[#c9bfff]/20/80 to-white",
               isPro && "border-violet-200/90 ring-1 ring-violet-100"
             )}
           >
             {isPro ? (
-              <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-gradient-to-r from-blue-600 to-violet-600 px-3 py-1 text-xs font-semibold text-white shadow-sm">
+              <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-[#8169ff] px-3 py-1 text-xs font-semibold text-white shadow-sm">
                 {preview.popular}
               </span>
             ) : null}
@@ -60,7 +60,7 @@ export function MarketingHomePricingCards({
                 <ButtonLink
                   locale={locale}
                   href="/register"
-                  className="inline-flex min-h-10 w-full items-center justify-center rounded-xl bg-blue-600 px-4 text-sm font-medium text-white hover:bg-blue-700"
+                  className="inline-flex min-h-10 w-full items-center justify-center rounded-xl bg-[#8169ff] px-4 text-sm font-medium text-white hover:bg-[#6d4ff0]"
                 >
                   {plan.cta}
                 </ButtonLink>

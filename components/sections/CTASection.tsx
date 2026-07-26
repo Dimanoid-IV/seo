@@ -34,8 +34,8 @@ export function CTASection({
           viewport={{ once: true }}
           className={
             isMarketing
-              ? "relative overflow-hidden rounded-3xl border border-blue-200/80 bg-gradient-to-br from-blue-600 to-violet-700 p-10 text-center shadow-[0_24px_60px_-20px_rgba(59,130,246,0.45)] sm:p-14"
-              : "relative overflow-hidden rounded-3xl border border-blue-500/20 bg-gradient-to-br from-blue-600/20 via-violet-600/10 to-cyan-600/10 p-12 text-center glow-blue"
+              ? "relative overflow-hidden rounded-3xl border border-[#c9bfff]/55 bg-gradient-to-br from-[#8169ff] to-violet-700 p-10 text-center shadow-[0_24px_60px_-20px_rgba(59,130,246,0.45)] sm:p-14"
+              : "relative overflow-hidden rounded-3xl border border-[#c9bfff]/40 bg-gradient-to-br from-[#8169ff]/15 via-violet-600/10 to-[#c9bfff]/20 p-12 text-center glow-blue"
           }
         >
           <div className="relative">
@@ -51,7 +51,7 @@ export function CTASection({
             <p
               className={
                 isMarketing
-                  ? "mx-auto mt-4 max-w-xl text-lg leading-relaxed text-blue-100"
+                  ? "mx-auto mt-4 max-w-xl text-lg leading-relaxed text-white"
                   : "mx-auto mt-4 max-w-xl text-lg text-slate-300"
               }
             >
@@ -65,8 +65,8 @@ export function CTASection({
               className={cn(
                 buttonVariants({ size: "lg" }),
                 isMarketing
-                  ? "mt-8 inline-flex h-12 rounded-xl bg-white px-10 text-base font-medium text-blue-700 hover:bg-blue-50"
-                  : "mt-8 h-12 bg-gradient-to-r from-blue-600 to-violet-600 px-10 text-base hover:from-blue-500 hover:to-violet-500"
+                  ? "mt-8 inline-flex h-12 rounded-xl bg-white px-10 text-base font-medium text-[#6d4ff0] hover:bg-[#c9bfff]/20"
+                  : "mt-8 h-12 bg-[#8169ff] px-10 text-base hover:bg-[#6d4ff0]"
               )}
             >
               {dict.cta.button}
@@ -75,7 +75,7 @@ export function CTASection({
             <p
               className={
                 isMarketing
-                  ? "mt-4 text-sm text-blue-100/90"
+                  ? "mt-4 text-sm text-white/90"
                   : "mt-4 text-sm text-slate-400"
               }
             >

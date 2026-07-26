@@ -197,7 +197,7 @@ export function TaskExecutionPanel({
             <Button
               render={<Link href="/app/integrations" />}
               nativeButton={false}
-              className="w-full bg-blue-600 text-white hover:bg-blue-500"
+              className="w-full bg-[#8169ff] text-white hover:bg-[#c9bfff]"
             >
               {primaryLabel}
             </Button>
@@ -205,7 +205,7 @@ export function TaskExecutionPanel({
             <Button
               render={<Link href="/app/integrations" />}
               nativeButton={false}
-              className="w-full bg-blue-600 text-white hover:bg-blue-500"
+              className="w-full bg-[#8169ff] text-white hover:bg-[#c9bfff]"
             >
               {primaryLabel}
             </Button>

@@ -18,8 +18,8 @@ export function OnboardingSidebarLink() {
       className={cn(
         "mb-2 flex items-center gap-3 rounded-xl border px-3.5 py-3 text-sm font-medium transition-all",
         active
-          ? "border-blue-200 bg-blue-50 text-blue-700"
-          : "border-slate-200 bg-slate-50 text-slate-600 hover:border-blue-200 hover:text-slate-900"
+          ? "border-[#c9bfff]/55 bg-[#c9bfff]/20 text-[#6d4ff0]"
+          : "border-slate-200 bg-slate-50 text-slate-600 hover:border-[#c9bfff]/55 hover:text-slate-900"
       )}
     >
       <Sparkles className="size-4 shrink-0" />

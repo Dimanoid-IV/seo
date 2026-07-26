@@ -33,7 +33,7 @@ export function OnboardingProgress({
       <div className="mt-4 h-2.5 overflow-hidden rounded-full bg-slate-100">
         <div
           className={cn(
-            "h-full rounded-full bg-gradient-to-r from-blue-500 to-violet-500 transition-all duration-500"
+            "h-full rounded-full bg-gradient-to-r from-[#8169ff] to-[#8169ff] transition-all duration-500"
           )}
           style={{ width: `${percentage}%` }}
         />

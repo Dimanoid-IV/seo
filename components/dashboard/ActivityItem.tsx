@@ -11,8 +11,8 @@ type ActivityItemProps = {
 };
 
 const accentDot: Record<NonNullable<ActivityItemProps["accent"]>, string> = {
-  blue: "bg-blue-400",
-  cyan: "bg-cyan-400",
+  blue: "bg-[#8169ff]",
+  cyan: "bg-[#8169ff]",
   violet: "bg-violet-400",
   emerald: "bg-emerald-400",
   amber: "bg-amber-400",

@@ -17,21 +17,21 @@ export function AuditPageContent({ initialUrl = "" }: AuditPageContentProps) {
 
   return (
     <main className="marketing-page min-h-screen">
-      <div className="border-b border-slate-200/80 bg-gradient-to-b from-blue-50/80 to-white">
+      <div className="border-b border-slate-200/80 bg-gradient-to-b from-[#c9bfff]/20/80 to-white">
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
           <Link href="/en" className="flex items-center gap-2.5 font-bold text-slate-900">
-            <div className="flex size-9 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-violet-600">
+            <div className="flex size-9 items-center justify-center rounded-xl bg-[#8169ff]">
               <Sparkles className="size-4 text-white" />
             </div>
             <span className="text-lg tracking-tight">
-              Rank<span className="text-blue-600">Boost</span>
+              Rank<span className="text-[#8169ff]">Boost</span>
             </span>
           </Link>
           <div className="flex items-center gap-3">
             <LanguageSwitcher variant="auth" />
             <Link
               href="/register"
-              className="text-sm font-medium text-blue-600 hover:text-blue-700"
+              className="text-sm font-medium text-[#8169ff] hover:text-[#6d4ff0]"
             >
               {a.loginRegister}
             </Link>

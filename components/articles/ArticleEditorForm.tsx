@@ -291,7 +291,7 @@ export function ArticleEditorForm({ article, onUpdated }: ArticleEditorFormProps
               onChange={(event) =>
                 setForm((current) => ({ ...current, title: event.target.value }))
               }
-              className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+              className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 outline-none focus:border-[#8169ff] focus:ring-2 focus:ring-[#c9bfff]/45"
             />
           </div>
 
@@ -306,7 +306,7 @@ export function ArticleEditorForm({ article, onUpdated }: ArticleEditorFormProps
               onChange={(event) =>
                 setForm((current) => ({ ...current, slug: event.target.value }))
               }
-              className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+              className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 outline-none focus:border-[#8169ff] focus:ring-2 focus:ring-[#c9bfff]/45"
               placeholder="local-seo-estonia"
             />
           </div>
@@ -328,7 +328,7 @@ export function ArticleEditorForm({ article, onUpdated }: ArticleEditorFormProps
                   metaTitle: event.target.value,
                 }))
               }
-              className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+              className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 outline-none focus:border-[#8169ff] focus:ring-2 focus:ring-[#c9bfff]/45"
             />
           </div>
 
@@ -349,7 +349,7 @@ export function ArticleEditorForm({ article, onUpdated }: ArticleEditorFormProps
                 }))
               }
               rows={3}
-              className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+              className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 outline-none focus:border-[#8169ff] focus:ring-2 focus:ring-[#c9bfff]/45"
             />
           </div>
 
@@ -371,7 +371,7 @@ export function ArticleEditorForm({ article, onUpdated }: ArticleEditorFormProps
               }
               rows={16}
               className={cn(
-                "w-full rounded-lg border border-slate-200 bg-white px-3 py-2 font-mono text-sm text-slate-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                "w-full rounded-lg border border-slate-200 bg-white px-3 py-2 font-mono text-sm text-slate-900 outline-none focus:border-[#8169ff] focus:ring-2 focus:ring-[#c9bfff]/45"
               )}
             />
             <p className="text-xs text-amber-700">
@@ -402,7 +402,7 @@ export function ArticleEditorForm({ article, onUpdated }: ArticleEditorFormProps
               type="button"
               onClick={handleSave}
               disabled={saving || approving || archiving}
-              className="w-full bg-gradient-to-r from-blue-600 to-violet-600 text-white hover:from-blue-500 hover:to-violet-500"
+              className="w-full bg-[#8169ff] text-white hover:bg-[#6d4ff0]"
             >
               {saving ? (
                 <>

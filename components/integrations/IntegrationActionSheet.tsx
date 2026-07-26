@@ -234,7 +234,7 @@ function IntegrationActionSheetContent({
             <p className="text-xs text-amber-700">{i.gscSiteNotSelected}</p>
           ) : null}
           {isGsc && isConnected && integration.selectedProperty ? (
-            <p className="text-xs text-cyan-700">
+            <p className="text-xs text-[#6d4ff0]">
               {i.searchConsoleSite} {integration.selectedProperty}
             </p>
           ) : null}
@@ -273,7 +273,7 @@ function IntegrationActionSheetContent({
 
               {!isComingSoon ? (
                 <>
-                  <p className="rounded-lg border border-cyan-500/20 bg-cyan-500/5 px-4 py-3 text-sm text-cyan-100/90">
+                  <p className="rounded-lg border border-[#c9bfff]/40 bg-[#c9bfff]/5 px-4 py-3 text-sm text-violet-100/90">
                     {i.youControl}
                   </p>
 
@@ -412,7 +412,7 @@ function IntegrationActionSheetContent({
                     type="button"
                     onClick={handleConnectGsc}
                     disabled={!canConnectGsc}
-                    className="w-full bg-gradient-to-r from-blue-600 to-violet-600 text-white hover:from-blue-500 hover:to-violet-500"
+                    className="w-full bg-[#8169ff] text-white hover:bg-[#6d4ff0]"
                   >
                     {i.connectGscButton}
                   </Button>
@@ -437,7 +437,7 @@ function IntegrationActionSheetContent({
                     "w-full",
                     isConnected
                       ? "border border-slate-300 bg-white/5 text-slate-600"
-                      : "bg-gradient-to-r from-blue-600 to-violet-600 text-white opacity-80"
+                      : "bg-[#8169ff] text-white opacity-80"
                   )}
                   variant={isConnected ? "outline" : "default"}
                 >

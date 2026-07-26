@@ -45,9 +45,9 @@ export function BlogList({
             className={cn(
               "rounded-full px-4 py-1.5 text-sm font-medium transition-all",
               active === cat
-                ? "bg-gradient-to-r from-blue-600 to-violet-600 text-white"
+                ? "bg-[#8169ff] text-white"
                 : isMarketing
-                  ? "border border-slate-200 bg-white text-slate-600 hover:border-blue-200 hover:text-slate-900"
+                  ? "border border-slate-200 bg-white text-slate-600 hover:border-[#c9bfff]/55 hover:text-slate-900"
                   : "border border-white/10 bg-white/5 text-slate-400 hover:border-white/20 hover:text-white"
             )}
           >

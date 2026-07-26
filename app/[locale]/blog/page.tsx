@@ -36,7 +36,7 @@ export default async function BlogPage({ params }: PageProps) {
 
   return (
     <div className="marketing-page min-h-screen">
-      <div className="border-b border-slate-200/80 bg-gradient-to-b from-blue-50/80 to-white py-16">
+      <div className="border-b border-slate-200/80 bg-gradient-to-b from-[#c9bfff]/20/80 to-white py-16">
         <div className="mx-auto max-w-7xl px-4 text-center sm:px-6 lg:px-8">
           <h1 className="text-4xl font-bold text-slate-900 md:text-5xl">
             {dict.blog.title}
@@ -48,14 +48,14 @@ export default async function BlogPage({ params }: PageProps) {
             <LocaleLink
               locale={locale as Locale}
               href="/services"
-              className="text-blue-600 hover:text-blue-700"
+              className="text-[#8169ff] hover:text-[#6d4ff0]"
             >
               {dict.nav.services} →
             </LocaleLink>
             <LocaleLink
               locale={locale as Locale}
               href="/pricing"
-              className="text-blue-600 hover:text-blue-700"
+              className="text-[#8169ff] hover:text-[#6d4ff0]"
             >
               {dict.nav.pricing} →
             </LocaleLink>

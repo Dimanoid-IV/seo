@@ -32,7 +32,7 @@ const STATUS_STYLES: Record<
   },
   Connecting: {
     label: "Connecting",
-    className: "border-blue-200 bg-blue-50 text-blue-800",
+    className: "border-[#c9bfff]/55 bg-[#c9bfff]/20 text-[#6d4ff0]",
     icon: Clock,
   },
   Error: {

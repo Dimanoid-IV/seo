@@ -28,7 +28,7 @@ export function RecentActivityCompact({ items }: RecentActivityCompactProps) {
         action={
           <Link
             href="/app/timeline"
-            className="inline-flex items-center gap-1 text-xs font-medium text-blue-300 transition hover:text-blue-200"
+            className="inline-flex items-center gap-1 text-xs font-medium text-violet-700 transition hover:text-violet-700"
           >
             {a.openTimeline}
             <ArrowRight className="size-3" />

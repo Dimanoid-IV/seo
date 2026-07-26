@@ -29,11 +29,11 @@ export function NextBestActionCard({
   const { dict } = useSaasTranslations();
   const d = dict.dashboard;
   const primaryClass =
-    "inline-flex min-h-12 w-full items-center justify-center rounded-xl bg-gradient-to-r from-blue-700 to-violet-700 px-5 py-3 text-sm font-semibold text-white shadow-[0_8px_24px_-8px_rgba(29,78,216,0.45)] transition hover:from-blue-800 hover:to-violet-800 disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto";
+    "inline-flex min-h-12 w-full items-center justify-center rounded-xl bg-[#8169ff] px-5 py-3 text-sm font-semibold text-white shadow-[0_8px_24px_-8px_rgba(29,78,216,0.45)] transition hover:bg-[#6d4ff0] disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto";
 
   return (
     <section className="saas-card-primary">
-      <p className="saas-eyebrow text-blue-600">{d.whatShouldIDo}</p>
+      <p className="saas-eyebrow text-[#8169ff]">{d.whatShouldIDo}</p>
       <h3 className="mt-3 text-xl font-semibold tracking-tight text-slate-900">
         {title}
       </h3>

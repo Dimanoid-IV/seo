@@ -109,7 +109,9 @@ export function RegisterForm({
       ) : null}
 
       <div className="space-y-2">
-        <Label htmlFor="register-name">{auth.name}</Label>
+        <Label htmlFor="register-name" className="text-sm font-medium text-[#181818]">
+          {auth.name}
+        </Label>
         <Input
           id="register-name"
           type="text"
@@ -119,12 +121,14 @@ export function RegisterForm({
           value={name}
           onChange={(event) => setName(event.target.value)}
           disabled={loading}
-          className="border-slate-200 bg-white text-slate-900"
+          className="border-[#999999]/35 bg-white text-[#181818] placeholder:text-[#999999] focus:border-[#8169ff] focus:ring-2 focus:ring-[#c9bfff]/45"
         />
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="register-email">{auth.email}</Label>
+        <Label htmlFor="register-email" className="text-sm font-medium text-[#181818]">
+          {auth.email}
+        </Label>
         <Input
           id="register-email"
           type="email"
@@ -134,12 +138,14 @@ export function RegisterForm({
           onChange={(event) => setEmail(event.target.value)}
           placeholder="you@company.com"
           disabled={loading}
-          className="border-slate-200 bg-white text-slate-900"
+          className="border-[#999999]/35 bg-white text-[#181818] placeholder:text-[#999999] focus:border-[#8169ff] focus:ring-2 focus:ring-[#c9bfff]/45"
         />
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="register-password">{auth.password}</Label>
+        <Label htmlFor="register-password" className="text-sm font-medium text-[#181818]">
+          {auth.password}
+        </Label>
         <Input
           id="register-password"
           type="password"
@@ -150,14 +156,14 @@ export function RegisterForm({
           onChange={(event) => setPassword(event.target.value)}
           placeholder={auth.passwordMinHint}
           disabled={loading}
-          className="border-slate-200 bg-white text-slate-900"
+          className="border-[#999999]/35 bg-white text-[#181818] placeholder:text-[#999999] focus:border-[#8169ff] focus:ring-2 focus:ring-[#c9bfff]/45"
         />
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="register-website">
+        <Label htmlFor="register-website" className="text-sm font-medium text-[#181818]">
           {auth.websiteOptional}{" "}
-          <span className="text-slate-500">{auth.websiteOptionalHint}</span>
+          <span className="text-[#555555]">{auth.websiteOptionalHint}</span>
         </Label>
         <Input
           id="register-website"
@@ -167,25 +173,25 @@ export function RegisterForm({
           onChange={(event) => setWebsiteUrl(event.target.value)}
           placeholder="https://example.com"
           disabled={loading}
-          className="border-slate-200 bg-white text-slate-900"
+          className="border-[#999999]/35 bg-white text-[#181818] placeholder:text-[#999999] focus:border-[#8169ff] focus:ring-2 focus:ring-[#c9bfff]/45"
         />
       </div>
 
-      <label className="flex items-start gap-3 text-sm text-slate-300">
+      <label className="flex items-start gap-3 text-sm text-[#555555]">
         <input
           type="checkbox"
           checked={acceptTerms}
           onChange={(event) => setAcceptTerms(event.target.checked)}
           disabled={loading}
-          className="mt-1 size-4 rounded border-slate-300 accent-blue-600"
+          className="mt-1 size-4 rounded border-slate-300 accent-[#8169ff]"
         />
         <span>
           {auth.acceptTerms}{" "}
-          <Link href={termsHref} className="text-blue-600 hover:text-blue-700">
+          <Link href={termsHref} className="text-[#8169ff] hover:text-[#6d4ff0]">
             {auth.termsLink}
           </Link>{" "}
           {locale === "ru" ? "и" : locale === "et" ? "ja" : "and"}{" "}
-          <Link href={privacyHref} className="text-blue-600 hover:text-blue-700">
+          <Link href={privacyHref} className="text-[#8169ff] hover:text-[#6d4ff0]">
             {auth.privacyLink}
           </Link>
         </span>
@@ -193,7 +199,7 @@ export function RegisterForm({
 
       <Button
         type="submit"
-        className="w-full bg-gradient-to-r from-blue-500 to-violet-600 text-white hover:from-blue-600 hover:to-violet-700"
+        className="w-full bg-[#8169ff] text-white hover:bg-[#6d4ff0]"
         disabled={loading}
       >
         {loading ? (
@@ -220,7 +226,7 @@ export function RegisterForm({
         {auth.hasAccount}{" "}
         <Link
           href={`/login${planQuerySuffix(normalizedPlan)}`}
-          className="text-blue-600 hover:text-blue-700"
+          className="text-[#8169ff] hover:text-[#6d4ff0]"
         >
           {auth.login}
         </Link>

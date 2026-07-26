@@ -26,7 +26,7 @@ function StatTile({
         ? "text-amber-300"
         : accent === "violet"
           ? "text-violet-300"
-          : "text-blue-300";
+          : "text-violet-700";
 
   return (
     <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
@@ -56,7 +56,7 @@ export function TimelineSummaryCard({
       )}
     >
       <div className="space-y-2">
-        <p className="text-xs font-medium uppercase tracking-wider text-blue-400">
+        <p className="text-xs font-medium uppercase tracking-wider text-violet-600">
           {t.whileAway}
         </p>
         <h2 className="text-xl font-bold text-slate-900 sm:text-2xl">{t.title}</h2>
@@ -64,7 +64,7 @@ export function TimelineSummaryCard({
           {summary.headline || t.quietHeadline}
         </p>
         {unreadCount > 0 ? (
-          <p className="text-xs text-blue-300">
+          <p className="text-xs text-violet-700">
             {unreadCount}{" "}
             {unreadCount === 1 ? t.unreadEvent : t.unreadEvents}
           </p>

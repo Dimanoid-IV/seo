@@ -31,19 +31,19 @@ export function BlogCard({
       className={cn(
         "group flex h-full flex-col overflow-hidden transition-all duration-300",
         isMarketing
-          ? "marketing-card hover:border-blue-300 hover:shadow-[0_12px_40px_-16px_rgba(59,130,246,0.2)]"
-          : "glass-card hover:border-blue-500/30 hover:glow-sm"
+          ? "marketing-card hover:border-[#c9bfff]/70 hover:shadow-[0_12px_40px_-16px_rgba(59,130,246,0.2)]"
+          : "glass-card hover:border-[#c9bfff]/45 hover:glow-sm"
       )}
     >
-      <div className="h-2 bg-gradient-to-r from-blue-500 via-cyan-500 to-violet-500" />
+      <div className="h-2 bg-gradient-to-r from-[#8169ff] via-[#8169ff] to-[#8169ff]" />
       <div className="flex flex-1 flex-col p-6">
         <Badge
           variant="outline"
           className={cn(
             "mb-4 w-fit",
             isMarketing
-              ? "border-blue-200 bg-blue-50 text-blue-700"
-              : "border-blue-500/30 bg-blue-500/10 text-blue-300"
+              ? "border-[#c9bfff]/55 bg-[#c9bfff]/20 text-[#6d4ff0]"
+              : "border-[#c9bfff]/45 bg-[#c9bfff]/10 text-violet-700"
           )}
         >
           {post.category}
@@ -52,8 +52,8 @@ export function BlogCard({
           className={cn(
             "mb-3 text-xl font-semibold transition-colors",
             isMarketing
-              ? "text-slate-900 group-hover:text-blue-700"
-              : "text-white group-hover:text-blue-300"
+              ? "text-slate-900 group-hover:text-[#6d4ff0]"
+              : "text-white group-hover:text-violet-700"
           )}
         >
           <LocaleLink locale={locale} href={`/blog/${post.slug}`}>
@@ -89,7 +89,7 @@ export function BlogCard({
             href={`/blog/${post.slug}`}
             className={cn(
               "font-medium",
-              isMarketing ? "text-blue-600 hover:text-blue-700" : "text-blue-400 hover:text-cyan-400"
+              isMarketing ? "text-[#8169ff] hover:text-[#6d4ff0]" : "text-violet-600 hover:text-violet-600"
             )}
           >
             {readMore} →

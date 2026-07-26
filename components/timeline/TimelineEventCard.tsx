@@ -18,7 +18,7 @@ const SEVERITY_STYLES: Record<string, string> = {
   SUCCESS: "border-emerald-500/20 bg-emerald-500/5",
   WARNING: "border-amber-500/20 bg-amber-500/5",
   ERROR: "border-red-500/20 bg-red-500/5",
-  OPPORTUNITY: "border-blue-500/20 bg-blue-500/5",
+  OPPORTUNITY: "border-[#c9bfff]/40 bg-[#c9bfff]/5",
 };
 
 export function TimelineEventCard({ event, className }: TimelineEventCardProps) {
@@ -29,12 +29,12 @@ export function TimelineEventCard({ event, className }: TimelineEventCardProps) 
       className={cn(
         "rounded-xl border p-4 sm:p-5",
         SEVERITY_STYLES[event.severity] ?? SEVERITY_STYLES.INFO,
-        !event.isRead && "ring-1 ring-blue-500/20",
+        !event.isRead && "ring-1 ring-[#c9bfff]/35",
         className
       )}
     >
       <div className="flex items-start gap-3">
-        <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-white/5 text-blue-300">
+        <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-white/5 text-violet-700">
           <TimelineEventIcon type={event.type} severity={event.severity} />
         </div>
         <div className="min-w-0 flex-1">
@@ -44,7 +44,7 @@ export function TimelineEventCard({ event, className }: TimelineEventCardProps) 
             </span>
             <span className="text-xs text-slate-500">{event.relativeTime}</span>
             {!event.isRead ? (
-              <span className="rounded-full bg-blue-500/20 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-blue-300">
+              <span className="rounded-full bg-[#c9bfff]/20 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-violet-700">
                 {dict.timeline.new}
               </span>
             ) : null}
@@ -58,7 +58,7 @@ export function TimelineEventCard({ event, className }: TimelineEventCardProps) 
           {event.action ? (
             <Link
               href={event.action.href}
-              className="mt-3 inline-flex text-sm font-medium text-blue-300 hover:text-blue-200"
+              className="mt-3 inline-flex text-sm font-medium text-violet-700 hover:text-violet-700"
             >
               {event.action.label}
             </Link>

@@ -12,14 +12,14 @@ type ReportSummaryCardProps = {
 };
 
 const accentStyles = {
-  blue: "border-blue-500/20 bg-blue-500/5",
+  blue: "border-[#c9bfff]/40 bg-[#c9bfff]/5",
   emerald: "border-emerald-500/20 bg-emerald-500/5",
   violet: "border-violet-500/20 bg-violet-500/5",
   amber: "border-amber-500/20 bg-amber-500/5",
 };
 
 const iconStyles = {
-  blue: "text-blue-400",
+  blue: "text-violet-600",
   emerald: "text-emerald-400",
   violet: "text-violet-400",
   amber: "text-amber-400",

@@ -30,10 +30,10 @@ export function StrategySnapshotCard({ snapshot }: StrategySnapshotCardProps) {
   const t = dict.autopilot.strategySnapshot;
 
   return (
-    <section className="rounded-2xl border border-blue-200 bg-white p-5 shadow-sm sm:p-6">
+    <section className="rounded-2xl border border-[#c9bfff]/55 bg-white p-5 shadow-sm sm:p-6">
       <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
         <div>
-          <p className="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-blue-700">
+          <p className="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-[#6d4ff0]">
             <BarChart3 className="size-3.5" />
             {t.eyebrow}
           </p>
@@ -45,8 +45,8 @@ export function StrategySnapshotCard({ snapshot }: StrategySnapshotCardProps) {
           </p>
         </div>
         <div className="grid min-w-[220px] grid-cols-2 gap-2 text-sm">
-          <div className="rounded-xl border border-blue-100 bg-blue-50 px-3 py-2">
-            <p className="text-xs text-blue-700">{t.articles}</p>
+          <div className="rounded-xl border border-[#c9bfff]/45 bg-[#c9bfff]/20 px-3 py-2">
+            <p className="text-xs text-[#6d4ff0]">{t.articles}</p>
             <p className="text-xl font-semibold text-slate-900">
               {snapshot.articleCount}
             </p>
@@ -63,7 +63,7 @@ export function StrategySnapshotCard({ snapshot }: StrategySnapshotCardProps) {
       <div className="mt-5 grid gap-4 lg:grid-cols-2">
         <div className="rounded-xl border border-slate-200 bg-slate-50/70 p-4">
           <div className="flex items-center gap-2 text-sm font-semibold text-slate-900">
-            <Search className="size-4 text-blue-600" />
+            <Search className="size-4 text-[#8169ff]" />
             {t.keywords}
           </div>
           <PillList items={snapshot.keywords} />
@@ -96,7 +96,7 @@ export function StrategySnapshotCard({ snapshot }: StrategySnapshotCardProps) {
 
         <div className="rounded-xl border border-slate-200 bg-slate-50/70 p-4">
           <div className="flex items-center gap-2 text-sm font-semibold text-slate-900">
-            <FileText className="size-4 text-cyan-600" />
+            <FileText className="size-4 text-violet-600" />
             {t.articlePlan}
           </div>
           <ul className="mt-3 space-y-2 text-sm text-slate-700">

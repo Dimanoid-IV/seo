@@ -242,7 +242,7 @@ export function WordPressConnectorPanel({
             <div className="space-y-1">
               <p className="text-xs font-medium text-slate-600">{wp.apiKey}</p>
               <div className="flex items-center gap-2">
-                <code className="flex-1 overflow-x-auto rounded bg-slate-900 px-3 py-2 text-xs text-cyan-100">
+                <code className="flex-1 overflow-x-auto rounded bg-slate-900 px-3 py-2 text-xs text-violet-100">
                   {apiKey}
                 </code>
                 <button
@@ -264,7 +264,7 @@ export function WordPressConnectorPanel({
             <div className="space-y-1">
               <p className="text-xs font-medium text-slate-600">{wp.sharedSecret}</p>
               <div className="flex items-center gap-2">
-                <code className="flex-1 overflow-x-auto rounded bg-slate-900 px-3 py-2 text-xs text-cyan-100">
+                <code className="flex-1 overflow-x-auto rounded bg-slate-900 px-3 py-2 text-xs text-violet-100">
                   {apiSecret}
                 </code>
                 <button

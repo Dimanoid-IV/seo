@@ -31,7 +31,7 @@ export function LanguageSwitcher({
           className={cn(
             "rounded-md px-2.5 py-1 text-xs font-semibold transition-all",
             locale === currentLocale
-              ? "bg-gradient-to-r from-blue-600 to-violet-600 text-white"
+              ? "bg-[#8169ff] text-white"
               : "text-slate-400 hover:text-white"
           )}
           aria-current={locale === currentLocale ? "page" : undefined}

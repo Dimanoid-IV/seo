@@ -43,7 +43,7 @@ export function AutopilotModesSection({ dict }: AutopilotModesSectionProps) {
               key={item}
               className="flex items-start gap-2 rounded-xl border border-slate-200/80 bg-white px-4 py-3 text-sm text-slate-700"
             >
-              <Sparkles className="mt-0.5 size-4 shrink-0 text-blue-500" />
+              <Sparkles className="mt-0.5 size-4 shrink-0 text-violet-600" />
               {item}
             </li>
           ))}

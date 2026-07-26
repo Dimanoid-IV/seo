@@ -80,7 +80,7 @@ export function AuditPreviewResult({
         </div>
       )}
 
-      <div className="marketing-card flex flex-col items-start gap-4 border border-blue-200/80 bg-blue-50/50 p-6 sm:flex-row sm:items-center sm:justify-between">
+      <div className="marketing-card flex flex-col items-start gap-4 border border-[#c9bfff]/55 bg-[#c9bfff]/20/50 p-6 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h2 className="text-base font-semibold text-slate-900">{a.fullPlanTitle}</h2>
           <p className="mt-1 text-sm text-slate-600">
@@ -91,7 +91,7 @@ export function AuditPreviewResult({
           href={registerHref}
           className={cn(
             buttonVariants(),
-            "h-11 shrink-0 rounded-xl bg-gradient-to-r from-blue-600 to-violet-600 px-6 text-white hover:from-blue-500 hover:to-violet-500"
+            "h-11 shrink-0 rounded-xl bg-[#8169ff] px-6 text-white hover:bg-[#6d4ff0]"
           )}
         >
           {a.createAccountCta}
@@ -107,7 +107,7 @@ export function AuditPreviewResult({
         <button
           type="button"
           onClick={onCheckAnother}
-          className="text-blue-600 transition-colors hover:text-blue-700"
+          className="text-[#8169ff] transition-colors hover:text-[#6d4ff0]"
         >
           {a.checkAnother}
         </button>

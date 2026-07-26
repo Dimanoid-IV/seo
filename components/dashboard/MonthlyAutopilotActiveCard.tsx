@@ -99,7 +99,7 @@ export function MonthlyAutopilotActiveCard({
           className={cn(
             "inline-flex items-center justify-center rounded-lg border px-5 py-2.5 text-sm font-medium transition",
             showPublishingNudge
-              ? "border-blue-300 bg-blue-50 text-blue-800 hover:bg-blue-100"
+              ? "border-[#c9bfff]/70 bg-[#c9bfff]/20 text-[#6d4ff0] hover:bg-[#c9bfff]/35"
               : "border-slate-200 bg-white text-slate-700 hover:bg-slate-50"
           )}
         >
@@ -108,7 +108,7 @@ export function MonthlyAutopilotActiveCard({
       </div>
 
       {showPublishingNudge ? (
-        <div className="mt-5 rounded-xl border border-blue-200/80 bg-white/70 px-4 py-3">
+        <div className="mt-5 rounded-xl border border-[#c9bfff]/55 bg-white/70 px-4 py-3">
           <p className="text-sm font-medium text-slate-900">{t.nudgeTitle}</p>
           <p className="mt-1 text-xs leading-relaxed text-slate-600">
             {t.nudgeDescription}

@@ -12,7 +12,7 @@ function renderCell(value: boolean | string) {
     return <span className="text-sm font-medium text-slate-300">{value}</span>;
   }
   return value ? (
-    <Check className="mx-auto h-5 w-5 text-cyan-400" />
+    <Check className="mx-auto h-5 w-5 text-violet-600" />
   ) : (
     <X className="mx-auto h-5 w-5 text-slate-600" />
   );

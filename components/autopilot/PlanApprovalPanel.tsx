@@ -716,7 +716,7 @@ export function PlanApprovalPanel({
 
       {!hasApprovedItems || selectableItems.some((i) => i.status === "proposed") ? (
         <>
-          <div className="rounded-xl border border-blue-200 bg-blue-50/70 px-4 py-4">
+          <div className="rounded-xl border border-[#c9bfff]/55 bg-[#c9bfff]/20/70 px-4 py-4">
             <p className="text-sm font-semibold text-slate-900">
               {t.afterApproveTitle}
             </p>
@@ -738,7 +738,7 @@ export function PlanApprovalPanel({
               className={cn(
                 "flex cursor-pointer gap-3 rounded-xl border px-3 py-3 text-sm",
                 publishingMode === "REVIEW_ONLY"
-                  ? "border-blue-400 bg-blue-50/60"
+                  ? "border-[#8169ff]/70 bg-[#c9bfff]/20/60"
                   : "border-slate-200"
               )}
             >

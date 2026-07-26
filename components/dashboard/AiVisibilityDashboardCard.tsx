@@ -17,7 +17,7 @@ export function AiVisibilityDashboardCard({
   const t = dict.dashboard.aiVisibility;
 
   return (
-    <section className="rounded-2xl border border-emerald-200 bg-gradient-to-br from-emerald-50 via-white to-cyan-50/60 p-5 shadow-sm sm:p-6">
+    <section className="rounded-2xl border border-emerald-200 bg-gradient-to-br from-emerald-50 via-white to-[#c9bfff]/20 p-5 shadow-sm sm:p-6">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div className="min-w-0">
           <p className="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-emerald-700">
@@ -48,8 +48,8 @@ export function AiVisibilityDashboardCard({
               : `${snapshot.readinessScore}/100`}
           </p>
         </div>
-        <div className="rounded-xl border border-cyan-100 bg-white/80 px-3 py-3">
-          <p className="text-xs text-cyan-700">{t.prompts}</p>
+        <div className="rounded-xl border border-[#c9bfff]/45 bg-white/80 px-3 py-3">
+          <p className="text-xs text-[#6d4ff0]">{t.prompts}</p>
           <p className="mt-1 text-2xl font-semibold text-slate-900">
             {snapshot.promptCount}
           </p>

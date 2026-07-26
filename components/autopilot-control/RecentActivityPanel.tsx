@@ -18,7 +18,7 @@ const SEVERITY_STYLES: Record<string, string> = {
   WARNING: "text-amber-400",
   ERROR: "text-red-400",
   SUCCESS: "text-emerald-400",
-  OPPORTUNITY: "text-blue-400",
+  OPPORTUNITY: "text-violet-600",
   INFO: "text-slate-400",
 };
 

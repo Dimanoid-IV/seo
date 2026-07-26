@@ -50,7 +50,7 @@ export function DashboardModeToggle({
               className={cn(
                 "flex-1 rounded-lg px-3 py-2 text-xs font-medium transition sm:text-sm",
                 active
-                  ? "bg-white text-blue-700 shadow-sm ring-1 ring-blue-100"
+                  ? "bg-white text-[#6d4ff0] shadow-sm ring-1 ring-[#c9bfff]/45"
                   : "text-slate-600 hover:text-slate-900",
                 !ready && "opacity-60"
               )}

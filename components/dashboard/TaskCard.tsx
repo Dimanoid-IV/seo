@@ -28,7 +28,7 @@ type TaskCardProps = {
 
 const priorityStyles: Record<TaskPriority, string> = {
   low: "text-slate-700 bg-slate-50 border-slate-200",
-  medium: "text-blue-800 bg-blue-50 border-blue-200",
+  medium: "text-[#6d4ff0] bg-[#c9bfff]/20 border-[#c9bfff]/55",
   high: "text-amber-800 bg-amber-50 border-amber-200",
   critical: "text-red-700 bg-red-50 border-red-200",
 };
@@ -48,7 +48,7 @@ const statusConfig: Record<
   in_progress: {
     icon: Loader2,
     label: "В работе",
-    className: "text-blue-700",
+    className: "text-[#6d4ff0]",
   },
   waiting: {
     icon: AlertCircle,
@@ -114,7 +114,7 @@ export function TaskCard({
       </div>
 
       <div>
-        <h3 className="font-semibold text-slate-900 group-hover:text-blue-700">
+        <h3 className="font-semibold text-slate-900 group-hover:text-[#6d4ff0]">
           {title}
         </h3>
         {description ? (

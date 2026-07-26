@@ -276,7 +276,7 @@ export function IntegrationsPage() {
             "mb-8 flex items-start gap-3 rounded-2xl border px-5 py-4 text-sm",
             banner.type === "success"
               ? "border-emerald-200 bg-emerald-50 text-emerald-900"
-              : "border-blue-200 bg-blue-50 text-slate-700"
+              : "border-[#c9bfff]/55 bg-[#c9bfff]/20 text-slate-700"
           )}
         >
           {banner.type === "success" ? (
@@ -314,7 +314,7 @@ export function IntegrationsPage() {
         <ul className="mt-4 space-y-2 text-sm text-slate-600">
           {i.benefits.map((benefit) => (
             <li key={benefit} className="flex items-start gap-2">
-              <span className="mt-1.5 size-1.5 shrink-0 rounded-full bg-cyan-400" />
+              <span className="mt-1.5 size-1.5 shrink-0 rounded-full bg-[#8169ff]" />
               <span>{benefit}</span>
             </li>
           ))}

@@ -27,7 +27,7 @@ export function IntegrationBenefitList({
         {benefits.map((benefit) => (
           <li key={benefit} className="flex items-start gap-2 text-sm text-slate-600">
             <CheckCircle2
-              className="mt-0.5 size-4 shrink-0 text-cyan-400"
+              className="mt-0.5 size-4 shrink-0 text-violet-600"
               aria-hidden
             />
             <span>{benefit}</span>

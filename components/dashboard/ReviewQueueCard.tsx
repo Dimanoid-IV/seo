@@ -25,7 +25,7 @@ export function ReviewQueueCard({ count }: ReviewQueueCardProps) {
       <p className="text-2xl font-semibold text-slate-900">{countLabel}</p>
       <Link
         href="/app/review"
-        className="mt-4 inline-flex items-center gap-1.5 text-sm font-medium text-blue-600 transition hover:text-blue-700"
+        className="mt-4 inline-flex items-center gap-1.5 text-sm font-medium text-[#8169ff] transition hover:text-[#6d4ff0]"
       >
         {r.cta}
         <ArrowRight className="size-4" />

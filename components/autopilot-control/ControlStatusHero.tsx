@@ -19,7 +19,7 @@ const STATUS_STYLES: Record<string, string> = {
   NEEDS_REVIEW:
     "border-amber-200 from-amber-50/90 to-orange-50/50",
   READY: "border-emerald-200 from-emerald-50/90 to-teal-50/50",
-  NEEDS_SETUP: "border-blue-200 from-blue-50/90 to-violet-50/50",
+  NEEDS_SETUP: "border-[#c9bfff]/55 from-[#c9bfff]/20/90 to-violet-50/50",
   NO_DATA: "border-slate-200 from-slate-50/90 to-blue-50/30",
 };
 

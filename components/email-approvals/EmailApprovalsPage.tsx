@@ -302,7 +302,7 @@ export function EmailApprovalsPage() {
               onClick={() => setStatusFilter(status)}
               className={`rounded-lg px-3 py-1.5 text-xs font-medium ${
                 statusFilter === status
-                  ? "bg-blue-500/20 text-blue-200"
+                  ? "bg-[#c9bfff]/20 text-violet-700"
                   : "bg-white/5 text-slate-400 hover:bg-slate-100"
               }`}
             >

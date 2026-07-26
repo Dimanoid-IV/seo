@@ -43,7 +43,7 @@ export function GscAssistedSetupPanel({
       )}
     >
       <div className="flex items-start gap-3">
-        <HelpCircle className="mt-0.5 size-4 shrink-0 text-blue-600" />
+        <HelpCircle className="mt-0.5 size-4 shrink-0 text-[#8169ff]" />
         <div className="min-w-0 flex-1 space-y-2">
           <p className="text-sm font-medium text-slate-900">{a.title}</p>
           <p className="text-sm text-slate-600">{a.description}</p>
@@ -257,7 +257,7 @@ function GscAssistedSetupForm({
       <Button
         type="submit"
         disabled={submitting}
-        className="w-full bg-gradient-to-r from-blue-600 to-violet-600 text-white hover:from-blue-500 hover:to-violet-500"
+        className="w-full bg-[#8169ff] text-white hover:bg-[#6d4ff0]"
       >
         {submitting ? (
           <>

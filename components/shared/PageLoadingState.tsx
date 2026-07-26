@@ -21,7 +21,7 @@ export function PageLoadingState({ message, className }: PageLoadingStateProps) 
       )}
     >
       <div className="flex items-center gap-3 text-slate-400">
-        <Loader2 className="size-6 shrink-0 animate-spin text-blue-400" />
+        <Loader2 className="size-6 shrink-0 animate-spin text-violet-600" />
         <p className="text-sm">{resolvedMessage}</p>
       </div>
     </main>

@@ -155,7 +155,7 @@ export function SimpleDashboardPage() {
               <div className="flex flex-wrap justify-center gap-3">
                 <Link
                   href="/app/onboarding"
-                  className="inline-flex items-center rounded-lg bg-blue-500 px-4 py-2 text-sm font-medium text-slate-900 hover:bg-blue-600"
+                  className="inline-flex items-center rounded-lg bg-[#c9bfff] px-4 py-2 text-sm font-medium text-slate-900 hover:bg-[#8169ff]"
                 >
                   {d.addWebsite}
                 </Link>
@@ -232,7 +232,7 @@ export function SimpleDashboardPage() {
             simple.activation?.state?.steps?.audit?.status === "in_progress" ||
             simple.activation?.state?.steps?.audit?.status === "done"
           ) ? (
-            <section className="rounded-2xl border border-blue-200 bg-blue-50/60 p-6 text-center sm:p-8">
+            <section className="rounded-2xl border border-[#c9bfff]/55 bg-[#c9bfff]/20/60 p-6 text-center sm:p-8">
               <h2 className="text-lg font-semibold text-slate-900 sm:text-xl">
                 {simple.activation?.preparingAnalysis
                   ? d.activation.preparingAnalysis
@@ -245,7 +245,7 @@ export function SimpleDashboardPage() {
                 type="button"
                 disabled={actionLoading}
                 onClick={() => void runAudit(simple.website!.id)}
-                className="mt-5 inline-flex items-center justify-center rounded-lg bg-blue-600 px-6 py-3 text-sm font-semibold text-white transition hover:bg-blue-700 disabled:opacity-60"
+                className="mt-5 inline-flex items-center justify-center rounded-lg bg-[#8169ff] px-6 py-3 text-sm font-semibold text-white transition hover:bg-[#6d4ff0] disabled:opacity-60"
               >
                 {actionLoading ? d.checkingSite : d.checkSiteNow}
               </button>
@@ -264,8 +264,8 @@ export function SimpleDashboardPage() {
           ) : null}
 
           {simple.hasAudit && !simple.monthlyPlanPreview ? (
-            <section className="rounded-2xl border border-blue-200 bg-gradient-to-br from-blue-50 via-white to-violet-50/40 p-6 shadow-sm sm:p-8">
-              <p className="text-xs font-medium uppercase tracking-wide text-blue-700">
+            <section className="rounded-2xl border border-[#c9bfff]/55 bg-gradient-to-br from-[#c9bfff]/20 via-white to-violet-50/40 p-6 shadow-sm sm:p-8">
+              <p className="text-xs font-medium uppercase tracking-wide text-[#6d4ff0]">
                 {d.monthlyPlanPreview.articlePlanLabel}
               </p>
               <h2 className="mt-2 text-lg font-semibold tracking-tight text-slate-900 sm:text-xl">
@@ -301,7 +301,7 @@ export function SimpleDashboardPage() {
                       .catch(() => setActionError(d.generatePlanNetworkError))
                       .finally(() => setActionLoading(false));
                   }}
-                  className="inline-flex items-center justify-center rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-blue-700 disabled:opacity-60"
+                  className="inline-flex items-center justify-center rounded-lg bg-[#8169ff] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[#6d4ff0] disabled:opacity-60"
                 >
                   {actionLoading
                     ? dict.common.working
@@ -395,9 +395,9 @@ export function SimpleDashboardPage() {
         {!isSimple ? <FindingsCard findings={simple.findings} /> : null}
 
         {!isSimple && simple.gsc && !simple.gsc.connected ? (
-          <p className="rounded-xl border border-blue-200 bg-blue-50 px-4 py-3 text-sm text-slate-700">
+          <p className="rounded-xl border border-[#c9bfff]/55 bg-[#c9bfff]/20 px-4 py-3 text-sm text-slate-700">
             {d.gscConnectHint}{" "}
-            <Link href={simple.gsc.connectHref} className="font-medium text-blue-600 hover:text-blue-700">
+            <Link href={simple.gsc.connectHref} className="font-medium text-[#8169ff] hover:text-[#6d4ff0]">
               {d.connectGsc}
             </Link>
           </p>
@@ -408,7 +408,7 @@ export function SimpleDashboardPage() {
           {simple.billingNote ? (
             <p className="text-center text-xs text-slate-500 lg:text-left">
               {d.billingNote}{" "}
-              <Link href="/app/billing" className="text-blue-600 hover:text-blue-700">
+              <Link href="/app/billing" className="text-[#8169ff] hover:text-[#6d4ff0]">
                 {dict.common.viewPlans}
               </Link>
             </p>

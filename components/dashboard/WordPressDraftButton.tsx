@@ -74,7 +74,7 @@ export function WordPressDraftButton({
           href={editUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center gap-1.5 text-xs text-cyan-300 hover:text-cyan-200"
+          className="inline-flex items-center gap-1.5 text-xs text-violet-700 hover:text-violet-700"
         >
           Открыть в WordPress
           <ExternalLink className="size-3.5" />

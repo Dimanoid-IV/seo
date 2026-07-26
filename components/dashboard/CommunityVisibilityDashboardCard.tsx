@@ -24,10 +24,10 @@ export function CommunityVisibilityDashboardCard({
   const channels = dict.autopilot.communityVisibility.channels;
 
   return (
-    <section className="rounded-2xl border border-cyan-200 bg-gradient-to-br from-cyan-50 via-white to-emerald-50/50 p-5 shadow-sm sm:p-6">
+    <section className="rounded-2xl border border-[#c9bfff]/55 bg-gradient-to-br from-[#c9bfff]/20 via-white to-emerald-50/50 p-5 shadow-sm sm:p-6">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div className="min-w-0">
-          <p className="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-cyan-700">
+          <p className="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-[#6d4ff0]">
             <MessageSquareText className="size-3.5" />
             {t.eyebrow}
           </p>
@@ -40,7 +40,7 @@ export function CommunityVisibilityDashboardCard({
         </div>
         <Link
           href={snapshot.href}
-          className="inline-flex shrink-0 items-center justify-center gap-1.5 rounded-lg bg-cyan-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-cyan-700"
+          className="inline-flex shrink-0 items-center justify-center gap-1.5 rounded-lg bg-[#8169ff] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#6d4ff0]"
         >
           {t.openPlan}
           <ArrowRight className="size-3.5" />
@@ -48,7 +48,7 @@ export function CommunityVisibilityDashboardCard({
       </div>
 
       <div className="mt-4 flex flex-wrap gap-2 text-xs font-medium">
-        <span className="rounded-full border border-cyan-200 bg-white/80 px-2.5 py-1 text-cyan-800">
+        <span className="rounded-full border border-[#c9bfff]/55 bg-white/80 px-2.5 py-1 text-[#6d4ff0]">
           {t.opportunityCount(snapshot.opportunityCount)}
         </span>
         {snapshot.sourceKeywords.map((keyword) => (
@@ -68,7 +68,7 @@ export function CommunityVisibilityDashboardCard({
               key={`${item.channel}-${item.query}`}
               className="rounded-xl border border-slate-200 bg-white/80 p-3"
             >
-              <p className="text-xs font-semibold text-cyan-700">
+              <p className="text-xs font-semibold text-[#6d4ff0]">
                 {channels[item.channel]}
               </p>
               <p className="mt-1 flex items-start gap-1.5 break-words font-mono text-[11px] leading-relaxed text-slate-700">
@@ -79,7 +79,7 @@ export function CommunityVisibilityDashboardCard({
                 href={item.searchUrl}
                 target="_blank"
                 rel="noreferrer"
-                className="mt-2 inline-flex items-center gap-1.5 rounded-md border border-cyan-200 bg-cyan-50 px-2 py-1 text-xs font-semibold text-cyan-800 transition hover:bg-cyan-100"
+                className="mt-2 inline-flex items-center gap-1.5 rounded-md border border-[#c9bfff]/55 bg-[#c9bfff]/20 px-2 py-1 text-xs font-semibold text-[#6d4ff0] transition hover:bg-[#c9bfff]/35"
               >
                 {dict.autopilot.communityVisibility.openSearch}
                 <ExternalLink className="size-3" />

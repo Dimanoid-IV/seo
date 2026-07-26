@@ -36,7 +36,7 @@ export function UsageLimitsCard({ usage }: UsageLimitsCardProps) {
               </div>
               <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-slate-200">
                 <div
-                  className="h-full rounded-full bg-gradient-to-r from-blue-500 to-violet-500"
+                  className="h-full rounded-full bg-gradient-to-r from-[#8169ff] to-[#8169ff]"
                   style={{ width: `${ratio * 100}%` }}
                 />
               </div>

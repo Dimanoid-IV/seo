@@ -43,7 +43,7 @@ type TaskDetailSheetProps = {
 
 const priorityStyles = {
   low: "border-slate-200 bg-slate-50 text-slate-600",
-  medium: "border-blue-200 bg-blue-50 text-blue-700",
+  medium: "border-[#c9bfff]/55 bg-[#c9bfff]/20 text-[#6d4ff0]",
   high: "border-amber-200 bg-amber-50 text-amber-800",
   critical: "border-red-200 bg-red-50 text-red-700",
 } as const;
@@ -191,7 +191,7 @@ export function TaskDetailSheet({
           ) : null}
 
           {recommendedAction && recommendedAction !== task.description ? (
-            <section className="space-y-2 rounded-xl border border-blue-100 bg-blue-50/60 p-4">
+            <section className="space-y-2 rounded-xl border border-[#c9bfff]/45 bg-[#c9bfff]/20/60 p-4">
               <h3 className="text-sm font-semibold text-slate-900">
                 {t.detailRecommendedActionLabel}
               </h3>

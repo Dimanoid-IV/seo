@@ -31,10 +31,10 @@ export function WhatWeDoSection({ dict }: WhatWeDoSectionProps) {
             return (
               <div
                 key={item}
-                className="group glass-card flex items-start gap-3 p-5 transition-all hover:border-blue-500/30 hover:glow-sm"
+                className="group glass-card flex items-start gap-3 p-5 transition-all hover:border-[#c9bfff]/45 hover:glow-sm"
               >
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-blue-500/20 to-violet-500/20 ring-1 ring-blue-500/20 transition-all group-hover:ring-blue-500/40">
-                  <Icon className="h-5 w-5 text-blue-400" />
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-[#c9bfff]/20 to-violet-500/20 ring-1 ring-[#c9bfff]/35 transition-all group-hover:ring-[#8169ff]/35">
+                  <Icon className="h-5 w-5 text-violet-600" />
                 </div>
                 <p className="text-sm font-medium leading-snug text-slate-200">
                   {item}

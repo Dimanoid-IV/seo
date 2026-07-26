@@ -51,7 +51,7 @@ export function AuditLoadingSteps({ active }: AuditLoadingStepsProps) {
                 <CheckCircle2 className="size-5 shrink-0 text-emerald-600" aria-hidden />
               ) : isCurrent ? (
                 <Loader2
-                  className="size-5 shrink-0 animate-spin text-blue-600"
+                  className="size-5 shrink-0 animate-spin text-[#8169ff]"
                   aria-hidden
                 />
               ) : (

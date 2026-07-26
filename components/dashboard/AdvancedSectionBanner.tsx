@@ -24,7 +24,7 @@ export function AdvancedSectionBanner() {
         <Button
           type="button"
           size="sm"
-          className="shrink-0 rounded-xl bg-gradient-to-r from-blue-600 to-violet-600 text-white hover:from-blue-700 hover:to-violet-700"
+          className="shrink-0 rounded-xl bg-[#8169ff] text-white hover:bg-[#6d4ff0]"
           onClick={() => setMode("advanced")}
         >
           {copy.enableAdvanced}

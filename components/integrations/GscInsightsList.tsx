@@ -34,9 +34,9 @@ const TYPE_STYLES: Record<
   },
   opportunity: {
     icon: Lightbulb,
-    border: "border-cyan-500/30",
-    bg: "bg-cyan-500/10",
-    text: "text-cyan-200",
+    border: "border-[#c9bfff]/45",
+    bg: "bg-[#c9bfff]/10",
+    text: "text-violet-700",
   },
 };
 

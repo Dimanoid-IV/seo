@@ -63,7 +63,7 @@ export function ArticleEditorPage({ articleId }: ArticleEditorPageProps) {
   if (loading) {
     return (
       <main className="app-content mx-auto flex max-w-7xl flex-col items-center justify-center px-4 py-24 sm:px-6 lg:px-8">
-        <Loader2 className="size-8 animate-spin text-blue-400" />
+        <Loader2 className="size-8 animate-spin text-violet-600" />
         <p className="mt-3 text-sm text-slate-600">Загружаем статью…</p>
       </main>
     );

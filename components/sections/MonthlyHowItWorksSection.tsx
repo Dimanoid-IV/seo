@@ -18,7 +18,7 @@ export function MonthlyHowItWorksSection({ dict }: MonthlyHowItWorksSectionProps
               key={step}
               className="flex gap-3 rounded-2xl border border-slate-200/80 bg-white px-5 py-4 text-sm leading-relaxed text-slate-700"
             >
-              <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-blue-100 text-sm font-semibold text-blue-800">
+              <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-[#c9bfff]/35 text-sm font-semibold text-[#6d4ff0]">
                 {index + 1}
               </span>
               <span className="pt-1">{step}</span>

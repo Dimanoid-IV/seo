@@ -45,7 +45,7 @@ export default async function PricingPage({ params }: PageProps) {
         route={`/${locale}/pricing`}
       />
       <div className="marketing-page min-h-screen">
-        <div className="border-b border-slate-200/80 bg-gradient-to-b from-blue-50/80 to-white py-16">
+        <div className="border-b border-slate-200/80 bg-gradient-to-b from-[#c9bfff]/20/80 to-white py-16">
           <div className="mx-auto max-w-7xl px-4 text-center sm:px-6 lg:px-8">
             <h1 className="text-4xl font-bold text-slate-900 md:text-5xl">
               {dict.pricing.pageTitle}

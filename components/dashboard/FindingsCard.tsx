@@ -37,7 +37,7 @@ export function FindingsCard({ findings }: FindingsCardProps) {
             key={`${item.title}-${index}`}
             className="flex gap-3 rounded-xl px-3 py-3 transition hover:bg-white"
           >
-            <span className="mt-2 size-1.5 shrink-0 rounded-full bg-blue-400/90" />
+            <span className="mt-2 size-1.5 shrink-0 rounded-full bg-[#8169ff]" />
             <div className="min-w-0 flex-1">
               <p className="text-sm leading-relaxed text-slate-700">
                 {item.title}
@@ -50,7 +50,7 @@ export function FindingsCard({ findings }: FindingsCardProps) {
               {item.href ? (
                 <Link
                   href={item.href}
-                  className="mt-2 inline-flex items-center gap-0.5 text-xs font-medium text-blue-300 transition hover:text-blue-200"
+                  className="mt-2 inline-flex items-center gap-0.5 text-xs font-medium text-violet-700 transition hover:text-violet-700"
                 >
                   {copy.viewDetails}
                   <ChevronRight className="size-3" />

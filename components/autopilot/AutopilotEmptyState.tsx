@@ -38,7 +38,7 @@ export function AutopilotEmptyState({ variant }: AutopilotEmptyStateProps) {
       {"action" in copy && copy.action ? (
         <Link
           href={copy.action.href}
-          className="mt-6 text-sm font-medium text-blue-400 hover:text-blue-300"
+          className="mt-6 text-sm font-medium text-violet-600 hover:text-violet-700"
         >
           {copy.action.label}
         </Link>

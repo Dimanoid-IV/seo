@@ -39,7 +39,7 @@ export function SocialPostCard({
       <div>
         <h3 className="font-semibold text-slate-900">{post.title}</h3>
         {post.hook ? (
-          <p className="mt-1 text-sm text-blue-300/90">{post.hook}</p>
+          <p className="mt-1 text-sm text-violet-700">{post.hook}</p>
         ) : null}
         <p className="mt-2 line-clamp-4 text-sm leading-relaxed text-slate-400">
           {post.content}

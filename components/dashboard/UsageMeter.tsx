@@ -11,7 +11,7 @@ type UsageMeterProps = {
 function getBarColor(pct: number): string {
   if (pct >= 90) return "from-red-500 to-orange-400";
   if (pct >= 70) return "from-amber-500 to-yellow-400";
-  return "from-blue-500 to-cyan-400";
+  return "from-[#c9bfff] to-[#c9bfff]";
 }
 
 export function UsageMeter({

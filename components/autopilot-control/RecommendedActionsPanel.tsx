@@ -18,7 +18,7 @@ type RecommendedActionsPanelProps = {
 
 const PRIORITY_STYLES: Record<string, string> = {
   HIGH: "border-amber-500/15 bg-amber-500/[0.04]",
-  MEDIUM: "border-blue-500/10 bg-blue-500/[0.03]",
+  MEDIUM: "border-[#c9bfff]/35 bg-[#c9bfff]/[0.03]",
   LOW: "border-slate-200 bg-slate-50",
 };
 

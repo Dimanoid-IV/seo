@@ -23,7 +23,7 @@ export function HeroDashboard({ dict }: HeroDashboardProps) {
           <div className="rounded-2xl bg-[#0a0f1e] p-5 sm:p-6">
             <div className="mb-5 flex items-center justify-between gap-3">
               <div className="flex items-center gap-2">
-                <div className="flex size-8 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-violet-600">
+                <div className="flex size-8 items-center justify-center rounded-xl bg-[#8169ff]">
                   <Sparkles className="size-4 text-white" />
                 </div>
                 <div>
@@ -47,11 +47,11 @@ export function HeroDashboard({ dict }: HeroDashboardProps) {
                   {d.growthScoreValue}
                 </p>
               </div>
-              <div className="rounded-xl border border-cyan-500/15 bg-cyan-500/10 p-4">
+              <div className="rounded-xl border border-[#c9bfff]/40 bg-[#c9bfff]/10 p-4">
                 <p className="text-[10px] uppercase tracking-wide text-slate-500">
                   {d.opportunities}
                 </p>
-                <p className="mt-1 text-lg font-semibold text-cyan-200">
+                <p className="mt-1 text-lg font-semibold text-violet-700">
                   {d.opportunitiesValue}
                 </p>
               </div>
@@ -65,8 +65,8 @@ export function HeroDashboard({ dict }: HeroDashboardProps) {
               </div>
             </div>
 
-            <div className="mt-4 rounded-xl border border-blue-500/20 bg-blue-500/10 p-4">
-              <p className="text-[10px] font-medium uppercase tracking-wide text-blue-300/80">
+            <div className="mt-4 rounded-xl border border-[#c9bfff]/40 bg-[#c9bfff]/10 p-4">
+              <p className="text-[10px] font-medium uppercase tracking-wide text-violet-700/80">
                 {d.nextAction}
               </p>
               <p className="mt-1 text-sm font-medium text-white">{d.nextActionValue}</p>

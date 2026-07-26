@@ -24,8 +24,8 @@ export function TrustBadges({ dict }: TrustBadgesProps) {
                 key={item}
                 className="flex items-start gap-3 rounded-xl border border-slate-200/70 bg-slate-50/80 p-4"
               >
-                <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-blue-500/10">
-                  <Icon className="size-4 text-blue-600" />
+                <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-[#c9bfff]/10">
+                  <Icon className="size-4 text-[#8169ff]" />
                 </div>
                 <p className="text-sm font-medium leading-snug text-slate-700">
                   {item}

@@ -15,7 +15,7 @@ const severityStyles: Record<string, string> = {
   CRITICAL: "border-red-200 bg-red-50/80",
   HIGH: "border-orange-200 bg-orange-50/80",
   MEDIUM: "border-amber-200 bg-amber-50/80",
-  LOW: "border-blue-200 bg-blue-50/50",
+  LOW: "border-[#c9bfff]/55 bg-[#c9bfff]/20/50",
   INFO: "border-slate-200 bg-slate-50/80",
 };
 
@@ -58,7 +58,7 @@ export function AuditIssueCard({ issue }: AuditIssueCardProps) {
           {a.scoreImpact(issue.scoreImpact)}
         </span>
         <span className="inline-flex items-center gap-1.5">
-          <Clock className="size-3.5 text-cyan-600" aria-hidden />
+          <Clock className="size-3.5 text-violet-600" aria-hidden />
           {a.approxFixTime(formatFixMinutes(issue.estimatedFixMinutes, locale))}
         </span>
       </div>

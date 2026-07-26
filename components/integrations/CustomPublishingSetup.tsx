@@ -75,7 +75,7 @@ export function CustomPublishingSetup({ articleId }: CustomPublishingSetupProps)
   return (
     <div className="space-y-3 rounded-xl border border-dashed border-white/15 bg-white/[0.02] p-4">
       <div className="flex items-center gap-2 text-sm font-medium text-white">
-        <Webhook className="size-4 text-cyan-300" />
+        <Webhook className="size-4 text-violet-700" />
         Для разработчика: webhook
       </div>
       <p className="text-xs text-slate-400">
@@ -90,7 +90,7 @@ export function CustomPublishingSetup({ articleId }: CustomPublishingSetupProps)
           setTestPassed(false);
         }}
         placeholder="https://ваш-сайт.ru/api/rankboost"
-        className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none focus:border-blue-500/50"
+        className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none focus:border-[#8169ff]/50"
       />
       <div className="flex flex-wrap gap-2">
         <Button
@@ -115,7 +115,7 @@ export function CustomPublishingSetup({ articleId }: CustomPublishingSetupProps)
           size="sm"
           disabled={busy !== null || !testPassed}
           onClick={() => void callWebhook(false)}
-          className="bg-gradient-to-r from-blue-600 to-violet-600 text-white hover:from-blue-500 hover:to-violet-500 disabled:opacity-40"
+          className="bg-[#8169ff] text-white hover:bg-[#6d4ff0] disabled:opacity-40"
         >
           {busy === "send" ? (
             <>

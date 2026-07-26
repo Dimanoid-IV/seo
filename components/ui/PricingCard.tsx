@@ -17,12 +17,12 @@ export function PricingCard({ plan, locale, popularLabel }: PricingCardProps) {
       className={cn(
         "glass-card relative flex flex-col p-8 transition-all duration-300",
         plan.highlighted
-          ? "border-blue-500/40 glow-blue scale-[1.02]"
+          ? "border-[#8169ff]/45 glow-blue scale-[1.02]"
           : "hover:border-white/20"
       )}
     >
       {plan.highlighted && (
-        <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-gradient-to-r from-blue-500 to-violet-500 px-4 py-1 text-xs font-semibold text-white">
+        <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-gradient-to-r from-[#8169ff] to-[#8169ff] px-4 py-1 text-xs font-semibold text-white">
           {popularLabel}
         </span>
       )}
@@ -39,7 +39,7 @@ export function PricingCard({ plan, locale, popularLabel }: PricingCardProps) {
       <ul className="my-8 flex-1 space-y-3">
         {plan.features[locale].map((feature) => (
           <li key={feature} className="flex items-start gap-3 text-sm text-slate-300">
-            <Check className="mt-0.5 h-4 w-4 shrink-0 text-cyan-400" />
+            <Check className="mt-0.5 h-4 w-4 shrink-0 text-violet-600" />
             {feature}
           </li>
         ))}
@@ -50,7 +50,7 @@ export function PricingCard({ plan, locale, popularLabel }: PricingCardProps) {
         className={cn(
           "w-full",
           plan.highlighted
-            ? "bg-gradient-to-r from-blue-600 to-violet-600 hover:from-blue-500 hover:to-violet-500"
+            ? "bg-[#8169ff] hover:bg-[#6d4ff0]"
             : "bg-white/10 hover:bg-white/15"
         )}
       >

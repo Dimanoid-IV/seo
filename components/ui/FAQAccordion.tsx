@@ -19,9 +19,9 @@ export function FAQAccordion({ items, locale }: FAQAccordionProps) {
         <AccordionItem
           key={item.id}
           value={item.id}
-          className="glass-card overflow-hidden rounded-xl border border-white/10 px-6 data-open:border-blue-500/30"
+          className="glass-card overflow-hidden rounded-xl border border-white/10 px-6 data-open:border-[#c9bfff]/45"
         >
-          <AccordionTrigger className="py-5 text-left text-base font-medium text-white hover:no-underline data-open:text-blue-400">
+          <AccordionTrigger className="py-5 text-left text-base font-medium text-white hover:no-underline data-open:text-violet-600">
             {item.question[locale]}
           </AccordionTrigger>
           <AccordionContent className="pb-5 text-slate-400 leading-relaxed">

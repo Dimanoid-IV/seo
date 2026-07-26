@@ -47,7 +47,7 @@ export function FocusAreaCard({ area }: FocusAreaCardProps) {
             <Link
               key={id}
               href={`/app/articles/${id}`}
-              className="text-blue-400 hover:text-blue-300"
+              className="text-violet-600 hover:text-violet-700"
             >
               {links.openArticle}
             </Link>
@@ -55,12 +55,12 @@ export function FocusAreaCard({ area }: FocusAreaCardProps) {
           {area.relatedSocialPostIds?.length ? (
             <Link
               href="/app/social-posts"
-              className="text-blue-400 hover:text-blue-300"
+              className="text-violet-600 hover:text-violet-700"
             >
               {links.viewSocialPosts}
             </Link>
           ) : null}
-          <Link href="/app" className="text-blue-400 hover:text-blue-300">
+          <Link href="/app" className="text-violet-600 hover:text-violet-700">
             {links.openDashboard}
           </Link>
         </div>

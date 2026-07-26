@@ -114,7 +114,7 @@ export default async function BlogPostPage({ params }: PageProps) {
           <div className="mb-4 flex flex-wrap items-center gap-3">
             <Badge
               variant="outline"
-              className="border-blue-200 bg-blue-50 text-blue-700"
+              className="border-[#c9bfff]/55 bg-[#c9bfff]/20 text-[#6d4ff0]"
             >
               {post.category}
             </Badge>
@@ -126,7 +126,7 @@ export default async function BlogPostPage({ params }: PageProps) {
                   <Link
                     key={l}
                     href={getLocalizedPath(l, `/blog/${translations[l]}`)}
-                    className="rounded px-1.5 py-0.5 text-blue-600 hover:bg-blue-50 hover:text-blue-700"
+                    className="rounded px-1.5 py-0.5 text-[#8169ff] hover:bg-[#c9bfff]/20 hover:text-[#6d4ff0]"
                   >
                     {langLabels[l]}
                   </Link>
@@ -180,14 +180,14 @@ export default async function BlogPostPage({ params }: PageProps) {
             <LocaleLink
               locale={locale}
               href="/services"
-              className="text-sm text-blue-600 hover:text-blue-700"
+              className="text-sm text-[#8169ff] hover:text-[#6d4ff0]"
             >
               {dict.nav.services} →
             </LocaleLink>
             <LocaleLink
               locale={locale}
               href="/pricing"
-              className="text-sm text-blue-600 hover:text-blue-700"
+              className="text-sm text-[#8169ff] hover:text-[#6d4ff0]"
             >
               {dict.nav.pricing} →
             </LocaleLink>

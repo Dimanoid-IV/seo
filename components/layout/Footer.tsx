@@ -25,11 +25,11 @@ export function Footer({ locale, dict }: FooterProps) {
         <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-4">
           <div className="lg:col-span-1">
             <div className="mb-4 flex items-center gap-2 font-bold text-slate-900">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-blue-500 to-violet-600">
+              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#8169ff]">
                 <Sparkles className="h-4 w-4 text-white" />
               </div>
               <span>
-                Rank<span className="text-blue-600">Boost</span>.eu
+                Rank<span className="text-[#8169ff]">Boost</span>.eu
               </span>
             </div>
             <p className="mb-4 text-sm leading-relaxed text-slate-600">
@@ -40,7 +40,7 @@ export function Footer({ locale, dict }: FooterProps) {
             </p>
             <a
               href={`mailto:${PUBLIC_EMAIL}`}
-              className="inline-flex items-center gap-2 text-sm text-blue-600 hover:text-blue-700"
+              className="inline-flex items-center gap-2 text-sm text-[#8169ff] hover:text-[#6d4ff0]"
             >
               <Mail className="h-4 w-4" />
               {PUBLIC_EMAIL}
@@ -125,7 +125,7 @@ export function Footer({ locale, dict }: FooterProps) {
               href="/register"
               className={cn(
                 buttonVariants({ size: "sm" }),
-                "rounded-xl bg-gradient-to-r from-blue-600 to-violet-600 text-white hover:from-blue-500 hover:to-violet-500"
+                "rounded-xl bg-[#8169ff] text-white hover:bg-[#6d4ff0]"
               )}
             >
               {dict.nav.cta}

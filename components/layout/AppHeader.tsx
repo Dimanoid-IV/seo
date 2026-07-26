@@ -42,16 +42,16 @@ function AppHeaderContent() {
   }
 
   return (
-    <header className="sticky top-0 z-20 border-b border-slate-200 bg-white/90 backdrop-blur-xl">
+    <header className="sticky top-0 z-20 bg-white/90 backdrop-blur-xl">
       <div className="flex flex-wrap items-center justify-between gap-4 px-4 py-4 sm:px-6 lg:px-8">
         <div className="flex min-w-0 items-center gap-3">
-          <div className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-blue-50 lg:hidden">
-            <Sparkles className="size-4 text-blue-600" />
+          <div className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-[#c9bfff]/25 lg:hidden">
+            <Sparkles className="size-4 text-[#8169ff]" />
           </div>
           <div className="min-w-0">
             <div className="flex flex-wrap items-center gap-2">
-              <Globe className="hidden size-4 shrink-0 text-slate-400 sm:block" />
-              <h1 className="truncate text-base font-semibold text-slate-900 sm:text-lg">
+              <Globe className="hidden size-4 shrink-0 text-[#999999] sm:block" />
+              <h1 className="truncate font-[var(--font-gilroy)] text-base font-bold text-black sm:text-lg">
                 {headerTitle}
               </h1>
               {billingPlanLoading ? (
@@ -63,7 +63,7 @@ function AppHeaderContent() {
                 />
               ) : null}
             </div>
-            <p className="hidden items-center gap-1.5 text-xs text-slate-500 sm:flex">
+            <p className="hidden items-center gap-1.5 text-xs text-[#555555] sm:flex">
               {loading ? (
                 <>
                   <Loader2 className="size-3 animate-spin" />
@@ -95,7 +95,7 @@ function AppHeaderContent() {
             type="button"
             variant="outline"
             size="sm"
-            className="border-slate-200 bg-white text-slate-700 hover:bg-slate-50"
+            className="border-[#999999]/30 bg-white text-[#181818] hover:bg-black/[0.04]"
             onClick={handleLogout}
             disabled={loggingOut}
           >
@@ -111,7 +111,7 @@ function AppHeaderContent() {
             nativeButton={false}
             type="button"
             size="sm"
-            className="rounded-xl bg-gradient-to-r from-blue-700 to-violet-700 px-4 text-white shadow-[0_4px_16px_-6px_rgba(29,78,216,0.4)] hover:from-blue-800 hover:to-violet-800"
+            className="rounded-xl bg-[#8169ff] px-4 font-[var(--font-gilroy)] font-bold text-white hover:bg-[#6d4ff0]"
           >
             {dict.header.upgradePlan}
           </Button>

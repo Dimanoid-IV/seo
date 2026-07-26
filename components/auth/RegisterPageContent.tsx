@@ -19,7 +19,7 @@ export function RegisterPageContent({
   const { dict } = useSaasTranslations();
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-gradient-to-b from-slate-50 to-slate-100 px-4 py-12">
+    <main className="flex min-h-screen items-center justify-center bg-white px-4 py-12 [background-image:var(--aqua-wash),var(--lilac-bleed)]">
       <div className="w-full max-w-md space-y-4">
         <div className="flex justify-end">
           <LanguageSwitcher variant="auth" />
@@ -35,7 +35,7 @@ export function RegisterPageContent({
           />
         </AuthCard>
         <p className="text-center text-sm text-slate-500">
-          <Link href="/" className="text-blue-600 hover:text-blue-700">
+          <Link href="/" className="text-[#8169ff] hover:text-[#6d4ff0]">
             {dict.auth.backToHome}
           </Link>
         </p>

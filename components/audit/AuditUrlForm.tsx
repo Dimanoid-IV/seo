@@ -125,7 +125,7 @@ export function AuditUrlForm({ initialUrl = "" }: AuditUrlFormProps) {
             <Button
               type="submit"
               disabled={loading}
-              className="h-11 shrink-0 rounded-xl bg-gradient-to-r from-blue-600 to-violet-600 px-6 text-white hover:from-blue-500 hover:to-violet-500"
+              className="h-11 shrink-0 rounded-xl bg-[#8169ff] px-6 text-white hover:bg-[#6d4ff0]"
             >
               {loading ? (
                 <>

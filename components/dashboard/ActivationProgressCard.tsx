@@ -33,7 +33,7 @@ function StepIcon({ status }: { status: ActivationStepStatus }) {
     return <CheckCircle2 className="size-4 text-emerald-600" />;
   }
   if (status === "in_progress") {
-    return <Loader2 className="size-4 animate-spin text-blue-600" />;
+    return <Loader2 className="size-4 animate-spin text-[#8169ff]" />;
   }
   if (status === "failed" || status === "needs_action") {
     return <AlertCircle className="size-4 text-amber-600" />;

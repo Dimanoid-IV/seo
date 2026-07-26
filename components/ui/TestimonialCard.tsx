@@ -15,7 +15,7 @@ export function TestimonialCard({
 }: TestimonialCardProps) {
   return (
     <div className="glass-card flex h-full flex-col p-6">
-      <Quote className="mb-4 h-8 w-8 text-blue-500/40" />
+      <Quote className="mb-4 h-8 w-8 text-violet-600/40" />
       <p className="mb-6 flex-1 text-sm leading-relaxed text-slate-300 italic">
         &ldquo;{quote}&rdquo;
       </p>

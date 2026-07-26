@@ -159,7 +159,7 @@ export function MarketingPlanCheckoutButton({
       <div className="mt-4 space-y-2">
         <Button
           type="button"
-          className="min-h-10 w-full rounded-xl bg-blue-600 hover:bg-blue-700"
+          className="min-h-10 w-full rounded-xl bg-[#8169ff] hover:bg-[#6d4ff0]"
           disabled={loading}
           onClick={() => void handlePlanSelect()}
         >

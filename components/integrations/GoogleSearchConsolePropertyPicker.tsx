@@ -336,7 +336,7 @@ export function GoogleSearchConsolePropertyPicker({
   return (
     <section
       className={cn(
-        "rounded-xl border border-blue-500/20 bg-blue-500/5 p-4",
+        "rounded-xl border border-[#c9bfff]/40 bg-[#c9bfff]/5 p-4",
         className
       )}
     >
@@ -348,7 +348,7 @@ export function GoogleSearchConsolePropertyPicker({
         <div>
           <p className="text-sm font-medium text-slate-900">{p.title}</p>
           {activeSelected ? (
-            <p className="mt-1 break-all text-xs text-cyan-700">
+            <p className="mt-1 break-all text-xs text-[#6d4ff0]">
               {p.currentSite} {activeSelected}
             </p>
           ) : (
@@ -478,7 +478,7 @@ export function GoogleSearchConsolePropertyPicker({
           ) : null}
 
           {showAutoSelectConfirm && autoSelectCandidateUrl ? (
-            <div className="space-y-3 rounded-lg border border-cyan-500/30 bg-cyan-500/10 p-4">
+            <div className="space-y-3 rounded-lg border border-[#c9bfff]/45 bg-[#c9bfff]/10 p-4">
               <div>
                 <p className="text-sm font-medium text-slate-900">
                   {p.autoSelectTitle}
@@ -593,7 +593,7 @@ export function GoogleSearchConsolePropertyPicker({
                       className={cn(
                         "rounded-lg border p-3",
                         isSelected
-                          ? "border-cyan-500/40 bg-cyan-500/10"
+                          ? "border-[#8169ff]/45 bg-[#c9bfff]/10"
                           : "border-slate-200 bg-slate-50"
                       )}
                     >
@@ -613,7 +613,7 @@ export function GoogleSearchConsolePropertyPicker({
                             </span>
                           ) : null}
                           {isSelected ? (
-                            <span className="rounded-full border border-cyan-500/30 bg-cyan-500/20 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-cyan-700">
+                            <span className="rounded-full border border-[#c9bfff]/45 bg-[#c9bfff]/20 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-[#6d4ff0]">
                               {p.selected}
                             </span>
                           ) : null}

@@ -15,7 +15,7 @@ type CommunityVisibilityCardProps = {
 function channelColor(channel: CommunityVisibilityChannel): string {
   if (channel === "REDDIT") return "border-orange-200 bg-orange-50 text-orange-800";
   if (channel === "QUORA") return "border-red-200 bg-red-50 text-red-800";
-  return "border-cyan-200 bg-cyan-50 text-cyan-800";
+  return "border-[#c9bfff]/55 bg-[#c9bfff]/20 text-[#6d4ff0]";
 }
 
 export function CommunityVisibilityCard({
@@ -25,10 +25,10 @@ export function CommunityVisibilityCard({
   const t = dict.autopilot.communityVisibility;
 
   return (
-    <section className="rounded-2xl border border-cyan-200 bg-white p-5 shadow-sm sm:p-6">
+    <section className="rounded-2xl border border-[#c9bfff]/55 bg-white p-5 shadow-sm sm:p-6">
       <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
         <div>
-          <p className="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-cyan-700">
+          <p className="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-[#6d4ff0]">
             <MessageSquareText className="size-3.5" />
             {t.eyebrow}
           </p>
@@ -39,9 +39,9 @@ export function CommunityVisibilityCard({
             {snapshot.hasEnoughSignal ? t.description : t.descriptionBasic}
           </p>
         </div>
-        <div className="rounded-xl border border-cyan-100 bg-cyan-50 px-4 py-3 text-sm text-cyan-900">
+        <div className="rounded-xl border border-[#c9bfff]/45 bg-[#c9bfff]/20 px-4 py-3 text-sm text-[#181818]">
           <p className="font-semibold">{t.sourcesTitle}</p>
-          <p className="mt-1 text-xs leading-relaxed text-cyan-800">
+          <p className="mt-1 text-xs leading-relaxed text-[#6d4ff0]">
             {t.sourcesDescription(snapshot.sourceKeywords.length)}
           </p>
         </div>
@@ -78,7 +78,7 @@ export function CommunityVisibilityCard({
               href={item.searchUrl}
               target="_blank"
               rel="noreferrer"
-              className="mt-3 inline-flex items-center gap-1.5 rounded-lg border border-cyan-200 bg-white px-3 py-1.5 text-xs font-semibold text-cyan-800 transition hover:bg-cyan-50"
+              className="mt-3 inline-flex items-center gap-1.5 rounded-lg border border-[#c9bfff]/55 bg-white px-3 py-1.5 text-xs font-semibold text-[#6d4ff0] transition hover:bg-[#c9bfff]/20"
             >
               {t.openSearch}
               <ExternalLink className="size-3.5" />

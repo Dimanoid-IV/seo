@@ -56,7 +56,7 @@ export function ConnectionTimeline({
     <ul className={cn("space-y-2", className)}>
       {hasProperty ? (
         <li className="flex items-start gap-2 text-xs">
-          <CheckCircle2 className="mt-0.5 size-3.5 shrink-0 text-cyan-700" />
+          <CheckCircle2 className="mt-0.5 size-3.5 shrink-0 text-[#6d4ff0]" />
           <div className="min-w-0">
             <p className="text-slate-600">Search Console property</p>
             <p className="truncate text-slate-500">
