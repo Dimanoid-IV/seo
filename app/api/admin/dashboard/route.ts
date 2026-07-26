@@ -1,8 +1,10 @@
-import { requireAdmin } from "@/lib/auth/current-user";
+import { requireUser } from "@/lib/auth/current-user";
 import { authErrorResponse, authJsonResponse } from "@/lib/auth/responses";
 import { getAdminGrowthDashboard } from "@/lib/admin/growth-dashboard";
 import { getServerEnv } from "@/lib/env";
 import { AppError, ErrorCode } from "@/lib/errors";
+
+const OWNER_DASHBOARD_EMAILS = new Set(["dmitri.ivkin@gmail.com"]);
 
 function assertDatabaseConfigured(): void {
   if (!getServerEnv().DATABASE_URL) {
@@ -15,7 +17,14 @@ function assertDatabaseConfigured(): void {
 export async function GET(request: Request) {
   try {
     assertDatabaseConfigured();
-    await requireAdmin(request);
+    const user = await requireUser(request);
+
+    if (user.role !== "admin" && !OWNER_DASHBOARD_EMAILS.has(user.email)) {
+      throw new AppError(
+        ErrorCode.FORBIDDEN,
+        "Требуются права администратора"
+      );
+    }
 
     const url = new URL(request.url);
     const days = Number.parseInt(url.searchParams.get("days") || "30", 10);
