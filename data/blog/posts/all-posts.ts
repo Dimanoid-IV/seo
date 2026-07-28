@@ -1,6 +1,7 @@
 import { buildPost } from "../types";
 import type { ArticleInput } from "../types";
 import { expertPosts2026 } from "./expert-posts-2026";
+import { rankboostDiscoveryPosts } from "./rankboost-discovery-posts";
 
 const articles: ArticleInput[] = [
   {
@@ -7478,6 +7479,7 @@ const articles: ArticleInput[] = [
       }
     ]
   },
+  ...rankboostDiscoveryPosts,
   ...expertPosts2026,
   {
     locale: "ru",
