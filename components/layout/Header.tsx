@@ -97,17 +97,6 @@ export function Header({ locale, dict }: HeaderProps) {
           >
             {dict.nav.auditCta}
           </TrackedLink>
-          <TrackedLink
-            event="register_click"
-            href="/register"
-            eventProperties={{ cta: "header" }}
-            className={cn(
-              buttonVariants({ size: "sm" }),
-              "rounded-xl bg-[#8169ff] text-white hover:bg-[#6d4ff0]"
-            )}
-          >
-            {dict.nav.cta}
-          </TrackedLink>
         </div>
 
         <div className="flex items-center gap-2 md:hidden">
@@ -157,18 +146,6 @@ export function Header({ locale, dict }: HeaderProps) {
                   )}
                 >
                   {dict.nav.auditCta}
-                </TrackedLink>
-                <TrackedLink
-                  event="register_click"
-                  href="/register"
-                  eventProperties={{ cta: "header_mobile" }}
-                  onClick={() => setOpen(false)}
-                  className={cn(
-                    buttonVariants(),
-                    "mt-4 rounded-xl bg-[#8169ff] text-white hover:bg-[#6d4ff0]"
-                  )}
-                >
-                  {dict.nav.cta}
                 </TrackedLink>
               </nav>
             </SheetContent>
