@@ -17,12 +17,14 @@ export type Dictionary = {
     blog: string;
     contact: string;
     login: string;
+    auditCta: string;
     cta: string;
   };
   hero: {
     badge: string;
     title: string;
     subtitle: string;
+    ctaAudit: string;
     ctaPrimary: string;
     ctaSecondary: string;
     trustLine: string;
@@ -302,6 +304,7 @@ export const dictionary: Dictionary = {
     blog: "Блог",
     contact: "Контакты",
     login: "Войти",
+    auditCta: "Бесплатный аудит",
     cta: "Начать бесплатно",
   },
   hero: {
@@ -309,6 +312,7 @@ export const dictionary: Dictionary = {
     title: "SEO-автопилот для малого бизнеса",
     subtitle:
       "RankBoost анализирует сайт, готовит месячный план статей и улучшений, пишет статьи в стиле бренда и может публиковать их автоматически на WordPress после вашего подтверждения плана.",
+    ctaAudit: "Проверить сайт бесплатно",
     ctaPrimary: "Начать бесплатно",
     ctaSecondary: "Как это работает",
     trustLine:

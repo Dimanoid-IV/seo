@@ -48,6 +48,7 @@ export const dictionary: Dictionary = {
     blog: "Blogi",
     contact: "Kontakt",
     login: "Logi sisse",
+    auditCta: "Tasuta audit",
     cta: "Alusta tasuta",
   },
   hero: {
@@ -55,6 +56,7 @@ export const dictionary: Dictionary = {
     title: "SEO autopiloot väikeettevõtetele",
     subtitle:
       "RankBoost analüüsib teie veebilehte, valmistab kuise plaani artiklitest ja parandustest, kirjutab brändistiilis ning saab avaldada automaatselt WordPressi pärast plaani kinnitamist.",
+    ctaAudit: "Kontrolli saiti tasuta",
     ctaPrimary: "Alusta tasuta",
     ctaSecondary: "Kuidas see töötab",
     trustLine:

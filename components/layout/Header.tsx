@@ -87,6 +87,17 @@ export function Header({ locale, dict }: HeaderProps) {
             {dict.nav.login}
           </TrackedLink>
           <TrackedLink
+            event="audit_preview_click"
+            href="/audit"
+            eventProperties={{ cta: "header" }}
+            className={cn(
+              buttonVariants({ size: "sm", variant: "outline" }),
+              "rounded-xl border-[#8169ff]/40 bg-white text-[#8169ff] hover:bg-[#8169ff]/10"
+            )}
+          >
+            {dict.nav.auditCta}
+          </TrackedLink>
+          <TrackedLink
             event="register_click"
             href="/register"
             eventProperties={{ cta: "header" }}
@@ -134,6 +145,18 @@ export function Header({ locale, dict }: HeaderProps) {
                   className="rounded-lg px-4 py-3 text-base text-slate-700 transition-colors hover:bg-slate-100"
                 >
                   {dict.nav.login}
+                </TrackedLink>
+                <TrackedLink
+                  event="audit_preview_click"
+                  href="/audit"
+                  eventProperties={{ cta: "header_mobile" }}
+                  onClick={() => setOpen(false)}
+                  className={cn(
+                    buttonVariants({ variant: "outline" }),
+                    "mt-3 rounded-xl border-[#8169ff]/40 bg-white text-[#8169ff] hover:bg-[#8169ff]/10"
+                  )}
+                >
+                  {dict.nav.auditCta}
                 </TrackedLink>
                 <TrackedLink
                   event="register_click"

@@ -6,6 +6,7 @@ export const PRODUCT_EVENTS = [
   // Public funnel
   "landing_view",
   "pricing_view",
+  "audit_preview_click",
   "register_click",
   "login_click",
   "plan_cta_click",

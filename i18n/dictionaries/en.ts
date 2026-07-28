@@ -48,6 +48,7 @@ export const dictionary: Dictionary = {
     blog: "Blog",
     contact: "Contact",
     login: "Log in",
+    auditCta: "Free audit",
     cta: "Start free",
   },
   hero: {
@@ -55,6 +56,7 @@ export const dictionary: Dictionary = {
     title: "SEO Autopilot for small businesses",
     subtitle:
       "RankBoost analyzes your website, prepares a monthly plan of articles and improvements, writes in your brand style, and can publish automatically to WordPress after you confirm the plan.",
+    ctaAudit: "Check my site free",
     ctaPrimary: "Start free",
     ctaSecondary: "See how it works",
     trustLine:
