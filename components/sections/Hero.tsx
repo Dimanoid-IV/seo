@@ -61,18 +61,6 @@ export function Hero({ locale, dict }: HeroProps) {
                 {dict.hero.ctaAudit}
                 <ArrowRight className="ml-2 h-4 w-4" />
               </TrackedLink>
-              <TrackedLink
-                event="register_click"
-                locale={locale}
-                eventProperties={{ cta: "hero_primary", source: "landing" }}
-                href="/register"
-                className={cn(
-                  buttonVariants({ size: "lg", variant: "outline" }),
-                  "inline-flex h-12 rounded-xl border-[#999999]/40 bg-white px-8 font-[var(--font-gilroy)] text-base font-bold text-[#181818] hover:bg-black/[0.04]"
-                )}
-              >
-                {dict.hero.ctaPrimary}
-              </TrackedLink>
               <ButtonLink
                 locale={locale}
                 href="/#how-it-works"
