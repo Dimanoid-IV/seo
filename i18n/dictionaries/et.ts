@@ -342,6 +342,15 @@ export const dictionary: Dictionary = {
     button: "Alusta tasuta",
     note: "Free paketil krediitkaart pole vajalik. Tühistamine igal ajal. Ilma positsioonigarantideta.",
   },
+  contactCta: {
+    eyebrow: "Vajate abi?",
+    title: "Kirjutage meile, kui soovite saidi ühendada või küsimuse esitada",
+    description:
+      "Rääkige, mida on vaja seadistada: veebiaudit, WordPress, custom-avaldamine, Google Search Console või esimene artikliplaan.",
+    formButton: "Ava kontaktivorm",
+    emailLabel: "Või kirjutage otse:",
+    responseTime: "Vastame tavaliselt 24 tunni jooksul tööpäevadel.",
+  },
   blog: {
     title: "Veebi kasv, SEO autopiloot ja AI-otsing",
     subtitle:

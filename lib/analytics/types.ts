@@ -7,6 +7,7 @@ export const PRODUCT_EVENTS = [
   "landing_view",
   "pricing_view",
   "audit_preview_click",
+  "contact_click",
   "register_click",
   "login_click",
   "plan_cta_click",

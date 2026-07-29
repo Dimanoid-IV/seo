@@ -154,6 +154,14 @@ export type Dictionary = {
     button: string;
     note: string;
   };
+  contactCta: {
+    eyebrow: string;
+    title: string;
+    description: string;
+    formButton: string;
+    emailLabel: string;
+    responseTime: string;
+  };
   blog: {
     title: string;
     subtitle: string;
@@ -599,6 +607,15 @@ export const dictionary: Dictionary = {
       "Начните бесплатно: RankBoost анализирует сайт и готовит месячный план. Подтвердите один раз — остановите и откатите в любой момент.",
     button: "Начать бесплатно",
     note: "Без кредитной карты на Free-плане. Отмена в любой момент. Без гарантий позиций.",
+  },
+  contactCta: {
+    eyebrow: "Нужна помощь?",
+    title: "Напишите нам, если хотите подключить сайт или задать вопрос",
+    description:
+      "Расскажите, какой у вас сайт и что нужно настроить: аудит, WordPress, custom-публикацию, Google Search Console или первый план статей.",
+    formButton: "Открыть форму связи",
+    emailLabel: "Или напрямую:",
+    responseTime: "Обычно отвечаем в течение 24 часов в рабочие дни.",
   },
   blog: {
     title: "Рост сайта, SEO-автопилот и AI-поиск",

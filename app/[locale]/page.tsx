@@ -14,6 +14,7 @@ import { AiSearchSection } from "@/components/sections/AiSearchSection";
 import { AutopilotModesSection } from "@/components/sections/AutopilotModesSection";
 import { MonthlyHowItWorksSection } from "@/components/sections/MonthlyHowItWorksSection";
 import { MarketingPricingPreview } from "@/components/sections/MarketingPricingPreview";
+import { ContactCtaSection } from "@/components/sections/ContactCtaSection";
 import { CTASection } from "@/components/sections/CTASection";
 
 type PageProps = {
@@ -61,6 +62,7 @@ export default async function HomePage({ params }: PageProps) {
       <AiSearchSection dict={dict} />
       <AutopilotModesSection dict={dict} />
       <MarketingPricingPreview locale={locale as Locale} dict={dict} />
+      <ContactCtaSection locale={locale as Locale} dict={dict} />
       <CTASection locale={locale as Locale} dict={dict} theme="marketing" />
     </div>
   );

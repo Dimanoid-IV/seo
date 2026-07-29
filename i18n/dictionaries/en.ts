@@ -343,6 +343,15 @@ export const dictionary: Dictionary = {
     button: "Start free",
     note: "No credit card required on the Free plan. Cancel anytime. No ranking guarantees.",
   },
+  contactCta: {
+    eyebrow: "Need help?",
+    title: "Contact us if you want to connect a site or ask a question",
+    description:
+      "Tell us what you need to set up: website audit, WordPress, custom publishing, Google Search Console, or your first article plan.",
+    formButton: "Open contact form",
+    emailLabel: "Or email directly:",
+    responseTime: "We usually reply within 24 hours on business days.",
+  },
   blog: {
     title: "Website growth, SEO autopilot, and AI search",
     subtitle:
