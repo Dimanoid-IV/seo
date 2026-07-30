@@ -2,8 +2,10 @@ import { buildPost } from "../types";
 import type { ArticleInput } from "../types";
 import { expertPosts2026 } from "./expert-posts-2026";
 import { rankboostDiscoveryPosts } from "./rankboost-discovery-posts";
+import { aiDiscoveryPosts2026 } from "./ai-discovery-posts-2026";
 
 const articles: ArticleInput[] = [
+  ...aiDiscoveryPosts2026,
   {
     locale: "ru",
     translationKey: "google-bard-seo-2026",

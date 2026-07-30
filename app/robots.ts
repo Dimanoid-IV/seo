@@ -3,10 +3,16 @@ import { siteUrl } from "@/i18n/config";
 
 export default function robots(): MetadataRoute.Robots {
   return {
-    rules: {
-      userAgent: "*",
-      allow: "/",
-    },
+    rules: [
+      {
+        userAgent: "*",
+        allow: "/",
+      },
+      {
+        userAgent: ["GPTBot", "OAI-SearchBot", "ChatGPT-User", "ClaudeBot", "Claude-SearchBot"],
+        allow: "/",
+      },
+    ],
     sitemap: [`${siteUrl}/sitemap.xml`, `${siteUrl}/hosted-sitemap`],
   };
 }

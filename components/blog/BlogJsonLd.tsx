@@ -18,15 +18,23 @@ export function BlogJsonLd({ post, locale }: BlogJsonLdProps) {
     description: post.metaDescription,
     datePublished: post.date,
     dateModified: post.date,
+    inLanguage: locale,
+    isAccessibleForFree: true,
     author: {
       "@type": "Organization",
+      "@id": `${siteUrl}/#organization`,
       name: post.author,
       url: siteUrl,
     },
     publisher: {
       "@type": "Organization",
+      "@id": `${siteUrl}/#organization`,
       name: "RankBoost.eu",
       url: siteUrl,
+      logo: {
+        "@type": "ImageObject",
+        url: `${siteUrl}/opengraph-image`,
+      },
     },
     mainEntityOfPage: { "@type": "WebPage", "@id": url },
     url,
