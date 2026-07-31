@@ -59,6 +59,8 @@ export const dictionary: Dictionary = {
     ctaAudit: "Check my site free",
     ctaPrimary: "Start free",
     ctaSecondary: "See how it works",
+    domainPlaceholder: "yourcompany.com",
+    domainSubmit: "Check",
     trustLine:
       "You confirm the plan once a month. Autopilot can be paused. Published posts can be rolled back.",
     dashboard: {
@@ -118,6 +120,44 @@ export const dictionary: Dictionary = {
         title: "Pause and roll back",
         description:
           "You can pause Autopilot anytime. WordPress posts published by RankBoost can be moved back to draft.",
+      },
+    ],
+  },
+  toolkits: {
+    eyebrow: "What strong SEO autopilots make obvious",
+    title: "Not an AI article generator — a full growth workflow",
+    subtitle:
+      "RankBoost connects the path from website analysis to publishing: audits, competitors, keywords, planning, content and integrations in one workflow.",
+    items: [
+      {
+        title: "Website audit",
+        description:
+          "Find technical issues, weak pages, content gaps and growth tasks that block organic traffic.",
+      },
+      {
+        title: "Competitors and keywords",
+        description:
+          "Understand which topics and queries already work in your niche, where the gaps are, and what should be prepared first.",
+      },
+      {
+        title: "Content plan and schedule",
+        description:
+          "Create a monthly plan of articles and improvements so the user confirms strategy once instead of returning every day.",
+      },
+      {
+        title: "Brand-voice articles",
+        description:
+          "Prepare content using the website, service, tone of voice, structure, FAQ, CTA and internal links.",
+      },
+      {
+        title: "Publish to the site",
+        description:
+          "Support WordPress and custom endpoints so content can move into the CMS instead of being copied from chat.",
+      },
+      {
+        title: "Progress tracking",
+        description:
+          "Show what is done, what is scheduled, which assets are ready and which integrations are needed for full autopilot.",
       },
     ],
   },

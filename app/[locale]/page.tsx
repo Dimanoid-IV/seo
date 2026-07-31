@@ -8,6 +8,7 @@ import { Hero } from "@/components/sections/Hero";
 import { TrustBadges } from "@/components/sections/TrustBadges";
 import { ProblemSection } from "@/components/sections/ProblemSection";
 import { SolutionSection } from "@/components/sections/SolutionSection";
+import { ToolkitsSection } from "@/components/sections/ToolkitsSection";
 import { ProcessSection } from "@/components/sections/ProcessSection";
 import { OutputsSection } from "@/components/sections/OutputsSection";
 import { AiSearchSection } from "@/components/sections/AiSearchSection";
@@ -56,6 +57,7 @@ export default async function HomePage({ params }: PageProps) {
       <TrustBadges dict={dict} />
       <ProblemSection dict={dict} />
       <SolutionSection dict={dict} />
+      <ToolkitsSection dict={dict} />
       <ProcessSection dict={dict} theme="marketing" />
       <MonthlyHowItWorksSection dict={dict} />
       <OutputsSection dict={dict} />

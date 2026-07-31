@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ArrowRight, Sparkles } from "lucide-react";
+import { ArrowRight, Search, Sparkles } from "lucide-react";
 import type { Locale } from "@/i18n/config";
 import type { Dictionary } from "@/i18n/dictionaries/ru";
 import { TrackedLink } from "@/components/analytics/TrackedLink";
@@ -47,7 +47,33 @@ export function Hero({ locale, dict }: HeroProps) {
               {dict.hero.subtitle}
             </p>
 
-            <div className="mt-10 flex flex-col gap-3 sm:flex-row sm:items-center">
+            <form
+              action="/audit"
+              className="mt-8 flex max-w-xl flex-col gap-3 rounded-2xl border border-[#c9bfff]/55 bg-white p-2 shadow-[0_18px_50px_-32px_rgba(24,24,24,0.45)] sm:flex-row"
+            >
+              <label className="sr-only" htmlFor="hero-audit-url">
+                {dict.hero.ctaAudit}
+              </label>
+              <div className="flex min-w-0 flex-1 items-center gap-2 rounded-xl bg-[#f7f7fb] px-4">
+                <Search className="h-4 w-4 shrink-0 text-[#8169ff]" />
+                <input
+                  id="hero-audit-url"
+                  name="url"
+                  inputMode="url"
+                  placeholder={dict.hero.domainPlaceholder}
+                  className="h-12 min-w-0 flex-1 bg-transparent text-base text-[#181818] outline-none placeholder:text-[#777777]"
+                />
+              </div>
+              <button
+                type="submit"
+                className="inline-flex h-12 items-center justify-center rounded-xl bg-[#8169ff] px-6 font-[var(--font-gilroy)] text-base font-bold text-white transition-colors hover:bg-[#6d4ff0]"
+              >
+                {dict.hero.domainSubmit}
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </button>
+            </form>
+
+            <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center">
               <TrackedLink
                 event="audit_preview_click"
                 locale={locale}

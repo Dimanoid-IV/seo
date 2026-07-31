@@ -27,6 +27,8 @@ export type Dictionary = {
     ctaAudit: string;
     ctaPrimary: string;
     ctaSecondary: string;
+    domainPlaceholder: string;
+    domainSubmit: string;
     trustLine: string;
     dashboard: {
       overview: string;
@@ -52,6 +54,12 @@ export type Dictionary = {
     items: string[];
   };
   solution: {
+    title: string;
+    subtitle: string;
+    items: { title: string; description: string }[];
+  };
+  toolkits: {
+    eyebrow: string;
     title: string;
     subtitle: string;
     items: { title: string; description: string }[];
@@ -323,6 +331,8 @@ export const dictionary: Dictionary = {
     ctaAudit: "Проверить сайт бесплатно",
     ctaPrimary: "Начать бесплатно",
     ctaSecondary: "Как это работает",
+    domainPlaceholder: "yourcompany.com",
+    domainSubmit: "Проверить",
     trustLine:
       "Вы подтверждаете план один раз в месяц. Автопилот можно остановить. Публикации можно откатить.",
     dashboard: {
@@ -382,6 +392,44 @@ export const dictionary: Dictionary = {
         title: "Пауза и откат",
         description:
           "Автопилот можно остановить в любой момент. Посты WordPress, опубликованные RankBoost, можно вернуть в черновик.",
+      },
+    ],
+  },
+  toolkits: {
+    eyebrow: "Как у сильных SEO-автопилотов",
+    title: "Не просто статья из AI, а полный цикл роста",
+    subtitle:
+      "RankBoost закрывает путь от анализа сайта до публикации: аудит, конкуренты, ключевые слова, план, статьи и интеграции в одном рабочем процессе.",
+    items: [
+      {
+        title: "Аудит сайта",
+        description:
+          "Находит технические ошибки, слабые страницы, проблемы с контентом и задачи, которые мешают сайту получать органический трафик.",
+      },
+      {
+        title: "Конкуренты и ключевые слова",
+        description:
+          "Помогает понять, какие темы и запросы уже работают в нише, где есть пробелы и что стоит подготовить первым.",
+      },
+      {
+        title: "Контент-план и расписание",
+        description:
+          "Собирает месячный план статей и улучшений, чтобы пользователь подтверждал стратегию один раз, а не возвращался каждый день.",
+      },
+      {
+        title: "Статьи в стиле бренда",
+        description:
+          "Готовит тексты с учётом сайта, услуги, tone of voice, структуры, FAQ, CTA и внутренних ссылок.",
+      },
+      {
+        title: "Публикация на сайт",
+        description:
+          "Поддерживает WordPress и custom endpoint: материалы можно отправлять в CMS, а не копировать вручную из чата.",
+      },
+      {
+        title: "Отслеживание прогресса",
+        description:
+          "Показывает, что сделано, что запланировано, какие материалы готовы и какие интеграции нужны для полного автопилота.",
       },
     ],
   },

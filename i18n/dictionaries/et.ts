@@ -59,6 +59,8 @@ export const dictionary: Dictionary = {
     ctaAudit: "Kontrolli saiti tasuta",
     ctaPrimary: "Alusta tasuta",
     ctaSecondary: "Kuidas see töötab",
+    domainPlaceholder: "yourcompany.com",
+    domainSubmit: "Kontrolli",
     trustLine:
       "Te kinnitate plaani üks kord kuus. Autopiloodi saab peatada. Avaldatud postitusi saab tagasi võtta.",
     dashboard: {
@@ -117,6 +119,44 @@ export const dictionary: Dictionary = {
         title: "Peatamine ja tagasivõtmine",
         description:
           "Autopiloodi saab igal ajal peatada. RankBoosti avaldatud WordPressi postitusi saab tagasi mustandisse viia.",
+      },
+    ],
+  },
+  toolkits: {
+    eyebrow: "Mida tugev SEO autopiloot peab selgelt näitama",
+    title: "Mitte lihtsalt AI artikkel, vaid täielik kasvutöövoog",
+    subtitle:
+      "RankBoost ühendab tee veebilehe analüüsist avaldamiseni: audit, konkurendid, märksõnad, plaan, sisu ja integratsioonid ühes töövoos.",
+    items: [
+      {
+        title: "Veebilehe audit",
+        description:
+          "Leiab tehnilised vead, nõrgad lehed, sisulüngad ja kasvutegevused, mis piiravad orgaanilist liiklust.",
+      },
+      {
+        title: "Konkurendid ja märksõnad",
+        description:
+          "Aitab mõista, millised teemad ja päringud nišis töötavad, kus on lüngad ja mida esimesena ette valmistada.",
+      },
+      {
+        title: "Sisuplaan ja ajakava",
+        description:
+          "Koostab kuise artiklite ja paranduste plaani, et kasutaja kinnitaks strateegia üks kord, mitte iga päev.",
+      },
+      {
+        title: "Brändihääles artiklid",
+        description:
+          "Valmistab sisu saidi, teenuse, tone of voice'i, struktuuri, FAQ, CTA ja siselinkide põhjal.",
+      },
+      {
+        title: "Avaldamine saidile",
+        description:
+          "Toetab WordPressi ja custom endpointi, et sisu liiguks CMS-i, mitte ei jääks käsitsi kopeerimiseks.",
+      },
+      {
+        title: "Progressi jälgimine",
+        description:
+          "Näitab, mis on tehtud, mis on plaanis, millised materjalid on valmis ja milliseid integratsioone täielikuks autopiloodiks vaja on.",
       },
     ],
   },
