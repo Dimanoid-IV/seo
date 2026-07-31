@@ -1,6 +1,5 @@
 "use client";
 
-import { motion } from "framer-motion";
 import { Sparkles } from "lucide-react";
 import type { Dictionary } from "@/i18n/dictionaries/ru";
 
@@ -13,12 +12,7 @@ export function HeroDashboard({ dict }: HeroDashboardProps) {
 
   return (
     <div className="relative mx-auto w-full max-w-lg lg:max-w-none">
-      <motion.div
-        initial={{ opacity: 0, x: 30 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.7, delay: 0.2 }}
-        className="relative"
-      >
+      <div className="relative">
         <div className="overflow-hidden rounded-3xl border border-slate-200/80 bg-white p-2 shadow-[0_24px_60px_-20px_rgba(15,23,42,0.25)]">
           <div className="rounded-2xl bg-[#0a0f1e] p-5 sm:p-6">
             <div className="mb-5 flex items-center justify-between gap-3">
@@ -86,7 +80,7 @@ export function HeroDashboard({ dict }: HeroDashboardProps) {
             </p>
           </div>
         </div>
-      </motion.div>
+      </div>
     </div>
   );
 }

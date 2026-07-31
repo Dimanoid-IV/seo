@@ -1,15 +1,11 @@
 "use client";
 
-import { motion } from "framer-motion";
 import { ArrowRight, Search, Sparkles } from "lucide-react";
 import type { Locale } from "@/i18n/config";
 import type { Dictionary } from "@/i18n/dictionaries/ru";
-import { TrackedLink } from "@/components/analytics/TrackedLink";
 import { ButtonLink } from "@/components/ui/ButtonLink";
-import { buttonVariants } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { HeroDashboard } from "@/components/sections/HeroDashboard";
-import { cn } from "@/lib/utils";
 
 type HeroProps = {
   locale: Locale;
@@ -24,13 +20,9 @@ export function Hero({ locale, dict }: HeroProps) {
         <div className="absolute -right-20 top-28 h-[460px] w-[460px] rounded-full bg-[#c9bfff]/35 blur-[105px]" />
       </div>
 
-      <div className="relative mx-auto max-w-[1200px] px-6 py-20 sm:py-24 lg:px-10 lg:py-28">
+      <div className="relative mx-auto max-w-[1200px] px-6 py-14 sm:py-18 lg:px-10 lg:py-20">
         <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-          >
+          <div>
             <Badge
               variant="outline"
               className="mb-6 rounded-full border-[#c9bfff]/50 bg-[#c9bfff]/20 text-[#8169ff]"
@@ -73,20 +65,7 @@ export function Hero({ locale, dict }: HeroProps) {
               </button>
             </form>
 
-            <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center">
-              <TrackedLink
-                event="audit_preview_click"
-                locale={locale}
-                eventProperties={{ cta: "hero_audit", source: "landing" }}
-                href="/audit"
-                className={cn(
-                  buttonVariants({ size: "lg" }),
-                  "inline-flex h-12 rounded-xl bg-[#8169ff] px-8 font-[var(--font-gilroy)] text-base font-bold text-white hover:bg-[#6d4ff0]"
-                )}
-              >
-                {dict.hero.ctaAudit}
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </TrackedLink>
+            <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center">
               <ButtonLink
                 locale={locale}
                 href="/#how-it-works"
@@ -101,7 +80,7 @@ export function Hero({ locale, dict }: HeroProps) {
             <p className="mt-5 text-sm leading-relaxed text-[#555555]">
               {dict.hero.trustLine}
             </p>
-          </motion.div>
+          </div>
 
           <HeroDashboard dict={dict} />
         </div>
