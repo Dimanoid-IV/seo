@@ -30,6 +30,18 @@ export type WordPressPublishResult = {
   livePublished: boolean;
 };
 
+export type WordPressPublishVerificationResult = {
+  verified: boolean;
+  statusCode?: number;
+  checks: {
+    hasPublicUrl: boolean;
+    statusOk: boolean;
+    titleFound: boolean;
+    contentSignalFound: boolean;
+  };
+  errorCode?: string;
+};
+
 function basicAuthHeader(username: string, applicationPassword: string): string {
   const password = applicationPassword.replace(/\s+/g, "");
   const token = Buffer.from(`${username}:${password}`, "utf8").toString("base64");
@@ -132,5 +144,92 @@ export async function createWordPressRestPublishedPost(
     link: typeof body.link === "string" ? body.link : null,
     status,
     livePublished,
+  };
+}
+
+function normalizeText(value: string): string {
+  return value
+    .toLowerCase()
+    .replace(/<[^>]*>/g, " ")
+    .replace(/&nbsp;/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function contentSignalWordsFromHtml(contentHtml: string): string[] {
+  const normalized = normalizeText(contentHtml);
+  if (!normalized) return [];
+  return [...new Set(normalized.split(" ").filter((word) => word.length > 3))]
+    .slice(0, 12);
+}
+
+/**
+ * Verify that a live WordPress publish is publicly reachable and contains
+ * article-specific content. API success alone is not enough for SUCCESS.
+ */
+export async function verifyWordPressPublishedPost(input: {
+  publicUrl: string | null;
+  expectedTitle: string;
+  expectedContentHtml: string;
+}): Promise<WordPressPublishVerificationResult> {
+  const checks = {
+    hasPublicUrl: Boolean(input.publicUrl),
+    statusOk: false,
+    titleFound: false,
+    contentSignalFound: false,
+  };
+
+  if (!input.publicUrl) {
+    return { verified: false, checks, errorCode: "missing_public_url" };
+  }
+
+  let response: Response;
+  try {
+    response = await fetch(input.publicUrl, {
+      method: "GET",
+      headers: { Accept: "text/html,application/xhtml+xml" },
+      signal: AbortSignal.timeout(TIMEOUT_MS),
+      redirect: "follow",
+    });
+  } catch (error) {
+    safeLogError("wordpress.rest.verify_publish", error, {});
+    return { verified: false, checks, errorCode: "verification_fetch_failed" };
+  }
+
+  checks.statusOk = response.status >= 200 && response.status < 300;
+  const statusCode = response.status;
+  if (!checks.statusOk) {
+    return { verified: false, statusCode, checks, errorCode: "public_url_not_ok" };
+  }
+
+  let body = "";
+  try {
+    body = await response.text();
+  } catch {
+    body = "";
+  }
+
+  const normalizedBody = normalizeText(body);
+  const normalizedTitle = normalizeText(input.expectedTitle);
+  const signalWords = contentSignalWordsFromHtml(input.expectedContentHtml);
+  const matchedSignalWords = signalWords.filter((word) =>
+    normalizedBody.includes(word)
+  );
+
+  checks.titleFound =
+    normalizedTitle.length > 0 && normalizedBody.includes(normalizedTitle);
+  checks.contentSignalFound = Boolean(
+    signalWords.length > 0 &&
+      matchedSignalWords.length >= Math.min(5, signalWords.length)
+  );
+
+  return {
+    verified: checks.statusOk && checks.titleFound && checks.contentSignalFound,
+    statusCode,
+    checks,
+    errorCode:
+      checks.titleFound && checks.contentSignalFound
+        ? undefined
+        : "published_content_not_verified",
   };
 }

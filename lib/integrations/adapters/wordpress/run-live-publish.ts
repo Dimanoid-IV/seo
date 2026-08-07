@@ -40,7 +40,10 @@ import {
   getLivePublishMinQualityScore,
   utcDayBounds,
 } from "@/lib/integrations/live-publish-rollout";
-import { createWordPressRestPublishedPost } from "@/lib/integrations/adapters/wordpress/publish-article";
+import {
+  createWordPressRestPublishedPost,
+  verifyWordPressPublishedPost,
+} from "@/lib/integrations/adapters/wordpress/publish-article";
 import {
   buildWordPressPublishIdempotencyKey,
   canLivePublishArticleViaWordPress,
@@ -543,6 +546,67 @@ export async function runWordPressLivePublishForPlanArticle(
     };
   }
 
+  const verification = await verifyWordPressPublishedPost({
+    publicUrl: publishResult.link,
+    expectedTitle: article.title,
+    expectedContentHtml: contentHtml,
+  });
+
+  await appendIntegrationExecutionEvent({
+    jobId: job.id,
+    type: "verification",
+    status: IntegrationExecutionStatus.RUNNING,
+    message: verification.verified
+      ? "Published WordPress URL verified."
+      : "Published WordPress URL could not be fully verified.",
+    metadata: {
+      verified: verification.verified,
+      statusCode: verification.statusCode ?? null,
+      checks: verification.checks,
+      errorCode: verification.errorCode ?? null,
+    },
+  });
+
+  if (!verification.verified) {
+    await markJobPartiallyApplied({
+      jobId: job.id,
+      externalId: publishResult.postId,
+      externalUrl: publishResult.link ?? publishResult.editUrl,
+      result: {
+        status: "publish",
+        livePublished: true,
+        verified: false,
+        verification,
+        editUrl: publishResult.editUrl,
+      },
+      message:
+        "WordPress returned publish, but RankBoost could not verify the public page content.",
+    });
+
+    await prisma.article.update({
+      where: { id: article.id },
+      data: {
+        wordpressPostId: publishResult.postId,
+        wordpressEditUrl: publishResult.editUrl,
+        wordpressPublishedUrl: publishResult.link,
+      },
+    });
+
+    return {
+      allowed: true,
+      gate,
+      jobId: job.id,
+      created,
+      executed: true,
+      livePublished: false,
+      wordpressPostId: publishResult.postId,
+      publishedUrl: publishResult.link,
+      editUrl: publishResult.editUrl,
+      blockedReason: "verification_failed",
+      summaryKey: "wordpressPublishVerificationFailed",
+    };
+  }
+
   const now = new Date();
   await prisma.$transaction(async (tx) => {
     await tx.article.update({
@@ -616,6 +680,8 @@ export async function runWordPressLivePublishForPlanArticle(
     result: {
       status: "publish",
       livePublished: true,
+      verified: true,
+      verification,
       editUrl: publishResult.editUrl,
     },
   });
