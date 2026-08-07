@@ -40,6 +40,7 @@ export function buildResearchTaskContext(
       schemaSuggestions: brief.schemaSuggestions,
       qualityRequirements: brief.qualityRequirements,
       evidence: brief.evidence,
+      seoStrategy: brief.seoStrategy ?? null,
       riskLevel: brief.riskLevel,
     },
     brandVoice: brandVoice ?? null,
@@ -49,6 +50,9 @@ export function buildResearchTaskContext(
       "Structure: H1 title, short intro, 5–7 useful H2 sections with practical buying/decision advice, an FAQ, and a final call-to-action section.",
       "End with a natural, non-aggressive call-to-action that invites the reader to order/request the service or contact the business, relevant to the topic and website.",
       "Use concrete language from the research brief and website context.",
+      brief.seoStrategy
+        ? `SEO strategy confidence: ${brief.seoStrategy.confidence}. Use its demand evidence, page map, business value, and data gaps. Do not invent missing metrics.`
+        : "If SEO metrics are unavailable, be honest: do not invent volumes, rankings, or competitor data.",
       "Vary sentence rhythm; avoid robotic section sameness.",
       "Preserve SEO structure without keyword stuffing.",
       "Include FAQ naturally within the article flow.",

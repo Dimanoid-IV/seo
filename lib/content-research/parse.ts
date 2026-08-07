@@ -1,4 +1,9 @@
-import type { ContentResearchBrief } from "./types";
+import type {
+  ContentResearchBrief,
+  SeoDemandEvidence,
+  SeoPageMapItem,
+  SeoStrategyConfidence,
+} from "./types";
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
@@ -40,6 +45,141 @@ const VALID_EVIDENCE_SOURCES = new Set([
   "AI_PROMPT",
   "MANUAL",
 ]);
+
+const VALID_CONFIDENCE = new Set(["LOW", "MEDIUM", "HIGH"]);
+
+function parseSeoStrategy(value: unknown): ContentResearchBrief["seoStrategy"] {
+  if (!isRecord(value)) return undefined;
+  if (value.methodologyVersion !== "ai-assisted-seo-v1") return undefined;
+  const locale: "ru" | "et" | "en" =
+    value.locale === "ru" || value.locale === "et" || value.locale === "en"
+      ? value.locale
+      : "en";
+  const confidence =
+    typeof value.confidence === "string" && VALID_CONFIDENCE.has(value.confidence)
+      ? (value.confidence as SeoStrategyConfidence)
+      : "LOW";
+  const generatedAt =
+    typeof value.generatedAt === "string"
+      ? value.generatedAt
+      : new Date(0).toISOString();
+
+  const demandEvidence: SeoDemandEvidence[] = Array.isArray(value.demandEvidence)
+    ? value.demandEvidence
+        .map((item) => {
+          if (!isRecord(item)) return null;
+          const sourceVal = typeof item.source === "string" ? item.source : null;
+          const strength =
+            typeof item.strength === "string" && VALID_CONFIDENCE.has(item.strength)
+              ? item.strength
+              : null;
+          if (!sourceVal || !VALID_EVIDENCE_SOURCES.has(sourceVal) || !strength) {
+            return null;
+          }
+          return {
+            source: sourceVal as ContentResearchBrief["evidence"][0]["source"],
+            label: typeof item.label === "string" ? item.label : "",
+            value: typeof item.value === "string" ? item.value : "",
+            locale,
+            observedAt:
+              typeof item.observedAt === "string" ? item.observedAt : generatedAt,
+            strength: strength as SeoStrategyConfidence,
+          };
+        })
+        .filter((item): item is NonNullable<typeof item> => item !== null)
+    : [];
+
+  const pageMap: SeoPageMapItem[] = Array.isArray(value.pageMap)
+    ? value.pageMap
+        .map((item) => {
+          if (!isRecord(item)) return null;
+          const intent =
+            typeof item.intent === "string" && VALID_INTENTS.has(item.intent)
+              ? item.intent
+              : null;
+          const confidenceValue =
+            typeof item.confidence === "string" && VALID_CONFIDENCE.has(item.confidence)
+              ? item.confidence
+              : "LOW";
+          if (!intent) return null;
+          const pageType: SeoPageMapItem["pageType"] =
+            item.pageType === "SERVICE_PAGE" ||
+            item.pageType === "CATEGORY_PAGE" ||
+            item.pageType === "FIX_EXISTING_PAGE"
+              ? item.pageType
+              : "ARTICLE";
+          const demand: SeoPageMapItem["demand"] =
+            item.demand === "OBSERVED" || item.demand === "UNKNOWN"
+              ? item.demand
+              : "INFERRED";
+          const difficulty: SeoPageMapItem["difficulty"] =
+            item.difficulty === "LOW" ||
+            item.difficulty === "MEDIUM" ||
+            item.difficulty === "HIGH"
+              ? item.difficulty
+              : "UNKNOWN";
+          const businessValue: SeoPageMapItem["businessValue"] =
+            item.businessValue === "LOW" || item.businessValue === "MEDIUM"
+              ? item.businessValue
+              : "HIGH";
+          return {
+            cluster: typeof item.cluster === "string" ? item.cluster : "",
+            intent: intent as ContentResearchBrief["searchIntent"],
+            primaryQuery:
+              typeof item.primaryQuery === "string" ? item.primaryQuery : "",
+            supportingQueries: parseStringArray(item.supportingQueries),
+            targetUrl: typeof item.targetUrl === "string" ? item.targetUrl : "",
+            pageType,
+            demand,
+            difficulty,
+            businessValue,
+            confidence: confidenceValue as SeoStrategyConfidence,
+            nextAction:
+              typeof item.nextAction === "string" ? item.nextAction : "",
+          };
+        })
+        .filter((item): item is NonNullable<typeof item> => item !== null)
+    : [];
+
+  const economicsValue = isRecord(value.economics) ? value.economics : {};
+
+  return {
+    methodologyVersion: "ai-assisted-seo-v1",
+    locale,
+    confidence,
+    observations: parseStringArray(value.observations),
+    assumptions: parseStringArray(value.assumptions),
+    estimates: parseStringArray(value.estimates),
+    recommendations: parseStringArray(value.recommendations),
+    demandEvidence,
+    pageMap,
+    doNotPublishYet: parseStringArray(value.doNotPublishYet),
+    dataGaps: parseStringArray(value.dataGaps),
+    economics: {
+      expectedValue:
+        economicsValue.expectedValue === "LOW" ||
+        economicsValue.expectedValue === "MEDIUM"
+          ? economicsValue.expectedValue
+          : "HIGH",
+      productionCost:
+        economicsValue.productionCost === "HIGH" ||
+        economicsValue.productionCost === "MEDIUM"
+          ? economicsValue.productionCost
+          : "LOW",
+      timeToImpact:
+        economicsValue.timeToImpact === "SHORT" ||
+        economicsValue.timeToImpact === "MEDIUM" ||
+        economicsValue.timeToImpact === "LONG"
+          ? economicsValue.timeToImpact
+          : "UNKNOWN",
+      rationale:
+        typeof economicsValue.rationale === "string"
+          ? economicsValue.rationale
+          : "",
+    },
+    generatedAt,
+  };
+}
 
 function parseStringArray(value: unknown): string[] {
   if (!Array.isArray(value)) {
@@ -191,6 +331,7 @@ export function parseContentResearchBrief(
         ? value.aiReadableSummarySuggestion
         : undefined,
     evidence,
+    seoStrategy: parseSeoStrategy(value.seoStrategy),
     qualityRequirements: parseStringArray(value.qualityRequirements),
     riskLevel,
     status: VALID_STATUSES.has(status)

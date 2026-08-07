@@ -62,6 +62,54 @@ export type ResearchEvidence = {
   value: string;
 };
 
+export type SeoStrategyConfidence = "LOW" | "MEDIUM" | "HIGH";
+
+export type SeoDemandEvidence = {
+  source: ResearchEvidenceSource;
+  label: string;
+  value: string;
+  locale: "en" | "ru" | "et";
+  observedAt: string;
+  strength: SeoStrategyConfidence;
+};
+
+export type SeoPageMapItem = {
+  cluster: string;
+  intent: SearchIntent;
+  primaryQuery: string;
+  supportingQueries: string[];
+  targetUrl: string;
+  pageType: "ARTICLE" | "SERVICE_PAGE" | "CATEGORY_PAGE" | "FIX_EXISTING_PAGE";
+  demand: "OBSERVED" | "INFERRED" | "UNKNOWN";
+  difficulty: "LOW" | "MEDIUM" | "HIGH" | "UNKNOWN";
+  businessValue: "LOW" | "MEDIUM" | "HIGH";
+  confidence: SeoStrategyConfidence;
+  nextAction: string;
+};
+
+export type SeoEconomicsEstimate = {
+  expectedValue: "LOW" | "MEDIUM" | "HIGH";
+  productionCost: "LOW" | "MEDIUM" | "HIGH";
+  timeToImpact: "SHORT" | "MEDIUM" | "LONG" | "UNKNOWN";
+  rationale: string;
+};
+
+export type SeoStrategySnapshot = {
+  methodologyVersion: "ai-assisted-seo-v1";
+  locale: "en" | "ru" | "et";
+  confidence: SeoStrategyConfidence;
+  observations: string[];
+  assumptions: string[];
+  estimates: string[];
+  recommendations: string[];
+  demandEvidence: SeoDemandEvidence[];
+  pageMap: SeoPageMapItem[];
+  doNotPublishYet: string[];
+  dataGaps: string[];
+  economics: SeoEconomicsEstimate;
+  generatedAt: string;
+};
+
 export type ContentResearchBrief = {
   /** Stable key: plan-item id, task id, or generated uuid */
   id: string;
@@ -87,6 +135,7 @@ export type ContentResearchBrief = {
   llmsTxtSuggestion?: string;
   aiReadableSummarySuggestion?: string;
   evidence: ResearchEvidence[];
+  seoStrategy?: SeoStrategySnapshot;
   qualityRequirements: string[];
   riskLevel: "LOW" | "MEDIUM" | "HIGH";
   status: ResearchBriefStatus;

@@ -2,6 +2,7 @@ import { ArticleStatus } from "@prisma/client";
 
 import { isUnsafeArticleTopic } from "./keywords";
 import { parseContentResearchBrief } from "./parse";
+import { hasPublishableSeoEvidence } from "./seo-strategy";
 import type { ContentResearchBrief } from "./types";
 
 export type ResearchReadinessReasonKey =
@@ -13,6 +14,7 @@ export type ResearchReadinessReasonKey =
   | "missingGeoPrompts"
   | "unsafePrimaryKeyword"
   | "unsafeRecommendedTitle"
+  | "weakSeoEvidence"
   | "archivedLinkedArticle"
   | "linkedArticleQualityFailed";
 
@@ -56,6 +58,10 @@ function analyzeBriefContent(
 
   if (brief.geoPrompts.length < 1) {
     return { ready: false, reasonKey: "missingGeoPrompts" };
+  }
+
+  if (!hasPublishableSeoEvidence(brief)) {
+    return { ready: false, reasonKey: "weakSeoEvidence" };
   }
 
   return { ready: true };

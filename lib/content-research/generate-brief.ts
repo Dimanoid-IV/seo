@@ -23,6 +23,10 @@ import {
   resolveCompetitorsFromContext,
   type ResearchSourceContext,
 } from "./source-context";
+import {
+  appendSeoStrategyQualityRequirements,
+  buildSeoStrategySnapshot,
+} from "./seo-strategy";
 
 export type GenerateBriefInput = {
   websiteId: string;
@@ -328,6 +332,19 @@ export async function generateContentResearchBrief(
     locale,
   });
 
+  const generatedAt = new Date().toISOString();
+  const seoStrategy = buildSeoStrategySnapshot({
+    context,
+    locale,
+    primaryKeyword: primary.keyword,
+    secondaryKeywords,
+    searchIntent,
+    buyerQuestion,
+    competitors,
+    competitorsUnavailable: competitorResult.unavailable,
+    generatedAt,
+  });
+
   const brief: ContentResearchBrief = {
     id: input.briefId ?? randomUUID(),
     websiteId: input.websiteId,
@@ -358,10 +375,14 @@ export async function generateContentResearchBrief(
     llmsTxtSuggestion: `Add a concise summary of "${primary.keyword}" to llms.txt for AI crawlers.`,
     aiReadableSummarySuggestion: `One-paragraph factual summary about ${primary.keyword} for ${context.website.displayName ?? "your business"}.`,
     evidence: buildEvidence(context, primary.sourceLabel, competitors),
-    qualityRequirements: buildQualityRequirements(),
+    seoStrategy,
+    qualityRequirements: appendSeoStrategyQualityRequirements(
+      buildQualityRequirements(),
+      seoStrategy
+    ),
     riskLevel: input.riskLevel ?? "MEDIUM",
     status: "READY_FOR_GENERATION",
-    generatedAt: new Date().toISOString(),
+    generatedAt,
   };
 
   if (competitorResult.unavailable && !context.gscConnected && keywordCandidates.length < 2) {
