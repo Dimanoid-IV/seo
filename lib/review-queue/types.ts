@@ -71,6 +71,7 @@ export type ReviewQueueItem = {
     approvalRequired: boolean;
     customPublishingConnected?: boolean;
     customPublishingHost?: string | null;
+    wordpressConnected?: boolean;
   };
 };
 

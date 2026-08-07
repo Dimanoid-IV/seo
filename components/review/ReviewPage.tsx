@@ -836,7 +836,8 @@ export function ReviewPage() {
                     </>
                   ) : (
                     <>
-                      {item.preparedFix?.customPublishingConnected ? (
+                      {item.preparedFix?.customPublishingConnected ||
+                      item.preparedFix?.wordpressConnected ? (
                         <Button
                           type="button"
                           disabled={isLoading}

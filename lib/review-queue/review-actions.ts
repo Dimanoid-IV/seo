@@ -25,6 +25,7 @@ import {
   deliverCustomFixWebhook,
 } from "@/lib/publishing/custom-webhook";
 import { getCustomPublishingWebhookUrl } from "@/lib/publishing/custom-webhook-config";
+import { runWordPressMetadataUpdateForTask } from "@/lib/integrations/adapters/wordpress/run-metadata-update";
 
 import type { ReviewAction, ReviewItemType } from "./types";
 import { trackEventFireAndForget } from "@/lib/analytics/track";
@@ -261,6 +262,69 @@ async function applyTaskFixAction(input: ReviewActionInput) {
   }
 
   if (input.action === "APPLY_TO_SITE") {
+    const isWordPressMetadataFix =
+      parsed.expectedAction === "UPDATE_METADATA" ||
+      (parsed.preparedFix.requiresIntegration === "wordpress" &&
+        parsed.preparedFix.type === "META_FIX" &&
+        parsed.preparedFix.field === "metadata");
+
+    if (isWordPressMetadataFix) {
+      const result = await runWordPressMetadataUpdateForTask({
+        userId: input.currentUser.id,
+        organizationId: task.organizationId,
+        websiteId: task.websiteId,
+        taskId: task.id,
+      });
+
+      if (!result.applied || !result.verified) {
+        return {
+          taskId: task.id,
+          status: result.executed
+            ? ("PARTIALLY_APPLIED" as const)
+            : ("NOT_APPLIED" as const),
+          jobId: result.jobId ?? null,
+          externalId: result.externalId ?? null,
+          externalUrl: result.externalUrl ?? null,
+          errorCode: result.errorCode ?? null,
+          errorMessage:
+            result.errorMessage ??
+            "WordPress accepted no verified metadata change.",
+        };
+      }
+
+      const recommendationJson = updatePreparedFixStatus(
+        task.recommendationJson,
+        "APPROVED"
+      );
+
+      if (!recommendationJson) {
+        throw new AppError(
+          ErrorCode.INTERNAL_ERROR,
+          "Could not update prepared fix"
+        );
+      }
+
+      await prisma.task.update({
+        where: { id: task.id },
+        data: {
+          recommendationJson: recommendationJson as Prisma.InputJsonValue,
+        },
+      });
+
+      await completeTask({
+        taskId: task.id,
+        currentUser: input.currentUser,
+      });
+
+      return {
+        taskId: task.id,
+        status: "APPLIED" as const,
+        jobId: result.jobId ?? null,
+        externalId: result.externalId ?? null,
+        externalUrl: result.externalUrl ?? null,
+      };
+    }
+
     await assertWebhookReadyForExplicitSend(task.websiteId);
     const url = await getCustomPublishingWebhookUrl(task.websiteId);
     if (!url) {

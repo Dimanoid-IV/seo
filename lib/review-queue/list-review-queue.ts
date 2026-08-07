@@ -6,6 +6,7 @@ import {
   SocialPostStatus,
   TaskStatus,
   WebsiteStatus,
+  WordPressConnectionStatus,
 } from "@prisma/client";
 
 import { resolveOwnedOrganization } from "@/lib/auth/queries";
@@ -184,6 +185,7 @@ export async function getReviewQueue(
     tasksWithFixes,
     autopilotPlans,
     customPublishing,
+    wordpressConnection,
   ] =
     await Promise.all([
     prisma.emailApproval.findMany({
@@ -289,11 +291,21 @@ export async function getReviewQueue(
       },
     }),
     getCustomPublishingConfig(website.id),
+    prisma.wordPressConnection.findFirst({
+      where: {
+        websiteId: website.id,
+        organizationId,
+        status: WordPressConnectionStatus.CONNECTED,
+        disconnectedAt: null,
+      },
+      select: { id: true },
+    }),
   ]);
 
   const customPublishingConnected = Boolean(
     customPublishing?.endpointConfigured && customPublishing.testedAt
   );
+  const wordpressConnected = Boolean(wordpressConnection);
 
   const autopilotByArticleId = new Map<
     string,
@@ -460,6 +472,11 @@ export async function getReviewQueue(
 
     const fixType: ReviewItemType = preparedFix.type;
     const group: Exclude<ReviewItemGroup, "ALL"> = "SEO";
+    const wordpressCanApplyPreparedFix =
+      wordpressConnected &&
+      preparedFix.requiresIntegration === "wordpress" &&
+      preparedFix.type === "META_FIX" &&
+      preparedFix.field === "metadata";
 
     items.push({
       id: reviewItemId(fixType, task.id),
@@ -485,6 +502,7 @@ export async function getReviewQueue(
         approvalRequired: preparedFix.approvalRequired,
         customPublishingConnected,
         customPublishingHost: customPublishing?.endpointHost ?? null,
+        wordpressConnected: wordpressCanApplyPreparedFix,
       },
     });
   }
