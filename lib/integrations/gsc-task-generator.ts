@@ -10,6 +10,7 @@ import {
 
 import { getPrisma } from "@/lib/db";
 import type { GscInsight, GscMetricsSummary } from "@/lib/integrations/gsc-types";
+import type { GscPageQueryOpportunity } from "@/lib/integrations/gsc-opportunities";
 
 const GSC_TASK_SOURCE = "google_search_console";
 
@@ -48,6 +49,7 @@ export type GenerateTasksFromGscInsightsInput = {
   userId: string;
   metricsSummary: GscMetricsSummary;
   insights: GscInsight[];
+  pageQueryOpportunities?: GscPageQueryOpportunity[];
   tx?: Prisma.TransactionClient;
 };
 
@@ -57,8 +59,19 @@ export type GenerateTasksFromGscInsightsResult = {
 
 type TaskRecommendationJson = {
   gscInsightCode?: string;
+  gscOpportunityId?: string;
   recommendation?: string;
   insightTitle?: string;
+  targetUrl?: string;
+  targetQuery?: string;
+  measured?: boolean;
+  metrics?: {
+    clicks: number;
+    impressions: number;
+    ctr: number;
+    position: number;
+    period: { startDate: string; endDate: string };
+  };
   source?: string;
 };
 
@@ -74,11 +87,41 @@ function getGscInsightCodeFromTask(recommendationJson: unknown): string | null {
   return typeof parsed.gscInsightCode === "string" ? parsed.gscInsightCode : null;
 }
 
+function getGscOpportunityIdFromTask(recommendationJson: unknown): string | null {
+  const parsed = parseTaskRecommendationJson(recommendationJson);
+  return typeof parsed.gscOpportunityId === "string"
+    ? parsed.gscOpportunityId
+    : null;
+}
+
 function buildGscTaskRecommendationJson(insight: GscInsight): Prisma.InputJsonValue {
   return {
     gscInsightCode: insight.code,
     insightTitle: insight.title,
     recommendation: insight.recommendation,
+    source: GSC_TASK_SOURCE,
+  };
+}
+
+function buildGscOpportunityTaskRecommendationJson(
+  opportunity: GscPageQueryOpportunity
+): Prisma.InputJsonValue {
+  return {
+    gscOpportunityId: opportunity.id,
+    gscInsightCode: opportunity.kind,
+    insightTitle: opportunity.title,
+    recommendation: opportunity.recommendation,
+    targetUrl: opportunity.page,
+    targetQuery: opportunity.query,
+    measured: true,
+    metrics: {
+      clicks: opportunity.clicks,
+      impressions: opportunity.impressions,
+      ctr: opportunity.ctr,
+      position: opportunity.position,
+      period: opportunity.period,
+    },
+    expectedAction: "UPDATE_METADATA",
     source: GSC_TASK_SOURCE,
   };
 }
@@ -95,8 +138,9 @@ export async function generateTasksFromGscInsights(
   const actionableInsights = input.insights.filter(
     (insight) => insight.code in GSC_TASK_BY_INSIGHT_CODE
   );
+  const pageQueryOpportunities = input.pageQueryOpportunities ?? [];
 
-  if (actionableInsights.length === 0) {
+  if (actionableInsights.length === 0 && pageQueryOpportunities.length === 0) {
     return { tasksCreated: 0 };
   }
 
@@ -119,9 +163,39 @@ export async function generateTasksFromGscInsights(
       .map((task) => getGscInsightCodeFromTask(task.recommendationJson))
       .filter((code): code is string => code != null)
   );
+  const existingOpportunityIds = new Set(
+    existingTasks
+      .map((task) => getGscOpportunityIdFromTask(task.recommendationJson))
+      .filter((code): code is string => code != null)
+  );
   const existingTitles = new Set(existingTasks.map((task) => task.title));
 
   const tasksToCreate: Prisma.TaskCreateManyInput[] = [];
+
+  for (const opportunity of pageQueryOpportunities) {
+    if (
+      existingOpportunityIds.has(opportunity.id) ||
+      existingTitles.has(opportunity.title)
+    ) {
+      continue;
+    }
+
+    tasksToCreate.push({
+      websiteId: input.websiteId,
+      organizationId: input.organizationId,
+      title: opportunity.title,
+      description: opportunity.recommendation,
+      category: TaskCategory.CONTENT,
+      priority:
+        opportunity.priority === "HIGH" ? TaskPriority.HIGH : TaskPriority.MEDIUM,
+      status: TaskStatus.OPEN,
+      source: TaskSource.SYSTEM,
+      recommendationJson: buildGscOpportunityTaskRecommendationJson(opportunity),
+    });
+
+    existingOpportunityIds.add(opportunity.id);
+    existingTitles.add(opportunity.title);
+  }
 
   for (const insight of actionableInsights) {
     const definition = GSC_TASK_BY_INSIGHT_CODE[insight.code];

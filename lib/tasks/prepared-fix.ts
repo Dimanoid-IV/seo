@@ -12,6 +12,9 @@ export type ParsedTaskRecommendationWithFix = {
   recommendation: string | null;
   estimatedFixMinutes: number | null;
   auditCheckCode: string | null;
+  expectedAction: string | null;
+  targetUrl: string | null;
+  targetQuery: string | null;
   preparedFix: PreparedFix | null;
 };
 
@@ -113,6 +116,9 @@ export function parseTaskRecommendationWithFix(
       recommendation: null,
       estimatedFixMinutes: null,
       auditCheckCode: null,
+      expectedAction: null,
+      targetUrl: null,
+      targetQuery: null,
       preparedFix: null,
     };
   }
@@ -127,6 +133,9 @@ export function parseTaskRecommendationWithFix(
         ? record.estimatedFixMinutes
         : null,
     auditCheckCode: readString(record.auditCheckCode),
+    expectedAction: readString(record.expectedAction),
+    targetUrl: readString(record.targetUrl),
+    targetQuery: readString(record.targetQuery),
     preparedFix: parsePreparedFix(record.preparedFix),
   };
 }
@@ -170,8 +179,13 @@ export function updatePreparedFixStatus(
 }
 
 export function resolveFixType(
-  auditCheckCode: string | null
+  auditCheckCode: string | null,
+  expectedAction?: string | null
 ): PreparedFix["type"] {
+  if (expectedAction === "UPDATE_METADATA") {
+    return "META_FIX";
+  }
+
   if (!auditCheckCode) {
     return "TASK_FIX";
   }
@@ -193,7 +207,14 @@ export function resolveFixType(
   return "TASK_FIX";
 }
 
-export function resolveFixField(auditCheckCode: string | null): string | undefined {
+export function resolveFixField(
+  auditCheckCode: string | null,
+  expectedAction?: string | null
+): string | undefined {
+  if (expectedAction === "UPDATE_METADATA") {
+    return "metadata";
+  }
+
   if (!auditCheckCode) {
     return undefined;
   }
@@ -220,6 +241,9 @@ function buildSuggestedFix(input: {
   recommendation: string | null;
   whyItMatters: string | null;
   auditCheckCode: string | null;
+  expectedAction?: string | null;
+  targetUrl?: string | null;
+  targetQuery?: string | null;
 }): {
   title: string;
   preview: string;
@@ -228,7 +252,7 @@ function buildSuggestedFix(input: {
   whyItMatters: string;
   implementationNotes: string;
 } {
-  const field = resolveFixField(input.auditCheckCode);
+  const field = resolveFixField(input.auditCheckCode, input.expectedAction);
   const recommendation =
     input.recommendation?.trim() ||
     input.whyItMatters?.trim() ||
@@ -263,6 +287,38 @@ function buildSuggestedFix(input: {
     };
   }
 
+  if (field === "metadata") {
+    const query = input.targetQuery?.trim();
+    const target = input.targetUrl?.trim();
+    const title = query
+      ? `${query}: понятный гид и выбор`
+      : input.taskTitle.replace(/^Улучшить\s+/i, "").slice(0, 60);
+    const description = recommendation.slice(0, 155);
+
+    return {
+      title: "Prepared SEO title and meta description",
+      preview: [
+        target ? `Target page: ${target}` : null,
+        query ? `Target query: ${query}` : null,
+        `Suggested title: ${title.slice(0, 60)}`,
+        `Suggested meta description: ${description}`,
+      ]
+        .filter(Boolean)
+        .join("\n"),
+      suggestedValue: JSON.stringify({
+        targetUrl: target ?? null,
+        targetQuery: query ?? null,
+        metaTitle: title.slice(0, 60),
+        metaDescription: description,
+      }),
+      summary:
+        "Prepared metadata update based on measured Google Search Console page/query data.",
+      whyItMatters,
+      implementationNotes:
+        "Apply through the connected CMS, then verify the public page title/meta signals before completing the task.",
+    };
+  }
+
   return {
     title: `Prepared fix: ${input.taskTitle}`,
     preview: recommendation,
@@ -282,19 +338,22 @@ export function buildPreparedFixForTask(input: {
 }): PreparedFix {
   const parsed = parseTaskRecommendationWithFix(input.recommendationJson);
   const now = new Date().toISOString();
-  const fixType = resolveFixType(parsed.auditCheckCode);
+  const fixType = resolveFixType(parsed.auditCheckCode, parsed.expectedAction);
   const suggested = buildSuggestedFix({
     taskTitle: input.taskTitle,
     recommendation: parsed.recommendation,
     whyItMatters: parsed.whyItMatters,
     auditCheckCode: parsed.auditCheckCode,
+    expectedAction: parsed.expectedAction,
+    targetUrl: parsed.targetUrl,
+    targetQuery: parsed.targetQuery,
   });
 
   return {
     id: `fix-${input.taskId}`,
     type: fixType,
     status: "AWAITING_REVIEW",
-    field: resolveFixField(parsed.auditCheckCode),
+    field: resolveFixField(parsed.auditCheckCode, parsed.expectedAction),
     title: suggested.title,
     preview: suggested.preview,
     suggestedValue: suggested.suggestedValue,
@@ -302,7 +361,8 @@ export function buildPreparedFixForTask(input: {
     whyItMatters: suggested.whyItMatters,
     implementationNotes: suggested.implementationNotes,
     riskLevel: "low",
-    requiresIntegration: "manual",
+    requiresIntegration:
+      parsed.expectedAction === "UPDATE_METADATA" ? "wordpress" : "manual",
     approvalRequired: true,
     generatedBy: "TEMPLATE",
     generatedAt: now,
@@ -319,13 +379,13 @@ export function buildPreparedFixFromHermes(input: {
 }): PreparedFix {
   const parsed = parseTaskRecommendationWithFix(input.recommendationJson);
   const now = new Date().toISOString();
-  const fixType = resolveFixType(parsed.auditCheckCode);
+  const fixType = resolveFixType(parsed.auditCheckCode, parsed.expectedAction);
 
   return {
     id: `fix-${input.taskId}`,
     type: fixType,
     status: "AWAITING_REVIEW",
-    field: resolveFixField(parsed.auditCheckCode),
+    field: resolveFixField(parsed.auditCheckCode, parsed.expectedAction),
     title: input.hermes.title,
     preview: input.hermes.proposedFix,
     suggestedValue: input.hermes.proposedFix,

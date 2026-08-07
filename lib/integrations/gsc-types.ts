@@ -36,6 +36,12 @@ export type GscMetricsSummary = {
   position: number;
 };
 
+export type GscPerformanceRow = GscMetricsSummary & {
+  page?: string;
+  query?: string;
+  keys: string[];
+};
+
 export type GscInsightType = "positive" | "warning" | "opportunity";
 
 export type GscInsight = {
@@ -52,6 +58,9 @@ export type GscMetricsJson = {
     endDate: string;
   };
   summary: GscMetricsSummary;
+  pages?: GscPerformanceRow[];
+  queries?: GscPerformanceRow[];
+  pageQueries?: GscPerformanceRow[];
   syncedAt: string;
   tasksCreatedLastSync?: number;
 };

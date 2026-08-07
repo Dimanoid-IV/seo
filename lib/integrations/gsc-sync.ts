@@ -10,12 +10,14 @@ import { getPrisma } from "@/lib/db";
 import { AppError, ErrorCode } from "@/lib/errors";
 import {
   getSearchConsolePerformance,
+  getSearchConsolePerformanceRows,
   type SearchConsolePerformanceSummary,
 } from "@/lib/google/search-console";
 import { decryptSecret } from "@/lib/security/encryption";
 
 import { getGscPerformanceDateRange } from "./gsc-metrics";
 import { generateGscInsights } from "./gsc-insights";
+import { findGscPageQueryOpportunities } from "./gsc-opportunities";
 import { generateTasksFromGscInsights } from "./gsc-task-generator";
 import type { GscMetricsJson } from "./gsc-types";
 import { syncGrowthOpportunitiesForWebsite } from "@/lib/growth/sync-opportunities";
@@ -111,20 +113,50 @@ export async function syncGscPerformanceForWebsite({
 
   const period = getGscPerformanceDateRange(28);
   const { withGscAccessToken } = await import("@/lib/integrations/gsc-access");
-  const summary = await withGscAccessToken(
+  const [summary, pages, queries, pageQueries] = await withGscAccessToken(
     integration.id,
     accessToken,
-    (token) =>
-      getSearchConsolePerformance({
+    async (token) =>
+      Promise.all([
+        getSearchConsolePerformance({
+          accessToken: token,
+          siteUrl: searchConsoleSiteUrl,
+          startDate: period.startDate,
+          endDate: period.endDate,
+        }),
+        getSearchConsolePerformanceRows({
+          accessToken: token,
+          siteUrl: searchConsoleSiteUrl,
+          startDate: period.startDate,
+          endDate: period.endDate,
+          dimensions: ["page"],
+          rowLimit: 50,
+        }),
+        getSearchConsolePerformanceRows({
+          accessToken: token,
+          siteUrl: searchConsoleSiteUrl,
+          startDate: period.startDate,
+          endDate: period.endDate,
+          dimensions: ["query"],
+          rowLimit: 50,
+        }),
+        getSearchConsolePerformanceRows({
         accessToken: token,
         siteUrl: searchConsoleSiteUrl,
         startDate: period.startDate,
         endDate: period.endDate,
-      })
+          dimensions: ["page", "query"],
+          rowLimit: 100,
+        }),
+      ])
   );
 
   const syncedAt = new Date().toISOString();
   const insights = generateGscInsights(summary);
+  const pageQueryOpportunities = findGscPageQueryOpportunities({
+    period,
+    pageQueries,
+  });
   const now = new Date();
   let tasksCreated = 0;
 
@@ -138,6 +170,9 @@ export async function syncGscPerformanceForWebsite({
         metricsJson: {
           period,
           summary,
+          pages,
+          queries,
+          pageQueries,
           syncedAt,
         },
         lastFetchedAt: now,
@@ -153,6 +188,7 @@ export async function syncGscPerformanceForWebsite({
       userId,
       metricsSummary: summary,
       insights,
+      pageQueryOpportunities,
       tx,
     });
     tasksCreated = taskResult.tasksCreated;
@@ -160,6 +196,9 @@ export async function syncGscPerformanceForWebsite({
     const metricsJson: GscMetricsJson = {
       period,
       summary,
+      pages,
+      queries,
+      pageQueries,
       syncedAt,
       tasksCreatedLastSync: tasksCreated,
     };

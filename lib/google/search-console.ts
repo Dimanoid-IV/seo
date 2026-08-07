@@ -16,6 +16,12 @@ export type SearchConsolePerformanceSummary = {
   position: number;
 };
 
+export type SearchConsolePerformanceRow = SearchConsolePerformanceSummary & {
+  keys: string[];
+  page?: string;
+  query?: string;
+};
+
 export type SearchConsolePerformanceInput = {
   accessToken: string;
   siteUrl: string;
@@ -32,6 +38,7 @@ type GoogleSitesApiResponse = {
 
 type GoogleSearchAnalyticsResponse = {
   rows?: Array<{
+    keys?: string[];
     clicks?: number;
     impressions?: number;
     ctr?: number;
@@ -53,6 +60,61 @@ function throwTokenExpired(): never {
     "Токен Google Search Console истёк. Переподключите интеграцию.",
     { details: { reason: "token_expired" } }
   );
+}
+
+export async function getSearchConsolePerformanceRows({
+  accessToken,
+  siteUrl,
+  startDate,
+  endDate,
+  dimensions,
+  rowLimit = 100,
+}: SearchConsolePerformanceInput & {
+  dimensions: Array<"page" | "query">;
+  rowLimit?: number;
+}): Promise<SearchConsolePerformanceRow[]> {
+  assertServerOnly();
+
+  const encodedSiteUrl = encodeURIComponent(siteUrl);
+  const url = `https://www.googleapis.com/webmasters/v3/sites/${encodedSiteUrl}/searchAnalytics/query`;
+
+  const response = await fetch(url, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      startDate,
+      endDate,
+      dimensions,
+      rowLimit: Math.min(Math.max(rowLimit, 1), 250),
+    }),
+    cache: "no-store",
+  });
+
+  await assertGscApiOk(
+    response,
+    "Не удалось загрузить строки Google Search Console"
+  );
+
+  const body = (await response.json()) as GoogleSearchAnalyticsResponse;
+
+  return (body.rows ?? []).map((row) => {
+    const keys = Array.isArray(row.keys) ? row.keys : [];
+    return {
+      keys,
+      page: dimensions.includes("page") ? keys[dimensions.indexOf("page")] : undefined,
+      query: dimensions.includes("query")
+        ? keys[dimensions.indexOf("query")]
+        : undefined,
+      clicks: row.clicks ?? 0,
+      impressions: row.impressions ?? 0,
+      ctr: row.ctr ?? 0,
+      position: row.position ?? 0,
+    };
+  });
 }
 
 function throwInsufficientPermission(): never {

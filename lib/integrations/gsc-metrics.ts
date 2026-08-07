@@ -1,4 +1,8 @@
-import type { GscMetricsJson, GscMetricsSummary } from "@/lib/integrations/gsc-types";
+import type {
+  GscMetricsJson,
+  GscMetricsSummary,
+  GscPerformanceRow,
+} from "@/lib/integrations/gsc-types";
 
 const EMPTY_SUMMARY: GscMetricsSummary = {
   clicks: 0,
@@ -23,6 +27,43 @@ function toStringValue(value: unknown): string | null {
     return value.trim();
   }
   return null;
+}
+
+function parsePerformanceRows(value: unknown): GscPerformanceRow[] | undefined {
+  if (!Array.isArray(value)) {
+    return undefined;
+  }
+
+  const rows: GscPerformanceRow[] = [];
+
+  for (const item of value) {
+    if (!isRecord(item)) continue;
+    const clicks = toNumber(item.clicks);
+    const impressions = toNumber(item.impressions);
+    const ctr = toNumber(item.ctr);
+    const position = toNumber(item.position);
+    if (
+      clicks === null ||
+      impressions === null ||
+      ctr === null ||
+      position === null
+    ) {
+      continue;
+    }
+    rows.push({
+      keys: Array.isArray(item.keys)
+        ? item.keys.filter((key): key is string => typeof key === "string")
+        : [],
+      page: toStringValue(item.page) ?? undefined,
+      query: toStringValue(item.query) ?? undefined,
+      clicks,
+      impressions,
+      ctr,
+      position,
+    });
+  }
+
+  return rows.length > 0 ? rows : undefined;
 }
 
 /**
@@ -62,6 +103,9 @@ export function parseGscMetricsJson(
   return {
     period: { startDate, endDate },
     summary: { clicks, impressions, ctr, position },
+    pages: parsePerformanceRows(metricsJson.pages),
+    queries: parsePerformanceRows(metricsJson.queries),
+    pageQueries: parsePerformanceRows(metricsJson.pageQueries),
     syncedAt,
     ...(typeof metricsJson.tasksCreatedLastSync === "number"
       ? { tasksCreatedLastSync: metricsJson.tasksCreatedLastSync }
