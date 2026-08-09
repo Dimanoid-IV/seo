@@ -9,6 +9,7 @@ import { GoogleSearchConsolePropertyPicker } from "@/components/integrations/Goo
 import { GitHubPrConnectionForm } from "@/components/integrations/GitHubPrConnectionForm";
 import { ShopifyConnectionForm } from "@/components/integrations/ShopifyConnectionForm";
 import { WebflowConnectionForm } from "@/components/integrations/WebflowConnectionForm";
+import { WixConnectionForm } from "@/components/integrations/WixConnectionForm";
 import { GscSyncButton } from "@/components/integrations/GoogleSearchConsoleDashboardCard";
 import { GscMetricsSummaryDisplay } from "@/components/integrations/GscMetricsSummary";
 import { GscInsightsList } from "@/components/integrations/GscInsightsList";
@@ -49,6 +50,7 @@ const GHOST_PROVIDER = "ghost";
 const GITHUB_PROVIDER = "github";
 const SHOPIFY_PROVIDER = "shopify";
 const WEBFLOW_PROVIDER = "webflow";
+const WIX_PROVIDER = "wix";
 const ZAPIER_PROVIDER = "zapier";
 const MAKE_PROVIDER = "make";
 
@@ -184,6 +186,7 @@ function IntegrationActionSheetContent({
   const isGitHub = integration.provider === GITHUB_PROVIDER;
   const isShopify = integration.provider === SHOPIFY_PROVIDER;
   const isWebflow = integration.provider === WEBFLOW_PROVIDER;
+  const isWix = integration.provider === WIX_PROVIDER;
   const isNoCodeAutomation =
     integration.provider === ZAPIER_PROVIDER || integration.provider === MAKE_PROVIDER;
   const canConnectGsc = isGsc && !isComingSoon && !isConnected && Boolean(websiteId);
@@ -453,6 +456,14 @@ function IntegrationActionSheetContent({
             />
           ) : null}
 
+          {isWix && !isComingSoon ? (
+            <WixConnectionForm
+              websiteId={websiteId}
+              connected={integration.connected}
+              onConnectionUpdated={onIntegrationUpdated}
+            />
+          ) : null}
+
           {isGhost && !isComingSoon ? (
             <GhostConnectionForm
               websiteId={websiteId}
@@ -478,6 +489,7 @@ function IntegrationActionSheetContent({
         !isGitHub &&
         !isWebflow &&
         !isShopify &&
+        !isWix &&
         !isGhost &&
         !isNoCodeAutomation ? (
           <SheetFooter className="border-t border-slate-200">

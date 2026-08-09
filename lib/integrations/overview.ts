@@ -25,6 +25,7 @@ import { getGitHubPrConfig } from "@/lib/publishing/github-pr-config";
 import { getNoCodeAutomationConfig } from "@/lib/publishing/no-code-automation-config";
 import { getShopifyPublishingConfig } from "@/lib/publishing/shopify-config";
 import { getWebflowPublishingConfig } from "@/lib/publishing/webflow-config";
+import { getWixPublishingConfig } from "@/lib/publishing/wix-config";
 
 /**
  * Loads integrations hub overview: catalog merged with DB Integration rows.
@@ -153,6 +154,7 @@ export async function getIntegrationsOverview(
   ]);
   const shopifyConfig = await getShopifyPublishingConfig(website.id);
   const webflowConfig = await getWebflowPublishingConfig(website.id);
+  const wixConfig = await getWixPublishingConfig(website.id);
   const customDisplay = buildCustomPublishingDisplayState({
     endpointConfigured: customPublishingConfig?.endpointConfigured,
     endpointHost: customPublishingConfig?.endpointHost,
@@ -271,6 +273,26 @@ export async function getIntegrationsOverview(
         connectedAt: connected ? shopifyConfig?.testedAt ?? null : null,
         lastSyncAt: null,
         lastSuccessAt: connected ? shopifyConfig?.testedAt ?? null : null,
+        lastErrorAt: record?.lastErrorAt?.toISOString() ?? null,
+        lastErrorMessage: record?.lastErrorMessage ?? null,
+      };
+    }
+
+    if (item.provider === "wix") {
+      const connected = wixConfig?.connected === true;
+      return {
+        provider: item.provider,
+        title: item.title,
+        description: item.description,
+        category: item.category,
+        capabilities: item.capabilities,
+        connected,
+        status: connected ? "Connected" : mapped.status,
+        available: item.available,
+        comingSoon: item.comingSoon,
+        connectedAt: connected ? wixConfig?.testedAt ?? null : null,
+        lastSyncAt: null,
+        lastSuccessAt: connected ? wixConfig?.testedAt ?? null : null,
         lastErrorAt: record?.lastErrorAt?.toISOString() ?? null,
         lastErrorMessage: record?.lastErrorMessage ?? null,
       };

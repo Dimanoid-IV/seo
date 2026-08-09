@@ -141,8 +141,8 @@ export const INTEGRATION_CATALOG: IntegrationCatalogEntry[] = [
     title: "Wix",
     description:
       "Путь для малого бизнеса на Wix: статьи, SEO-поля и понятная ручная страховка.",
-    available: false,
-    comingSoon: true,
+    available: true,
+    comingSoon: false,
     category: "cms",
     capabilities: [
       IntegrationCapability.CMS_ARTICLE_CREATE,

@@ -930,6 +930,23 @@ export const saasDictionary: SaasDictionary = {
       disconnectFailed: "Не удалось отключить Shopify.",
       disconnectNetworkError: "Сетевая ошибка при отключении Shopify.",
     },
+    wix: {
+      title: "Публикация в Wix Blog",
+      description:
+        "Подключите Wix Site ID и API key. RankBoost будет создавать draft posts из статей, прошедших quality gate.",
+      siteId: "Wix Site ID",
+      apiKey: "Wix API key",
+      tokenNote:
+        "API key шифруется и больше не показывается. Используйте ключ с доступом к Wix Blog draft posts для одного сайта.",
+      testAndSave: "Проверить и сохранить",
+      disconnect: "Отключить",
+      connected: "Wix подключён. Готовые статьи можно отправлять как drafts в Wix Blog.",
+      disconnected: "Wix отключён.",
+      connectFailed: "Не удалось подключить Wix.",
+      connectNetworkError: "Сетевая ошибка при подключении Wix.",
+      disconnectFailed: "Не удалось отключить Wix.",
+      disconnectNetworkError: "Сетевая ошибка при отключении Wix.",
+    },
     ghost: {
       title: "Публикация в Ghost",
       description:

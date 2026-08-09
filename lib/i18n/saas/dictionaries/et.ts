@@ -929,6 +929,23 @@ export const saasDictionary: SaasDictionary = {
       disconnectFailed: "Shopify ühendust ei õnnestunud katkestada.",
       disconnectNetworkError: "Võrguviga Shopify ühenduse katkestamisel.",
     },
+    wix: {
+      title: "Avaldamine Wix Blogisse",
+      description:
+        "Ühendage Wix Site ID ja API key. RankBoost loob quality gate'i läbinud artiklitest draft posts.",
+      siteId: "Wix Site ID",
+      apiKey: "Wix API key",
+      tokenNote:
+        "API key krüpteeritakse ja seda ei näidata enam. Kasutage ühe saidi Wix Blog draft post õigustega võtit.",
+      testAndSave: "Testi ja salvesta",
+      disconnect: "Katkesta ühendus",
+      connected: "Wix ühendatud. Valmis artikleid saab saata Wix Blog draftidena.",
+      disconnected: "Wix ühendus katkestatud.",
+      connectFailed: "Wixi ühendamine ebaõnnestus.",
+      connectNetworkError: "Võrguviga Wixi ühendamisel.",
+      disconnectFailed: "Wixi ühendust ei õnnestunud katkestada.",
+      disconnectNetworkError: "Võrguviga Wixi ühenduse katkestamisel.",
+    },
     ghost: {
       title: "Avaldamine Ghosti",
       description:

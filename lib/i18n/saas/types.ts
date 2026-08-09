@@ -740,6 +740,21 @@ export type SaasDictionary = {
       disconnectFailed: string;
       disconnectNetworkError: string;
     };
+    wix: {
+      title: string;
+      description: string;
+      siteId: string;
+      apiKey: string;
+      tokenNote: string;
+      testAndSave: string;
+      disconnect: string;
+      connected: string;
+      disconnected: string;
+      connectFailed: string;
+      connectNetworkError: string;
+      disconnectFailed: string;
+      disconnectNetworkError: string;
+    };
     ghost: {
       title: string;
       description: string;

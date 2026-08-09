@@ -67,5 +67,10 @@ assert.equal(
   true,
   "Google Business Profile read-only local SEO data should be available"
 );
+assert.equal(
+  byProvider.get("wix")?.available,
+  true,
+  "Wix draft publishing should be available"
+);
 
 console.log("integrations catalog.test.ts: ok");

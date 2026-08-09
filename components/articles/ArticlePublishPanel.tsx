@@ -14,6 +14,7 @@ import {
   Mail,
   Send,
   ShoppingBag,
+  WandSparkles,
   Webhook,
 } from "lucide-react";
 
@@ -51,6 +52,10 @@ type ExportResponse = {
       connected: boolean;
       shopDomain: string | null;
       blogId: string | null;
+    };
+    wix?: {
+      connected: boolean;
+      siteId: string | null;
     };
     ghost?: {
       connected: boolean;
@@ -142,6 +147,9 @@ export function ArticlePublishPanel({
   const [shopifyConnected, setShopifyConnected] = useState(false);
   const [shopifyShopDomain, setShopifyShopDomain] = useState<string | null>(null);
   const [shopifyPublishing, setShopifyPublishing] = useState<"dry" | "create" | null>(null);
+  const [wixConnected, setWixConnected] = useState(false);
+  const [wixSiteId, setWixSiteId] = useState<string | null>(null);
+  const [wixPublishing, setWixPublishing] = useState<"dry" | "create" | null>(null);
   const [ghostConnected, setGhostConnected] = useState(false);
   const [ghostAdminUrl, setGhostAdminUrl] = useState<string | null>(null);
   const [ghostPublishing, setGhostPublishing] = useState<"dry" | "create" | null>(null);
@@ -186,6 +194,8 @@ export function ArticlePublishPanel({
           setWebflowCollectionId(body.data.webflow?.collectionId ?? null);
           setShopifyConnected(body.data.shopify?.connected === true);
           setShopifyShopDomain(body.data.shopify?.shopDomain ?? null);
+          setWixConnected(body.data.wix?.connected === true);
+          setWixSiteId(body.data.wix?.siteId ?? null);
           setGhostConnected(body.data.ghost?.connected === true);
           setGhostAdminUrl(body.data.ghost?.adminUrl ?? null);
           setZapierConnected(
@@ -529,6 +539,47 @@ export function ArticlePublishPanel({
       );
     } finally {
       setGhostPublishing(null);
+    }
+  }
+
+  async function handleWix(dryRun: boolean) {
+    setWixPublishing(dryRun ? "dry" : "create");
+    setPublishMessage(null);
+    setPublishError(null);
+    try {
+      const response = await authFetch(`/api/articles/${articleId}/wix`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ dryRun }),
+      });
+      const body = (await response.json().catch(() => ({}))) as {
+        data?: { draftPostUrl?: string | null };
+        error?: { message?: string };
+      };
+      if (!response.ok) {
+        setPublishError(
+          body.error?.message ??
+            (dryRun
+              ? "Не удалось проверить Wix draft."
+              : "Не удалось создать Wix draft post.")
+        );
+        return;
+      }
+      setPublishMessage(
+        dryRun
+          ? "Wix draft готов к созданию."
+          : body.data?.draftPostUrl
+            ? `Wix draft создан: ${body.data.draftPostUrl}`
+            : "Wix draft создан."
+      );
+    } catch {
+      setPublishError(
+        dryRun
+          ? "Сетевая ошибка при проверке Wix."
+          : "Сетевая ошибка при создании Wix draft."
+      );
+    } finally {
+      setWixPublishing(null);
     }
   }
 
@@ -1000,6 +1051,55 @@ export function ArticlePublishPanel({
                 <Loader2 className="size-4 animate-spin" />
               ) : null}
               Проверить Shopify
+            </Button>
+          </div>
+        </div>
+      ) : null}
+
+      {wixConnected ? (
+        <div className="rounded-xl border border-cyan-200 bg-cyan-50 p-4">
+          <div className="flex items-start gap-3">
+            <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-white">
+              <WandSparkles className="size-4 text-cyan-700" />
+            </div>
+            <div className="min-w-0 flex-1">
+              <p className="text-sm font-semibold text-cyan-950">
+                Wix подключён
+              </p>
+              <p className="mt-1 text-xs leading-relaxed text-cyan-800">
+                RankBoost создаст draft post в Wix Blog{" "}
+                {wixSiteId ? `(${wixSiteId})` : ""}. Перед live-публикацией
+                проверьте запись в Wix.
+              </p>
+            </div>
+          </div>
+          <div className="mt-4 flex flex-wrap gap-2">
+            <Button
+              type="button"
+              size="sm"
+              disabled={wixPublishing !== null}
+              onClick={() => void handleWix(false)}
+              className="bg-cyan-700 text-white hover:bg-cyan-800"
+            >
+              {wixPublishing === "create" ? (
+                <Loader2 className="size-4 animate-spin" />
+              ) : (
+                <WandSparkles className="size-4" />
+              )}
+              Создать Wix draft
+            </Button>
+            <Button
+              type="button"
+              size="sm"
+              variant="outline"
+              disabled={wixPublishing !== null}
+              onClick={() => void handleWix(true)}
+              className="border-cyan-200 bg-white text-cyan-800 hover:bg-cyan-100"
+            >
+              {wixPublishing === "dry" ? (
+                <Loader2 className="size-4 animate-spin" />
+              ) : null}
+              Проверить Wix
             </Button>
           </div>
         </div>

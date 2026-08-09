@@ -17,6 +17,7 @@ import { getGitHubPrConfig } from "@/lib/publishing/github-pr-config";
 import { getNoCodeAutomationConfig } from "@/lib/publishing/no-code-automation-config";
 import { getShopifyPublishingConfig } from "@/lib/publishing/shopify-config";
 import { getWebflowPublishingConfig } from "@/lib/publishing/webflow-config";
+import { getWixPublishingConfig } from "@/lib/publishing/wix-config";
 
 export interface ArticleUniversalExportResult {
   articleId: string;
@@ -40,6 +41,10 @@ export interface ArticleUniversalExportResult {
     connected: boolean;
     shopDomain: string | null;
     blogId: string | null;
+  };
+  wix: {
+    connected: boolean;
+    siteId: string | null;
   };
   ghost: {
     connected: boolean;
@@ -80,6 +85,7 @@ export async function getArticleUniversalExport({
   ]);
   const shopify = await getShopifyPublishingConfig(article.websiteId);
   const webflow = await getWebflowPublishingConfig(article.websiteId);
+  const wix = await getWixPublishingConfig(article.websiteId);
   const brandKit = await loadBrandKitForWebsite(article.websiteId);
 
   const pkg = buildUniversalExport(
@@ -134,6 +140,10 @@ export async function getArticleUniversalExport({
       connected: shopify?.connected === true,
       shopDomain: shopify?.shopDomain ?? null,
       blogId: shopify?.blogId ?? null,
+    },
+    wix: {
+      connected: wix?.connected === true,
+      siteId: wix?.siteId ?? null,
     },
     ghost: {
       connected: ghost?.connected === true,
