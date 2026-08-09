@@ -14,6 +14,7 @@ import { loadBrandKitForWebsite } from "@/lib/brand-kit";
 import { buildHostedArticleUrl } from "@/lib/hosted-blog/urls";
 import { getGhostPublishingConfig } from "@/lib/publishing/ghost-config";
 import { getGitHubPrConfig } from "@/lib/publishing/github-pr-config";
+import { getNoCodeAutomationConfig } from "@/lib/publishing/no-code-automation-config";
 import { getShopifyPublishingConfig } from "@/lib/publishing/shopify-config";
 import { getWebflowPublishingConfig } from "@/lib/publishing/webflow-config";
 
@@ -44,6 +45,10 @@ export interface ArticleUniversalExportResult {
     connected: boolean;
     adminUrl: string | null;
   };
+  noCodeAutomation: {
+    zapierConnected: boolean;
+    makeConnected: boolean;
+  };
   export: UniversalExportPackage;
 }
 
@@ -69,6 +74,10 @@ export async function getArticleUniversalExport({
   const custom = await getCustomPublishingConfig(article.websiteId);
   const ghost = await getGhostPublishingConfig(article.websiteId);
   const github = await getGitHubPrConfig(article.websiteId);
+  const [zapier, make] = await Promise.all([
+    getNoCodeAutomationConfig({ websiteId: article.websiteId, provider: "zapier" }),
+    getNoCodeAutomationConfig({ websiteId: article.websiteId, provider: "make" }),
+  ]);
   const shopify = await getShopifyPublishingConfig(article.websiteId);
   const webflow = await getWebflowPublishingConfig(article.websiteId);
   const brandKit = await loadBrandKitForWebsite(article.websiteId);
@@ -129,6 +138,10 @@ export async function getArticleUniversalExport({
     ghost: {
       connected: ghost?.connected === true,
       adminUrl: ghost?.adminUrl ?? null,
+    },
+    noCodeAutomation: {
+      zapierConnected: zapier?.connected === true,
+      makeConnected: make?.connected === true,
     },
     export: pkg,
   };

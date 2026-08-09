@@ -11,6 +11,7 @@ import { GscSyncButton } from "@/components/integrations/GoogleSearchConsoleDash
 import { GscMetricsSummaryDisplay } from "@/components/integrations/GscMetricsSummary";
 import { GscInsightsList } from "@/components/integrations/GscInsightsList";
 import { IntegrationStatusBadge } from "@/components/integrations/IntegrationStatusBadge";
+import { NoCodeAutomationConnectionForm } from "@/components/integrations/NoCodeAutomationConnectionForm";
 import { WordPressConnectionForm } from "@/components/integrations/WordPressConnectionForm";
 import { WordPressConnectorPanel } from "@/components/integrations/WordPressConnectorPanel";
 import { Button } from "@/components/ui/button";
@@ -44,6 +45,8 @@ const GHOST_PROVIDER = "ghost";
 const GITHUB_PROVIDER = "github";
 const SHOPIFY_PROVIDER = "shopify";
 const WEBFLOW_PROVIDER = "webflow";
+const ZAPIER_PROVIDER = "zapier";
+const MAKE_PROVIDER = "make";
 
 type IntegrationActionSheetProps = {
   open: boolean;
@@ -175,6 +178,8 @@ function IntegrationActionSheetContent({
   const isGitHub = integration.provider === GITHUB_PROVIDER;
   const isShopify = integration.provider === SHOPIFY_PROVIDER;
   const isWebflow = integration.provider === WEBFLOW_PROVIDER;
+  const isNoCodeAutomation =
+    integration.provider === ZAPIER_PROVIDER || integration.provider === MAKE_PROVIDER;
   const canConnectGsc = isGsc && !isComingSoon && !isConnected && Boolean(websiteId);
   const gscPropertySelected = Boolean(integration.selectedProperty);
   const [syncing, setSyncing] = useState(false);
@@ -433,6 +438,15 @@ function IntegrationActionSheetContent({
               onConnectionUpdated={onIntegrationUpdated}
             />
           ) : null}
+
+          {isNoCodeAutomation && !isComingSoon ? (
+            <NoCodeAutomationConnectionForm
+              websiteId={websiteId}
+              provider={integration.provider === ZAPIER_PROVIDER ? "zapier" : "make"}
+              connected={integration.connected}
+              onConnectionUpdated={onIntegrationUpdated}
+            />
+          ) : null}
         </div>
 
         {!isComingSoon &&
@@ -440,7 +454,8 @@ function IntegrationActionSheetContent({
         !isGitHub &&
         !isWebflow &&
         !isShopify &&
-        !isGhost ? (
+        !isGhost &&
+        !isNoCodeAutomation ? (
           <SheetFooter className="border-t border-slate-200">
             {isGsc ? (
               isConnected ? (

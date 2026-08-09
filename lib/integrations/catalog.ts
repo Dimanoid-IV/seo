@@ -207,8 +207,8 @@ export const INTEGRATION_CATALOG: IntegrationCatalogEntry[] = [
     title: "Zapier",
     description:
       "No-code автоматизация для команд, которым удобнее собирать публикацию через Zap.",
-    available: false,
-    comingSoon: true,
+    available: true,
+    comingSoon: false,
     category: "automation",
     capabilities: [IntegrationCapability.NO_CODE_AUTOMATION_TRIGGER],
   },
@@ -218,8 +218,8 @@ export const INTEGRATION_CATALOG: IntegrationCatalogEntry[] = [
     title: "Make",
     description:
       "No-code сценарии публикации и уведомлений для кастомных процессов.",
-    available: false,
-    comingSoon: true,
+    available: true,
+    comingSoon: false,
     category: "automation",
     capabilities: [IntegrationCapability.NO_CODE_AUTOMATION_TRIGGER],
   },

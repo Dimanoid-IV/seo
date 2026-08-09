@@ -907,6 +907,26 @@ export const saasDictionary: SaasDictionary = {
       disconnectFailed: "Could not disconnect Ghost.",
       disconnectNetworkError: "Network error while disconnecting Ghost.",
     },
+    noCodeAutomation: {
+      title: (provider) => `${provider} automation`,
+      description: (provider) =>
+        `Connect a ${provider} webhook. RankBoost will send ready articles to your no-code workflow.`,
+      webhookUrl: "Webhook URL",
+      sharedSecret: "Shared secret",
+      sharedSecretPlaceholder: "Optional",
+      tokenNote: (provider) =>
+        `${provider} webhook URL and secret are encrypted and never shown again. RankBoost sends a test ping first.`,
+      testAndSave: "Test and save",
+      disconnect: "Disconnect",
+      connected: (provider) => `${provider} connected.`,
+      disconnected: (provider) => `${provider} disconnected.`,
+      connectFailed: (provider) => `${provider} connection failed.`,
+      connectNetworkError: (provider) =>
+        `Network error while connecting ${provider}.`,
+      disconnectFailed: (provider) => `Could not disconnect ${provider}.`,
+      disconnectNetworkError: (provider) =>
+        `Network error while disconnecting ${provider}.`,
+    },
     gscPropertyPicker: {
       title: "Choose a Search Console site",
       subtitle: "Link a Google property to your website in RankBoost",

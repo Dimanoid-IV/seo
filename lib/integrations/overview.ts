@@ -20,6 +20,7 @@ import { getCustomPublishingConfig } from "@/lib/publishing/custom-webhook-confi
 import { buildCustomPublishingDisplayState } from "@/lib/publishing/custom-publishing-display";
 import { getGhostPublishingConfig } from "@/lib/publishing/ghost-config";
 import { getGitHubPrConfig } from "@/lib/publishing/github-pr-config";
+import { getNoCodeAutomationConfig } from "@/lib/publishing/no-code-automation-config";
 import { getShopifyPublishingConfig } from "@/lib/publishing/shopify-config";
 import { getWebflowPublishingConfig } from "@/lib/publishing/webflow-config";
 
@@ -141,6 +142,10 @@ export async function getIntegrationsOverview(
   const customPublishingConfig = await getCustomPublishingConfig(website.id);
   const ghostConfig = await getGhostPublishingConfig(website.id);
   const githubPrConfig = await getGitHubPrConfig(website.id);
+  const [zapierConfig, makeConfig] = await Promise.all([
+    getNoCodeAutomationConfig({ websiteId: website.id, provider: "zapier" }),
+    getNoCodeAutomationConfig({ websiteId: website.id, provider: "make" }),
+  ]);
   const shopifyConfig = await getShopifyPublishingConfig(website.id);
   const webflowConfig = await getWebflowPublishingConfig(website.id);
   const customDisplay = buildCustomPublishingDisplayState({
@@ -281,6 +286,27 @@ export async function getIntegrationsOverview(
         connectedAt: connected ? ghostConfig?.testedAt ?? null : null,
         lastSyncAt: null,
         lastSuccessAt: connected ? ghostConfig?.testedAt ?? null : null,
+        lastErrorAt: record?.lastErrorAt?.toISOString() ?? null,
+        lastErrorMessage: record?.lastErrorMessage ?? null,
+      };
+    }
+
+    if (item.provider === "zapier" || item.provider === "make") {
+      const config = item.provider === "zapier" ? zapierConfig : makeConfig;
+      const connected = config?.connected === true;
+      return {
+        provider: item.provider,
+        title: item.title,
+        description: item.description,
+        category: item.category,
+        capabilities: item.capabilities,
+        connected,
+        status: connected ? "Connected" : mapped.status,
+        available: item.available,
+        comingSoon: item.comingSoon,
+        connectedAt: connected ? config?.testedAt ?? null : null,
+        lastSyncAt: null,
+        lastSuccessAt: connected ? config?.testedAt ?? null : null,
         lastErrorAt: record?.lastErrorAt?.toISOString() ?? null,
         lastErrorMessage: record?.lastErrorMessage ?? null,
       };

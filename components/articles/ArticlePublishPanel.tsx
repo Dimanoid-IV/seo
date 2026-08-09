@@ -56,6 +56,10 @@ type ExportResponse = {
       connected: boolean;
       adminUrl: string | null;
     };
+    noCodeAutomation?: {
+      zapierConnected: boolean;
+      makeConnected: boolean;
+    };
     export: UniversalExportPackage;
   };
 };
@@ -141,6 +145,11 @@ export function ArticlePublishPanel({
   const [ghostConnected, setGhostConnected] = useState(false);
   const [ghostAdminUrl, setGhostAdminUrl] = useState<string | null>(null);
   const [ghostPublishing, setGhostPublishing] = useState<"dry" | "create" | null>(null);
+  const [zapierConnected, setZapierConnected] = useState(false);
+  const [makeConnected, setMakeConnected] = useState(false);
+  const [noCodePublishing, setNoCodePublishing] = useState<
+    "zapier-dry" | "zapier-send" | "make-dry" | "make-send" | null
+  >(null);
 
   const isWordPressLivePublished =
     articleStatus === "PUBLISHED" && Boolean(wordpressPostId);
@@ -179,6 +188,10 @@ export function ArticlePublishPanel({
           setShopifyShopDomain(body.data.shopify?.shopDomain ?? null);
           setGhostConnected(body.data.ghost?.connected === true);
           setGhostAdminUrl(body.data.ghost?.adminUrl ?? null);
+          setZapierConnected(
+            body.data.noCodeAutomation?.zapierConnected === true
+          );
+          setMakeConnected(body.data.noCodeAutomation?.makeConnected === true);
         }
       } catch {
         if (!cancelled) setError("Сетевая ошибка при подготовке материалов.");
@@ -516,6 +529,54 @@ export function ArticlePublishPanel({
       );
     } finally {
       setGhostPublishing(null);
+    }
+  }
+
+  async function handleNoCodeAutomation(
+    provider: "zapier" | "make",
+    dryRun: boolean
+  ) {
+    setNoCodePublishing(`${provider}-${dryRun ? "dry" : "send"}`);
+    setPublishMessage(null);
+    setPublishError(null);
+    const label = provider === "zapier" ? "Zapier" : "Make";
+    try {
+      const response = await authFetch(
+        `/api/articles/${articleId}/no-code-automation`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ provider, dryRun }),
+        }
+      );
+      const body = (await response.json().catch(() => ({}))) as {
+        data?: { delivered?: boolean; statusCode?: number };
+        error?: { message?: string };
+      };
+      if (!response.ok) {
+        setPublishError(
+          body.error?.message ??
+            (dryRun
+              ? `Не удалось проверить ${label}.`
+              : `Не удалось отправить ${label} trigger.`)
+        );
+        return;
+      }
+      setPublishMessage(
+        dryRun
+          ? `${label} trigger готов к отправке.`
+          : `${label} trigger отправлен${
+              body.data?.statusCode ? ` (HTTP ${body.data.statusCode})` : ""
+            }.`
+      );
+    } catch {
+      setPublishError(
+        dryRun
+          ? `Сетевая ошибка при проверке ${label}.`
+          : `Сетевая ошибка при отправке ${label} trigger.`
+      );
+    } finally {
+      setNoCodePublishing(null);
     }
   }
 
@@ -989,6 +1050,89 @@ export function ArticlePublishPanel({
               ) : null}
               Проверить Ghost
             </Button>
+          </div>
+        </div>
+      ) : null}
+
+      {zapierConnected || makeConnected ? (
+        <div className="rounded-xl border border-violet-200 bg-violet-50 p-4">
+          <div className="flex items-start gap-3">
+            <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-white">
+              <Webhook className="size-4 text-violet-700" />
+            </div>
+            <div className="min-w-0 flex-1">
+              <p className="text-sm font-semibold text-violet-950">
+                No-code автоматизация подключена
+              </p>
+              <p className="mt-1 text-xs leading-relaxed text-violet-800">
+                RankBoost отправит готовую статью в Zapier или Make scenario.
+                Дальше сценарий может создать запись в любой CMS.
+              </p>
+            </div>
+          </div>
+          <div className="mt-4 flex flex-wrap gap-2">
+            {zapierConnected ? (
+              <>
+                <Button
+                  type="button"
+                  size="sm"
+                  disabled={noCodePublishing !== null}
+                  onClick={() => void handleNoCodeAutomation("zapier", false)}
+                  className="bg-violet-700 text-white hover:bg-violet-800"
+                >
+                  {noCodePublishing === "zapier-send" ? (
+                    <Loader2 className="size-4 animate-spin" />
+                  ) : (
+                    <Webhook className="size-4" />
+                  )}
+                  Отправить в Zapier
+                </Button>
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="outline"
+                  disabled={noCodePublishing !== null}
+                  onClick={() => void handleNoCodeAutomation("zapier", true)}
+                  className="border-violet-200 bg-white text-violet-800 hover:bg-violet-100"
+                >
+                  {noCodePublishing === "zapier-dry" ? (
+                    <Loader2 className="size-4 animate-spin" />
+                  ) : null}
+                  Проверить Zapier
+                </Button>
+              </>
+            ) : null}
+            {makeConnected ? (
+              <>
+                <Button
+                  type="button"
+                  size="sm"
+                  disabled={noCodePublishing !== null}
+                  onClick={() => void handleNoCodeAutomation("make", false)}
+                  className="bg-violet-700 text-white hover:bg-violet-800"
+                >
+                  {noCodePublishing === "make-send" ? (
+                    <Loader2 className="size-4 animate-spin" />
+                  ) : (
+                    <Webhook className="size-4" />
+                  )}
+                  Отправить в Make
+                </Button>
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="outline"
+                  disabled={noCodePublishing !== null}
+                  onClick={() => void handleNoCodeAutomation("make", true)}
+                  className="border-violet-200 bg-white text-violet-800 hover:bg-violet-100"
+                >
+                  {noCodePublishing === "make-dry" ? (
+                    <Loader2 className="size-4 animate-spin" />
+                  ) : null}
+                  Проверить Make
+                </Button>
+              </>
+            ) : null}
           </div>
         </div>
       ) : null}

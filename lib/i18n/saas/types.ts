@@ -721,6 +721,22 @@ export type SaasDictionary = {
       disconnectFailed: string;
       disconnectNetworkError: string;
     };
+    noCodeAutomation: {
+      title: (provider: string) => string;
+      description: (provider: string) => string;
+      webhookUrl: string;
+      sharedSecret: string;
+      sharedSecretPlaceholder: string;
+      tokenNote: (provider: string) => string;
+      testAndSave: string;
+      disconnect: string;
+      connected: (provider: string) => string;
+      disconnected: (provider: string) => string;
+      connectFailed: (provider: string) => string;
+      connectNetworkError: (provider: string) => string;
+      disconnectFailed: (provider: string) => string;
+      disconnectNetworkError: (provider: string) => string;
+    };
     gscPropertyPicker: {
       title: string;
       subtitle: string;

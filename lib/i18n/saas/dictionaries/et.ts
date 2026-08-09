@@ -907,6 +907,27 @@ export const saasDictionary: SaasDictionary = {
       disconnectFailed: "Ghosti ühendust ei õnnestunud katkestada.",
       disconnectNetworkError: "Võrguviga Ghosti ühenduse katkestamisel.",
     },
+    noCodeAutomation: {
+      title: (provider) => `${provider} automatsioon`,
+      description: (provider) =>
+        `Ühendage ${provider} webhook. RankBoost saadab valmis artiklid teie no-code workflow'sse.`,
+      webhookUrl: "Webhook URL",
+      sharedSecret: "Shared secret",
+      sharedSecretPlaceholder: "Valikuline",
+      tokenNote: (provider) =>
+        `${provider} webhook URL ja secret krüpteeritakse ning neid ei näidata enam. RankBoost saadab esmalt test-pingi.`,
+      testAndSave: "Testi ja salvesta",
+      disconnect: "Katkesta ühendus",
+      connected: (provider) => `${provider} ühendatud.`,
+      disconnected: (provider) => `${provider} ühendus katkestatud.`,
+      connectFailed: (provider) => `${provider} ühendamine ebaõnnestus.`,
+      connectNetworkError: (provider) =>
+        `Võrguviga ${provider} ühendamisel.`,
+      disconnectFailed: (provider) =>
+        `${provider} ühendust ei õnnestunud katkestada.`,
+      disconnectNetworkError: (provider) =>
+        `Võrguviga ${provider} ühenduse katkestamisel.`,
+    },
     gscPropertyPicker: {
       title: "Vali Search Console'i sait",
       subtitle: "Seo Google'i atribuut oma veebisaidiga RankBoostis",
