@@ -796,6 +796,7 @@ export const saasDictionary: SaasDictionary = {
       "Вы будете перенаправлены в Google для подтверждения доступа только на чтение.",
     oauthSoon: "OAuth-подключение появится в следующем релизе",
     continueConnect: "Продолжить подключение",
+    customSetupCta: "Настроить свой сайт",
     previewOnly:
       "OAuth/API подключение пока в режиме предпросмотра — изучите возможности.",
     connectedSince: "Подключено",

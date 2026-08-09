@@ -25,6 +25,11 @@ const STATUS_STYLES: Record<
     className: "border-emerald-200 bg-emerald-50 text-emerald-800",
     icon: CheckCircle2,
   },
+  Configured: {
+    label: "Configured",
+    className: "border-emerald-200 bg-emerald-50 text-emerald-800",
+    icon: CheckCircle2,
+  },
   Disconnected: {
     label: "Disconnected",
     className: "border-slate-200 bg-slate-50 text-slate-700",

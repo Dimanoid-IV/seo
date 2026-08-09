@@ -40,6 +40,8 @@ export async function getIntegrationsOverview(
         provider: item.provider,
         title: item.title,
         description: item.description,
+        category: item.category,
+        capabilities: item.capabilities,
         connected: configured,
         status: configured ? "Configured" : "Not configured",
         available: item.available,
@@ -49,7 +51,7 @@ export async function getIntegrationsOverview(
         lastSuccessAt: null,
         lastErrorAt: null,
         lastErrorMessage: null,
-        platformManaged: true,
+        platformManaged: item.platformManaged ?? true,
         hermesConfigured: configured,
       };
     }
@@ -59,6 +61,8 @@ export async function getIntegrationsOverview(
       provider: item.provider,
       title: item.title,
       description: item.description,
+      category: item.category,
+      capabilities: item.capabilities,
       connected: mapped.connected,
       status: mapped.status,
       available: item.available,
@@ -145,6 +149,8 @@ export async function getIntegrationsOverview(
         provider: item.provider,
         title: item.title,
         description: item.description,
+        category: item.category,
+        capabilities: item.capabilities,
         connected: configured,
         status: configured ? "Configured" : "Not configured",
         available: item.available,
@@ -154,7 +160,7 @@ export async function getIntegrationsOverview(
         lastSuccessAt: null,
         lastErrorAt: null,
         lastErrorMessage: null,
-        platformManaged: true,
+        platformManaged: item.platformManaged ?? true,
         hermesConfigured: configured,
       };
     }
@@ -163,6 +169,54 @@ export async function getIntegrationsOverview(
       ? dbByProvider.get(item.dbProvider)
       : undefined;
     const mapped = mapIntegrationDbStatus(record?.status);
+
+    if (item.provider === "custom_webhook") {
+      const connected = Boolean(
+        customPublishingConfig?.endpointConfigured &&
+          customPublishingConfig.testedAt
+      );
+
+      return {
+        provider: item.provider,
+        title: item.title,
+        description: item.description,
+        category: item.category,
+        capabilities: item.capabilities,
+        connected,
+        status: connected ? "Connected" : mapped.status,
+        available: item.available,
+        comingSoon: item.comingSoon,
+        connectedAt: connected
+          ? (customPublishingConfig?.testedAt ?? null)
+          : null,
+        lastSyncAt: null,
+        lastSuccessAt: connected
+          ? (customPublishingConfig?.testedAt ?? null)
+          : null,
+        lastErrorAt: record?.lastErrorAt?.toISOString() ?? null,
+        lastErrorMessage: record?.lastErrorMessage ?? null,
+      };
+    }
+
+    if (item.provider === "hosted_blog" || item.provider === "sitemap") {
+      return {
+        provider: item.provider,
+        title: item.title,
+        description: item.description,
+        category: item.category,
+        capabilities: item.capabilities,
+        connected: true,
+        status: "Configured",
+        available: item.available,
+        comingSoon: item.comingSoon,
+        connectedAt: null,
+        lastSyncAt: null,
+        lastSuccessAt: null,
+        lastErrorAt: null,
+        lastErrorMessage: null,
+        platformManaged: true,
+      };
+    }
 
     if (item.provider === "wordpress") {
       const wpMapped = wordpressConnection
@@ -180,6 +234,8 @@ export async function getIntegrationsOverview(
         provider: item.provider,
         title: item.title,
         description: item.description,
+        category: item.category,
+        capabilities: item.capabilities,
         connected,
         status: statusLabel,
         available: item.available,
@@ -220,6 +276,8 @@ export async function getIntegrationsOverview(
         provider: item.provider,
         title: item.title,
         description: item.description,
+        category: item.category,
+        capabilities: item.capabilities,
         // Partial connection is not a "fully connected" integration.
         connected: gscState === "CONNECTED",
         status: awaitingProperty ? "NeedsProperty" : mapped.status,
@@ -252,6 +310,8 @@ export async function getIntegrationsOverview(
       provider: item.provider,
       title: item.title,
       description: item.description,
+      category: item.category,
+      capabilities: item.capabilities,
       connected: mapped.connected,
       status: mapped.status,
       available: item.available,

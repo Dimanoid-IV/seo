@@ -624,6 +624,7 @@ export type SaasDictionary = {
     googleRedirect: string;
     oauthSoon: string;
     continueConnect: string;
+    customSetupCta: string;
     previewOnly: string;
     connectedSince: string;
     metrics28Days: string;

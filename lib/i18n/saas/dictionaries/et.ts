@@ -796,6 +796,7 @@ export const saasDictionary: SaasDictionary = {
       "Teid suunatakse Google'isse ainult lugemisõiguse kinnitamiseks.",
     oauthSoon: "OAuth ühendus tuleb järgmises versioonis",
     continueConnect: "Jätka ühendamist",
+    customSetupCta: "Seadista kohandatud sait",
     previewOnly:
       "OAuth/API ühendus on praegu eelvaate režiimis — uurige võimalusi.",
     connectedSince: "Ühendatud",

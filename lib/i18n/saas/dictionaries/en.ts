@@ -796,6 +796,7 @@ export const saasDictionary: SaasDictionary = {
       "You will be redirected to Google to confirm read-only access.",
     oauthSoon: "OAuth connection will arrive in a future release",
     continueConnect: "Continue connection",
+    customSetupCta: "Set up custom site",
     previewOnly:
       "OAuth/API connection is preview-only for now — explore capabilities first.",
     connectedSince: "Connected",

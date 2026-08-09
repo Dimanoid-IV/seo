@@ -35,6 +35,7 @@ import { useState } from "react";
 
 const GSC_PROVIDER = "google_search_console";
 const WORDPRESS_PROVIDER = "wordpress";
+const CUSTOM_WEBHOOK_PROVIDER = "custom_webhook";
 
 type IntegrationActionSheetProps = {
   open: boolean;
@@ -161,6 +162,7 @@ function IntegrationActionSheetContent({
       ? Boolean(integration.googleConnected)
       : integration.connected) && !isComingSoon;
   const isWordPress = integration.provider === WORDPRESS_PROVIDER;
+  const isCustomWebhook = integration.provider === CUSTOM_WEBHOOK_PROVIDER;
   const canConnectGsc = isGsc && !isComingSoon && !isConnected && Boolean(websiteId);
   const gscPropertySelected = Boolean(integration.selectedProperty);
   const [syncing, setSyncing] = useState(false);
@@ -427,6 +429,39 @@ function IntegrationActionSheetContent({
                   )}
                 </>
               )
+            ) : isCustomWebhook ? (
+              <>
+                <Button
+                  type="button"
+                  onClick={() => {
+                    onOpenChange(false);
+                    window.location.hash = "custom-publishing";
+                    document
+                      .getElementById("custom-publishing")
+                      ?.scrollIntoView({ behavior: "smooth", block: "start" });
+                  }}
+                  className="w-full bg-[#8169ff] text-white hover:bg-[#6d4ff0]"
+                >
+                  {i.customSetupCta}
+                </Button>
+                <p className="text-center text-xs text-slate-500">
+                  {i.customWebsite.technicalIntro}
+                </p>
+              </>
+            ) : integration.platformManaged ? (
+              <>
+                <Button
+                  type="button"
+                  disabled
+                  variant="outline"
+                  className="w-full border border-slate-300 bg-white/5 text-slate-600"
+                >
+                  {i.hermesPlatformManaged}
+                </Button>
+                <p className="text-center text-xs text-slate-500">
+                  {i.previewOnly}
+                </p>
+              </>
             ) : (
               <>
                 <Button

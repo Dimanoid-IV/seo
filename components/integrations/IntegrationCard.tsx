@@ -3,11 +3,18 @@
 import {
   BarChart3,
   Cloud,
+  Code2,
+  FileCode2,
+  GitPullRequest,
   Globe,
   Mail,
   MapPin,
+  Network,
+  Rss,
   Search,
+  ShoppingBag,
   Sparkles,
+  Workflow,
 } from "lucide-react";
 
 import { ConnectionTimeline } from "@/components/integrations/ConnectionTimeline";
@@ -47,6 +54,61 @@ const PROVIDER_ICONS: Record<
     accent: "from-sky-500 to-indigo-500",
     glow: "shadow-sky-500/20",
   },
+  custom_webhook: {
+    icon: Code2,
+    accent: "from-cyan-500 to-blue-500",
+    glow: "shadow-cyan-500/20",
+  },
+  hosted_blog: {
+    icon: Rss,
+    accent: "from-lime-500 to-emerald-500",
+    glow: "shadow-lime-500/20",
+  },
+  webflow: {
+    icon: FileCode2,
+    accent: "from-blue-600 to-indigo-600",
+    glow: "shadow-blue-500/20",
+  },
+  shopify: {
+    icon: ShoppingBag,
+    accent: "from-green-500 to-lime-500",
+    glow: "shadow-green-500/20",
+  },
+  wix: {
+    icon: Globe,
+    accent: "from-slate-700 to-slate-500",
+    glow: "shadow-slate-500/20",
+  },
+  squarespace: {
+    icon: Network,
+    accent: "from-neutral-700 to-neutral-500",
+    glow: "shadow-neutral-500/20",
+  },
+  ghost: {
+    icon: Rss,
+    accent: "from-zinc-800 to-zinc-500",
+    glow: "shadow-zinc-500/20",
+  },
+  github: {
+    icon: GitPullRequest,
+    accent: "from-slate-900 to-slate-600",
+    glow: "shadow-slate-500/20",
+  },
+  sitemap: {
+    icon: Network,
+    accent: "from-teal-500 to-cyan-500",
+    glow: "shadow-teal-500/20",
+  },
+  zapier: {
+    icon: Workflow,
+    accent: "from-orange-500 to-red-500",
+    glow: "shadow-orange-500/20",
+  },
+  make: {
+    icon: Workflow,
+    accent: "from-purple-600 to-indigo-500",
+    glow: "shadow-purple-500/20",
+  },
   cloudflare: {
     icon: Cloud,
     accent: "from-amber-500 to-orange-600",
@@ -85,6 +147,10 @@ function resolveAction(
       return { label: labels.platformManaged, variant: "secondary", disabled: true };
     }
     return { label: labels.notConfigured, variant: "muted", disabled: true };
+  }
+
+  if (integration.platformManaged && integration.connected) {
+    return { label: labels.platformManaged, variant: "secondary", disabled: true };
   }
 
   if (integration.comingSoon || !integration.available) {

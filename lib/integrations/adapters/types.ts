@@ -15,6 +15,18 @@ export type IntegrationAdapterProvider =
   | "WORDPRESS"
   | "CUSTOM_WEBHOOK"
   | "HOSTED_BLOG"
+  | "WEBFLOW"
+  | "SHOPIFY"
+  | "WIX"
+  | "SQUARESPACE"
+  | "GHOST"
+  | "GITHUB"
+  | "ZAPIER"
+  | "MAKE"
+  | "SITEMAP"
+  | "GOOGLE_SEARCH_CONSOLE"
+  | "GOOGLE_ANALYTICS"
+  | "GOOGLE_BUSINESS_PROFILE"
   | "MANUAL"
   | "OTHER";
 

@@ -8,6 +8,8 @@ export type IntegrationOverviewItem = {
   provider: string;
   title: string;
   description: string;
+  category?: string;
+  capabilities?: string[];
   connected: boolean;
   status: string;
   available: boolean;
