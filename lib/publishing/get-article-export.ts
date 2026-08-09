@@ -12,6 +12,7 @@ import {
 } from "./custom-publishing-display";
 import { loadBrandKitForWebsite } from "@/lib/brand-kit";
 import { buildHostedArticleUrl } from "@/lib/hosted-blog/urls";
+import { getGitHubPrConfig } from "@/lib/publishing/github-pr-config";
 
 export interface ArticleUniversalExportResult {
   articleId: string;
@@ -22,6 +23,11 @@ export interface ArticleUniversalExportResult {
     published: boolean;
   };
   customPublishing: CustomPublishingDisplayState;
+  githubPr: {
+    connected: boolean;
+    repo: string | null;
+    contentPath: string | null;
+  };
   export: UniversalExportPackage;
 }
 
@@ -45,6 +51,7 @@ export async function getArticleUniversalExport({
   });
 
   const custom = await getCustomPublishingConfig(article.websiteId);
+  const github = await getGitHubPrConfig(article.websiteId);
   const brandKit = await loadBrandKitForWebsite(article.websiteId);
 
   const pkg = buildUniversalExport(
@@ -86,6 +93,11 @@ export async function getArticleUniversalExport({
       testedAt: custom?.testedAt,
       hasSharedSecret: custom?.hasSharedSecret,
     }),
+    githubPr: {
+      connected: github?.connected === true,
+      repo: github ? `${github.owner}/${github.repo}` : null,
+      contentPath: github?.contentPath ?? null,
+    },
     export: pkg,
   };
 }

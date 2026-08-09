@@ -825,6 +825,29 @@ export const saasDictionary: SaasDictionary = {
     gscSyncNetworkError: "Võrguviga Search Console'i andmete värskendamisel",
     searchConsoleSite: "Search Console'i sait:",
     oauthApiSoonTitle: "OAuth/API ühendus tuleb järgmises versioonis",
+    githubPr: {
+      title: "Avaldamine GitHub pull requestiga",
+      description:
+        "Kohandatud või staatiliste saitide jaoks saab RankBoost lisada valmis artikli Markdown-failina ja avada pull requesti, mitte muuta productionit otse.",
+      owner: "Owner",
+      repo: "Repository",
+      baseBranch: "Base branch",
+      contentPath: "Sisu kaust",
+      token: "GitHub token",
+      tokenPlaceholder:
+        "Fine-grained token Contents ja Pull requests õigustega",
+      tokenNote:
+        "Token krüpteeritakse ja seda ei näidata enam. Kasutage ühe repository fine-grained tokenit Contents ja Pull requests õigustega.",
+      testAndSave: "Testi ja salvesta",
+      disconnect: "Katkesta ühendus",
+      connected: (repo, path) => `Ühendatud: ${repo} → ${path}`,
+      connectedFallback: "GitHub ühendatud.",
+      disconnected: "GitHub PR avaldamine katkestatud.",
+      connectFailed: "GitHubi ühendamine ebaõnnestus.",
+      connectNetworkError: "Võrguviga GitHubi ühendamisel.",
+      disconnectFailed: "GitHubi ühendust ei õnnestunud katkestada.",
+      disconnectNetworkError: "Võrguviga GitHubi ühenduse katkestamisel.",
+    },
     gscPropertyPicker: {
       title: "Vali Search Console'i sait",
       subtitle: "Seo Google'i atribuut oma veebisaidiga RankBoostis",

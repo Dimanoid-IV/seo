@@ -648,6 +648,26 @@ export type SaasDictionary = {
     gscSyncNetworkError: string;
     searchConsoleSite: string;
     oauthApiSoonTitle: string;
+    githubPr: {
+      title: string;
+      description: string;
+      owner: string;
+      repo: string;
+      baseBranch: string;
+      contentPath: string;
+      token: string;
+      tokenPlaceholder: string;
+      tokenNote: string;
+      testAndSave: string;
+      disconnect: string;
+      connected: (repo: string, path: string) => string;
+      connectedFallback: string;
+      disconnected: string;
+      connectFailed: string;
+      connectNetworkError: string;
+      disconnectFailed: string;
+      disconnectNetworkError: string;
+    };
     gscPropertyPicker: {
       title: string;
       subtitle: string;

@@ -2,7 +2,18 @@
 
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
-import { Check, Copy, Download, ExternalLink, Globe2, Loader2, Mail, Send, Webhook } from "lucide-react";
+import {
+  Check,
+  Copy,
+  Download,
+  ExternalLink,
+  GitPullRequest,
+  Globe2,
+  Loader2,
+  Mail,
+  Send,
+  Webhook,
+} from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { authFetch } from "@/lib/auth/client-session";
@@ -24,6 +35,11 @@ type ExportResponse = {
       hostLabel: string | null;
       hasSharedSecret: boolean;
       connectedBanner: string | null;
+    };
+    githubPr?: {
+      connected: boolean;
+      repo: string | null;
+      contentPath: string | null;
     };
     export: UniversalExportPackage;
   };
@@ -97,6 +113,10 @@ export function ArticlePublishPanel({
   const [publishError, setPublishError] = useState<string | null>(null);
   const [hostedUrl, setHostedUrl] = useState<string | null>(null);
   const [hostedPublished, setHostedPublished] = useState(false);
+  const [githubConnected, setGithubConnected] = useState(false);
+  const [githubRepo, setGithubRepo] = useState<string | null>(null);
+  const [githubPath, setGithubPath] = useState<string | null>(null);
+  const [githubPublishing, setGithubPublishing] = useState<"dry" | "create" | null>(null);
 
   const isWordPressLivePublished =
     articleStatus === "PUBLISHED" && Boolean(wordpressPostId);
@@ -126,6 +146,9 @@ export function ArticlePublishPanel({
           setCustomHost(body.data.customPublishing?.hostLabel ?? null);
           setHostedUrl(body.data.hostedBlog?.url ?? null);
           setHostedPublished(body.data.hostedBlog?.published === true);
+          setGithubConnected(body.data.githubPr?.connected === true);
+          setGithubRepo(body.data.githubPr?.repo ?? null);
+          setGithubPath(body.data.githubPr?.contentPath ?? null);
         }
       } catch {
         if (!cancelled) setError("Сетевая ошибка при подготовке материалов.");
@@ -290,6 +313,56 @@ export function ArticlePublishPanel({
       setPublishError("Сетевая ошибка при публикации hosted-страницы.");
     } finally {
       setHostedPublishing(false);
+    }
+  }
+
+  async function handleGithubPr(dryRun: boolean) {
+    setGithubPublishing(dryRun ? "dry" : "create");
+    setPublishMessage(null);
+    setPublishError(null);
+    try {
+      const response = await authFetch(`/api/articles/${articleId}/github-pr`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ dryRun }),
+      });
+      const body = (await response.json().catch(() => ({}))) as {
+        data?: {
+          dryRun?: boolean;
+          created?: boolean;
+          pullRequestUrl?: string | null;
+          filePath?: string;
+        };
+        error?: { message?: string };
+      };
+      if (!response.ok) {
+        setPublishError(
+          body.error?.message ??
+            (dryRun
+              ? "Не удалось проверить GitHub PR."
+              : "Не удалось создать GitHub pull request.")
+        );
+        return;
+      }
+      if (dryRun) {
+        setPublishMessage(
+          `GitHub PR готов к созданию: ${body.data?.filePath ?? githubPath ?? "content/blog"}.`
+        );
+        return;
+      }
+      setPublishMessage(
+        body.data?.pullRequestUrl
+          ? `Pull request создан: ${body.data.pullRequestUrl}`
+          : "Pull request создан или уже существует."
+      );
+    } catch {
+      setPublishError(
+        dryRun
+          ? "Сетевая ошибка при проверке GitHub PR."
+          : "Сетевая ошибка при создании GitHub PR."
+      );
+    } finally {
+      setGithubPublishing(null);
     }
   }
 
@@ -569,6 +642,54 @@ export function ArticlePublishPanel({
               <ExternalLink className="size-3" />
             </a>
           ) : null}
+        </div>
+      ) : null}
+
+      {githubConnected ? (
+        <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
+          <div className="flex items-start gap-3">
+            <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-white">
+              <GitPullRequest className="size-4 text-slate-800" />
+            </div>
+            <div className="min-w-0 flex-1">
+              <p className="text-sm font-semibold text-slate-900">
+                GitHub подключён: {githubRepo ?? "repository"}
+              </p>
+              <p className="mt-1 text-xs leading-relaxed text-slate-600">
+                RankBoost создаст Markdown-файл в {githubPath ?? "content/blog"} и
+                откроет pull request. Сайт изменится только после merge/deploy.
+              </p>
+            </div>
+          </div>
+          <div className="mt-4 flex flex-wrap gap-2">
+            <Button
+              type="button"
+              size="sm"
+              disabled={githubPublishing !== null}
+              onClick={() => void handleGithubPr(false)}
+              className="bg-slate-900 text-white hover:bg-slate-800"
+            >
+              {githubPublishing === "create" ? (
+                <Loader2 className="size-4 animate-spin" />
+              ) : (
+                <GitPullRequest className="size-4" />
+              )}
+              Создать PR
+            </Button>
+            <Button
+              type="button"
+              size="sm"
+              variant="outline"
+              disabled={githubPublishing !== null}
+              onClick={() => void handleGithubPr(true)}
+              className="border-slate-200 bg-white text-slate-700 hover:bg-slate-100"
+            >
+              {githubPublishing === "dry" ? (
+                <Loader2 className="size-4 animate-spin" />
+              ) : null}
+              Проверить PR
+            </Button>
+          </div>
         </div>
       ) : null}
 

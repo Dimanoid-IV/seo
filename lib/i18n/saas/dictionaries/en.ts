@@ -825,6 +825,29 @@ export const saasDictionary: SaasDictionary = {
     gscSyncNetworkError: "Network error while refreshing Search Console data",
     searchConsoleSite: "Search Console site:",
     oauthApiSoonTitle: "OAuth/API connection will arrive in a future release",
+    githubPr: {
+      title: "GitHub pull request publishing",
+      description:
+        "For custom/static sites, RankBoost can add the ready article as a Markdown file and open a pull request instead of editing production directly.",
+      owner: "Owner",
+      repo: "Repository",
+      baseBranch: "Base branch",
+      contentPath: "Content path",
+      token: "GitHub token",
+      tokenPlaceholder:
+        "Fine-grained token with Contents and Pull requests access",
+      tokenNote:
+        "The token is encrypted and never shown again. Use a fine-grained token for one repository with Contents and Pull requests permissions.",
+      testAndSave: "Test and save",
+      disconnect: "Disconnect",
+      connected: (repo, path) => `Connected: ${repo} → ${path}`,
+      connectedFallback: "GitHub connected.",
+      disconnected: "GitHub PR publishing disconnected.",
+      connectFailed: "GitHub connection failed.",
+      connectNetworkError: "Network error while connecting GitHub.",
+      disconnectFailed: "Could not disconnect GitHub.",
+      disconnectNetworkError: "Network error while disconnecting GitHub.",
+    },
     gscPropertyPicker: {
       title: "Choose a Search Console site",
       subtitle: "Link a Google property to your website in RankBoost",

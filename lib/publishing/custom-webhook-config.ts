@@ -16,6 +16,10 @@ import { getPrisma } from "@/lib/db";
 import { decryptSecret, encryptSecret } from "@/lib/security/encryption";
 
 export const CUSTOM_PUBLISHING_KIND = "rankboost_custom_publishing" as const;
+const CUSTOM_PUBLISHING_PROVIDERS = [
+  IntegrationProvider.CUSTOM_WEBHOOK,
+  IntegrationProvider.OTHER,
+];
 
 export type CustomPublishingScopes = {
   kind: typeof CUSTOM_PUBLISHING_KIND;
@@ -55,7 +59,7 @@ export async function getCustomPublishingConfig(
   const integration = await prisma.integration.findFirst({
     where: {
       websiteId,
-      provider: IntegrationProvider.OTHER,
+      provider: { in: CUSTOM_PUBLISHING_PROVIDERS },
       displayName: CUSTOM_PUBLISHING_KIND,
     },
     select: {
@@ -89,7 +93,7 @@ export async function getCustomPublishingWebhookUrl(
   const integration = await prisma.integration.findFirst({
     where: {
       websiteId,
-      provider: IntegrationProvider.OTHER,
+      provider: { in: CUSTOM_PUBLISHING_PROVIDERS },
       displayName: CUSTOM_PUBLISHING_KIND,
     },
     select: { apiKeyEncrypted: true },
@@ -110,7 +114,7 @@ export async function getCustomPublishingSharedSecret(
   const integration = await prisma.integration.findFirst({
     where: {
       websiteId,
-      provider: IntegrationProvider.OTHER,
+      provider: { in: CUSTOM_PUBLISHING_PROVIDERS },
       displayName: CUSTOM_PUBLISHING_KIND,
     },
     select: { refreshTokenEncrypted: true },
@@ -157,7 +161,7 @@ export async function upsertCustomPublishingConfig(input: {
   const existing = await prisma.integration.findFirst({
     where: {
       websiteId: input.websiteId,
-      provider: IntegrationProvider.OTHER,
+      provider: { in: CUSTOM_PUBLISHING_PROVIDERS },
       displayName: CUSTOM_PUBLISHING_KIND,
     },
     select: { id: true, refreshTokenEncrypted: true },
@@ -199,7 +203,7 @@ export async function upsertCustomPublishingConfig(input: {
         data: {
           websiteId: input.websiteId,
           organizationId: input.organizationId,
-          provider: IntegrationProvider.OTHER,
+          provider: IntegrationProvider.CUSTOM_WEBHOOK,
           ...data,
         },
         select: {
@@ -228,7 +232,7 @@ export async function disconnectCustomPublishingConfig(
   await prisma.integration.updateMany({
     where: {
       websiteId,
-      provider: IntegrationProvider.OTHER,
+      provider: { in: CUSTOM_PUBLISHING_PROVIDERS },
       displayName: CUSTOM_PUBLISHING_KIND,
     },
     data: {
@@ -254,7 +258,7 @@ export async function setCustomPublishingAutoSend(input: {
   const integration = await prisma.integration.findFirst({
     where: {
       websiteId: input.websiteId,
-      provider: IntegrationProvider.OTHER,
+      provider: { in: CUSTOM_PUBLISHING_PROVIDERS },
       displayName: CUSTOM_PUBLISHING_KIND,
     },
     select: { id: true, scopesJson: true },

@@ -3,6 +3,7 @@
 import { IntegrationBenefitList } from "@/components/integrations/IntegrationBenefitList";
 import { IntegrationComingSoonForm } from "@/components/integrations/IntegrationComingSoonForm";
 import { GoogleSearchConsolePropertyPicker } from "@/components/integrations/GoogleSearchConsolePropertyPicker";
+import { GitHubPrConnectionForm } from "@/components/integrations/GitHubPrConnectionForm";
 import { GscSyncButton } from "@/components/integrations/GoogleSearchConsoleDashboardCard";
 import { GscMetricsSummaryDisplay } from "@/components/integrations/GscMetricsSummary";
 import { GscInsightsList } from "@/components/integrations/GscInsightsList";
@@ -36,6 +37,7 @@ import { useState } from "react";
 const GSC_PROVIDER = "google_search_console";
 const WORDPRESS_PROVIDER = "wordpress";
 const CUSTOM_WEBHOOK_PROVIDER = "custom_webhook";
+const GITHUB_PROVIDER = "github";
 
 type IntegrationActionSheetProps = {
   open: boolean;
@@ -163,6 +165,7 @@ function IntegrationActionSheetContent({
       : integration.connected) && !isComingSoon;
   const isWordPress = integration.provider === WORDPRESS_PROVIDER;
   const isCustomWebhook = integration.provider === CUSTOM_WEBHOOK_PROVIDER;
+  const isGitHub = integration.provider === GITHUB_PROVIDER;
   const canConnectGsc = isGsc && !isComingSoon && !isConnected && Boolean(websiteId);
   const gscPropertySelected = Boolean(integration.selectedProperty);
   const [syncing, setSyncing] = useState(false);
@@ -389,9 +392,17 @@ function IntegrationActionSheetContent({
               </details>
             </div>
           ) : null}
+
+          {isGitHub && !isComingSoon ? (
+            <GitHubPrConnectionForm
+              websiteId={websiteId}
+              connected={integration.connected}
+              onConnectionUpdated={onIntegrationUpdated}
+            />
+          ) : null}
         </div>
 
-        {!isComingSoon && !isWordPress ? (
+        {!isComingSoon && !isWordPress && !isGitHub ? (
           <SheetFooter className="border-t border-slate-200">
             {isGsc ? (
               isConnected ? (

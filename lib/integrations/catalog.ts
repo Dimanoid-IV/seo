@@ -184,8 +184,8 @@ export const INTEGRATION_CATALOG: IntegrationCatalogEntry[] = [
     title: "GitHub PR",
     description:
       "Безопасный путь для кастомных сайтов: RankBoost создаёт pull request с статьёй или SEO-fix.",
-    available: false,
-    comingSoon: true,
+    available: true,
+    comingSoon: false,
     category: "publishing",
     capabilities: [IntegrationCapability.GITHUB_CREATE_PULL_REQUEST],
   },
