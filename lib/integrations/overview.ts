@@ -10,6 +10,7 @@ import {
 } from "./catalog";
 import { extractGscMetricsSummary } from "./gsc-metrics";
 import { resolveGscConnectionState } from "./gsc-state";
+import { extractGa4Summary } from "./ga4";
 import type { IntegrationsOverviewResponse } from "./types";
 import {
   getWordPressConnection,
@@ -124,6 +125,7 @@ export async function getIntegrationsOverview(
       googleData: {
         select: {
           searchConsoleSiteUrl: true,
+          analyticsPropertyId: true,
           metricsJson: true,
           lastFetchedAt: true,
         },
@@ -417,6 +419,31 @@ export async function getIntegrationsOverview(
         lastFetchedAt: awaitingProperty
           ? null
           : (record?.googleData?.lastFetchedAt?.toISOString() ?? null),
+      };
+    }
+
+    if (item.provider === "google_analytics") {
+      const propertyId = record?.googleData?.analyticsPropertyId ?? null;
+      const connected = mapped.connected && Boolean(propertyId);
+      return {
+        provider: item.provider,
+        title: item.title,
+        description: item.description,
+        category: item.category,
+        capabilities: item.capabilities,
+        connected,
+        status: connected ? mapped.status : propertyId ? "NeedsSync" : "NeedsProperty",
+        available: item.available,
+        comingSoon: item.comingSoon,
+        connectedAt:
+          mapped.connected && record ? record.updatedAt.toISOString() : null,
+        lastSyncAt: record?.lastSyncAt?.toISOString() ?? null,
+        lastSuccessAt: record?.lastSuccessAt?.toISOString() ?? null,
+        lastErrorAt: record?.lastErrorAt?.toISOString() ?? null,
+        lastErrorMessage: record?.lastErrorMessage ?? null,
+        analyticsPropertyId: propertyId,
+        ga4MetricsSummary: extractGa4Summary(record?.googleData?.metricsJson),
+        lastFetchedAt: record?.googleData?.lastFetchedAt?.toISOString() ?? null,
       };
     }
 

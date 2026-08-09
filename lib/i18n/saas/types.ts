@@ -648,6 +648,24 @@ export type SaasDictionary = {
     gscSyncNetworkError: string;
     searchConsoleSite: string;
     oauthApiSoonTitle: string;
+    googleAnalytics: {
+      title: string;
+      description: string;
+      propertyId: string;
+      note: string;
+      save: string;
+      sync: string;
+      saved: string;
+      synced: string;
+      saveFailed: string;
+      saveNetworkError: string;
+      syncFailed: string;
+      syncNetworkError: string;
+      users: string;
+      sessions: string;
+      views: string;
+      conversions: string;
+    };
     githubPr: {
       title: string;
       description: string;

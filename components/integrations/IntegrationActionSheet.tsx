@@ -3,6 +3,7 @@
 import { IntegrationBenefitList } from "@/components/integrations/IntegrationBenefitList";
 import { IntegrationComingSoonForm } from "@/components/integrations/IntegrationComingSoonForm";
 import { GhostConnectionForm } from "@/components/integrations/GhostConnectionForm";
+import { GoogleAnalyticsConnectionForm } from "@/components/integrations/GoogleAnalyticsConnectionForm";
 import { GoogleSearchConsolePropertyPicker } from "@/components/integrations/GoogleSearchConsolePropertyPicker";
 import { GitHubPrConnectionForm } from "@/components/integrations/GitHubPrConnectionForm";
 import { ShopifyConnectionForm } from "@/components/integrations/ShopifyConnectionForm";
@@ -39,6 +40,7 @@ import { ArrowRight, Database, Shield, Sparkles, Zap } from "lucide-react";
 import { useState } from "react";
 
 const GSC_PROVIDER = "google_search_console";
+const GA_PROVIDER = "google_analytics";
 const WORDPRESS_PROVIDER = "wordpress";
 const CUSTOM_WEBHOOK_PROVIDER = "custom_webhook";
 const GHOST_PROVIDER = "ghost";
@@ -165,6 +167,7 @@ function IntegrationActionSheetContent({
   const risk = details ? RISK_LEVEL_LABELS[details.riskLevel] : null;
   const isComingSoon = integration.comingSoon || !integration.available;
   const isGsc = integration.provider === GSC_PROVIDER;
+  const isGa = integration.provider === GA_PROVIDER;
   // For GSC, "connected" means Google OAuth exists (even without a selected
   // property), so the property picker / manage UI still renders in the partial
   // GOOGLE_CONNECTED_NO_PROPERTY state.
@@ -384,6 +387,14 @@ function IntegrationActionSheetContent({
             </section>
           ) : null}
 
+          {isGa && !isComingSoon ? (
+            <GoogleAnalyticsConnectionForm
+              integration={integration}
+              websiteId={websiteId}
+              onConnectionUpdated={onIntegrationUpdated}
+            />
+          ) : null}
+
           {isWordPress && !isComingSoon ? (
             <div className="space-y-4">
               <WordPressConnectionForm
@@ -450,6 +461,7 @@ function IntegrationActionSheetContent({
         </div>
 
         {!isComingSoon &&
+        !isGa &&
         !isWordPress &&
         !isGitHub &&
         !isWebflow &&

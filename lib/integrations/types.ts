@@ -4,6 +4,14 @@ import type { WordPressConnectionMetadata } from "./wordpress-types";
 
 export type { GscMetricsSummary };
 
+export type Ga4MetricsSummary = {
+  activeUsers: number;
+  sessions: number;
+  screenPageViews: number;
+  conversions: number;
+  engagementRate: number;
+};
+
 export type IntegrationOverviewItem = {
   provider: string;
   title: string;
@@ -27,6 +35,10 @@ export type IntegrationOverviewItem = {
   selectedProperty?: string | null;
   /** GSC only: last 28-day metrics summary */
   metricsSummary?: GscMetricsSummary | null;
+  /** GA4 only: last 28-day traffic summary */
+  ga4MetricsSummary?: Ga4MetricsSummary | null;
+  /** GA4 only: selected Analytics property ID */
+  analyticsPropertyId?: string | null;
   /** GSC only: when metrics were last fetched from Google */
   lastFetchedAt?: string | null;
   /** WordPress connector metadata */

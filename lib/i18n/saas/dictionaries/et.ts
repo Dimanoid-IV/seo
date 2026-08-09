@@ -825,6 +825,26 @@ export const saasDictionary: SaasDictionary = {
     gscSyncNetworkError: "Võrguviga Search Console'i andmete värskendamisel",
     searchConsoleSite: "Search Console'i sait:",
     oauthApiSoonTitle: "OAuth/API ühendus tuleb järgmises versioonis",
+    googleAnalytics: {
+      title: "Google Analytics 4",
+      description:
+        "Ühendage GA4 property, et RankBoost näeks pärast avaldamist liiklust, kaasatust ja konversioone.",
+      propertyId: "GA4 property ID",
+      note:
+        "Kasutage numbrilist property ID-d. Google'i ligipääs kasutab sama turvalist OAuth flow'd nagu Search Console.",
+      save: "Salvesta property",
+      sync: "Laadi andmed",
+      saved: "GA4 property salvestatud.",
+      synced: "Google Analyticsi andmed laaditud.",
+      saveFailed: "GA4 property salvestamine ebaõnnestus.",
+      saveNetworkError: "Võrguviga GA4 property salvestamisel.",
+      syncFailed: "Google Analyticsit ei õnnestunud laadida.",
+      syncNetworkError: "Võrguviga Google Analyticsi laadimisel.",
+      users: "Kasutajad",
+      sessions: "Sessioonid",
+      views: "Vaatamised",
+      conversions: "Konversioonid",
+    },
     githubPr: {
       title: "Avaldamine GitHub pull requestiga",
       description:

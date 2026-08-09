@@ -825,6 +825,26 @@ export const saasDictionary: SaasDictionary = {
     gscSyncNetworkError: "Сетевая ошибка при обновлении данных Search Console",
     searchConsoleSite: "Сайт Search Console:",
     oauthApiSoonTitle: "OAuth/API подключение появится в следующем релизе",
+    googleAnalytics: {
+      title: "Google Analytics 4",
+      description:
+        "Подключите GA4 property, чтобы RankBoost видел трафик, вовлечение и конверсии после публикаций.",
+      propertyId: "GA4 property ID",
+      note:
+        "Нужен числовой property ID. Google аккаунт подключается через тот же безопасный OAuth, что и Search Console.",
+      save: "Сохранить property",
+      sync: "Загрузить данные",
+      saved: "GA4 property сохранён.",
+      synced: "Данные Google Analytics загружены.",
+      saveFailed: "Не удалось сохранить GA4 property.",
+      saveNetworkError: "Сетевая ошибка при сохранении GA4 property.",
+      syncFailed: "Не удалось загрузить Google Analytics.",
+      syncNetworkError: "Сетевая ошибка при загрузке Google Analytics.",
+      users: "Пользователи",
+      sessions: "Сессии",
+      views: "Просмотры",
+      conversions: "Конверсии",
+    },
     githubPr: {
       title: "Публикация через GitHub pull request",
       description:

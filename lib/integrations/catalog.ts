@@ -40,8 +40,8 @@ export const INTEGRATION_CATALOG: IntegrationCatalogEntry[] = [
     title: "Google Analytics",
     description:
       "Трафик, конверсии и поведение пользователей для точных решений.",
-    available: false,
-    comingSoon: true,
+    available: true,
+    comingSoon: false,
     category: "seo_data",
     capabilities: [IntegrationCapability.ANALYTICS_READ_METRICS],
   },
