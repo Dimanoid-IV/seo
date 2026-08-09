@@ -11,6 +11,7 @@ import {
 import { extractGscMetricsSummary } from "./gsc-metrics";
 import { resolveGscConnectionState } from "./gsc-state";
 import { extractGa4Summary } from "./ga4";
+import { extractGbpSummary } from "./gbp";
 import type { IntegrationsOverviewResponse } from "./types";
 import {
   getWordPressConnection,
@@ -126,6 +127,8 @@ export async function getIntegrationsOverview(
         select: {
           searchConsoleSiteUrl: true,
           analyticsPropertyId: true,
+          businessProfileAccountId: true,
+          businessProfileLocationId: true,
           metricsJson: true,
           lastFetchedAt: true,
         },
@@ -443,6 +446,35 @@ export async function getIntegrationsOverview(
         lastErrorMessage: record?.lastErrorMessage ?? null,
         analyticsPropertyId: propertyId,
         ga4MetricsSummary: extractGa4Summary(record?.googleData?.metricsJson),
+        lastFetchedAt: record?.googleData?.lastFetchedAt?.toISOString() ?? null,
+      };
+    }
+
+    if (item.provider === "google_business_profile") {
+      const accountId = record?.googleData?.businessProfileAccountId ?? null;
+      const locationId = record?.googleData?.businessProfileLocationId ?? null;
+      const connected = mapped.connected && Boolean(accountId && locationId);
+      return {
+        provider: item.provider,
+        title: item.title,
+        description: item.description,
+        category: item.category,
+        capabilities: item.capabilities,
+        connected,
+        status: connected ? mapped.status : accountId ? "NeedsSync" : "NeedsLocation",
+        available: item.available,
+        comingSoon: item.comingSoon,
+        connectedAt:
+          mapped.connected && record ? record.updatedAt.toISOString() : null,
+        lastSyncAt: record?.lastSyncAt?.toISOString() ?? null,
+        lastSuccessAt: record?.lastSuccessAt?.toISOString() ?? null,
+        lastErrorAt: record?.lastErrorAt?.toISOString() ?? null,
+        lastErrorMessage: record?.lastErrorMessage ?? null,
+        businessProfileAccountId: accountId,
+        businessProfileLocationId: locationId,
+        googleBusinessProfileSummary: extractGbpSummary(
+          record?.googleData?.metricsJson
+        ),
         lastFetchedAt: record?.googleData?.lastFetchedAt?.toISOString() ?? null,
       };
     }

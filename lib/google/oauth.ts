@@ -17,6 +17,7 @@ export const GSC_OAUTH_SCOPES = [
   "profile",
   "https://www.googleapis.com/auth/webmasters.readonly",
   "https://www.googleapis.com/auth/analytics.readonly",
+  "https://www.googleapis.com/auth/business.manage",
 ] as const;
 
 const OAUTH_STATE_TTL = "10m";

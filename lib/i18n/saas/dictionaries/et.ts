@@ -845,6 +845,26 @@ export const saasDictionary: SaasDictionary = {
       views: "Vaatamised",
       conversions: "Konversioonid",
     },
+    googleBusinessProfile: {
+      title: "Google Business Profile",
+      description:
+        "Ühendage ettevõtte profiil, et RankBoost saaks kasutada kohaliku SEO konteksti: kategooriat, aadressi, veebisaiti ja tulevasi Google Mapsi soovitusi.",
+      accountId: "Google Business account ID",
+      locationId: "Location ID",
+      note:
+        "Teil peab olema ligipääs sellele Google Business Profile'i asukohale. Kui Google ühendati varem, ühendage Search Console üks kord uuesti, et anda uus Business Profile'i luba.",
+      save: "Salvesta asukoht",
+      sync: "Laadi profiil",
+      saved: "Google Business Profile'i asukoht salvestatud.",
+      synced: "Google Business Profile laaditud.",
+      saveFailed: "Google Business Profile'i ei õnnestunud salvestada.",
+      saveNetworkError:
+        "Võrguviga Google Business Profile'i salvestamisel.",
+      syncFailed: "Google Business Profile'i ei õnnestunud laadida.",
+      syncNetworkError: "Võrguviga Google Business Profile'i laadimisel.",
+      business: "Ettevõte",
+      category: "Kategooria",
+    },
     githubPr: {
       title: "Avaldamine GitHub pull requestiga",
       description:

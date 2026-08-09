@@ -845,6 +845,25 @@ export const saasDictionary: SaasDictionary = {
       views: "Views",
       conversions: "Conversions",
     },
+    googleBusinessProfile: {
+      title: "Google Business Profile",
+      description:
+        "Connect the business listing so RankBoost can use local SEO context: category, address, website, and future Google Maps recommendations.",
+      accountId: "Google Business account ID",
+      locationId: "Location ID",
+      note:
+        "You need access to this location in Google Business Profile. If Google was connected earlier, reconnect Search Console once to grant the new Business Profile permission.",
+      save: "Save location",
+      sync: "Load profile",
+      saved: "Google Business Profile location saved.",
+      synced: "Google Business Profile loaded.",
+      saveFailed: "Could not save Google Business Profile.",
+      saveNetworkError: "Network error while saving Google Business Profile.",
+      syncFailed: "Could not load Google Business Profile.",
+      syncNetworkError: "Network error while loading Google Business Profile.",
+      business: "Business",
+      category: "Category",
+    },
     githubPr: {
       title: "GitHub pull request publishing",
       description:

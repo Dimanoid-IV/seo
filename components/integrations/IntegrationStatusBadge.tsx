@@ -55,6 +55,16 @@ const STATUS_STYLES: Record<
     className: "border-amber-200 bg-amber-50 text-amber-800",
     icon: AlertTriangle,
   },
+  NeedsLocation: {
+    label: "Select a location",
+    className: "border-amber-200 bg-amber-50 text-amber-800",
+    icon: AlertTriangle,
+  },
+  NeedsSync: {
+    label: "Needs sync",
+    className: "border-amber-200 bg-amber-50 text-amber-800",
+    icon: AlertTriangle,
+  },
 };
 
 export function IntegrationStatusBadge({

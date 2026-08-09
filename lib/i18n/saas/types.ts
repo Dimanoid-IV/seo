@@ -666,6 +666,23 @@ export type SaasDictionary = {
       views: string;
       conversions: string;
     };
+    googleBusinessProfile: {
+      title: string;
+      description: string;
+      accountId: string;
+      locationId: string;
+      note: string;
+      save: string;
+      sync: string;
+      saved: string;
+      synced: string;
+      saveFailed: string;
+      saveNetworkError: string;
+      syncFailed: string;
+      syncNetworkError: string;
+      business: string;
+      category: string;
+    };
     githubPr: {
       title: string;
       description: string;

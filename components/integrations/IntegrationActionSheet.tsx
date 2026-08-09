@@ -4,6 +4,7 @@ import { IntegrationBenefitList } from "@/components/integrations/IntegrationBen
 import { IntegrationComingSoonForm } from "@/components/integrations/IntegrationComingSoonForm";
 import { GhostConnectionForm } from "@/components/integrations/GhostConnectionForm";
 import { GoogleAnalyticsConnectionForm } from "@/components/integrations/GoogleAnalyticsConnectionForm";
+import { GoogleBusinessProfileConnectionForm } from "@/components/integrations/GoogleBusinessProfileConnectionForm";
 import { GoogleSearchConsolePropertyPicker } from "@/components/integrations/GoogleSearchConsolePropertyPicker";
 import { GitHubPrConnectionForm } from "@/components/integrations/GitHubPrConnectionForm";
 import { ShopifyConnectionForm } from "@/components/integrations/ShopifyConnectionForm";
@@ -41,6 +42,7 @@ import { useState } from "react";
 
 const GSC_PROVIDER = "google_search_console";
 const GA_PROVIDER = "google_analytics";
+const GBP_PROVIDER = "google_business_profile";
 const WORDPRESS_PROVIDER = "wordpress";
 const CUSTOM_WEBHOOK_PROVIDER = "custom_webhook";
 const GHOST_PROVIDER = "ghost";
@@ -168,6 +170,7 @@ function IntegrationActionSheetContent({
   const isComingSoon = integration.comingSoon || !integration.available;
   const isGsc = integration.provider === GSC_PROVIDER;
   const isGa = integration.provider === GA_PROVIDER;
+  const isGbp = integration.provider === GBP_PROVIDER;
   // For GSC, "connected" means Google OAuth exists (even without a selected
   // property), so the property picker / manage UI still renders in the partial
   // GOOGLE_CONNECTED_NO_PROPERTY state.
@@ -395,6 +398,14 @@ function IntegrationActionSheetContent({
             />
           ) : null}
 
+          {isGbp && !isComingSoon ? (
+            <GoogleBusinessProfileConnectionForm
+              integration={integration}
+              websiteId={websiteId}
+              onConnectionUpdated={onIntegrationUpdated}
+            />
+          ) : null}
+
           {isWordPress && !isComingSoon ? (
             <div className="space-y-4">
               <WordPressConnectionForm
@@ -462,6 +473,7 @@ function IntegrationActionSheetContent({
 
         {!isComingSoon &&
         !isGa &&
+        !isGbp &&
         !isWordPress &&
         !isGitHub &&
         !isWebflow &&

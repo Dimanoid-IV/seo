@@ -7,6 +7,8 @@ import { INTEGRATION_PROVIDER_DETAILS } from "./provider-details";
 
 const requiredProviders = [
   "google_search_console",
+  "google_analytics",
+  "google_business_profile",
   "wordpress",
   "custom_webhook",
   "hosted_blog",
@@ -59,6 +61,11 @@ assert.equal(
   byProvider.get("sitemap")?.platformManaged,
   true,
   "sitemap discovery should not ask for credentials"
+);
+assert.equal(
+  byProvider.get("google_business_profile")?.available,
+  true,
+  "Google Business Profile read-only local SEO data should be available"
 );
 
 console.log("integrations catalog.test.ts: ok");

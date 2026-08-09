@@ -845,6 +845,27 @@ export const saasDictionary: SaasDictionary = {
       views: "Просмотры",
       conversions: "Конверсии",
     },
+    googleBusinessProfile: {
+      title: "Google Business Profile",
+      description:
+        "Подключите карточку компании, чтобы RankBoost учитывал локальный SEO-контекст: категорию, адрес, сайт и будущие рекомендации по Google Maps.",
+      accountId: "Google Business account ID",
+      locationId: "Location ID",
+      note:
+        "Нужен доступ к этой локации в Google Business Profile. Если Google уже подключён давно, переподключите Search Console, чтобы выдать новое разрешение Business Profile.",
+      save: "Сохранить локацию",
+      sync: "Загрузить карточку",
+      saved: "Локация Google Business Profile сохранена.",
+      synced: "Карточка Google Business Profile загружена.",
+      saveFailed: "Не удалось сохранить Google Business Profile.",
+      saveNetworkError:
+        "Сетевая ошибка при сохранении Google Business Profile.",
+      syncFailed: "Не удалось загрузить Google Business Profile.",
+      syncNetworkError:
+        "Сетевая ошибка при загрузке Google Business Profile.",
+      business: "Компания",
+      category: "Категория",
+    },
     githubPr: {
       title: "Публикация через GitHub pull request",
       description:

@@ -51,8 +51,8 @@ export const INTEGRATION_CATALOG: IntegrationCatalogEntry[] = [
     title: "Google Business Profile",
     description:
       "Локальная видимость, отзывы и карточка компании в Google Maps.",
-    available: false,
-    comingSoon: true,
+    available: true,
+    comingSoon: false,
     category: "seo_data",
     capabilities: [
       IntegrationCapability.LOCAL_PROFILE_READ,

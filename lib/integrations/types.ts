@@ -12,6 +12,15 @@ export type Ga4MetricsSummary = {
   engagementRate: number;
 };
 
+export type GoogleBusinessProfileSummary = {
+  name: string;
+  title: string | null;
+  websiteUri: string | null;
+  primaryPhone: string | null;
+  address: string | null;
+  primaryCategory: string | null;
+};
+
 export type IntegrationOverviewItem = {
   provider: string;
   title: string;
@@ -39,6 +48,11 @@ export type IntegrationOverviewItem = {
   ga4MetricsSummary?: Ga4MetricsSummary | null;
   /** GA4 only: selected Analytics property ID */
   analyticsPropertyId?: string | null;
+  /** Google Business Profile only: configured account/location IDs */
+  businessProfileAccountId?: string | null;
+  businessProfileLocationId?: string | null;
+  /** Google Business Profile only: latest synced public location fields */
+  googleBusinessProfileSummary?: GoogleBusinessProfileSummary | null;
   /** GSC only: when metrics were last fetched from Google */
   lastFetchedAt?: string | null;
   /** WordPress connector metadata */
