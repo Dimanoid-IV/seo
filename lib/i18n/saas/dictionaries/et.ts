@@ -848,6 +848,27 @@ export const saasDictionary: SaasDictionary = {
       disconnectFailed: "GitHubi ühendust ei õnnestunud katkestada.",
       disconnectNetworkError: "Võrguviga GitHubi ühenduse katkestamisel.",
     },
+    webflow: {
+      title: "Avaldamine Webflow CMS-i",
+      description:
+        "Ühendage üks Webflow CMS collection. RankBoost loob quality gate'i läbinud artiklitest CMS items; vaikimisi jäävad need draftideks.",
+      siteId: "Site ID",
+      collectionId: "Collection ID",
+      token: "Webflow token",
+      tokenPlaceholder: "Token CMS write õigusega",
+      bodyField: "Teksti field slug",
+      summaryField: "Kirjelduse field slug",
+      tokenNote:
+        "Token krüpteeritakse ja seda ei näidata enam. Field slug'id peavad vastama teie Webflow collectioni väljadele.",
+      testAndSave: "Testi ja salvesta",
+      disconnect: "Katkesta ühendus",
+      connected: "Webflow ühendatud. Valmis artikleid saab saata sellesse CMS collectionisse.",
+      disconnected: "Webflow ühendus katkestatud.",
+      connectFailed: "Webflow ühendamine ebaõnnestus.",
+      connectNetworkError: "Võrguviga Webflow ühendamisel.",
+      disconnectFailed: "Webflow ühendust ei õnnestunud katkestada.",
+      disconnectNetworkError: "Võrguviga Webflow ühenduse katkestamisel.",
+    },
     gscPropertyPicker: {
       title: "Vali Search Console'i sait",
       subtitle: "Seo Google'i atribuut oma veebisaidiga RankBoostis",

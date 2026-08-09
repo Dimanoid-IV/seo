@@ -848,6 +848,27 @@ export const saasDictionary: SaasDictionary = {
       disconnectFailed: "Could not disconnect GitHub.",
       disconnectNetworkError: "Network error while disconnecting GitHub.",
     },
+    webflow: {
+      title: "Webflow CMS publishing",
+      description:
+        "Connect one Webflow CMS collection. RankBoost will create CMS items from quality-passed articles; by default they stay as drafts.",
+      siteId: "Site ID",
+      collectionId: "Collection ID",
+      token: "Webflow token",
+      tokenPlaceholder: "Token with CMS write access",
+      bodyField: "Body field slug",
+      summaryField: "Summary field slug",
+      tokenNote:
+        "The token is encrypted and never shown again. Field slugs must match your Webflow collection fields.",
+      testAndSave: "Test and save",
+      disconnect: "Disconnect",
+      connected: "Webflow connected. Ready articles can be sent to this CMS collection.",
+      disconnected: "Webflow disconnected.",
+      connectFailed: "Webflow connection failed.",
+      connectNetworkError: "Network error while connecting Webflow.",
+      disconnectFailed: "Could not disconnect Webflow.",
+      disconnectNetworkError: "Network error while disconnecting Webflow.",
+    },
     gscPropertyPicker: {
       title: "Choose a Search Console site",
       subtitle: "Link a Google property to your website in RankBoost",

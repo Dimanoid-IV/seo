@@ -4,6 +4,7 @@ import { IntegrationBenefitList } from "@/components/integrations/IntegrationBen
 import { IntegrationComingSoonForm } from "@/components/integrations/IntegrationComingSoonForm";
 import { GoogleSearchConsolePropertyPicker } from "@/components/integrations/GoogleSearchConsolePropertyPicker";
 import { GitHubPrConnectionForm } from "@/components/integrations/GitHubPrConnectionForm";
+import { WebflowConnectionForm } from "@/components/integrations/WebflowConnectionForm";
 import { GscSyncButton } from "@/components/integrations/GoogleSearchConsoleDashboardCard";
 import { GscMetricsSummaryDisplay } from "@/components/integrations/GscMetricsSummary";
 import { GscInsightsList } from "@/components/integrations/GscInsightsList";
@@ -38,6 +39,7 @@ const GSC_PROVIDER = "google_search_console";
 const WORDPRESS_PROVIDER = "wordpress";
 const CUSTOM_WEBHOOK_PROVIDER = "custom_webhook";
 const GITHUB_PROVIDER = "github";
+const WEBFLOW_PROVIDER = "webflow";
 
 type IntegrationActionSheetProps = {
   open: boolean;
@@ -166,6 +168,7 @@ function IntegrationActionSheetContent({
   const isWordPress = integration.provider === WORDPRESS_PROVIDER;
   const isCustomWebhook = integration.provider === CUSTOM_WEBHOOK_PROVIDER;
   const isGitHub = integration.provider === GITHUB_PROVIDER;
+  const isWebflow = integration.provider === WEBFLOW_PROVIDER;
   const canConnectGsc = isGsc && !isComingSoon && !isConnected && Boolean(websiteId);
   const gscPropertySelected = Boolean(integration.selectedProperty);
   const [syncing, setSyncing] = useState(false);
@@ -400,9 +403,17 @@ function IntegrationActionSheetContent({
               onConnectionUpdated={onIntegrationUpdated}
             />
           ) : null}
+
+          {isWebflow && !isComingSoon ? (
+            <WebflowConnectionForm
+              websiteId={websiteId}
+              connected={integration.connected}
+              onConnectionUpdated={onIntegrationUpdated}
+            />
+          ) : null}
         </div>
 
-        {!isComingSoon && !isWordPress && !isGitHub ? (
+        {!isComingSoon && !isWordPress && !isGitHub && !isWebflow ? (
           <SheetFooter className="border-t border-slate-200">
             {isGsc ? (
               isConnected ? (

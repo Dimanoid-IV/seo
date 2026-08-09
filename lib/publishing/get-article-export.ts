@@ -13,6 +13,7 @@ import {
 import { loadBrandKitForWebsite } from "@/lib/brand-kit";
 import { buildHostedArticleUrl } from "@/lib/hosted-blog/urls";
 import { getGitHubPrConfig } from "@/lib/publishing/github-pr-config";
+import { getWebflowPublishingConfig } from "@/lib/publishing/webflow-config";
 
 export interface ArticleUniversalExportResult {
   articleId: string;
@@ -27,6 +28,10 @@ export interface ArticleUniversalExportResult {
     connected: boolean;
     repo: string | null;
     contentPath: string | null;
+  };
+  webflow: {
+    connected: boolean;
+    collectionId: string | null;
   };
   export: UniversalExportPackage;
 }
@@ -52,6 +57,7 @@ export async function getArticleUniversalExport({
 
   const custom = await getCustomPublishingConfig(article.websiteId);
   const github = await getGitHubPrConfig(article.websiteId);
+  const webflow = await getWebflowPublishingConfig(article.websiteId);
   const brandKit = await loadBrandKitForWebsite(article.websiteId);
 
   const pkg = buildUniversalExport(
@@ -97,6 +103,10 @@ export async function getArticleUniversalExport({
       connected: github?.connected === true,
       repo: github ? `${github.owner}/${github.repo}` : null,
       contentPath: github?.contentPath ?? null,
+    },
+    webflow: {
+      connected: webflow?.connected === true,
+      collectionId: webflow?.collectionId ?? null,
     },
     export: pkg,
   };

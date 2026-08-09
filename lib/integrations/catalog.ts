@@ -112,8 +112,8 @@ export const INTEGRATION_CATALOG: IntegrationCatalogEntry[] = [
     title: "Webflow",
     description:
       "Публикация в Webflow CMS collections и обновление SEO-полей страниц.",
-    available: false,
-    comingSoon: true,
+    available: true,
+    comingSoon: false,
     category: "cms",
     capabilities: [
       IntegrationCapability.CMS_ARTICLE_CREATE,

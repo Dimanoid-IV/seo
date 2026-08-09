@@ -848,6 +848,27 @@ export const saasDictionary: SaasDictionary = {
       disconnectFailed: "Не удалось отключить GitHub.",
       disconnectNetworkError: "Сетевая ошибка при отключении GitHub.",
     },
+    webflow: {
+      title: "Публикация в Webflow CMS",
+      description:
+        "Подключите одну Webflow CMS collection. RankBoost будет создавать CMS items из статей, прошедших quality gate; по умолчанию они остаются черновиками.",
+      siteId: "Site ID",
+      collectionId: "Collection ID",
+      token: "Webflow token",
+      tokenPlaceholder: "Token с доступом к CMS write",
+      bodyField: "Field slug для текста",
+      summaryField: "Field slug для описания",
+      tokenNote:
+        "Token шифруется и больше не показывается. Field slugs должны совпадать с полями вашей Webflow collection.",
+      testAndSave: "Проверить и сохранить",
+      disconnect: "Отключить",
+      connected: "Webflow подключён. Готовые статьи можно отправлять в эту CMS collection.",
+      disconnected: "Webflow отключён.",
+      connectFailed: "Не удалось подключить Webflow.",
+      connectNetworkError: "Сетевая ошибка при подключении Webflow.",
+      disconnectFailed: "Не удалось отключить Webflow.",
+      disconnectNetworkError: "Сетевая ошибка при отключении Webflow.",
+    },
     gscPropertyPicker: {
       title: "Выбрать сайт из Search Console",
       subtitle: "Свяжите property Google с сайтом в RankBoost",

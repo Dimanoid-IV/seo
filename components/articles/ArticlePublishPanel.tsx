@@ -41,6 +41,10 @@ type ExportResponse = {
       repo: string | null;
       contentPath: string | null;
     };
+    webflow?: {
+      connected: boolean;
+      collectionId: string | null;
+    };
     export: UniversalExportPackage;
   };
 };
@@ -117,6 +121,9 @@ export function ArticlePublishPanel({
   const [githubRepo, setGithubRepo] = useState<string | null>(null);
   const [githubPath, setGithubPath] = useState<string | null>(null);
   const [githubPublishing, setGithubPublishing] = useState<"dry" | "create" | null>(null);
+  const [webflowConnected, setWebflowConnected] = useState(false);
+  const [webflowCollectionId, setWebflowCollectionId] = useState<string | null>(null);
+  const [webflowPublishing, setWebflowPublishing] = useState<"dry" | "create" | null>(null);
 
   const isWordPressLivePublished =
     articleStatus === "PUBLISHED" && Boolean(wordpressPostId);
@@ -149,6 +156,8 @@ export function ArticlePublishPanel({
           setGithubConnected(body.data.githubPr?.connected === true);
           setGithubRepo(body.data.githubPr?.repo ?? null);
           setGithubPath(body.data.githubPr?.contentPath ?? null);
+          setWebflowConnected(body.data.webflow?.connected === true);
+          setWebflowCollectionId(body.data.webflow?.collectionId ?? null);
         }
       } catch {
         if (!cancelled) setError("Сетевая ошибка при подготовке материалов.");
@@ -363,6 +372,47 @@ export function ArticlePublishPanel({
       );
     } finally {
       setGithubPublishing(null);
+    }
+  }
+
+  async function handleWebflow(dryRun: boolean) {
+    setWebflowPublishing(dryRun ? "dry" : "create");
+    setPublishMessage(null);
+    setPublishError(null);
+    try {
+      const response = await authFetch(`/api/articles/${articleId}/webflow`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ dryRun }),
+      });
+      const body = (await response.json().catch(() => ({}))) as {
+        data?: { itemId?: string | null; itemUrl?: string | null };
+        error?: { message?: string };
+      };
+      if (!response.ok) {
+        setPublishError(
+          body.error?.message ??
+            (dryRun
+              ? "Не удалось проверить Webflow item."
+              : "Не удалось создать Webflow CMS item.")
+        );
+        return;
+      }
+      setPublishMessage(
+        dryRun
+          ? "Webflow item готов к созданию."
+          : body.data?.itemUrl
+            ? `Webflow CMS item создан: ${body.data.itemUrl}`
+            : "Webflow CMS item создан."
+      );
+    } catch {
+      setPublishError(
+        dryRun
+          ? "Сетевая ошибка при проверке Webflow."
+          : "Сетевая ошибка при создании Webflow item."
+      );
+    } finally {
+      setWebflowPublishing(null);
     }
   }
 
@@ -688,6 +738,55 @@ export function ArticlePublishPanel({
                 <Loader2 className="size-4 animate-spin" />
               ) : null}
               Проверить PR
+            </Button>
+          </div>
+        </div>
+      ) : null}
+
+      {webflowConnected ? (
+        <div className="rounded-xl border border-blue-200 bg-blue-50 p-4">
+          <div className="flex items-start gap-3">
+            <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-white">
+              <Globe2 className="size-4 text-blue-700" />
+            </div>
+            <div className="min-w-0 flex-1">
+              <p className="text-sm font-semibold text-blue-950">
+                Webflow подключён
+              </p>
+              <p className="mt-1 text-xs leading-relaxed text-blue-800">
+                RankBoost создаст CMS item в collection{" "}
+                {webflowCollectionId ?? "Webflow"}. Перед live-публикацией
+                проверьте item в Webflow.
+              </p>
+            </div>
+          </div>
+          <div className="mt-4 flex flex-wrap gap-2">
+            <Button
+              type="button"
+              size="sm"
+              disabled={webflowPublishing !== null}
+              onClick={() => void handleWebflow(false)}
+              className="bg-blue-700 text-white hover:bg-blue-800"
+            >
+              {webflowPublishing === "create" ? (
+                <Loader2 className="size-4 animate-spin" />
+              ) : (
+                <Send className="size-4" />
+              )}
+              Создать Webflow item
+            </Button>
+            <Button
+              type="button"
+              size="sm"
+              variant="outline"
+              disabled={webflowPublishing !== null}
+              onClick={() => void handleWebflow(true)}
+              className="border-blue-200 bg-white text-blue-800 hover:bg-blue-100"
+            >
+              {webflowPublishing === "dry" ? (
+                <Loader2 className="size-4 animate-spin" />
+              ) : null}
+              Проверить Webflow
             </Button>
           </div>
         </div>
