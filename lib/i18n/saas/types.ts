@@ -687,6 +687,24 @@ export type SaasDictionary = {
       disconnectFailed: string;
       disconnectNetworkError: string;
     };
+    shopify: {
+      title: string;
+      description: string;
+      shopDomain: string;
+      blogId: string;
+      token: string;
+      tokenPlaceholder: string;
+      authorName: string;
+      tokenNote: string;
+      testAndSave: string;
+      disconnect: string;
+      connected: string;
+      disconnected: string;
+      connectFailed: string;
+      connectNetworkError: string;
+      disconnectFailed: string;
+      disconnectNetworkError: string;
+    };
     gscPropertyPicker: {
       title: string;
       subtitle: string;

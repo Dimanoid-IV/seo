@@ -869,6 +869,26 @@ export const saasDictionary: SaasDictionary = {
       disconnectFailed: "Webflow ühendust ei õnnestunud katkestada.",
       disconnectNetworkError: "Võrguviga Webflow ühenduse katkestamisel.",
     },
+    shopify: {
+      title: "Avaldamine Shopify blogisse",
+      description:
+        "Ühendage Shopify Admin API token ja blogId. RankBoost loob quality gate'i läbinud artiklitest blog articles.",
+      shopDomain: "Shopify domain",
+      blogId: "Blog ID",
+      token: "Admin API token",
+      tokenPlaceholder: "Token write_content õigusega",
+      authorName: "Artikli autor",
+      tokenNote:
+        "Token krüpteeritakse ja seda ei näidata enam. Kasutage your-store.myshopify.com domeeni ja Shopify Admin GraphQL blogId väärtust.",
+      testAndSave: "Testi ja salvesta",
+      disconnect: "Katkesta ühendus",
+      connected: "Shopify ühendatud. Valmis artikleid saab saata poe blogisse.",
+      disconnected: "Shopify ühendus katkestatud.",
+      connectFailed: "Shopify ühendamine ebaõnnestus.",
+      connectNetworkError: "Võrguviga Shopify ühendamisel.",
+      disconnectFailed: "Shopify ühendust ei õnnestunud katkestada.",
+      disconnectNetworkError: "Võrguviga Shopify ühenduse katkestamisel.",
+    },
     gscPropertyPicker: {
       title: "Vali Search Console'i sait",
       subtitle: "Seo Google'i atribuut oma veebisaidiga RankBoostis",

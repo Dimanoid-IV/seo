@@ -127,8 +127,8 @@ export const INTEGRATION_CATALOG: IntegrationCatalogEntry[] = [
     title: "Shopify",
     description:
       "SEO для e-commerce: блог, коллекции, карточки товаров и внутренние ссылки.",
-    available: false,
-    comingSoon: true,
+    available: true,
+    comingSoon: false,
     category: "commerce",
     capabilities: [
       IntegrationCapability.ECOMMERCE_BLOG_PUBLISH,

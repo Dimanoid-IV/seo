@@ -19,6 +19,7 @@ import { isHermesConfigured } from "@/lib/hermes/client";
 import { getCustomPublishingConfig } from "@/lib/publishing/custom-webhook-config";
 import { buildCustomPublishingDisplayState } from "@/lib/publishing/custom-publishing-display";
 import { getGitHubPrConfig } from "@/lib/publishing/github-pr-config";
+import { getShopifyPublishingConfig } from "@/lib/publishing/shopify-config";
 import { getWebflowPublishingConfig } from "@/lib/publishing/webflow-config";
 
 /**
@@ -138,6 +139,7 @@ export async function getIntegrationsOverview(
 
   const customPublishingConfig = await getCustomPublishingConfig(website.id);
   const githubPrConfig = await getGitHubPrConfig(website.id);
+  const shopifyConfig = await getShopifyPublishingConfig(website.id);
   const webflowConfig = await getWebflowPublishingConfig(website.id);
   const customDisplay = buildCustomPublishingDisplayState({
     endpointConfigured: customPublishingConfig?.endpointConfigured,
@@ -237,6 +239,26 @@ export async function getIntegrationsOverview(
         connectedAt: connected ? webflowConfig?.testedAt ?? null : null,
         lastSyncAt: null,
         lastSuccessAt: connected ? webflowConfig?.testedAt ?? null : null,
+        lastErrorAt: record?.lastErrorAt?.toISOString() ?? null,
+        lastErrorMessage: record?.lastErrorMessage ?? null,
+      };
+    }
+
+    if (item.provider === "shopify") {
+      const connected = shopifyConfig?.connected === true;
+      return {
+        provider: item.provider,
+        title: item.title,
+        description: item.description,
+        category: item.category,
+        capabilities: item.capabilities,
+        connected,
+        status: connected ? "Connected" : mapped.status,
+        available: item.available,
+        comingSoon: item.comingSoon,
+        connectedAt: connected ? shopifyConfig?.testedAt ?? null : null,
+        lastSyncAt: null,
+        lastSuccessAt: connected ? shopifyConfig?.testedAt ?? null : null,
         lastErrorAt: record?.lastErrorAt?.toISOString() ?? null,
         lastErrorMessage: record?.lastErrorMessage ?? null,
       };

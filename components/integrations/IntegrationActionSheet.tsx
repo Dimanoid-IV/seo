@@ -4,6 +4,7 @@ import { IntegrationBenefitList } from "@/components/integrations/IntegrationBen
 import { IntegrationComingSoonForm } from "@/components/integrations/IntegrationComingSoonForm";
 import { GoogleSearchConsolePropertyPicker } from "@/components/integrations/GoogleSearchConsolePropertyPicker";
 import { GitHubPrConnectionForm } from "@/components/integrations/GitHubPrConnectionForm";
+import { ShopifyConnectionForm } from "@/components/integrations/ShopifyConnectionForm";
 import { WebflowConnectionForm } from "@/components/integrations/WebflowConnectionForm";
 import { GscSyncButton } from "@/components/integrations/GoogleSearchConsoleDashboardCard";
 import { GscMetricsSummaryDisplay } from "@/components/integrations/GscMetricsSummary";
@@ -39,6 +40,7 @@ const GSC_PROVIDER = "google_search_console";
 const WORDPRESS_PROVIDER = "wordpress";
 const CUSTOM_WEBHOOK_PROVIDER = "custom_webhook";
 const GITHUB_PROVIDER = "github";
+const SHOPIFY_PROVIDER = "shopify";
 const WEBFLOW_PROVIDER = "webflow";
 
 type IntegrationActionSheetProps = {
@@ -168,6 +170,7 @@ function IntegrationActionSheetContent({
   const isWordPress = integration.provider === WORDPRESS_PROVIDER;
   const isCustomWebhook = integration.provider === CUSTOM_WEBHOOK_PROVIDER;
   const isGitHub = integration.provider === GITHUB_PROVIDER;
+  const isShopify = integration.provider === SHOPIFY_PROVIDER;
   const isWebflow = integration.provider === WEBFLOW_PROVIDER;
   const canConnectGsc = isGsc && !isComingSoon && !isConnected && Boolean(websiteId);
   const gscPropertySelected = Boolean(integration.selectedProperty);
@@ -411,9 +414,17 @@ function IntegrationActionSheetContent({
               onConnectionUpdated={onIntegrationUpdated}
             />
           ) : null}
+
+          {isShopify && !isComingSoon ? (
+            <ShopifyConnectionForm
+              websiteId={websiteId}
+              connected={integration.connected}
+              onConnectionUpdated={onIntegrationUpdated}
+            />
+          ) : null}
         </div>
 
-        {!isComingSoon && !isWordPress && !isGitHub && !isWebflow ? (
+        {!isComingSoon && !isWordPress && !isGitHub && !isWebflow && !isShopify ? (
           <SheetFooter className="border-t border-slate-200">
             {isGsc ? (
               isConnected ? (

@@ -12,6 +12,7 @@ import {
   Loader2,
   Mail,
   Send,
+  ShoppingBag,
   Webhook,
 } from "lucide-react";
 
@@ -44,6 +45,11 @@ type ExportResponse = {
     webflow?: {
       connected: boolean;
       collectionId: string | null;
+    };
+    shopify?: {
+      connected: boolean;
+      shopDomain: string | null;
+      blogId: string | null;
     };
     export: UniversalExportPackage;
   };
@@ -124,6 +130,9 @@ export function ArticlePublishPanel({
   const [webflowConnected, setWebflowConnected] = useState(false);
   const [webflowCollectionId, setWebflowCollectionId] = useState<string | null>(null);
   const [webflowPublishing, setWebflowPublishing] = useState<"dry" | "create" | null>(null);
+  const [shopifyConnected, setShopifyConnected] = useState(false);
+  const [shopifyShopDomain, setShopifyShopDomain] = useState<string | null>(null);
+  const [shopifyPublishing, setShopifyPublishing] = useState<"dry" | "create" | null>(null);
 
   const isWordPressLivePublished =
     articleStatus === "PUBLISHED" && Boolean(wordpressPostId);
@@ -158,6 +167,8 @@ export function ArticlePublishPanel({
           setGithubPath(body.data.githubPr?.contentPath ?? null);
           setWebflowConnected(body.data.webflow?.connected === true);
           setWebflowCollectionId(body.data.webflow?.collectionId ?? null);
+          setShopifyConnected(body.data.shopify?.connected === true);
+          setShopifyShopDomain(body.data.shopify?.shopDomain ?? null);
         }
       } catch {
         if (!cancelled) setError("Сетевая ошибка при подготовке материалов.");
@@ -413,6 +424,47 @@ export function ArticlePublishPanel({
       );
     } finally {
       setWebflowPublishing(null);
+    }
+  }
+
+  async function handleShopify(dryRun: boolean) {
+    setShopifyPublishing(dryRun ? "dry" : "create");
+    setPublishMessage(null);
+    setPublishError(null);
+    try {
+      const response = await authFetch(`/api/articles/${articleId}/shopify`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ dryRun }),
+      });
+      const body = (await response.json().catch(() => ({}))) as {
+        data?: { articleUrl?: string | null };
+        error?: { message?: string };
+      };
+      if (!response.ok) {
+        setPublishError(
+          body.error?.message ??
+            (dryRun
+              ? "Не удалось проверить Shopify article."
+              : "Не удалось создать Shopify blog article.")
+        );
+        return;
+      }
+      setPublishMessage(
+        dryRun
+          ? "Shopify article готов к созданию."
+          : body.data?.articleUrl
+            ? `Shopify blog article создан: ${body.data.articleUrl}`
+            : "Shopify blog article создан."
+      );
+    } catch {
+      setPublishError(
+        dryRun
+          ? "Сетевая ошибка при проверке Shopify."
+          : "Сетевая ошибка при создании Shopify article."
+      );
+    } finally {
+      setShopifyPublishing(null);
     }
   }
 
@@ -787,6 +839,55 @@ export function ArticlePublishPanel({
                 <Loader2 className="size-4 animate-spin" />
               ) : null}
               Проверить Webflow
+            </Button>
+          </div>
+        </div>
+      ) : null}
+
+      {shopifyConnected ? (
+        <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-4">
+          <div className="flex items-start gap-3">
+            <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-white">
+              <ShoppingBag className="size-4 text-emerald-700" />
+            </div>
+            <div className="min-w-0 flex-1">
+              <p className="text-sm font-semibold text-emerald-950">
+                Shopify подключён
+              </p>
+              <p className="mt-1 text-xs leading-relaxed text-emerald-800">
+                RankBoost создаст blog article в магазине{" "}
+                {shopifyShopDomain ?? "Shopify"}. По умолчанию это безопасный
+                draft-путь для проверки.
+              </p>
+            </div>
+          </div>
+          <div className="mt-4 flex flex-wrap gap-2">
+            <Button
+              type="button"
+              size="sm"
+              disabled={shopifyPublishing !== null}
+              onClick={() => void handleShopify(false)}
+              className="bg-emerald-700 text-white hover:bg-emerald-800"
+            >
+              {shopifyPublishing === "create" ? (
+                <Loader2 className="size-4 animate-spin" />
+              ) : (
+                <ShoppingBag className="size-4" />
+              )}
+              Создать Shopify article
+            </Button>
+            <Button
+              type="button"
+              size="sm"
+              variant="outline"
+              disabled={shopifyPublishing !== null}
+              onClick={() => void handleShopify(true)}
+              className="border-emerald-200 bg-white text-emerald-800 hover:bg-emerald-100"
+            >
+              {shopifyPublishing === "dry" ? (
+                <Loader2 className="size-4 animate-spin" />
+              ) : null}
+              Проверить Shopify
             </Button>
           </div>
         </div>

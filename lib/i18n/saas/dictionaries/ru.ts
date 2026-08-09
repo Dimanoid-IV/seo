@@ -869,6 +869,26 @@ export const saasDictionary: SaasDictionary = {
       disconnectFailed: "Не удалось отключить Webflow.",
       disconnectNetworkError: "Сетевая ошибка при отключении Webflow.",
     },
+    shopify: {
+      title: "Публикация в Shopify Blog",
+      description:
+        "Подключите Shopify Admin API token и blogId. RankBoost будет создавать blog articles из статей, прошедших quality gate.",
+      shopDomain: "Shopify domain",
+      blogId: "Blog ID",
+      token: "Admin API token",
+      tokenPlaceholder: "Token с правом write_content",
+      authorName: "Автор статьи",
+      tokenNote:
+        "Token шифруется и больше не показывается. Используйте domain вида your-store.myshopify.com и blogId из Shopify Admin GraphQL.",
+      testAndSave: "Проверить и сохранить",
+      disconnect: "Отключить",
+      connected: "Shopify подключён. Готовые статьи можно отправлять в блог магазина.",
+      disconnected: "Shopify отключён.",
+      connectFailed: "Не удалось подключить Shopify.",
+      connectNetworkError: "Сетевая ошибка при подключении Shopify.",
+      disconnectFailed: "Не удалось отключить Shopify.",
+      disconnectNetworkError: "Сетевая ошибка при отключении Shopify.",
+    },
     gscPropertyPicker: {
       title: "Выбрать сайт из Search Console",
       subtitle: "Свяжите property Google с сайтом в RankBoost",
