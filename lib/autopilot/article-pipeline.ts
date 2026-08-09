@@ -17,6 +17,13 @@ export type ArticlePipelineState =
   | "READY_FOR_PUBLISHING_HANDOFF"
   | "WORDPRESS_DRAFT_CREATED"
   | "WORDPRESS_LIVE_PUBLISHED"
+  | "WEBFLOW_ITEM_CREATED"
+  | "SHOPIFY_ARTICLE_CREATED"
+  | "WIX_DRAFT_CREATED"
+  | "GHOST_POST_CREATED"
+  | "GITHUB_PR_CREATED"
+  | "SQUARESPACE_PACKAGE_READY"
+  | "HOSTED_BLOG_PUBLISHED"
   | "UNIVERSAL_PACKAGE_READY"
   | "WEBHOOK_READY"
   | "WEBHOOK_SENT"
@@ -27,6 +34,13 @@ export type ArticlePipelineState =
 export type PublishingPath =
   | "wordpress_draft"
   | "wordpress_live"
+  | "webflow"
+  | "shopify"
+  | "wix"
+  | "ghost"
+  | "github_pr"
+  | "squarespace"
+  | "hosted_blog"
   | "universal_package"
   | "webhook"
   | "none";
@@ -40,6 +54,13 @@ export type LinkedArticlePipelineSnapshot = {
 const HANDOFF_STATES = new Set<ArticlePipelineState>([
   "WORDPRESS_DRAFT_CREATED",
   "WORDPRESS_LIVE_PUBLISHED",
+  "WEBFLOW_ITEM_CREATED",
+  "SHOPIFY_ARTICLE_CREATED",
+  "WIX_DRAFT_CREATED",
+  "GHOST_POST_CREATED",
+  "GITHUB_PR_CREATED",
+  "SQUARESPACE_PACKAGE_READY",
+  "HOSTED_BLOG_PUBLISHED",
   "UNIVERSAL_PACKAGE_READY",
   "WEBHOOK_READY",
   "WEBHOOK_SENT",
@@ -117,6 +138,13 @@ export function deriveArticlePipelineState(
     if (item.publishingPath === "wordpress_live") {
       return "WORDPRESS_LIVE_PUBLISHED";
     }
+    if (item.publishingPath === "webflow") return "WEBFLOW_ITEM_CREATED";
+    if (item.publishingPath === "shopify") return "SHOPIFY_ARTICLE_CREATED";
+    if (item.publishingPath === "wix") return "WIX_DRAFT_CREATED";
+    if (item.publishingPath === "ghost") return "GHOST_POST_CREATED";
+    if (item.publishingPath === "github_pr") return "GITHUB_PR_CREATED";
+    if (item.publishingPath === "squarespace") return "SQUARESPACE_PACKAGE_READY";
+    if (item.publishingPath === "hosted_blog") return "HOSTED_BLOG_PUBLISHED";
     return item.publishingPath === "wordpress_draft"
       ? "WORDPRESS_DRAFT_CREATED"
       : "UNIVERSAL_PACKAGE_READY";
@@ -156,6 +184,16 @@ export function nextAutomatedStepLabel(
     case "WORDPRESS_DRAFT_CREATED":
       return "review_wordpress_draft";
     case "WORDPRESS_LIVE_PUBLISHED":
+      return "done";
+    case "WEBFLOW_ITEM_CREATED":
+    case "SHOPIFY_ARTICLE_CREATED":
+    case "WIX_DRAFT_CREATED":
+    case "GHOST_POST_CREATED":
+    case "GITHUB_PR_CREATED":
+      return "review_connected_platform";
+    case "SQUARESPACE_PACKAGE_READY":
+      return "copy_or_send_package";
+    case "HOSTED_BLOG_PUBLISHED":
       return "done";
     case "UNIVERSAL_PACKAGE_READY":
       return "copy_or_send_package";

@@ -23,11 +23,29 @@ assert.equal(
   pipelineStateToLabelKey("WORDPRESS_DRAFT_CREATED"),
   "wordpressDraftCreated"
 );
+assert.equal(pipelineStateToLabelKey("WEBFLOW_ITEM_CREATED"), "webflowItemCreated");
+assert.equal(
+  pipelineStateToLabelKey("SHOPIFY_ARTICLE_CREATED"),
+  "shopifyArticleCreated"
+);
+assert.equal(pipelineStateToLabelKey("WIX_DRAFT_CREATED"), "wixDraftCreated");
+assert.equal(pipelineStateToLabelKey("GHOST_POST_CREATED"), "ghostPostCreated");
+assert.equal(pipelineStateToLabelKey("GITHUB_PR_CREATED"), "githubPrCreated");
+assert.equal(
+  pipelineStateToLabelKey("SQUARESPACE_PACKAGE_READY"),
+  "squarespacePackageReady"
+);
+assert.equal(
+  pipelineStateToLabelKey("HOSTED_BLOG_PUBLISHED"),
+  "hostedBlogPublished"
+);
 assert.equal(pipelineStateToLabelKey("WEBHOOK_READY"), "webhookReady");
 assert.equal(pipelineStateToLabelKey("UNKNOWN"), null);
 
 assert.equal(publishingPathChip("wordpress_draft"), "wordpress_draft");
 assert.equal(publishingPathChip("webhook"), "webhook_ready");
+assert.equal(publishingPathChip("webflow"), "connected_platform");
+assert.equal(publishingPathChip("github_pr"), "connected_platform");
 assert.equal(publishingPathChip("universal_package"), "manual");
 
 console.log("human-pipeline-labels checks passed");

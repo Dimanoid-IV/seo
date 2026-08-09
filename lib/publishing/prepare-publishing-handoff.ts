@@ -29,6 +29,20 @@ import {
   getCustomPublishingConfig,
   isWebhookReadyForAutoSend,
 } from "@/lib/publishing/custom-webhook-config";
+import { getWebflowPublishingConfig } from "@/lib/publishing/webflow-config";
+import { getShopifyPublishingConfig } from "@/lib/publishing/shopify-config";
+import { getWixPublishingConfig } from "@/lib/publishing/wix-config";
+import { getGhostPublishingConfig } from "@/lib/publishing/ghost-config";
+import { getGitHubPrConfig } from "@/lib/publishing/github-pr-config";
+import { getSquarespacePublishingConfig } from "@/lib/publishing/squarespace-config";
+import { createWebflowItemForArticle } from "@/lib/publishing/webflow";
+import { createShopifyArticleForArticle } from "@/lib/publishing/shopify";
+import { createWixDraftPostForArticle } from "@/lib/publishing/wix";
+import { createGhostPostForArticle } from "@/lib/publishing/ghost";
+import { createGitHubPrForArticle } from "@/lib/publishing/github-pr";
+import { prepareSquarespacePackageForArticle } from "@/lib/publishing/squarespace";
+import { publishArticleToHostedBlog } from "@/lib/hosted-blog/publish";
+import { resolveAutopilotPublishingTarget } from "@/lib/publishing/autopilot-publisher-router";
 import type { AutopilotPlanItem } from "@/lib/autopilot/plan-item-types";
 
 export type PublishingHandoffResult = {
@@ -63,9 +77,41 @@ export async function preparePublishingHandoff(input: {
   dryRun?: boolean;
 }): Promise<PublishingHandoffResult> {
   const nowIso = new Date().toISOString();
-  const custom = await getCustomPublishingConfig(input.websiteId);
+  const [
+    custom,
+    webflow,
+    shopify,
+    wix,
+    ghost,
+    githubPr,
+    squarespace,
+  ] = await Promise.all([
+    getCustomPublishingConfig(input.websiteId),
+    getWebflowPublishingConfig(input.websiteId),
+    getShopifyPublishingConfig(input.websiteId),
+    getWixPublishingConfig(input.websiteId),
+    getGhostPublishingConfig(input.websiteId),
+    getGitHubPrConfig(input.websiteId),
+    getSquarespacePublishingConfig(input.websiteId),
+  ]);
 
-  if (input.wordpressConnected) {
+  const customReady = Boolean(custom?.endpointConfigured && custom.testedAt);
+  const target = resolveAutopilotPublishingTarget({
+    preferredPath: input.currentItem.publishingPath,
+    connections: {
+      wordpressConnected: input.wordpressConnected,
+      webflowConnected: Boolean(webflow?.connected && webflow.testedAt),
+      shopifyConnected: Boolean(shopify?.connected && shopify.testedAt),
+      wixConnected: Boolean(wix?.connected && wix.testedAt),
+      ghostConnected: Boolean(ghost?.connected && ghost.testedAt),
+      customWebhookReady: customReady,
+      githubPrConnected: Boolean(githubPr?.connected && githubPr.testedAt),
+      squarespaceConnected: Boolean(squarespace?.connected && squarespace.testedAt),
+      hostedBlogAvailable: input.autopilotMode === AutopilotMode.AUTOPUBLISH,
+    },
+  });
+
+  if (target.provider === "wordpress") {
     if (
       input.currentItem.wordpressDraftCreatedAt ||
       input.currentItem.pipelineState === "WORDPRESS_DRAFT_CREATED"
@@ -113,7 +159,7 @@ export async function preparePublishingHandoff(input: {
     };
   }
 
-  if (custom?.endpointConfigured && custom.testedAt) {
+  if (target.provider === "custom_webhook" && custom?.endpointConfigured && custom.testedAt) {
     const mayAutoSend =
       input.autopilotMode === AutopilotMode.AUTOPUBLISH &&
       input.customWebhookAutoSendAllowed === true &&
@@ -170,6 +216,182 @@ export async function preparePublishingHandoff(input: {
     };
   }
 
+  if (target.provider === "webflow") {
+    if (input.dryRun) {
+      return {
+        path: target.path,
+        pipelineState: target.pipelineState,
+        patch: {},
+        summaryKey: target.dryRunSummaryKey,
+      };
+    }
+    await createWebflowItemForArticle({
+      articleId: input.articleId,
+      websiteId: input.websiteId,
+      organizationId: input.organizationId,
+      userId: input.userId,
+      dryRun: false,
+      publishLive: false,
+    });
+    return {
+      path: target.path,
+      pipelineState: target.pipelineState,
+      patch: buildProviderPatch(target, nowIso),
+      summaryKey: target.summaryKey,
+    };
+  }
+
+  if (target.provider === "shopify") {
+    if (input.dryRun) {
+      return {
+        path: target.path,
+        pipelineState: target.pipelineState,
+        patch: {},
+        summaryKey: target.dryRunSummaryKey,
+      };
+    }
+    await createShopifyArticleForArticle({
+      articleId: input.articleId,
+      websiteId: input.websiteId,
+      organizationId: input.organizationId,
+      userId: input.userId,
+      dryRun: false,
+      publishLive: false,
+    });
+    return {
+      path: target.path,
+      pipelineState: target.pipelineState,
+      patch: buildProviderPatch(target, nowIso),
+      summaryKey: target.summaryKey,
+    };
+  }
+
+  if (target.provider === "wix") {
+    if (input.dryRun) {
+      return {
+        path: target.path,
+        pipelineState: target.pipelineState,
+        patch: {},
+        summaryKey: target.dryRunSummaryKey,
+      };
+    }
+    await createWixDraftPostForArticle({
+      articleId: input.articleId,
+      websiteId: input.websiteId,
+      organizationId: input.organizationId,
+      userId: input.userId,
+      dryRun: false,
+    });
+    return {
+      path: target.path,
+      pipelineState: target.pipelineState,
+      patch: buildProviderPatch(target, nowIso),
+      summaryKey: target.summaryKey,
+    };
+  }
+
+  if (target.provider === "ghost") {
+    if (input.dryRun) {
+      return {
+        path: target.path,
+        pipelineState: target.pipelineState,
+        patch: {},
+        summaryKey: target.dryRunSummaryKey,
+      };
+    }
+    await createGhostPostForArticle({
+      articleId: input.articleId,
+      websiteId: input.websiteId,
+      organizationId: input.organizationId,
+      userId: input.userId,
+      dryRun: false,
+      publishLive: false,
+    });
+    return {
+      path: target.path,
+      pipelineState: target.pipelineState,
+      patch: buildProviderPatch(target, nowIso),
+      summaryKey: target.summaryKey,
+    };
+  }
+
+  if (target.provider === "github_pr") {
+    if (input.dryRun) {
+      return {
+        path: target.path,
+        pipelineState: target.pipelineState,
+        patch: {},
+        summaryKey: target.dryRunSummaryKey,
+      };
+    }
+    await createGitHubPrForArticle({
+      articleId: input.articleId,
+      websiteId: input.websiteId,
+      organizationId: input.organizationId,
+      userId: input.userId,
+      dryRun: false,
+    });
+    return {
+      path: target.path,
+      pipelineState: target.pipelineState,
+      patch: buildProviderPatch(target, nowIso),
+      summaryKey: target.summaryKey,
+    };
+  }
+
+  if (target.provider === "squarespace") {
+    if (input.dryRun) {
+      return {
+        path: target.path,
+        pipelineState: target.pipelineState,
+        patch: {},
+        summaryKey: target.dryRunSummaryKey,
+      };
+    }
+    await prepareSquarespacePackageForArticle({
+      articleId: input.articleId,
+      websiteId: input.websiteId,
+      organizationId: input.organizationId,
+      userId: input.userId,
+      dryRun: false,
+    });
+    return {
+      path: target.path,
+      pipelineState: target.pipelineState,
+      patch: buildProviderPatch(target, nowIso),
+      summaryKey: target.summaryKey,
+    };
+  }
+
+  if (target.provider === "hosted_blog") {
+    if (input.dryRun) {
+      return {
+        path: target.path,
+        pipelineState: target.pipelineState,
+        patch: {},
+        summaryKey: target.dryRunSummaryKey,
+      };
+    }
+    await publishArticleToHostedBlog({
+      articleId: input.articleId,
+      currentUser: {
+        id: input.userId,
+        email: "",
+        name: null,
+        role: "user",
+        locale: "ru",
+        organizationId: input.organizationId,
+        emailVerified: true,
+      },
+    });
+    return {
+      path: target.path,
+      pipelineState: target.pipelineState,
+      patch: buildProviderPatch(target, nowIso),
+      summaryKey: target.summaryKey,
+    };
+  }
+
   if (input.dryRun) {
     return {
       path: "universal_package",
@@ -194,6 +416,26 @@ export async function preparePublishingHandoff(input: {
       reviewQueueHref: "/app/review",
     },
     summaryKey: "universalPackageReady",
+  };
+}
+
+function buildProviderPatch(
+  target: {
+    path: NonNullable<AutopilotPlanItem["publishingPath"]>;
+    pipelineState: NonNullable<AutopilotPlanItem["pipelineState"]>;
+    nextAutomatedStep: string;
+    status: AutopilotPlanItem["status"];
+  },
+  nowIso: string
+): Partial<AutopilotPlanItem> {
+  return {
+    pipelineState: target.pipelineState,
+    publishingPath: target.path,
+    universalPackagePreparedAt:
+      target.path === "squarespace" ? nowIso : undefined,
+    nextAutomatedStep: target.nextAutomatedStep,
+    status: target.status,
+    reviewQueueHref: target.status === "published" ? undefined : "/app/review",
   };
 }
 

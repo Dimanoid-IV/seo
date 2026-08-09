@@ -275,18 +275,19 @@ export function resolvePlanItemExecutionEligibility(
     (isArticleWaitingForReview(article.status) ||
       isArticleApprovedForPublish(article.status))
   ) {
-    if (!wordpressConnected && input.webhookConfiguredAndTested) {
+    if (!wordpressConnected) {
       return eligibleAction(
         "PREPARE_PUBLISHING_HANDOFF",
         "readyForPublishingHandoff",
-        input.customWebhookAutoSendAllowed
+        input.webhookConfiguredAndTested && input.customWebhookAutoSendAllowed
           ? "wouldSendWebhook"
-          : "wouldPrepareWebhookReady",
-        input.customWebhookAutoSendAllowed ? "published" : "prepared"
+          : input.webhookConfiguredAndTested
+            ? "wouldPrepareWebhookReady"
+            : "wouldPreparePublishingHandoff",
+        input.webhookConfiguredAndTested && input.customWebhookAutoSendAllowed
+          ? "published"
+          : "prepared"
       );
-    }
-    if (!wordpressConnected) {
-      return blocked("wordpressNotConnected", "wordpressRequired");
     }
     return eligibleAction(
       "LIVE_PUBLISH_ARTICLE",

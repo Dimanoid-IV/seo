@@ -281,6 +281,7 @@ export const saasDictionary: SaasDictionary = {
       chipPublishManual: "Публикация: вручную",
       chipPublishWordpress: "Публикация: WordPress",
       chipPublishWebhook: "Публикация: webhook ready",
+      chipPublishConnectedPlatform: "Публикация: подключённая CMS",
       openReview: "Проверить готовые материалы",
       openPlan: "Открыть план месяца",
       setupPublishing: "Настроить публикацию",
@@ -294,6 +295,8 @@ export const saasDictionary: SaasDictionary = {
       nextPrepSoon: "Следующая автоматическая подготовка: скоро",
       publishAfterConfirm: "Публикация следует режиму, выбранному при подтверждении плана",
       wordpressDraftOnly: "WordPress: по умолчанию черновики; автопубликация после подтверждения плана",
+      connectedPlatformHandoff:
+        "Подключённая CMS: RankBoost создаст черновик, item, PR или пакет через выбранную интеграцию",
       customSitePackage:
         "Custom-сайт: готовый пакет / webhook — это не то же самое, что live-публикация WordPress",
     },
@@ -304,12 +307,15 @@ export const saasDictionary: SaasDictionary = {
         `Сайт ${site} подключён. Откройте статью и отправьте её в блог одной кнопкой.`,
       descriptionWordpress:
         "WordPress подключён. Откройте статью, проверьте финальный вид и создайте черновик или публикацию по разрешённому плану.",
+      descriptionConnectedPlatform: (site) =>
+        `${site} подключён через CMS-интеграцию. RankBoost подготовит публикацию в подключённом канале.`,
       descriptionManual:
         "Откройте статью: RankBoost подготовил HTML, Markdown, SEO title и meta description для публикации.",
       openArticle: "Открыть и опубликовать",
       openReview: "Все материалы на проверке",
       webhookChip: "Custom-сайт подключён",
       wordpressChip: "WordPress подключён",
+      connectedPlatformChip: "CMS подключена",
       manualChip: "Готовый пакет",
       safetyNote:
         "RankBoost показывает конкретную готовую статью. Вы видите текст перед отправкой на сайт.",
@@ -1664,6 +1670,13 @@ export const saasDictionary: SaasDictionary = {
     publishPathLabels: {
       wordpress_draft: "Черновик WordPress",
       wordpress_live: "Опубликовано в WordPress",
+      webflow: "Webflow CMS",
+      shopify: "Shopify Blog",
+      wix: "Wix Blog",
+      ghost: "Ghost",
+      github_pr: "GitHub PR",
+      squarespace: "Squarespace пакет",
+      hosted_blog: "Hosted Blog",
       universal_package: "Пакет для сайта",
       webhook: "Готово к отправке на сайт",
       none: "Вручную",
@@ -1676,6 +1689,13 @@ export const saasDictionary: SaasDictionary = {
       universalPackageReady: "Готов пакет для публикации",
       wordpressDraftCreated: "Черновик WordPress создан",
       wordpressLivePublished: "Опубликовано в WordPress",
+      webflowItemCreated: "Материал создан в Webflow",
+      shopifyArticleCreated: "Статья создана в Shopify",
+      wixDraftCreated: "Черновик Wix создан",
+      ghostPostCreated: "Пост создан в Ghost",
+      githubPrCreated: "Pull request создан",
+      squarespacePackageReady: "Пакет Squarespace готов",
+      hostedBlogPublished: "Опубликовано в Hosted Blog",
       webhookReady: "Готово к отправке на сайт",
       readyForPublishingHandoff: "Готово к публикации",
     },

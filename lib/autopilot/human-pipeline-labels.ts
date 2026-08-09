@@ -17,6 +17,13 @@ export type PipelineHumanLabelKey =
   | "readyForPublishingHandoff"
   | "wordpressDraftCreated"
   | "wordpressLivePublished"
+  | "webflowItemCreated"
+  | "shopifyArticleCreated"
+  | "wixDraftCreated"
+  | "ghostPostCreated"
+  | "githubPrCreated"
+  | "squarespacePackageReady"
+  | "hostedBlogPublished"
   | "universalPackageReady"
   | "webhookReady"
   | "webhookSent"
@@ -36,6 +43,13 @@ const STATE_TO_KEY: Record<AutopilotPlanItemPipelineState, PipelineHumanLabelKey
   READY_FOR_PUBLISHING_HANDOFF: "readyForPublishingHandoff",
   WORDPRESS_DRAFT_CREATED: "wordpressDraftCreated",
   WORDPRESS_LIVE_PUBLISHED: "wordpressLivePublished",
+  WEBFLOW_ITEM_CREATED: "webflowItemCreated",
+  SHOPIFY_ARTICLE_CREATED: "shopifyArticleCreated",
+  WIX_DRAFT_CREATED: "wixDraftCreated",
+  GHOST_POST_CREATED: "ghostPostCreated",
+  GITHUB_PR_CREATED: "githubPrCreated",
+  SQUARESPACE_PACKAGE_READY: "squarespacePackageReady",
+  HOSTED_BLOG_PUBLISHED: "hostedBlogPublished",
   UNIVERSAL_PACKAGE_READY: "universalPackageReady",
   WEBHOOK_READY: "webhookReady",
   WEBHOOK_SENT: "webhookSent",
@@ -67,6 +81,13 @@ export const PIPELINE_LABELS_RU: Record<PipelineHumanLabelKey, string> = {
   readyForPublishingHandoff: "Готово к публикации",
   wordpressDraftCreated: "Черновик WordPress создан",
   wordpressLivePublished: "Опубликовано в WordPress",
+  webflowItemCreated: "Материал создан в Webflow",
+  shopifyArticleCreated: "Статья создана в Shopify",
+  wixDraftCreated: "Черновик Wix создан",
+  ghostPostCreated: "Пост создан в Ghost",
+  githubPrCreated: "Pull request создан",
+  squarespacePackageReady: "Пакет Squarespace готов",
+  hostedBlogPublished: "Опубликовано в Hosted Blog",
   universalPackageReady: "Готов пакет для публикации",
   webhookReady: "Готово к отправке на сайт",
   webhookSent: "Отправлено на сайт",
@@ -79,7 +100,8 @@ export type PublishingPathChip =
   | "manual"
   | "wordpress_draft"
   | "wordpress_live"
-  | "webhook_ready";
+  | "webhook_ready"
+  | "connected_platform";
 
 export function publishingPathChip(
   path: string | null | undefined
@@ -87,5 +109,16 @@ export function publishingPathChip(
   if (path === "wordpress_draft") return "wordpress_draft";
   if (path === "wordpress_live") return "wordpress_live";
   if (path === "webhook") return "webhook_ready";
+  if (
+    path === "webflow" ||
+    path === "shopify" ||
+    path === "wix" ||
+    path === "ghost" ||
+    path === "github_pr" ||
+    path === "squarespace" ||
+    path === "hosted_blog"
+  ) {
+    return "connected_platform";
+  }
   return "manual";
 }

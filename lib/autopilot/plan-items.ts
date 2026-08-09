@@ -425,6 +425,13 @@ function parsePlanItem(value: unknown): AutopilotPlanItem | null {
   const publishingPath =
     record.publishingPath === "wordpress_draft" ||
     record.publishingPath === "wordpress_live" ||
+    record.publishingPath === "webflow" ||
+    record.publishingPath === "shopify" ||
+    record.publishingPath === "wix" ||
+    record.publishingPath === "ghost" ||
+    record.publishingPath === "github_pr" ||
+    record.publishingPath === "squarespace" ||
+    record.publishingPath === "hosted_blog" ||
     record.publishingPath === "universal_package" ||
     record.publishingPath === "webhook" ||
     record.publishingPath === "none"
@@ -443,6 +450,13 @@ function parsePlanItem(value: unknown): AutopilotPlanItem | null {
     record.pipelineState === "READY_FOR_PUBLISHING_HANDOFF" ||
     record.pipelineState === "WORDPRESS_DRAFT_CREATED" ||
     record.pipelineState === "WORDPRESS_LIVE_PUBLISHED" ||
+    record.pipelineState === "WEBFLOW_ITEM_CREATED" ||
+    record.pipelineState === "SHOPIFY_ARTICLE_CREATED" ||
+    record.pipelineState === "WIX_DRAFT_CREATED" ||
+    record.pipelineState === "GHOST_POST_CREATED" ||
+    record.pipelineState === "GITHUB_PR_CREATED" ||
+    record.pipelineState === "SQUARESPACE_PACKAGE_READY" ||
+    record.pipelineState === "HOSTED_BLOG_PUBLISHED" ||
     record.pipelineState === "UNIVERSAL_PACKAGE_READY" ||
     record.pipelineState === "WEBHOOK_READY" ||
     record.pipelineState === "WEBHOOK_SENT" ||

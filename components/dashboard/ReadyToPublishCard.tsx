@@ -20,6 +20,8 @@ export function ReadyToPublishCard({ article }: ReadyToPublishCardProps) {
       : article.publishingPath === "wordpress_draft" ||
           article.publishingPath === "wordpress_live"
         ? t.wordpressChip
+        : article.publishingPath === "connected_platform"
+          ? t.connectedPlatformChip
         : t.manualChip;
 
   const description =
@@ -28,6 +30,8 @@ export function ReadyToPublishCard({ article }: ReadyToPublishCardProps) {
       : article.publishingPath === "wordpress_draft" ||
           article.publishingPath === "wordpress_live"
         ? t.descriptionWordpress
+        : article.publishingPath === "connected_platform"
+          ? t.descriptionConnectedPlatform(article.siteLabel)
         : t.descriptionManual;
 
   return (

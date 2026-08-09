@@ -281,6 +281,7 @@ export const saasDictionary: SaasDictionary = {
       chipPublishManual: "Avaldamine: käsitsi",
       chipPublishWordpress: "Avaldamine: WordPress",
       chipPublishWebhook: "Avaldamine: webhook valmis",
+      chipPublishConnectedPlatform: "Avaldamine: ühendatud CMS",
       openReview: "Vaata valmis materjale",
       openPlan: "Ava kuu plaan",
       setupPublishing: "Seadista avaldamine",
@@ -294,6 +295,8 @@ export const saasDictionary: SaasDictionary = {
       nextPrepSoon: "Järgmine automaatne ettevalmistus: peagi",
       publishAfterConfirm: "Avaldamine järgib režiimi, mille valisite plaani kinnitamisel",
       wordpressDraftOnly: "WordPress: vaikimisi mustandid; autopublish pärast plaani kinnitamist",
+      connectedPlatformHandoff:
+        "Ühendatud CMS: RankBoost loob mustandi, kirje, PR-i või paketi valitud integratsiooni kaudu",
       customSitePackage:
         "Kohandatud sait: valmis pakett / webhook — see ei ole sama mis WordPressi live-avaldamine",
     },
@@ -304,12 +307,15 @@ export const saasDictionary: SaasDictionary = {
         `${site} on ühendatud. Avage artikkel ja saatke see ühe nupuga blogisse.`,
       descriptionWordpress:
         "WordPress on ühendatud. Avage artikkel, kontrollige lõppversiooni ja looge mustand või avaldage kinnitatud plaani kaudu.",
+      descriptionConnectedPlatform: (site) =>
+        `${site} on ühendatud CMS-integratsiooni kaudu. RankBoost valmistab avaldamise selles kanalis ette.`,
       descriptionManual:
         "Avage artikkel: RankBoost valmistas HTML-i, Markdowni, SEO title'i ja meta description'i avaldamiseks.",
       openArticle: "Ava ja avalda",
       openReview: "Kõik ülevaatuse materjalid",
       webhookChip: "Kohandatud sait ühendatud",
       wordpressChip: "WordPress ühendatud",
+      connectedPlatformChip: "CMS ühendatud",
       manualChip: "Valmis pakett",
       safetyNote:
         "RankBoost näitab konkreetset valmis artiklit. Näete teksti enne saidile saatmist.",
@@ -1668,6 +1674,13 @@ export const saasDictionary: SaasDictionary = {
     publishPathLabels: {
       wordpress_draft: "WordPressi mustand",
       wordpress_live: "Avaldatud WordPressis",
+      webflow: "Webflow CMS",
+      shopify: "Shopify blogi",
+      wix: "Wix blogi",
+      ghost: "Ghost",
+      github_pr: "GitHub PR",
+      squarespace: "Squarespace pakett",
+      hosted_blog: "Hosted Blog",
       universal_package: "Saidipakett",
       webhook: "Valmis saidile saatmiseks",
       none: "Käsitsi",
@@ -1680,6 +1693,13 @@ export const saasDictionary: SaasDictionary = {
       universalPackageReady: "Avaldamispakett valmis",
       wordpressDraftCreated: "WordPressi mustand loodud",
       wordpressLivePublished: "Avaldatud WordPressis",
+      webflowItemCreated: "Webflow kirje loodud",
+      shopifyArticleCreated: "Shopify artikkel loodud",
+      wixDraftCreated: "Wixi mustand loodud",
+      ghostPostCreated: "Ghosti postitus loodud",
+      githubPrCreated: "Pull request loodud",
+      squarespacePackageReady: "Squarespace pakett valmis",
+      hostedBlogPublished: "Avaldatud Hosted Blogis",
       webhookReady: "Valmis saidile saatmiseks",
       readyForPublishingHandoff: "Valmis avaldamiseks",
     },

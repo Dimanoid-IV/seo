@@ -70,6 +70,13 @@ function pipelineLabelForState(
     qualityNeedsRepair: string;
     universalPackageReady: string;
     wordpressDraftCreated: string;
+    webflowItemCreated: string;
+    shopifyArticleCreated: string;
+    wixDraftCreated: string;
+    ghostPostCreated: string;
+    githubPrCreated: string;
+    squarespacePackageReady: string;
+    hostedBlogPublished: string;
     webhookReady: string;
     readyForPublishingHandoff: string;
   }
@@ -87,6 +94,20 @@ function pipelineLabelForState(
       return labels.universalPackageReady;
     case "WORDPRESS_DRAFT_CREATED":
       return labels.wordpressDraftCreated;
+    case "WEBFLOW_ITEM_CREATED":
+      return labels.webflowItemCreated;
+    case "SHOPIFY_ARTICLE_CREATED":
+      return labels.shopifyArticleCreated;
+    case "WIX_DRAFT_CREATED":
+      return labels.wixDraftCreated;
+    case "GHOST_POST_CREATED":
+      return labels.ghostPostCreated;
+    case "GITHUB_PR_CREATED":
+      return labels.githubPrCreated;
+    case "SQUARESPACE_PACKAGE_READY":
+      return labels.squarespacePackageReady;
+    case "HOSTED_BLOG_PUBLISHED":
+      return labels.hostedBlogPublished;
     case "WEBHOOK_READY":
       return labels.webhookReady;
     case "READY_FOR_PUBLISHING_HANDOFF":

@@ -222,6 +222,7 @@ export type SaasDictionary = {
       chipPublishManual: string;
       chipPublishWordpress: string;
       chipPublishWebhook: string;
+      chipPublishConnectedPlatform: string;
       openReview: string;
       openPlan: string;
       setupPublishing: string;
@@ -235,17 +236,20 @@ export type SaasDictionary = {
       publishAfterConfirm: string;
       wordpressDraftOnly: string;
       customSitePackage: string;
+      connectedPlatformHandoff: string;
     };
     readyToPublish: {
       eyebrow: string;
       title: string;
       descriptionWebhook: (site: string) => string;
+      descriptionConnectedPlatform: (site: string) => string;
       descriptionWordpress: string;
       descriptionManual: string;
       openArticle: string;
       openReview: string;
       webhookChip: string;
       wordpressChip: string;
+      connectedPlatformChip: string;
       manualChip: string;
       safetyNote: string;
     };
@@ -1333,6 +1337,13 @@ export type SaasDictionary = {
     publishPathLabels: {
       wordpress_draft: string;
       wordpress_live: string;
+      webflow: string;
+      shopify: string;
+      wix: string;
+      ghost: string;
+      github_pr: string;
+      squarespace: string;
+      hosted_blog: string;
       universal_package: string;
       webhook: string;
       none: string;
@@ -1345,6 +1356,13 @@ export type SaasDictionary = {
       universalPackageReady: string;
       wordpressDraftCreated: string;
       wordpressLivePublished: string;
+      webflowItemCreated: string;
+      shopifyArticleCreated: string;
+      wixDraftCreated: string;
+      ghostPostCreated: string;
+      githubPrCreated: string;
+      squarespacePackageReady: string;
+      hostedBlogPublished: string;
       webhookReady: string;
       readyForPublishingHandoff: string;
     };

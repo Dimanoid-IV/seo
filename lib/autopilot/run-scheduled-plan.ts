@@ -487,7 +487,6 @@ export async function runScheduledAutopilotPlans(input: {
             settings.mode === AutopilotMode.AUTOPUBLISH &&
             isPlanAutoPublishMode(plan.publishingMode) &&
             !wordpressConnected &&
-            webhookConfiguredAndTested &&
             consumeBudgetForAction(budget, "PREPARE_PUBLISHING_HANDOFF")
           ) {
             const handoff = await preparePublishingHandoff({

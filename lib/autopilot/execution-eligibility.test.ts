@@ -451,6 +451,37 @@ function runExecutionEligibilityChecks(): void {
   );
   assert.equal(autoPublishCustomWebhookNotAllowlisted.suggestedStatus, "prepared");
 
+  const autoPublishConnectedCmsNoWordPress = resolvePlanItemExecutionEligibility({
+    item: baseArticleItem({
+      status: "prepared",
+      generatedArticleId: "article-cms-auto",
+      articleQualityPassed: true,
+      publishingPath: "webflow",
+    }),
+    now,
+    autopilotMode: AutopilotMode.AUTOPUBLISH,
+    wordpressConnected: false,
+    webhookConfiguredAndTested: false,
+    customWebhookAutoSendAllowed: false,
+    planPublishingMode: PlanPublishingMode.AUTO_PUBLISH,
+    websiteId,
+    organizationId,
+    article: {
+      id: "article-cms-auto",
+      status: ArticleStatus.WAITING_REVIEW,
+      qualityPassed: true,
+      websiteId,
+      organizationId,
+      wordpressPostId: null,
+    },
+  });
+  assert.equal(autoPublishConnectedCmsNoWordPress.action, "PREPARE_PUBLISHING_HANDOFF");
+  assert.equal(
+    autoPublishConnectedCmsNoWordPress.summaryKey,
+    "wouldPreparePublishingHandoff"
+  );
+  assert.equal(autoPublishConnectedCmsNoWordPress.suggestedStatus, "prepared");
+
   // Prepare-for-review (REVIEW_FIRST) waits for human before handoff.
   const reviewFirstWait = resolvePlanItemExecutionEligibility({
     item: baseArticleItem({

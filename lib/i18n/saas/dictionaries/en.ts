@@ -281,6 +281,7 @@ export const saasDictionary: SaasDictionary = {
       chipPublishManual: "Publishing: manual",
       chipPublishWordpress: "Publishing: WordPress",
       chipPublishWebhook: "Publishing: webhook ready",
+      chipPublishConnectedPlatform: "Publishing: connected CMS",
       openReview: "Review ready materials",
       openPlan: "Open monthly plan",
       setupPublishing: "Set up publishing",
@@ -294,6 +295,8 @@ export const saasDictionary: SaasDictionary = {
       nextPrepSoon: "Next automatic preparation: soon",
       publishAfterConfirm: "Publishing follows the mode you chose when confirming the plan",
       wordpressDraftOnly: "WordPress: drafts by default; auto-publish after plan confirmation",
+      connectedPlatformHandoff:
+        "Connected CMS: RankBoost will create a draft, item, PR, or package through the selected integration",
       customSitePackage:
         "Custom site: ready package / webhook — not the same as WordPress live publish",
     },
@@ -304,12 +307,15 @@ export const saasDictionary: SaasDictionary = {
         `${site} is connected. Open the article and send it to the blog with one button.`,
       descriptionWordpress:
         "WordPress is connected. Open the article, check the final version, then create a draft or publish through the approved plan.",
+      descriptionConnectedPlatform: (site) =>
+        `${site} is connected through a CMS integration. RankBoost will prepare publishing in that channel.`,
       descriptionManual:
         "Open the article: RankBoost prepared HTML, Markdown, SEO title, and meta description for publishing.",
       openArticle: "Open and publish",
       openReview: "All review materials",
       webhookChip: "Custom site connected",
       wordpressChip: "WordPress connected",
+      connectedPlatformChip: "CMS connected",
       manualChip: "Ready package",
       safetyNote:
         "RankBoost shows the specific ready article. You can see the text before sending it to your site.",
@@ -1659,6 +1665,13 @@ export const saasDictionary: SaasDictionary = {
     publishPathLabels: {
       wordpress_draft: "WordPress draft",
       wordpress_live: "WordPress live",
+      webflow: "Webflow CMS",
+      shopify: "Shopify Blog",
+      wix: "Wix Blog",
+      ghost: "Ghost",
+      github_pr: "GitHub PR",
+      squarespace: "Squarespace package",
+      hosted_blog: "Hosted Blog",
       universal_package: "Site package",
       webhook: "Ready to send to your site",
       none: "Manual",
@@ -1671,6 +1684,13 @@ export const saasDictionary: SaasDictionary = {
       universalPackageReady: "Publishing package ready",
       wordpressDraftCreated: "WordPress draft created",
       wordpressLivePublished: "Published to WordPress",
+      webflowItemCreated: "Webflow item created",
+      shopifyArticleCreated: "Shopify article created",
+      wixDraftCreated: "Wix draft created",
+      ghostPostCreated: "Ghost post created",
+      githubPrCreated: "Pull request created",
+      squarespacePackageReady: "Squarespace package ready",
+      hostedBlogPublished: "Published to Hosted Blog",
       webhookReady: "Ready to send to your site",
       readyForPublishingHandoff: "Ready for publishing",
     },

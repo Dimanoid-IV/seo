@@ -120,7 +120,12 @@ export type SimpleDashboardViewModel = {
   monthlyAutopilotActive?: {
     nextArticleDateLabel: string | null;
     readyForReviewCount: number;
-    publishingPath: "manual" | "wordpress_draft" | "wordpress_live" | "webhook_ready";
+    publishingPath:
+      | "manual"
+      | "wordpress_draft"
+      | "wordpress_live"
+      | "webhook_ready"
+      | "connected_platform";
     primaryHref: string;
     primaryLabelKind: "review" | "plan";
     showPublishingNudge: boolean;
@@ -129,7 +134,12 @@ export type SimpleDashboardViewModel = {
     id: string;
     title: string;
     href: string;
-    publishingPath: "manual" | "wordpress_draft" | "wordpress_live" | "webhook_ready";
+    publishingPath:
+      | "manual"
+      | "wordpress_draft"
+      | "wordpress_live"
+      | "webhook_ready"
+      | "connected_platform";
     siteLabel: string;
   };
   /** Prompt 11.46 — first website activation progress */
