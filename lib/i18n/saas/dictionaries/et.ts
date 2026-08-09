@@ -889,6 +889,24 @@ export const saasDictionary: SaasDictionary = {
       disconnectFailed: "Shopify ühendust ei õnnestunud katkestada.",
       disconnectNetworkError: "Võrguviga Shopify ühenduse katkestamisel.",
     },
+    ghost: {
+      title: "Avaldamine Ghosti",
+      description:
+        "Ühendage Ghost Admin API key. RankBoost loob quality gate'i läbinud artiklitest posts.",
+      adminUrl: "Ghost URL",
+      adminKey: "Admin API key",
+      authorSlug: "Author slug",
+      tokenNote:
+        "Admin key krüpteeritakse ja seda ei näidata enam. Kasutage Ghost Admin → Integrations id:secret võtit.",
+      testAndSave: "Testi ja salvesta",
+      disconnect: "Katkesta ühendus",
+      connected: "Ghost ühendatud. Valmis artikleid saab saata Ghosti.",
+      disconnected: "Ghost ühendus katkestatud.",
+      connectFailed: "Ghosti ühendamine ebaõnnestus.",
+      connectNetworkError: "Võrguviga Ghosti ühendamisel.",
+      disconnectFailed: "Ghosti ühendust ei õnnestunud katkestada.",
+      disconnectNetworkError: "Võrguviga Ghosti ühenduse katkestamisel.",
+    },
     gscPropertyPicker: {
       title: "Vali Search Console'i sait",
       subtitle: "Seo Google'i atribuut oma veebisaidiga RankBoostis",

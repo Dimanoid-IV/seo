@@ -889,6 +889,24 @@ export const saasDictionary: SaasDictionary = {
       disconnectFailed: "Не удалось отключить Shopify.",
       disconnectNetworkError: "Сетевая ошибка при отключении Shopify.",
     },
+    ghost: {
+      title: "Публикация в Ghost",
+      description:
+        "Подключите Ghost Admin API key. RankBoost будет создавать posts из статей, прошедших quality gate.",
+      adminUrl: "Ghost URL",
+      adminKey: "Admin API key",
+      authorSlug: "Author slug",
+      tokenNote:
+        "Admin key шифруется и больше не показывается. Используйте ключ формата id:secret из Ghost Admin → Integrations.",
+      testAndSave: "Проверить и сохранить",
+      disconnect: "Отключить",
+      connected: "Ghost подключён. Готовые статьи можно отправлять в Ghost.",
+      disconnected: "Ghost отключён.",
+      connectFailed: "Не удалось подключить Ghost.",
+      connectNetworkError: "Сетевая ошибка при подключении Ghost.",
+      disconnectFailed: "Не удалось отключить Ghost.",
+      disconnectNetworkError: "Сетевая ошибка при отключении Ghost.",
+    },
     gscPropertyPicker: {
       title: "Выбрать сайт из Search Console",
       subtitle: "Свяжите property Google с сайтом в RankBoost",

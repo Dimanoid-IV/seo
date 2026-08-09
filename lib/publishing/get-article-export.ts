@@ -12,6 +12,7 @@ import {
 } from "./custom-publishing-display";
 import { loadBrandKitForWebsite } from "@/lib/brand-kit";
 import { buildHostedArticleUrl } from "@/lib/hosted-blog/urls";
+import { getGhostPublishingConfig } from "@/lib/publishing/ghost-config";
 import { getGitHubPrConfig } from "@/lib/publishing/github-pr-config";
 import { getShopifyPublishingConfig } from "@/lib/publishing/shopify-config";
 import { getWebflowPublishingConfig } from "@/lib/publishing/webflow-config";
@@ -39,6 +40,10 @@ export interface ArticleUniversalExportResult {
     shopDomain: string | null;
     blogId: string | null;
   };
+  ghost: {
+    connected: boolean;
+    adminUrl: string | null;
+  };
   export: UniversalExportPackage;
 }
 
@@ -62,6 +67,7 @@ export async function getArticleUniversalExport({
   });
 
   const custom = await getCustomPublishingConfig(article.websiteId);
+  const ghost = await getGhostPublishingConfig(article.websiteId);
   const github = await getGitHubPrConfig(article.websiteId);
   const shopify = await getShopifyPublishingConfig(article.websiteId);
   const webflow = await getWebflowPublishingConfig(article.websiteId);
@@ -119,6 +125,10 @@ export async function getArticleUniversalExport({
       connected: shopify?.connected === true,
       shopDomain: shopify?.shopDomain ?? null,
       blogId: shopify?.blogId ?? null,
+    },
+    ghost: {
+      connected: ghost?.connected === true,
+      adminUrl: ghost?.adminUrl ?? null,
     },
     export: pkg,
   };

@@ -18,6 +18,7 @@ import {
 import { isHermesConfigured } from "@/lib/hermes/client";
 import { getCustomPublishingConfig } from "@/lib/publishing/custom-webhook-config";
 import { buildCustomPublishingDisplayState } from "@/lib/publishing/custom-publishing-display";
+import { getGhostPublishingConfig } from "@/lib/publishing/ghost-config";
 import { getGitHubPrConfig } from "@/lib/publishing/github-pr-config";
 import { getShopifyPublishingConfig } from "@/lib/publishing/shopify-config";
 import { getWebflowPublishingConfig } from "@/lib/publishing/webflow-config";
@@ -138,6 +139,7 @@ export async function getIntegrationsOverview(
   });
 
   const customPublishingConfig = await getCustomPublishingConfig(website.id);
+  const ghostConfig = await getGhostPublishingConfig(website.id);
   const githubPrConfig = await getGitHubPrConfig(website.id);
   const shopifyConfig = await getShopifyPublishingConfig(website.id);
   const webflowConfig = await getWebflowPublishingConfig(website.id);
@@ -259,6 +261,26 @@ export async function getIntegrationsOverview(
         connectedAt: connected ? shopifyConfig?.testedAt ?? null : null,
         lastSyncAt: null,
         lastSuccessAt: connected ? shopifyConfig?.testedAt ?? null : null,
+        lastErrorAt: record?.lastErrorAt?.toISOString() ?? null,
+        lastErrorMessage: record?.lastErrorMessage ?? null,
+      };
+    }
+
+    if (item.provider === "ghost") {
+      const connected = ghostConfig?.connected === true;
+      return {
+        provider: item.provider,
+        title: item.title,
+        description: item.description,
+        category: item.category,
+        capabilities: item.capabilities,
+        connected,
+        status: connected ? "Connected" : mapped.status,
+        available: item.available,
+        comingSoon: item.comingSoon,
+        connectedAt: connected ? ghostConfig?.testedAt ?? null : null,
+        lastSyncAt: null,
+        lastSuccessAt: connected ? ghostConfig?.testedAt ?? null : null,
         lastErrorAt: record?.lastErrorAt?.toISOString() ?? null,
         lastErrorMessage: record?.lastErrorMessage ?? null,
       };

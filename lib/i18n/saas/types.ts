@@ -705,6 +705,22 @@ export type SaasDictionary = {
       disconnectFailed: string;
       disconnectNetworkError: string;
     };
+    ghost: {
+      title: string;
+      description: string;
+      adminUrl: string;
+      adminKey: string;
+      authorSlug: string;
+      tokenNote: string;
+      testAndSave: string;
+      disconnect: string;
+      connected: string;
+      disconnected: string;
+      connectFailed: string;
+      connectNetworkError: string;
+      disconnectFailed: string;
+      disconnectNetworkError: string;
+    };
     gscPropertyPicker: {
       title: string;
       subtitle: string;

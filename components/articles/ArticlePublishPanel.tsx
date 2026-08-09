@@ -7,6 +7,7 @@ import {
   Copy,
   Download,
   ExternalLink,
+  Feather,
   GitPullRequest,
   Globe2,
   Loader2,
@@ -50,6 +51,10 @@ type ExportResponse = {
       connected: boolean;
       shopDomain: string | null;
       blogId: string | null;
+    };
+    ghost?: {
+      connected: boolean;
+      adminUrl: string | null;
     };
     export: UniversalExportPackage;
   };
@@ -133,6 +138,9 @@ export function ArticlePublishPanel({
   const [shopifyConnected, setShopifyConnected] = useState(false);
   const [shopifyShopDomain, setShopifyShopDomain] = useState<string | null>(null);
   const [shopifyPublishing, setShopifyPublishing] = useState<"dry" | "create" | null>(null);
+  const [ghostConnected, setGhostConnected] = useState(false);
+  const [ghostAdminUrl, setGhostAdminUrl] = useState<string | null>(null);
+  const [ghostPublishing, setGhostPublishing] = useState<"dry" | "create" | null>(null);
 
   const isWordPressLivePublished =
     articleStatus === "PUBLISHED" && Boolean(wordpressPostId);
@@ -169,6 +177,8 @@ export function ArticlePublishPanel({
           setWebflowCollectionId(body.data.webflow?.collectionId ?? null);
           setShopifyConnected(body.data.shopify?.connected === true);
           setShopifyShopDomain(body.data.shopify?.shopDomain ?? null);
+          setGhostConnected(body.data.ghost?.connected === true);
+          setGhostAdminUrl(body.data.ghost?.adminUrl ?? null);
         }
       } catch {
         if (!cancelled) setError("Сетевая ошибка при подготовке материалов.");
@@ -465,6 +475,47 @@ export function ArticlePublishPanel({
       );
     } finally {
       setShopifyPublishing(null);
+    }
+  }
+
+  async function handleGhost(dryRun: boolean) {
+    setGhostPublishing(dryRun ? "dry" : "create");
+    setPublishMessage(null);
+    setPublishError(null);
+    try {
+      const response = await authFetch(`/api/articles/${articleId}/ghost`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ dryRun }),
+      });
+      const body = (await response.json().catch(() => ({}))) as {
+        data?: { postUrl?: string | null };
+        error?: { message?: string };
+      };
+      if (!response.ok) {
+        setPublishError(
+          body.error?.message ??
+            (dryRun
+              ? "Не удалось проверить Ghost post."
+              : "Не удалось создать Ghost post.")
+        );
+        return;
+      }
+      setPublishMessage(
+        dryRun
+          ? "Ghost post готов к созданию."
+          : body.data?.postUrl
+            ? `Ghost post создан: ${body.data.postUrl}`
+            : "Ghost post создан."
+      );
+    } catch {
+      setPublishError(
+        dryRun
+          ? "Сетевая ошибка при проверке Ghost."
+          : "Сетевая ошибка при создании Ghost post."
+      );
+    } finally {
+      setGhostPublishing(null);
     }
   }
 
@@ -888,6 +939,55 @@ export function ArticlePublishPanel({
                 <Loader2 className="size-4 animate-spin" />
               ) : null}
               Проверить Shopify
+            </Button>
+          </div>
+        </div>
+      ) : null}
+
+      {ghostConnected ? (
+        <div className="rounded-xl border border-indigo-200 bg-indigo-50 p-4">
+          <div className="flex items-start gap-3">
+            <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-white">
+              <Feather className="size-4 text-indigo-700" />
+            </div>
+            <div className="min-w-0 flex-1">
+              <p className="text-sm font-semibold text-indigo-950">
+                Ghost подключён
+              </p>
+              <p className="mt-1 text-xs leading-relaxed text-indigo-800">
+                RankBoost создаст post в Ghost{" "}
+                {ghostAdminUrl ? `(${ghostAdminUrl})` : ""}. По умолчанию это
+                draft-путь для проверки.
+              </p>
+            </div>
+          </div>
+          <div className="mt-4 flex flex-wrap gap-2">
+            <Button
+              type="button"
+              size="sm"
+              disabled={ghostPublishing !== null}
+              onClick={() => void handleGhost(false)}
+              className="bg-indigo-700 text-white hover:bg-indigo-800"
+            >
+              {ghostPublishing === "create" ? (
+                <Loader2 className="size-4 animate-spin" />
+              ) : (
+                <Feather className="size-4" />
+              )}
+              Создать Ghost post
+            </Button>
+            <Button
+              type="button"
+              size="sm"
+              variant="outline"
+              disabled={ghostPublishing !== null}
+              onClick={() => void handleGhost(true)}
+              className="border-indigo-200 bg-white text-indigo-800 hover:bg-indigo-100"
+            >
+              {ghostPublishing === "dry" ? (
+                <Loader2 className="size-4 animate-spin" />
+              ) : null}
+              Проверить Ghost
             </Button>
           </div>
         </div>

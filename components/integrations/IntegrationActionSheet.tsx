@@ -2,6 +2,7 @@
 
 import { IntegrationBenefitList } from "@/components/integrations/IntegrationBenefitList";
 import { IntegrationComingSoonForm } from "@/components/integrations/IntegrationComingSoonForm";
+import { GhostConnectionForm } from "@/components/integrations/GhostConnectionForm";
 import { GoogleSearchConsolePropertyPicker } from "@/components/integrations/GoogleSearchConsolePropertyPicker";
 import { GitHubPrConnectionForm } from "@/components/integrations/GitHubPrConnectionForm";
 import { ShopifyConnectionForm } from "@/components/integrations/ShopifyConnectionForm";
@@ -39,6 +40,7 @@ import { useState } from "react";
 const GSC_PROVIDER = "google_search_console";
 const WORDPRESS_PROVIDER = "wordpress";
 const CUSTOM_WEBHOOK_PROVIDER = "custom_webhook";
+const GHOST_PROVIDER = "ghost";
 const GITHUB_PROVIDER = "github";
 const SHOPIFY_PROVIDER = "shopify";
 const WEBFLOW_PROVIDER = "webflow";
@@ -169,6 +171,7 @@ function IntegrationActionSheetContent({
       : integration.connected) && !isComingSoon;
   const isWordPress = integration.provider === WORDPRESS_PROVIDER;
   const isCustomWebhook = integration.provider === CUSTOM_WEBHOOK_PROVIDER;
+  const isGhost = integration.provider === GHOST_PROVIDER;
   const isGitHub = integration.provider === GITHUB_PROVIDER;
   const isShopify = integration.provider === SHOPIFY_PROVIDER;
   const isWebflow = integration.provider === WEBFLOW_PROVIDER;
@@ -422,9 +425,22 @@ function IntegrationActionSheetContent({
               onConnectionUpdated={onIntegrationUpdated}
             />
           ) : null}
+
+          {isGhost && !isComingSoon ? (
+            <GhostConnectionForm
+              websiteId={websiteId}
+              connected={integration.connected}
+              onConnectionUpdated={onIntegrationUpdated}
+            />
+          ) : null}
         </div>
 
-        {!isComingSoon && !isWordPress && !isGitHub && !isWebflow && !isShopify ? (
+        {!isComingSoon &&
+        !isWordPress &&
+        !isGitHub &&
+        !isWebflow &&
+        !isShopify &&
+        !isGhost ? (
           <SheetFooter className="border-t border-slate-200">
             {isGsc ? (
               isConnected ? (

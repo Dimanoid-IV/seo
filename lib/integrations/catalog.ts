@@ -169,8 +169,8 @@ export const INTEGRATION_CATALOG: IntegrationCatalogEntry[] = [
     title: "Ghost",
     description:
       "Публикация SEO-статей в Ghost с тегами, excerpt и canonical metadata.",
-    available: false,
-    comingSoon: true,
+    available: true,
+    comingSoon: false,
     category: "cms",
     capabilities: [
       IntegrationCapability.CMS_ARTICLE_CREATE,
