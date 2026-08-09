@@ -24,6 +24,7 @@ import { getGhostPublishingConfig } from "@/lib/publishing/ghost-config";
 import { getGitHubPrConfig } from "@/lib/publishing/github-pr-config";
 import { getNoCodeAutomationConfig } from "@/lib/publishing/no-code-automation-config";
 import { getShopifyPublishingConfig } from "@/lib/publishing/shopify-config";
+import { getSquarespacePublishingConfig } from "@/lib/publishing/squarespace-config";
 import { getWebflowPublishingConfig } from "@/lib/publishing/webflow-config";
 import { getWixPublishingConfig } from "@/lib/publishing/wix-config";
 
@@ -153,6 +154,7 @@ export async function getIntegrationsOverview(
     getNoCodeAutomationConfig({ websiteId: website.id, provider: "make" }),
   ]);
   const shopifyConfig = await getShopifyPublishingConfig(website.id);
+  const squarespaceConfig = await getSquarespacePublishingConfig(website.id);
   const webflowConfig = await getWebflowPublishingConfig(website.id);
   const wixConfig = await getWixPublishingConfig(website.id);
   const customDisplay = buildCustomPublishingDisplayState({
@@ -293,6 +295,26 @@ export async function getIntegrationsOverview(
         connectedAt: connected ? wixConfig?.testedAt ?? null : null,
         lastSyncAt: null,
         lastSuccessAt: connected ? wixConfig?.testedAt ?? null : null,
+        lastErrorAt: record?.lastErrorAt?.toISOString() ?? null,
+        lastErrorMessage: record?.lastErrorMessage ?? null,
+      };
+    }
+
+    if (item.provider === "squarespace") {
+      const connected = squarespaceConfig?.connected === true;
+      return {
+        provider: item.provider,
+        title: item.title,
+        description: item.description,
+        category: item.category,
+        capabilities: item.capabilities,
+        connected,
+        status: connected ? "Connected" : mapped.status,
+        available: item.available,
+        comingSoon: item.comingSoon,
+        connectedAt: connected ? squarespaceConfig?.testedAt ?? null : null,
+        lastSyncAt: null,
+        lastSuccessAt: connected ? squarespaceConfig?.testedAt ?? null : null,
         lastErrorAt: record?.lastErrorAt?.toISOString() ?? null,
         lastErrorMessage: record?.lastErrorMessage ?? null,
       };

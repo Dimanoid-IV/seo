@@ -16,6 +16,7 @@ import { getGhostPublishingConfig } from "@/lib/publishing/ghost-config";
 import { getGitHubPrConfig } from "@/lib/publishing/github-pr-config";
 import { getNoCodeAutomationConfig } from "@/lib/publishing/no-code-automation-config";
 import { getShopifyPublishingConfig } from "@/lib/publishing/shopify-config";
+import { getSquarespacePublishingConfig } from "@/lib/publishing/squarespace-config";
 import { getWebflowPublishingConfig } from "@/lib/publishing/webflow-config";
 import { getWixPublishingConfig } from "@/lib/publishing/wix-config";
 
@@ -45,6 +46,11 @@ export interface ArticleUniversalExportResult {
   wix: {
     connected: boolean;
     siteId: string | null;
+  };
+  squarespace: {
+    connected: boolean;
+    siteUrl: string | null;
+    blogUrl: string | null;
   };
   ghost: {
     connected: boolean;
@@ -84,6 +90,7 @@ export async function getArticleUniversalExport({
     getNoCodeAutomationConfig({ websiteId: article.websiteId, provider: "make" }),
   ]);
   const shopify = await getShopifyPublishingConfig(article.websiteId);
+  const squarespace = await getSquarespacePublishingConfig(article.websiteId);
   const webflow = await getWebflowPublishingConfig(article.websiteId);
   const wix = await getWixPublishingConfig(article.websiteId);
   const brandKit = await loadBrandKitForWebsite(article.websiteId);
@@ -144,6 +151,11 @@ export async function getArticleUniversalExport({
     wix: {
       connected: wix?.connected === true,
       siteId: wix?.siteId ?? null,
+    },
+    squarespace: {
+      connected: squarespace?.connected === true,
+      siteUrl: squarespace?.siteUrl ?? null,
+      blogUrl: squarespace?.blogUrl ?? null,
     },
     ghost: {
       connected: ghost?.connected === true,

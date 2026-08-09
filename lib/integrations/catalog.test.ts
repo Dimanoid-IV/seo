@@ -72,5 +72,10 @@ assert.equal(
   true,
   "Wix draft publishing should be available"
 );
+assert.equal(
+  byProvider.get("squarespace")?.available,
+  true,
+  "Squarespace guided publishing should be available"
+);
 
 console.log("integrations catalog.test.ts: ok");

@@ -946,6 +946,24 @@ export const saasDictionary: SaasDictionary = {
       disconnectFailed: "Wixi ühendust ei õnnestunud katkestada.",
       disconnectNetworkError: "Võrguviga Wixi ühenduse katkestamisel.",
     },
+    squarespace: {
+      title: "Squarespace publishing package",
+      description:
+        "Ühendage avalik Squarespace'i sait. RankBoost valmistab HTML/Markdown/meta paketi ja juhised editori jaoks.",
+      siteUrl: "Squarespace site URL",
+      blogUrl: "Blog page URL",
+      note:
+        "Squarespace'il ei ole ametlikku blog publish API-t otseseks autopublishiks. RankBoost kontrollib saiti ja valmistab turvalise paketi editorisse sisestamiseks.",
+      testAndSave: "Testi ja salvesta",
+      disconnect: "Katkesta ühendus",
+      connected: "Squarespace ühendatud. Valmis artiklitest saab teha publishing package'id.",
+      disconnected: "Squarespace ühendus katkestatud.",
+      connectFailed: "Squarespace'i ühendamine ebaõnnestus.",
+      connectNetworkError: "Võrguviga Squarespace'i ühendamisel.",
+      disconnectFailed: "Squarespace'i ühendust ei õnnestunud katkestada.",
+      disconnectNetworkError:
+        "Võrguviga Squarespace'i ühenduse katkestamisel.",
+    },
     ghost: {
       title: "Avaldamine Ghosti",
       description:

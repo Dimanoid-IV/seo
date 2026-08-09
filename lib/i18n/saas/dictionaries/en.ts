@@ -945,6 +945,23 @@ export const saasDictionary: SaasDictionary = {
       disconnectFailed: "Could not disconnect Wix.",
       disconnectNetworkError: "Network error while disconnecting Wix.",
     },
+    squarespace: {
+      title: "Squarespace publishing package",
+      description:
+        "Connect the public Squarespace site. RankBoost will prepare an HTML/Markdown/meta package and editor handoff.",
+      siteUrl: "Squarespace site URL",
+      blogUrl: "Blog page URL",
+      note:
+        "Squarespace does not offer an official blog publish API for direct autopublishing. RankBoost checks the site and prepares a safe package for the editor.",
+      testAndSave: "Test and save",
+      disconnect: "Disconnect",
+      connected: "Squarespace connected. Ready articles can become publishing packages.",
+      disconnected: "Squarespace disconnected.",
+      connectFailed: "Squarespace connection failed.",
+      connectNetworkError: "Network error while connecting Squarespace.",
+      disconnectFailed: "Could not disconnect Squarespace.",
+      disconnectNetworkError: "Network error while disconnecting Squarespace.",
+    },
     ghost: {
       title: "Ghost publishing",
       description:

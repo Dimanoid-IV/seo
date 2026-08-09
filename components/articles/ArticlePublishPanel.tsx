@@ -8,6 +8,7 @@ import {
   Download,
   ExternalLink,
   Feather,
+  Grid2X2,
   GitPullRequest,
   Globe2,
   Loader2,
@@ -56,6 +57,11 @@ type ExportResponse = {
     wix?: {
       connected: boolean;
       siteId: string | null;
+    };
+    squarespace?: {
+      connected: boolean;
+      siteUrl: string | null;
+      blogUrl: string | null;
     };
     ghost?: {
       connected: boolean;
@@ -150,6 +156,9 @@ export function ArticlePublishPanel({
   const [wixConnected, setWixConnected] = useState(false);
   const [wixSiteId, setWixSiteId] = useState<string | null>(null);
   const [wixPublishing, setWixPublishing] = useState<"dry" | "create" | null>(null);
+  const [squarespaceConnected, setSquarespaceConnected] = useState(false);
+  const [squarespaceBlogUrl, setSquarespaceBlogUrl] = useState<string | null>(null);
+  const [squarespacePublishing, setSquarespacePublishing] = useState<"dry" | "prepare" | null>(null);
   const [ghostConnected, setGhostConnected] = useState(false);
   const [ghostAdminUrl, setGhostAdminUrl] = useState<string | null>(null);
   const [ghostPublishing, setGhostPublishing] = useState<"dry" | "create" | null>(null);
@@ -196,6 +205,8 @@ export function ArticlePublishPanel({
           setShopifyShopDomain(body.data.shopify?.shopDomain ?? null);
           setWixConnected(body.data.wix?.connected === true);
           setWixSiteId(body.data.wix?.siteId ?? null);
+          setSquarespaceConnected(body.data.squarespace?.connected === true);
+          setSquarespaceBlogUrl(body.data.squarespace?.blogUrl ?? body.data.squarespace?.siteUrl ?? null);
           setGhostConnected(body.data.ghost?.connected === true);
           setGhostAdminUrl(body.data.ghost?.adminUrl ?? null);
           setZapierConnected(
@@ -580,6 +591,47 @@ export function ArticlePublishPanel({
       );
     } finally {
       setWixPublishing(null);
+    }
+  }
+
+  async function handleSquarespace(dryRun: boolean) {
+    setSquarespacePublishing(dryRun ? "dry" : "prepare");
+    setPublishMessage(null);
+    setPublishError(null);
+    try {
+      const response = await authFetch(`/api/articles/${articleId}/squarespace`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ dryRun }),
+      });
+      const body = (await response.json().catch(() => ({}))) as {
+        data?: { packageUrl?: string | null };
+        error?: { message?: string };
+      };
+      if (!response.ok) {
+        setPublishError(
+          body.error?.message ??
+            (dryRun
+              ? "Не удалось проверить Squarespace package."
+              : "Не удалось подготовить Squarespace package.")
+        );
+        return;
+      }
+      setPublishMessage(
+        dryRun
+          ? "Squarespace package готов к подготовке."
+          : body.data?.packageUrl
+            ? `Squarespace package подготовлен: ${body.data.packageUrl}`
+            : "Squarespace package подготовлен."
+      );
+    } catch {
+      setPublishError(
+        dryRun
+          ? "Сетевая ошибка при проверке Squarespace."
+          : "Сетевая ошибка при подготовке Squarespace package."
+      );
+    } finally {
+      setSquarespacePublishing(null);
     }
   }
 
@@ -1100,6 +1152,55 @@ export function ArticlePublishPanel({
                 <Loader2 className="size-4 animate-spin" />
               ) : null}
               Проверить Wix
+            </Button>
+          </div>
+        </div>
+      ) : null}
+
+      {squarespaceConnected ? (
+        <div className="rounded-xl border border-stone-200 bg-stone-50 p-4">
+          <div className="flex items-start gap-3">
+            <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-white">
+              <Grid2X2 className="size-4 text-stone-700" />
+            </div>
+            <div className="min-w-0 flex-1">
+              <p className="text-sm font-semibold text-stone-950">
+                Squarespace подключён
+              </p>
+              <p className="mt-1 text-xs leading-relaxed text-stone-800">
+                RankBoost подготовит HTML, Markdown, meta title/description и
+                короткую инструкцию для Squarespace editor{" "}
+                {squarespaceBlogUrl ? `(${squarespaceBlogUrl})` : ""}.
+              </p>
+            </div>
+          </div>
+          <div className="mt-4 flex flex-wrap gap-2">
+            <Button
+              type="button"
+              size="sm"
+              disabled={squarespacePublishing !== null}
+              onClick={() => void handleSquarespace(false)}
+              className="bg-stone-800 text-white hover:bg-stone-900"
+            >
+              {squarespacePublishing === "prepare" ? (
+                <Loader2 className="size-4 animate-spin" />
+              ) : (
+                <Grid2X2 className="size-4" />
+              )}
+              Подготовить Squarespace package
+            </Button>
+            <Button
+              type="button"
+              size="sm"
+              variant="outline"
+              disabled={squarespacePublishing !== null}
+              onClick={() => void handleSquarespace(true)}
+              className="border-stone-200 bg-white text-stone-800 hover:bg-stone-100"
+            >
+              {squarespacePublishing === "dry" ? (
+                <Loader2 className="size-4 animate-spin" />
+              ) : null}
+              Проверить Squarespace
             </Button>
           </div>
         </div>

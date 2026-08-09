@@ -154,12 +154,12 @@ export const INTEGRATION_CATALOG: IntegrationCatalogEntry[] = [
     dbProvider: IntegrationProvider.SQUARESPACE,
     title: "Squarespace",
     description:
-      "Подготовка и будущая отправка SEO-контента для сайтов Squarespace.",
-    available: false,
-    comingSoon: true,
+      "Готовый SEO-пакет для Squarespace Blog с проверкой сайта и понятным handoff.",
+    available: true,
+    comingSoon: false,
     category: "cms",
     capabilities: [
-      IntegrationCapability.CMS_ARTICLE_CREATE,
+      IntegrationCapability.PREPARE_UNIVERSAL_PACKAGE,
       IntegrationCapability.CMS_META_UPDATE,
     ],
   },

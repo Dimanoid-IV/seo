@@ -8,6 +8,7 @@ import { GoogleBusinessProfileConnectionForm } from "@/components/integrations/G
 import { GoogleSearchConsolePropertyPicker } from "@/components/integrations/GoogleSearchConsolePropertyPicker";
 import { GitHubPrConnectionForm } from "@/components/integrations/GitHubPrConnectionForm";
 import { ShopifyConnectionForm } from "@/components/integrations/ShopifyConnectionForm";
+import { SquarespaceConnectionForm } from "@/components/integrations/SquarespaceConnectionForm";
 import { WebflowConnectionForm } from "@/components/integrations/WebflowConnectionForm";
 import { WixConnectionForm } from "@/components/integrations/WixConnectionForm";
 import { GscSyncButton } from "@/components/integrations/GoogleSearchConsoleDashboardCard";
@@ -49,6 +50,7 @@ const CUSTOM_WEBHOOK_PROVIDER = "custom_webhook";
 const GHOST_PROVIDER = "ghost";
 const GITHUB_PROVIDER = "github";
 const SHOPIFY_PROVIDER = "shopify";
+const SQUARESPACE_PROVIDER = "squarespace";
 const WEBFLOW_PROVIDER = "webflow";
 const WIX_PROVIDER = "wix";
 const ZAPIER_PROVIDER = "zapier";
@@ -185,6 +187,7 @@ function IntegrationActionSheetContent({
   const isGhost = integration.provider === GHOST_PROVIDER;
   const isGitHub = integration.provider === GITHUB_PROVIDER;
   const isShopify = integration.provider === SHOPIFY_PROVIDER;
+  const isSquarespace = integration.provider === SQUARESPACE_PROVIDER;
   const isWebflow = integration.provider === WEBFLOW_PROVIDER;
   const isWix = integration.provider === WIX_PROVIDER;
   const isNoCodeAutomation =
@@ -464,6 +467,14 @@ function IntegrationActionSheetContent({
             />
           ) : null}
 
+          {isSquarespace && !isComingSoon ? (
+            <SquarespaceConnectionForm
+              websiteId={websiteId}
+              connected={integration.connected}
+              onConnectionUpdated={onIntegrationUpdated}
+            />
+          ) : null}
+
           {isGhost && !isComingSoon ? (
             <GhostConnectionForm
               websiteId={websiteId}
@@ -490,6 +501,7 @@ function IntegrationActionSheetContent({
         !isWebflow &&
         !isShopify &&
         !isWix &&
+        !isSquarespace &&
         !isGhost &&
         !isNoCodeAutomation ? (
           <SheetFooter className="border-t border-slate-200">

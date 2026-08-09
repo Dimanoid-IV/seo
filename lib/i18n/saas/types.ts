@@ -755,6 +755,21 @@ export type SaasDictionary = {
       disconnectFailed: string;
       disconnectNetworkError: string;
     };
+    squarespace: {
+      title: string;
+      description: string;
+      siteUrl: string;
+      blogUrl: string;
+      note: string;
+      testAndSave: string;
+      disconnect: string;
+      connected: string;
+      disconnected: string;
+      connectFailed: string;
+      connectNetworkError: string;
+      disconnectFailed: string;
+      disconnectNetworkError: string;
+    };
     ghost: {
       title: string;
       description: string;
