@@ -16,10 +16,7 @@ import { getPrisma } from "@/lib/db";
 import { decryptSecret, encryptSecret } from "@/lib/security/encryption";
 
 export const CUSTOM_PUBLISHING_KIND = "rankboost_custom_publishing" as const;
-const CUSTOM_PUBLISHING_PROVIDERS = [
-  IntegrationProvider.CUSTOM_WEBHOOK,
-  IntegrationProvider.OTHER,
-];
+const CUSTOM_PUBLISHING_PROVIDERS = [IntegrationProvider.OTHER];
 
 export type CustomPublishingScopes = {
   kind: typeof CUSTOM_PUBLISHING_KIND;
@@ -203,7 +200,7 @@ export async function upsertCustomPublishingConfig(input: {
         data: {
           websiteId: input.websiteId,
           organizationId: input.organizationId,
-          provider: IntegrationProvider.CUSTOM_WEBHOOK,
+          provider: IntegrationProvider.OTHER,
           ...data,
         },
         select: {
