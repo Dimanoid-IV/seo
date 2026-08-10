@@ -97,6 +97,9 @@ export function AutopilotStatusBlock({
     rolloutEnabled &&
     publishingIntegrationConnected &&
     !paused;
+  const effectiveMode: AutopilotModeClient = autoPublishActuallyActive
+    ? "autopublish"
+    : (mode as AutopilotModeClient);
 
   const dueCount = useMemo(
     () => (planItems?.items ? findDuePlanItems(planItems.items).length : 0),
@@ -338,7 +341,7 @@ export function AutopilotStatusBlock({
               const active =
                 option === "autopublish"
                   ? autoPublishActuallyActive
-                  : mode === option;
+                  : effectiveMode === option;
               return (
                 <button
                   key={option}
@@ -346,7 +349,11 @@ export function AutopilotStatusBlock({
                   disabled={disabled || saving || enablingLivePublish}
                   onClick={() => {
                     if (option === "autopublish") {
-                      if (autoPublishActuallyActive) return;
+                      if (autoPublishActuallyActive) {
+                        setError(null);
+                        setRunMessage(t.enableAutoPublishSuccess);
+                        return;
+                      }
                       void handleEnableLivePublish();
                       return;
                     }
@@ -376,7 +383,7 @@ export function AutopilotStatusBlock({
               {t.currentMode}
             </p>
             <p className="mt-1 text-sm font-medium text-slate-900">
-              {t.modes[mode as AutopilotModeClient] ?? mode}
+              {t.modes[effectiveMode] ?? effectiveMode}
             </p>
           </div>
 
