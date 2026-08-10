@@ -85,7 +85,7 @@ export function AppSidebar() {
 
   const mobilePrimaryHrefs = [
     "/app",
-    "/app/content-plan",
+    "/app/publication-calendar",
     "/app/integrations",
     "/app/billing",
   ];

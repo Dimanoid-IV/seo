@@ -7,6 +7,7 @@ export type SaasDictionary = {
     tasks: string;
     review: string;
     contentPlan: string;
+    publicationCalendar: string;
     socialPosts: string;
     reports: string;
     timeline: string;
@@ -1542,6 +1543,39 @@ export type SaasDictionary = {
     emptyNoEventsDescription: string;
     severityLabels: Record<string, string>;
     quietHeadline: string;
+  };
+  publicationCalendar: {
+    eyebrow: string;
+    title: string;
+    subtitle: string;
+    loading: string;
+    loadFailed: string;
+    openPlan: string;
+    scheduled: string;
+    ready: string;
+    published: string;
+    nextPublication: string;
+    noDate: string;
+    today: string;
+    previousMonth: string;
+    nextMonth: string;
+    approvedHint: string;
+    draftHint: string;
+    emptyTitle: string;
+    emptyDescription: string;
+    preparing: string;
+    preparingDescription: string;
+    weekdays: string[];
+    statuses: {
+      proposed: string;
+      approved: string;
+      scheduled: string;
+      prepared: string;
+      published: string;
+      executed: string;
+      skipped: string;
+      blocked: string;
+    };
   };
   autopilot: {
     title: string;

@@ -1,6 +1,7 @@
 import type { LucideIcon } from "lucide-react";
 import {
   BarChart3,
+  CalendarDays,
   ClipboardCheck,
   CreditCard,
   FileText,
@@ -24,6 +25,7 @@ export type NavItemId = keyof Pick<
   | "tasks"
   | "review"
   | "contentPlan"
+  | "publicationCalendar"
   | "socialPosts"
   | "reports"
   | "timeline"
@@ -75,6 +77,14 @@ export const APP_NAV_ITEMS: AppNavItemConfig[] = [
     href: "/app/review",
     group: "main",
     icon: ClipboardCheck,
+    enabled: true,
+    advanced: false,
+  },
+  {
+    id: "publicationCalendar",
+    href: "/app/publication-calendar",
+    group: "main",
+    icon: CalendarDays,
     enabled: true,
     advanced: false,
   },

@@ -73,10 +73,10 @@ export function MonthlyPlanPreviewCard({
           </div>
         </div>
         <Link
-          href={plan.href}
+          href={plan.isApproved ? "/app/publication-calendar" : plan.href}
           className="inline-flex shrink-0 items-center justify-center rounded-lg bg-[#8169ff] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[#6d4ff0]"
         >
-          {plan.isApproved ? t.openPlan : t.confirmPlan}
+          {plan.isApproved ? dict.nav.publicationCalendar : t.confirmPlan}
         </Link>
       </div>
 
