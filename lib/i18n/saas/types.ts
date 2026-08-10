@@ -1685,6 +1685,9 @@ export type SaasDictionary = {
       comingSoon: string;
       modeChangeFailed: string;
       modeChangeNetworkError: string;
+      enableAutoPublishFailed: string;
+      enableAutoPublishNetworkError: string;
+      enableAutoPublishSuccess: string;
       modes: {
         off: string;
         review_first: string;

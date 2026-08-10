@@ -2050,6 +2050,11 @@ export const saasDictionary: SaasDictionary = {
       comingSoon: "Enable when confirming a monthly plan",
       modeChangeFailed: "Could not update autopilot mode.",
       modeChangeNetworkError: "Network error while updating autopilot mode.",
+      enableAutoPublishFailed: "Could not enable automatic publishing.",
+      enableAutoPublishNetworkError:
+        "Network error while enabling automatic publishing.",
+      enableAutoPublishSuccess:
+        "Automatic publishing is enabled for this website.",
       modes: {
         off: "Off",
         review_first: "Review first",

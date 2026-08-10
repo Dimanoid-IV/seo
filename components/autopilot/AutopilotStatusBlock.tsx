@@ -59,7 +59,6 @@ const MODE_OPTIONS: AutopilotModeClient[] = [
 export function AutopilotStatusBlock({
   status,
   settingsMode,
-  autopublishAvailable = false,
   websiteId,
   planItems,
   planPublishingMode = null,
@@ -79,17 +78,25 @@ export function AutopilotStatusBlock({
   const t = dict.autopilot.statusBlock;
   const [optimisticMode, setOptimisticMode] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
+  const [enablingLivePublish, setEnablingLivePublish] = useState(false);
   const [runningDue, setRunningDue] = useState(false);
   const [pausing, setPausing] = useState(false);
   const [pausedOverride, setPausedOverride] = useState<boolean | null>(null);
+  const [rolloutOverride, setRolloutOverride] = useState<boolean | null>(null);
   const [runMessage, setRunMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const mode = optimisticMode ?? settingsMode;
   const paused = pausedOverride ?? livePublishPaused;
+  const rolloutEnabled = rolloutOverride ?? livePublishRolloutEnabled;
   const publishingIntegrationConnected =
     wordpressConnected || customPublishingConnected;
   const autoPublishEnabledByPlan =
     planPublishingMode === "AUTO_PUBLISH" || mode === "autopublish";
+  const autoPublishActuallyActive =
+    autoPublishEnabledByPlan &&
+    rolloutEnabled &&
+    publishingIntegrationConnected &&
+    !paused;
 
   const dueCount = useMemo(
     () => (planItems?.items ? findDuePlanItems(planItems.items).length : 0),
@@ -123,10 +130,6 @@ export function AutopilotStatusBlock({
       status.planApprovalStatus === "partial");
 
   async function handleModeChange(nextMode: AutopilotModeClient) {
-    if (nextMode === "autopublish" && !autopublishAvailable) {
-      return;
-    }
-
     setSaving(true);
     setError(null);
 
@@ -185,6 +188,35 @@ export function AutopilotStatusBlock({
       setError(paused ? t.resumeNetworkError : t.pauseNetworkError);
     } finally {
       setPausing(false);
+    }
+  }
+
+  async function handleEnableLivePublish() {
+    if (!websiteId || !autoPublishEnabledByPlan) return;
+
+    setEnablingLivePublish(true);
+    setError(null);
+    setRunMessage(null);
+    try {
+      const response = await authFetch("/api/autopilot/enable-live-publish", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ websiteId }),
+      });
+      if (!response.ok) {
+        setError(
+          await parseApiErrorMessage(response, t.enableAutoPublishFailed)
+        );
+        return;
+      }
+
+      setRolloutOverride(true);
+      setRunMessage(t.enableAutoPublishSuccess);
+      onModeChange?.("autopublish");
+    } catch {
+      setError(t.enableAutoPublishNetworkError);
+    } finally {
+      setEnablingLivePublish(false);
     }
   }
 
@@ -300,18 +332,22 @@ export function AutopilotStatusBlock({
             {MODE_OPTIONS.map((option) => {
               const disabled =
                 option === "autopublish" &&
-                !autopublishAvailable &&
-                !autoPublishEnabledByPlan;
+                (!autoPublishEnabledByPlan ||
+                  !publishingIntegrationConnected ||
+                  paused);
               const active =
-                mode === option ||
-                (option === "autopublish" && autoPublishEnabledByPlan);
+                option === "autopublish"
+                  ? autoPublishActuallyActive
+                  : mode === option;
               return (
                 <button
                   key={option}
                   type="button"
-                  disabled={disabled || saving}
+                  disabled={disabled || saving || enablingLivePublish}
                   onClick={() => {
-                    if (option === "autopublish" && autoPublishEnabledByPlan) {
+                    if (option === "autopublish") {
+                      if (autoPublishActuallyActive) return;
+                      void handleEnableLivePublish();
                       return;
                     }
                     void handleModeChange(option);
@@ -325,11 +361,10 @@ export function AutopilotStatusBlock({
                   )}
                 >
                   {t.modes[option]}
-                  {option === "autopublish" && disabled ? ` (${t.comingSoon})` : ""}
                 </button>
               );
             })}
-            {saving ? (
+            {saving || enablingLivePublish ? (
               <Loader2 className="size-4 animate-spin self-center text-violet-500" />
             ) : null}
           </div>
@@ -441,8 +476,8 @@ export function AutopilotStatusBlock({
                   {t.pilotPlanApproved}
                 </li>
                 <li>
-                  {livePublishRolloutEnabled ? "✓" : "○"}{" "}
-                  {livePublishRolloutEnabled
+                  {rolloutEnabled ? "✓" : "○"}{" "}
+                  {rolloutEnabled
                     ? t.pilotAutoPublishEnabled
                     : t.pilotAutoPublishPending}
                 </li>
@@ -472,7 +507,7 @@ export function AutopilotStatusBlock({
           )}
 
           {livePublishKillSwitchEngaged &&
-          !livePublishRolloutEnabled &&
+          !rolloutEnabled &&
           planPublishingMode === "AUTO_PUBLISH" ? (
             <p className="text-xs leading-relaxed text-amber-800">
               {t.killSwitchPausedNote}

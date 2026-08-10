@@ -2059,6 +2059,11 @@ export const saasDictionary: SaasDictionary = {
       comingSoon: "Lülitatakse sisse kuuplaani kinnitamisel",
       modeChangeFailed: "Autopiloodi režiimi ei saanud uuendada.",
       modeChangeNetworkError: "Võrguviga režiimi uuendamisel.",
+      enableAutoPublishFailed: "Automaatset avaldamist ei saanud lubada.",
+      enableAutoPublishNetworkError:
+        "Võrguviga automaatse avaldamise lubamisel.",
+      enableAutoPublishSuccess:
+        "Automaatne avaldamine on selle veebisaidi jaoks lubatud.",
       modes: {
         off: "Väljas",
         review_first: "Esmalt ülevaatus",

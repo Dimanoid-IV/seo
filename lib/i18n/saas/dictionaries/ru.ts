@@ -2055,6 +2055,11 @@ export const saasDictionary: SaasDictionary = {
       comingSoon: "Включается при подтверждении месячного плана",
       modeChangeFailed: "Не удалось обновить режим автопилота.",
       modeChangeNetworkError: "Сетевая ошибка при обновлении режима.",
+      enableAutoPublishFailed: "Не удалось включить автоматическую публикацию.",
+      enableAutoPublishNetworkError:
+        "Сетевая ошибка при включении автоматической публикации.",
+      enableAutoPublishSuccess:
+        "Автоматическая публикация включена для этого сайта.",
       modes: {
         off: "Выкл.",
         review_first: "Режим проверки",
