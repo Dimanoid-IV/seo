@@ -17,6 +17,7 @@ export async function scheduleWebsiteActivation(input: {
   websiteId: string;
   websiteUrl: string;
   locale?: string;
+  source?: "website_add" | "subscription_started" | "subscription_sync";
 }): Promise<void> {
   await markActivationStarted({
     userId: input.userId,
@@ -29,7 +30,7 @@ export async function scheduleWebsiteActivation(input: {
     organizationId: input.organizationId,
     websiteId: input.websiteId,
     locale: input.locale,
-    properties: { source: "website_add" },
+    properties: { source: input.source ?? "website_add" },
   });
 
   after(async () => {

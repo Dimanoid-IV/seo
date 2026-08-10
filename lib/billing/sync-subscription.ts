@@ -81,6 +81,7 @@ export async function syncSubscriptionFromStripe(input: {
     organizationId: input.organizationId,
     userId: input.userId,
     stripeSubscription,
+    activationSource: "billing_sync",
   });
 
   safeLogInfo("billing.sync", "Subscription synced from Stripe", {

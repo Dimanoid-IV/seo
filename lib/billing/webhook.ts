@@ -22,6 +22,7 @@ import {
   type BillingPlanKey,
 } from "./plans";
 import { timelineAfterSubscriptionUpdated } from "./hooks";
+import { triggerPostSubscriptionActivation } from "./post-subscription-activation";
 
 export type StripeWebhookDiagnostic = {
   eventType: string;
@@ -157,6 +158,7 @@ export async function persistStripeSubscription(input: {
   organizationId: string;
   userId?: string | null;
   stripeSubscription: Stripe.Subscription;
+  activationSource?: "stripe_webhook" | "billing_sync";
 }): Promise<{
   planKey: BillingPlanKey | null;
   priceId?: string;
@@ -194,6 +196,20 @@ export async function persistStripeSubscription(input: {
 
   if (!updated) {
     throw new Error("Subscription row not found for organization");
+  }
+
+  try {
+    await triggerPostSubscriptionActivation({
+      organizationId: input.organizationId,
+      userId: input.userId,
+      subscriptionStatus: mapStripeStatus(input.stripeSubscription.status),
+      source: input.activationSource ?? "stripe_webhook",
+    });
+  } catch (error) {
+    safeLogWarn("billing.activation", "Post-subscription activation crashed", {
+      organizationId: input.organizationId,
+      message: error instanceof Error ? error.message : "activation_crashed",
+    });
   }
 
   if (input.userId && planKey) {
