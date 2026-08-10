@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { generateGeoPrompts } from "./geo-prompts";
 
 const prompts = generateGeoPrompts({
-  primaryKeyword: "popart.ee в подарок: как выбрать лучший вариант",
+  primaryKeyword: "Полное руководство: popart.ee в подарок: как выбрать лучший вариант",
   searchIntent: "COMMERCIAL",
   niche: "портрет по фото на холсте",
   businessName: "popart.ee",
@@ -22,6 +22,17 @@ assert.ok(
 assert.ok(
   prompts.every((item) => !/малого бизнеса/i.test(item.prompt)),
   "consumer gift prompts should not default to small-business wording"
+);
+
+const titlePrompts = generateGeoPrompts({
+  primaryKeyword: "Полное руководство: портрет по фото на холсте",
+  searchIntent: "COMMERCIAL",
+  locale: "ru",
+});
+
+assert.ok(
+  titlePrompts.every((item) => !/полное руководство/i.test(item.prompt)),
+  "article title wrappers must not leak into buyer prompts"
 );
 
 console.log("geo-prompts product-subject checks passed");

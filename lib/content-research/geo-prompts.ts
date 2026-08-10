@@ -30,6 +30,8 @@ function rotatePlatforms(count: number): GeoPlatform[] {
 function cleanSubject(value: string | null | undefined): string | null {
   if (!value?.trim()) return null;
   const cleaned = removeDomainTokens(value)
+    .replace(/^(полное\s+руководство|complete\s+guide|täielik\s+juhend)\s*[:—-]?\s*/i, "")
+    .replace(/^(где\s+заказать|where\s+to\s+order|kust\s+tellida)\s+/i, "")
     .replace(
       /\s*[:—-]\s*(как выбрать лучший вариант|how to choose the best option|kuidas valida parim lahendus)\.?$/i,
       ""

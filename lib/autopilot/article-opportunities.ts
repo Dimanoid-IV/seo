@@ -31,6 +31,8 @@ function normalizeSeed(value: string): string | null {
     .replace(/https?:\/\/\S+/gi, " ")
     .replace(/\b(?:www\.)?[a-z0-9][-a-z0-9]*(?:\.[a-z0-9][-a-z0-9]*)+\.[a-z]{2,}\b/gi, " ")
     .replace(/^(review|continue|finish|create|создать|продолжить|jätkake):\s*/i, "")
+    .replace(/^(полное\s+руководство|complete\s+guide|täielik\s+juhend)\s*[:—-]?\s*/i, "")
+    .replace(/^(где\s+заказать|where\s+to\s+order|kust\s+tellida)\s+/i, "")
     .replace(
       /\s*[:—-]\s*(как выбрать лучший вариант|how to choose the best option|kuidas valida parim lahendus)\.?$/i,
       ""

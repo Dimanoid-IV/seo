@@ -80,6 +80,8 @@ function isUnsafeAutopilotKeyword(value: string): boolean {
 
 function cleanKeywordCandidate(value: string): string | null {
   const cleaned = removeDomainTokens(value)
+    .replace(/^(полное\s+руководство|complete\s+guide|täielik\s+juhend)\s*[:—-]?\s*/i, "")
+    .replace(/^(где\s+заказать|where\s+to\s+order|kust\s+tellida)\s+/i, "")
     .replace(
       /\s*[:—-]\s*(как выбрать лучший вариант|how to choose the best option|kuidas valida parim lahendus)\.?$/i,
       ""
