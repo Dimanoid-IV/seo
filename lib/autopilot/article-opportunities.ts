@@ -1,7 +1,13 @@
 import { readBrandVoiceFromBusinessGoals } from "@/lib/brand-voice/business-goals";
 import { classifySearchIntent, keywordToBuyerQuestion } from "@/lib/content-research/intent";
 import { isUnsafeArticleTopic } from "@/lib/content-research/keywords";
-import { dedupeKeywords, extractKeywordCandidates, normalizeKeyword } from "@/lib/content-research/normalize";
+import {
+  containsDomainToken,
+  dedupeKeywords,
+  extractKeywordCandidates,
+  normalizeKeyword,
+  removeDomainTokens,
+} from "@/lib/content-research/normalize";
 
 import type { MonthlyAutopilotSourceData } from "./source-data";
 import type { AutopilotPlanItem } from "./plan-item-types";
@@ -20,25 +26,40 @@ function localeFromLanguage(language: string): "en" | "ru" | "et" {
   return "ru";
 }
 
-function readableBusinessName(data: MonthlyAutopilotSourceData): string {
-  const host = (() => {
-    try {
-      return new URL(data.website.url).hostname.replace(/^www\./, "");
-    } catch {
-      return data.website.url.replace(/^https?:\/\//, "").replace(/^www\./, "");
-    }
-  })();
-  return data.website.displayName?.trim() || data.website.niche?.trim() || host;
-}
-
 function normalizeSeed(value: string): string | null {
   const cleaned = value
+    .replace(/https?:\/\/\S+/gi, " ")
+    .replace(/\b(?:www\.)?[a-z0-9][-a-z0-9]*(?:\.[a-z0-9][-a-z0-9]*)+\.[a-z]{2,}\b/gi, " ")
     .replace(/^(review|continue|finish|create|создать|продолжить|jätkake):\s*/i, "")
+    .replace(
+      /\s*[:—-]\s*(как выбрать лучший вариант|how to choose the best option|kuidas valida parim lahendus)\.?$/i,
+      ""
+    )
     .replace(/\s+/g, " ")
     .trim();
   if (!cleaned || cleaned.length < 4 || cleaned.length > 90) return null;
+  if (containsDomainToken(cleaned)) return null;
   if (isUnsafeArticleTopic(cleaned)) return null;
   return cleaned;
+}
+
+function seedFromBrandVoice(data: MonthlyAutopilotSourceData): string | null {
+  const brandVoice = readBrandVoiceFromBusinessGoals(data.website.businessGoals);
+  const candidates = [
+    data.website.niche,
+    ...(brandVoice?.commonPhrases ?? []),
+    brandVoice?.ctaStyle,
+    brandVoice?.audience,
+    brandVoice?.manualNotes,
+  ];
+
+  for (const value of candidates) {
+    if (typeof value !== "string") continue;
+    const cleaned = normalizeSeed(removeDomainTokens(value));
+    if (cleaned) return cleaned;
+  }
+
+  return null;
 }
 
 function collectSeedKeywords(data: MonthlyAutopilotSourceData): string[] {
@@ -47,7 +68,6 @@ function collectSeedKeywords(data: MonthlyAutopilotSourceData): string[] {
 
   for (const value of [
     data.website.niche,
-    data.website.displayName,
     brandVoice?.audience,
     brandVoice?.ctaStyle,
     brandVoice?.manualNotes,
@@ -90,8 +110,13 @@ function collectSeedKeywords(data: MonthlyAutopilotSourceData): string[] {
 function expandBuyerKeywords(data: MonthlyAutopilotSourceData): string[] {
   const locale = localeFromLanguage(data.website.primaryLanguage);
   const baseSeeds = collectSeedKeywords(data);
-  const business = readableBusinessName(data);
-  const niche = normalizeSeed(data.website.niche ?? "") ?? normalizeSeed(business) ?? business;
+  const niche =
+    seedFromBrandVoice(data) ??
+    (locale === "ru"
+      ? "портрет по фото"
+      : locale === "et"
+        ? "fotost portree"
+        : "custom portrait");
   const brandVoice = readBrandVoiceFromBusinessGoals(data.website.businessGoals);
   const giftOriented = brandVoice?.sellingStyle === "gift-oriented";
 

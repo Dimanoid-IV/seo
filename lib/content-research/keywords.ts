@@ -1,9 +1,11 @@
 import type { SearchIntent } from "./types";
 import { classifySearchIntent } from "./intent";
 import {
+  containsDomainToken,
   dedupeKeywords,
   extractKeywordCandidates as extractKeywordsFromText,
   normalizeKeyword,
+  removeDomainTokens,
 } from "./normalize";
 
 export type KeywordCandidate = {
@@ -69,7 +71,31 @@ function isTechnicalInstructionPhrase(value: string): boolean {
 }
 
 function isUnsafeAutopilotKeyword(value: string): boolean {
-  return isAuditSymptomPhrase(value) || isTechnicalInstructionPhrase(value);
+  return (
+    containsDomainToken(value) ||
+    isAuditSymptomPhrase(value) ||
+    isTechnicalInstructionPhrase(value)
+  );
+}
+
+function cleanKeywordCandidate(value: string): string | null {
+  const cleaned = removeDomainTokens(value)
+    .replace(
+      /\s*[:—-]\s*(как выбрать лучший вариант|how to choose the best option|kuidas valida parim lahendus)\.?$/i,
+      ""
+    )
+    .replace(/\s+/g, " ")
+    .trim();
+
+  if (!cleaned || cleaned.length < 3) {
+    return null;
+  }
+
+  if (isUnsafeAutopilotKeyword(cleaned)) {
+    return null;
+  }
+
+  return cleaned;
 }
 
 function toCandidate(
@@ -78,10 +104,11 @@ function toCandidate(
   sourceLabel: string,
   context: { niche?: string | null; isLocalBusiness?: boolean }
 ): KeywordCandidate {
-  const searchIntent = classifySearchIntent(keyword, context);
+  const cleaned = cleanKeywordCandidate(keyword) ?? keyword.trim();
+  const searchIntent = classifySearchIntent(cleaned, context);
   return {
-    keyword,
-    normalized: normalizeKeyword(keyword),
+    keyword: cleaned,
+    normalized: normalizeKeyword(cleaned),
     source,
     sourceLabel,
     searchIntent,
@@ -103,39 +130,45 @@ export function extractKeywordCandidates(
   };
   const raw: KeywordCandidate[] = [];
 
+  function pushCandidate(
+    keyword: string,
+    source: KeywordCandidate["source"],
+    sourceLabel: string
+  ) {
+    const cleaned = cleanKeywordCandidate(keyword);
+    if (cleaned) {
+      raw.push(toCandidate(cleaned, source, sourceLabel, context));
+    }
+  }
+
   if (input.manualKeyword?.trim()) {
-    raw.push(
-      toCandidate(input.manualKeyword.trim(), "MANUAL", "Manual keyword", context)
-    );
+    pushCandidate(input.manualKeyword.trim(), "MANUAL", "Manual keyword");
   }
 
   if (input.manualTopic?.trim() && input.manualTopic !== input.manualKeyword) {
     for (const kw of extractKeywordsFromText(input.manualTopic)) {
-      raw.push(toCandidate(kw, "MANUAL", "Manual topic", context));
+      pushCandidate(kw, "MANUAL", "Manual topic");
     }
   }
 
   if (input.article?.targetKeyword?.trim()) {
-    raw.push(
-      toCandidate(
-        input.article.targetKeyword.trim(),
-        "ARTICLE",
-        "Existing article keyword",
-        context
-      )
+    pushCandidate(
+      input.article.targetKeyword.trim(),
+      "ARTICLE",
+      "Existing article keyword"
     );
   }
 
   if (input.article?.topic?.trim()) {
     for (const kw of extractKeywordsFromText(input.article.topic)) {
-      raw.push(toCandidate(kw, "ARTICLE", "Article topic", context));
+      pushCandidate(kw, "ARTICLE", "Article topic");
     }
   }
 
   if (input.task?.title) {
     for (const kw of extractKeywordsFromText(input.task.title)) {
       if (!isUnsafeAutopilotKeyword(kw)) {
-        raw.push(toCandidate(kw, "TASK", "SEO task", context));
+        pushCandidate(kw, "TASK", "SEO task");
       }
     }
   }
@@ -143,7 +176,7 @@ export function extractKeywordCandidates(
   if (input.task?.description) {
     for (const kw of extractKeywordsFromText(input.task.description)) {
       if (!isUnsafeAutopilotKeyword(kw)) {
-        raw.push(toCandidate(kw, "TASK", "Task description", context));
+        pushCandidate(kw, "TASK", "Task description");
       }
     }
   }
@@ -151,7 +184,7 @@ export function extractKeywordCandidates(
   if (input.planItemTitle) {
     for (const kw of extractKeywordsFromText(input.planItemTitle)) {
       if (!isUnsafeAutopilotKeyword(kw)) {
-        raw.push(toCandidate(kw, "PLAN_ITEM", "Autopilot plan item", context));
+        pushCandidate(kw, "PLAN_ITEM", "Autopilot plan item");
       }
     }
   }
@@ -159,7 +192,7 @@ export function extractKeywordCandidates(
   if (input.planItemReason) {
     for (const kw of extractKeywordsFromText(input.planItemReason)) {
       if (!isUnsafeAutopilotKeyword(kw)) {
-        raw.push(toCandidate(kw, "PLAN_ITEM", "Plan item reason", context));
+        pushCandidate(kw, "PLAN_ITEM", "Plan item reason");
       }
     }
   }
@@ -167,7 +200,7 @@ export function extractKeywordCandidates(
   for (const opp of input.opportunities ?? []) {
     if (opp.type === "CONTENT" || opp.type === "GSC") {
       for (const kw of extractKeywordsFromText(opp.description)) {
-        raw.push(toCandidate(kw, "OPPORTUNITY", opp.title, context));
+        pushCandidate(kw, "OPPORTUNITY", opp.title);
       }
     }
   }
@@ -175,20 +208,20 @@ export function extractKeywordCandidates(
   for (const finding of input.auditFindings ?? []) {
     for (const kw of extractKeywordsFromText(finding.title)) {
       if (!isUnsafeAutopilotKeyword(kw)) {
-        raw.push(toCandidate(kw, "AUDIT", "Audit finding", context));
+        pushCandidate(kw, "AUDIT", "Audit finding");
       }
     }
   }
 
   for (const title of input.gscInsightTitles ?? []) {
     for (const kw of extractKeywordsFromText(title)) {
-      raw.push(toCandidate(kw, "GSC", "Search Console insight", context));
+      pushCandidate(kw, "GSC", "Search Console insight");
     }
   }
 
   for (const title of input.focusAreaTitles ?? []) {
     for (const kw of extractKeywordsFromText(title)) {
-      raw.push(toCandidate(kw, "PLAN_ITEM", "Plan focus area", context));
+      pushCandidate(kw, "PLAN_ITEM", "Plan focus area");
     }
   }
 
@@ -210,6 +243,7 @@ export const __contentResearchKeywordInternals = {
   isAuditSymptomPhrase,
   isTechnicalInstructionPhrase,
   isUnsafeAutopilotKeyword,
+  cleanKeywordCandidate,
 };
 
 /** Audit symptom or technical instruction — not a valid article topic/keyword. */

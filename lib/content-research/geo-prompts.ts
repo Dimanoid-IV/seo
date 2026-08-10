@@ -1,5 +1,6 @@
 import type { GeoPlatform, GeoPrompt, SearchIntent } from "./types";
 import { isGeoRelevantIntent } from "./intent";
+import { containsDomainToken, removeDomainTokens } from "./normalize";
 
 type GeoPromptInput = {
   primaryKeyword: string;
@@ -26,6 +27,40 @@ function rotatePlatforms(count: number): GeoPlatform[] {
   return result;
 }
 
+function cleanSubject(value: string | null | undefined): string | null {
+  if (!value?.trim()) return null;
+  const cleaned = removeDomainTokens(value)
+    .replace(
+      /\s*[:—-]\s*(как выбрать лучший вариант|how to choose the best option|kuidas valida parim lahendus)\.?$/i,
+      ""
+    )
+    .replace(/\s+/g, " ")
+    .trim();
+  if (!cleaned || cleaned.length < 3 || containsDomainToken(cleaned)) {
+    return null;
+  }
+  return cleaned;
+}
+
+function resolvePromptSubject(input: {
+  primaryKeyword: string;
+  niche?: string | null;
+  locale: "en" | "ru" | "et";
+}): string {
+  const niche = cleanSubject(input.niche);
+  if (niche) return niche;
+  const keyword = cleanSubject(input.primaryKeyword);
+  if (keyword) return keyword;
+  if (input.locale === "ru") return "портрет по фото";
+  if (input.locale === "et") return "fotost portree";
+  return "custom portrait";
+}
+
+function resolveBrand(value: string | null | undefined): string | null {
+  const cleaned = cleanSubject(value);
+  return cleaned && !containsDomainToken(cleaned) ? cleaned : null;
+}
+
 /**
  * Generates 3–7 buyer-style GEO prompts (not live AI probing).
  */
@@ -39,106 +74,117 @@ export function generateGeoPrompts(input: GeoPromptInput): GeoPrompt[] {
     locale,
   } = input;
 
-  const service = niche?.replace(/_/g, " ").toLowerCase() ?? kw;
+  const subject = resolvePromptSubject({
+    primaryKeyword: kw,
+    niche: niche?.replace(/_/g, " "),
+    locale,
+  });
+  const keyword = cleanSubject(kw) ?? subject;
   const loc = location ?? (locale === "et" ? "Eestis" : locale === "ru" ? "в вашем регионе" : "in my area");
-  const brand = businessName ?? "a trusted local provider";
+  const brand = resolveBrand(businessName);
 
   const templates: Array<{ prompt: string; angle: string }> = [];
 
   if (locale === "ru") {
     templates.push(
       {
-        prompt: `Какой лучший ${service} для малого бизнеса ${loc}?`,
-        angle: "Рекомендация надёжного локального провайдера",
+        prompt: `Как выбрать ${subject} ${loc}?`,
+        angle: "Практичный ответ на покупательский выбор",
       },
       {
-        prompt: `Какую компанию выбрать для «${kw}»?`,
-        angle: "Сравнение провайдеров по запросу покупателя",
+        prompt: `Где заказать ${keyword} и на что смотреть перед оплатой?`,
+        angle: "Транзакционный intent без подмены продукта брендом",
       },
       {
-        prompt: `Сравните варианты ${service} для ${kw}.`,
+        prompt: `Сравните варианты ${subject}: цена, стиль, сроки и качество.`,
         angle: "Объективное сравнение категории",
       },
       {
-        prompt: `Что важно знать перед выбором ${service}?`,
+        prompt: `Что важно знать перед выбором ${subject}?`,
         angle: "Образовательный контент для AI-ответов",
       },
       {
-        prompt: `Кто может помочь с «${kw}» — ${brand} или альтернативы?`,
+        prompt: brand
+          ? `Подходит ли ${brand} для заказа «${keyword}» или лучше искать альтернативы?`
+          : `Как выбрать надёжного исполнителя для «${keyword}»?`,
         angle: "Упоминание бренда в контексте выбора",
       }
     );
 
     if (searchIntent === "LOCAL" || searchIntent === "COMMERCIAL") {
       templates.push({
-        prompt: `Где найти проверенного специалиста по «${kw}» ${loc}?`,
+        prompt: `Где найти проверенного исполнителя для «${keyword}» ${loc}?`,
         angle: "Локальный intent для AI-поиска",
       });
     }
 
     if (searchIntent === "COMPARISON") {
       templates.push({
-        prompt: `Какие компании лучше всего подходят для «${kw}» — сравнение?`,
+        prompt: `Какие варианты «${keyword}» лучше сравнить перед заказом?`,
         angle: "Comparison intent для Perplexity/Gemini",
       });
     }
   } else if (locale === "et") {
     templates.push(
       {
-        prompt: `Mis on parim ${service} väikeettevõttele ${loc}?`,
-        angle: "Usaldusväärse kohaliku pakkujaga soovitus",
+        prompt: `Kuidas valida ${subject} ${loc}?`,
+        angle: "Praktiline vastus ostja valikule",
       },
       {
-        prompt: `Millise ettevõtte valida „${kw}" jaoks?`,
-        angle: "Ostja päringu põhjal pakkujate võrdlus",
+        prompt: `Kust tellida „${keyword}" ja mida enne maksmist kontrollida?`,
+        angle: "Tehinguline intent ilma toote ja brändi segamini ajamiseta",
       },
       {
-        prompt: `Võrdle ${service} valikuid „${kw}" jaoks.`,
+        prompt: `Võrdle ${subject} valikuid: hind, stiil, tähtaeg ja kvaliteet.`,
         angle: "Objektiivne kategooria võrdlus",
       },
       {
-        prompt: `Mida peaks teadma enne ${service} valimist?`,
+        prompt: `Mida peaks teadma enne ${subject} valimist?`,
         angle: "Hariv sisu AI-vastuste jaoks",
       },
       {
-        prompt: `Kes saab aidata „${kw}" — ${brand} või alternatiivid?`,
+        prompt: brand
+          ? `Kas ${brand} sobib päringule „${keyword}" või tasub võrrelda alternatiive?`
+          : `Kuidas valida usaldusväärne tegija päringule „${keyword}"?`,
         angle: "Brändi mainimine valiku kontekstis",
       }
     );
 
     if (searchIntent === "LOCAL" || searchIntent === "COMMERCIAL") {
       templates.push({
-        prompt: `Kust leida usaldusväärset spetsialisti „${kw}" jaoks ${loc}?`,
+        prompt: `Kust leida usaldusväärset tegijat päringule „${keyword}" ${loc}?`,
         angle: "Kohalik intent AI-otsingus",
       });
     }
   } else {
     templates.push(
       {
-        prompt: `What is the best ${service} for a small business ${loc}?`,
-        angle: "Recommend a trusted local provider",
+        prompt: `How do I choose a ${subject} ${loc}?`,
+        angle: "Practical buyer-choice answer",
       },
       {
-        prompt: `Which company should I choose for "${kw}"?`,
-        angle: "Compare providers for the buyer query",
+        prompt: `Where should I order "${keyword}" and what should I check first?`,
+        angle: "Transactional intent without confusing brand and product",
       },
       {
-        prompt: `Compare ${service} options for "${kw}".`,
+        prompt: `Compare ${subject} options: price, style, timing, and quality.`,
         angle: "Objective category comparison",
       },
       {
-        prompt: `What should I know before choosing a ${service} provider?`,
+        prompt: `What should I know before choosing a ${subject} provider?`,
         angle: "Educational content for AI answers",
       },
       {
-        prompt: `Who can help with "${kw}" — ${brand} or alternatives?`,
+        prompt: brand
+          ? `Is ${brand} a good choice for "${keyword}", or should I compare alternatives?`
+          : `How do I choose a reliable provider for "${keyword}"?`,
         angle: "Brand mention in decision context",
       }
     );
 
     if (searchIntent === "LOCAL" || searchIntent === "COMMERCIAL") {
       templates.push({
-        prompt: `Where can I find a reliable specialist for "${kw}" ${loc}?`,
+        prompt: `Where can I find a reliable provider for "${keyword}" ${loc}?`,
         angle: "Local intent for AI search",
       });
     }

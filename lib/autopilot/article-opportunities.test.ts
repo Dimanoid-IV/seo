@@ -120,6 +120,10 @@ assert.ok(
   "strategic topics should use buyer/business language"
 );
 assert.ok(
+  articleItems.every((item) => !/popart\.ee/i.test(item.title)),
+  "website domains must not become article products"
+);
+assert.ok(
   articleItems.every((item) => /конкурент|GEO|AI|buyer query/i.test(item.reason)),
   "article reasons should explain competitor/GEO/research basis"
 );

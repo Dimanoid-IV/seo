@@ -106,15 +106,28 @@ export function extractDomainFromUrl(url: string): string | null {
 export function extractDomainsFromText(text: string): string[] {
   const domains: string[] = [];
   const urlPattern =
-    /(?:https?:\/\/)?(?:www\.)?([a-z0-9][-a-z0-9]*(?:\.[a-z0-9][-a-z0-9]*)+\.[a-z]{2,})/gi;
+    /(?:https?:\/\/)?(?:www\.)?([a-z0-9][-a-z0-9]*(?:\.[a-z0-9][-a-z0-9]*)+)/gi;
 
   let match: RegExpExecArray | null;
   while ((match = urlPattern.exec(text)) !== null) {
     const domain = match[1]?.toLowerCase();
-    if (domain && !domains.includes(domain)) {
+    const tld = domain?.split(".").pop() ?? "";
+    if (domain && tld.length >= 2 && !domains.includes(domain)) {
       domains.push(domain);
     }
   }
 
   return domains;
+}
+
+export function containsDomainToken(text: string): boolean {
+  return extractDomainsFromText(text).length > 0;
+}
+
+export function removeDomainTokens(text: string): string {
+  return text
+    .replace(/https?:\/\/\S+/gi, " ")
+    .replace(/\b(?:www\.)?[a-z0-9][-a-z0-9]*(?:\.[a-z0-9][-a-z0-9]*)+\b/gi, " ")
+    .replace(/\s+/g, " ")
+    .trim();
 }
