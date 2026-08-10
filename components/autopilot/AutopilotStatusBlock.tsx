@@ -88,6 +88,8 @@ export function AutopilotStatusBlock({
   const paused = pausedOverride ?? livePublishPaused;
   const publishingIntegrationConnected =
     wordpressConnected || customPublishingConnected;
+  const autoPublishEnabledByPlan =
+    planPublishingMode === "AUTO_PUBLISH" || mode === "autopublish";
 
   const dueCount = useMemo(
     () => (planItems?.items ? findDuePlanItems(planItems.items).length : 0),
@@ -100,6 +102,7 @@ export function AutopilotStatusBlock({
       .filter(
         (item) =>
           item.type === "ARTICLE" &&
+          ["approved", "scheduled", "prepared"].includes(item.status) &&
           item.status !== "published" &&
           item.status !== "executed" &&
           item.status !== "skipped" &&
@@ -296,14 +299,23 @@ export function AutopilotStatusBlock({
           <div className="flex flex-wrap gap-2">
             {MODE_OPTIONS.map((option) => {
               const disabled =
-                option === "autopublish" && !autopublishAvailable;
-              const active = mode === option;
+                option === "autopublish" &&
+                !autopublishAvailable &&
+                !autoPublishEnabledByPlan;
+              const active =
+                mode === option ||
+                (option === "autopublish" && autoPublishEnabledByPlan);
               return (
                 <button
                   key={option}
                   type="button"
                   disabled={disabled || saving}
-                  onClick={() => void handleModeChange(option)}
+                  onClick={() => {
+                    if (option === "autopublish" && autoPublishEnabledByPlan) {
+                      return;
+                    }
+                    void handleModeChange(option);
+                  }}
                   className={cn(
                     "rounded-xl border px-3 py-2 text-xs font-medium transition-colors sm:text-sm",
                     active
