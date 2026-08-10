@@ -137,7 +137,7 @@ export function SaasPricingSection({
             {pricing.startFree}
           </ButtonLink>
           <Link
-            href="/login"
+            href="/register"
             className={
               isMarketing
                 ? "inline-flex items-center rounded-xl border border-slate-300 bg-white px-6 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50"

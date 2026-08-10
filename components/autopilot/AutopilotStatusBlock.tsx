@@ -116,12 +116,12 @@ export function AutopilotStatusBlock({
           item.status !== "published" &&
           item.status !== "executed" &&
           item.status !== "skipped" &&
-          item.scheduledFor
+          (item.plannedPublishAt || item.scheduledFor)
       )
       .sort(
         (a, b) =>
-          new Date(a.scheduledFor!).getTime() -
-          new Date(b.scheduledFor!).getTime()
+          new Date(a.plannedPublishAt ?? a.scheduledFor!).getTime() -
+          new Date(b.plannedPublishAt ?? b.scheduledFor!).getTime()
       );
     return candidates[0] ?? null;
   }, [planItems, planPublishingMode]);
@@ -414,13 +414,16 @@ export function AutopilotStatusBlock({
               <p className="text-[10px] font-semibold uppercase tracking-wide text-slate-500">
                 {t.nextLivePublishLabel}
               </p>
-              {nextLivePublish?.scheduledFor ? (
+              {nextLivePublish?.plannedPublishAt || nextLivePublish?.scheduledFor ? (
                 <div className="mt-1">
                   <p className="text-sm font-medium text-slate-900">
                     {nextLivePublish.title}
                   </p>
                   <p className="text-xs text-slate-500">
-                    {formatScheduledDate(nextLivePublish.scheduledFor, locale)}
+                    {formatScheduledDate(
+                      nextLivePublish.plannedPublishAt ?? nextLivePublish.scheduledFor!,
+                      locale
+                    )}
                   </p>
                 </div>
               ) : (
@@ -490,8 +493,11 @@ export function AutopilotStatusBlock({
                 </li>
                 <li>
                   ○ {t.pilotNextPublish}
-                  {nextLivePublish?.scheduledFor
-                    ? `: ${formatScheduledDate(nextLivePublish.scheduledFor, locale)}`
+                  {nextLivePublish?.plannedPublishAt || nextLivePublish?.scheduledFor
+                    ? `: ${formatScheduledDate(
+                        nextLivePublish.plannedPublishAt ?? nextLivePublish.scheduledFor!,
+                        locale
+                      )}`
                     : ""}
                 </li>
                 <li>✓ {t.pilotPauseReady}</li>

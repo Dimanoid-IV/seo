@@ -1,6 +1,7 @@
 import type { AutopilotStatusSnapshot } from "@/lib/autopilot/autopilot-status";
 import type { AutopilotAiVisibilitySnapshot } from "@/lib/autopilot/ai-visibility-snapshot";
 import type { CommunityVisibilitySnapshot } from "@/lib/autopilot/community-visibility";
+import type { AutopilotPlanItemsDocument } from "@/lib/autopilot/plan-item-types";
 
 export type ControlCenterOverallStatus =
   | "READY"
@@ -122,6 +123,11 @@ export type AutopilotControlCenterViewModel = {
   recentActivity: ControlCenterRecentActivity[];
   integrations: ControlCenterIntegration[];
   autopilotStatus?: AutopilotStatusSnapshot;
+  autopilotPlanItems?: AutopilotPlanItemsDocument | null;
+  planPublishingMode?: string | null;
+  wordpressConnected?: boolean;
+  customPublishingConnected?: boolean;
+  livePublishRolloutEnabled?: boolean;
   autopilotSettings?: {
     mode: string;
     websiteId: string;

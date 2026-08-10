@@ -12,14 +12,14 @@ type AuditPageContentProps = {
 };
 
 export function AuditPageContent({ initialUrl = "" }: AuditPageContentProps) {
-  const { dict } = useSaasTranslations();
+  const { dict, locale } = useSaasTranslations();
   const a = dict.publicAudit;
 
   return (
     <main className="marketing-page min-h-screen">
       <div className="border-b border-slate-200/80 bg-gradient-to-b from-[#c9bfff]/20/80 to-white">
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-          <Link href="/en" className="flex items-center gap-2.5 font-bold text-slate-900">
+          <Link href={`/${locale}`} className="flex items-center gap-2.5 font-bold text-slate-900">
             <div className="flex size-9 items-center justify-center rounded-xl bg-[#8169ff]">
               <Sparkles className="size-4 text-white" />
             </div>

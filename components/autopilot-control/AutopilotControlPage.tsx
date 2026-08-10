@@ -235,8 +235,17 @@ export function AutopilotControlPage() {
             }
             autopublishAvailable={data.autopilotSettings.autopublishAvailable}
             websiteId={data.website.id}
+            planItems={data.autopilotPlanItems}
+            planPublishingMode={data.planPublishingMode}
             livePublishPaused={Boolean(
               data.autopilotSettings.livePublishPaused
+            )}
+            livePublishRolloutEnabled={Boolean(
+              data.livePublishRolloutEnabled
+            )}
+            wordpressConnected={Boolean(data.wordpressConnected)}
+            customPublishingConnected={Boolean(
+              data.customPublishingConnected
             )}
             onModeChange={() => void loadControlCenter()}
             onPauseChange={() => void loadControlCenter()}

@@ -1,7 +1,10 @@
+"use client";
+
 import Link from "next/link";
 import { Sparkles } from "lucide-react";
 
 import { cn } from "@/lib/utils";
+import { useSaasTranslations } from "@/lib/i18n/saas/SaasLocaleProvider";
 
 type AuthCardProps = {
   title: string;
@@ -18,11 +21,13 @@ export function AuthCard({
   footer,
   className,
 }: AuthCardProps) {
+  const { locale } = useSaasTranslations();
+
   return (
     <div className={cn("w-full max-w-md", className)}>
       <div className="mb-8 flex flex-col items-center text-center">
         <Link
-          href="/en"
+          href={`/${locale}`}
           className="mb-6 flex items-center gap-2 text-slate-600 transition-colors hover:text-slate-900"
         >
           <div className="flex size-10 items-center justify-center rounded-xl bg-[#8169ff]">

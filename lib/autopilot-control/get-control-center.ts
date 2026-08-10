@@ -360,8 +360,7 @@ export async function getAutopilotControlCenter(input: {
   );
   const publishingConnected = wordpressConnected || customPublishingConnected;
   const wordpressError =
-    wpConnection?.status === WordPressConnectionStatus.ERROR ||
-    wpConnection?.status === WordPressConnectionStatus.DISCONNECTED;
+    wpConnection?.status === WordPressConnectionStatus.ERROR;
 
   const highPriorityTasks = tasks.filter(
     (t) =>
@@ -671,6 +670,11 @@ export async function getAutopilotControlCenter(input: {
     recentActivity,
     integrations,
     autopilotStatus,
+    autopilotPlanItems: planItemsDocument,
+    planPublishingMode: monthlyPlan?.publishingMode ?? null,
+    wordpressConnected,
+    customPublishingConnected,
+    livePublishRolloutEnabled: autopilotSettings.livePublishRolloutEnabled,
     autopilotSettings: {
       mode: autopilotModeToClient(autopilotSettings.mode),
       websiteId: autopilotSettings.websiteId,
