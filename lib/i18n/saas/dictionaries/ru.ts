@@ -168,6 +168,12 @@ export const saasDictionary: SaasDictionary = {
     checkSiteNow: "Проверить сайт сейчас",
     checkingSite: "Проверяем сайт…",
     reLogin: "Войти заново",
+    setupHelp: {
+      title: "Нужна помощь с настройкой RankBoost?",
+      description:
+        "Если не хочется разбираться с WordPress, custom-сайтом, Search Console или автопубликацией, отправьте запрос — мы поможем подключить всё безопасно.",
+      cta: "Запросить помощь",
+    },
     status: {
       setup: {
         label: "Настройка в процессе",

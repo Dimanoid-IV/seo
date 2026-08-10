@@ -168,6 +168,12 @@ export const saasDictionary: SaasDictionary = {
     checkSiteNow: "Kontrolli saiti kohe",
     checkingSite: "Kontrollime saiti…",
     reLogin: "Logi uuesti sisse",
+    setupHelp: {
+      title: "Vajate abi RankBoosti seadistamisel?",
+      description:
+        "Kui te ei soovi WordPressi, kohandatud saiti, Search Console'it või automaatset avaldamist ise seadistada, saatke päring ja aitame selle turvaliselt ühendada.",
+      cta: "Küsi seadistusabi",
+    },
     status: {
       setup: {
         label: "Seadistamine pooleli",

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Globe } from "lucide-react";
+import { Globe, LifeBuoy } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 
@@ -18,7 +18,6 @@ import { ReadyToPublishCard } from "@/components/dashboard/ReadyToPublishCard";
 import { ActivationProgressCard } from "@/components/dashboard/ActivationProgressCard";
 import { NextBestActionCard } from "@/components/dashboard/NextBestActionCard";
 import { PreparedForYouCard } from "@/components/dashboard/PreparedForYouCard";
-import { ReviewQueueCard } from "@/components/dashboard/ReviewQueueCard";
 import { RecentActivityCompact } from "@/components/dashboard/RecentActivityCompact";
 import { useDashboardMode } from "@/components/dashboard/DashboardModeProvider";
 import { useDashboardOverview } from "@/components/dashboard/DashboardOverviewProvider";
@@ -33,7 +32,7 @@ const DASHBOARD_MAIN =
   "app-content mx-auto w-full max-w-6xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8";
 
 export function SimpleDashboardPage() {
-  const { dict } = useSaasTranslations();
+  const { dict, locale } = useSaasTranslations();
   const d = dict.dashboard;
   const modeCopy = dict.dashboardMode;
   const { isSimple } = useDashboardMode();
@@ -196,6 +195,7 @@ export function SimpleDashboardPage() {
     (nextAction?.apiAction === "generate_monthly_plan"
       ? "/app/autopilot"
       : undefined);
+  const setupHelpHref = `/${locale}/contact?service=rankboost_setup&source=dashboard_simple#contact-form`;
 
   return (
     <main className={DASHBOARD_MAIN}>
@@ -255,12 +255,36 @@ export function SimpleDashboardPage() {
             </section>
           ) : null}
 
-          {simple.hasAudit && simple.readyToPublish ? (
+          <section className="grid gap-5 sm:grid-cols-3">
+            <DashboardMetricCard
+              title={d.growthScore}
+              value={growthScoreDisplay}
+              subtitle={simple.metrics.growthScoreLabel}
+              accent="emerald"
+            />
+            <DashboardMetricCard
+              title={d.opportunities}
+              value={opportunitiesDisplay}
+              subtitle={d.opportunitiesSubtitle}
+              accent="cyan"
+            />
+            <DashboardMetricCard
+              title={d.needsReview}
+              value={reviewDisplay}
+              subtitle={d.needsReviewSubtitle}
+              accent="amber"
+            />
+          </section>
+
+          {simple.hasAudit && simple.readyToPublish && !isSimple ? (
             <ReadyToPublishCard article={simple.readyToPublish} />
           ) : null}
 
           {simple.hasAudit && simple.monthlyPlanPreview ? (
-            <MonthlyPlanPreviewCard plan={simple.monthlyPlanPreview} />
+            <MonthlyPlanPreviewCard
+              plan={simple.monthlyPlanPreview}
+              compact={isSimple}
+            />
           ) : null}
 
           {simple.hasAudit && !simple.monthlyPlanPreview ? (
@@ -317,17 +341,17 @@ export function SimpleDashboardPage() {
             </section>
           ) : null}
 
-          {simple.hasAudit && simple.aiVisibility ? (
+          {simple.hasAudit && simple.aiVisibility && !isSimple ? (
             <AiVisibilityDashboardCard snapshot={simple.aiVisibility} />
           ) : null}
 
-          {simple.hasAudit && simple.communityVisibility ? (
+          {simple.hasAudit && simple.communityVisibility && !isSimple ? (
             <CommunityVisibilityDashboardCard
               snapshot={simple.communityVisibility}
             />
           ) : null}
 
-          {simple.hasAudit && simple.monthlyAutopilotActive ? (
+          {simple.hasAudit && simple.monthlyAutopilotActive && !isSimple ? (
             <MonthlyAutopilotActiveCard
               nextArticleDateLabel={
                 simple.monthlyAutopilotActive.nextArticleDateLabel
@@ -348,7 +372,10 @@ export function SimpleDashboardPage() {
             />
           ) : null}
 
-          {simple.hasAudit && nextAction && !simple.monthlyAutopilotActive ? (
+          {simple.hasAudit &&
+          nextAction &&
+          !simple.monthlyAutopilotActive &&
+          !isSimple ? (
             <NextBestActionCard
               title={nextAction.title}
               description={nextAction.description}
@@ -367,29 +394,30 @@ export function SimpleDashboardPage() {
             </div>
           ) : null}
 
-          <section className="grid gap-5 sm:grid-cols-3">
-            <DashboardMetricCard
-              title={d.growthScore}
-              value={growthScoreDisplay}
-              subtitle={simple.metrics.growthScoreLabel}
-              accent="emerald"
-            />
-            <DashboardMetricCard
-              title={d.opportunities}
-              value={opportunitiesDisplay}
-              subtitle={d.opportunitiesSubtitle}
-              accent="cyan"
-            />
-            <DashboardMetricCard
-              title={d.needsReview}
-              value={reviewDisplay}
-              subtitle={d.needsReviewSubtitle}
-              accent="amber"
-            />
-          </section>
-
           {isSimple ? (
-            <ReviewQueueCard count={simple.metrics.reviewQueueCount} />
+            <section className="rounded-2xl border border-slate-200 bg-white/90 p-5 shadow-sm sm:p-6">
+              <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                <div className="flex items-start gap-3">
+                  <span className="inline-flex size-10 shrink-0 items-center justify-center rounded-xl bg-[#c9bfff]/30 text-[#6d4ff0]">
+                    <LifeBuoy className="size-5" />
+                  </span>
+                  <div>
+                    <h2 className="text-base font-semibold text-slate-900">
+                      {d.setupHelp.title}
+                    </h2>
+                    <p className="mt-1 max-w-2xl text-sm leading-relaxed text-slate-600">
+                      {d.setupHelp.description}
+                    </p>
+                  </div>
+                </div>
+                <Link
+                  href={setupHelpHref}
+                  className="inline-flex shrink-0 items-center justify-center rounded-lg border border-[#c9bfff]/60 bg-[#c9bfff]/20 px-4 py-2.5 text-sm font-semibold text-[#6d4ff0] transition hover:bg-[#c9bfff]/35"
+                >
+                  {d.setupHelp.cta}
+                </Link>
+              </div>
+            </section>
           ) : null}
 
         {!isSimple ? <FindingsCard findings={simple.findings} /> : null}

@@ -139,6 +139,11 @@ export type SaasDictionary = {
     checkSiteNow: string;
     checkingSite: string;
     reLogin: string;
+    setupHelp: {
+      title: string;
+      description: string;
+      cta: string;
+    };
     status: {
       setup: { label: string; description: string };
       noData: { label: string; description: string };

@@ -15,6 +15,7 @@ import type { SimpleDashboardViewModel } from "@/lib/dashboard/simple-overview";
 
 type MonthlyPlanPreviewCardProps = {
   plan: NonNullable<SimpleDashboardViewModel["monthlyPlanPreview"]>;
+  compact?: boolean;
 };
 
 function formatShortDate(value: string | null | undefined, locale: string) {
@@ -27,7 +28,10 @@ function formatShortDate(value: string | null | undefined, locale: string) {
   );
 }
 
-export function MonthlyPlanPreviewCard({ plan }: MonthlyPlanPreviewCardProps) {
+export function MonthlyPlanPreviewCard({
+  plan,
+  compact = false,
+}: MonthlyPlanPreviewCardProps) {
   const { dict, locale } = useSaasTranslations();
   const t = dict.dashboard.monthlyPlanPreview;
   const researchLabels = dict.contentResearch;
@@ -56,10 +60,12 @@ export function MonthlyPlanPreviewCard({ plan }: MonthlyPlanPreviewCardProps) {
             <span className="rounded-full border border-[#c9bfff]/55 bg-white/80 px-2.5 py-1 text-[#6d4ff0]">
               {t.topicCount(plan.articleTopics.length)}
             </span>
-            <span className="rounded-full border border-amber-200 bg-white/80 px-2.5 py-1 text-amber-800">
-              {t.fixCount(plan.fixItems.length)}
-            </span>
-            {hiddenItemsCount > 0 ? (
+            {!compact ? (
+              <span className="rounded-full border border-amber-200 bg-white/80 px-2.5 py-1 text-amber-800">
+                {t.fixCount(plan.fixItems.length)}
+              </span>
+            ) : null}
+            {!compact && hiddenItemsCount > 0 ? (
               <span className="rounded-full border border-slate-200 bg-white/80 px-2.5 py-1 text-slate-600">
                 {t.moreItems(hiddenItemsCount)}
               </span>
@@ -85,13 +91,15 @@ export function MonthlyPlanPreviewCard({ plan }: MonthlyPlanPreviewCardProps) {
               {t.articlePlanDescription}
             </p>
           </div>
-          <Link
-            href={plan.href}
-            className="inline-flex shrink-0 items-center justify-center gap-1.5 rounded-lg border border-[#c9bfff]/55 bg-[#c9bfff]/20 px-3 py-2 text-xs font-semibold text-[#6d4ff0] transition hover:bg-[#c9bfff]/35"
-          >
-            {plan.isApproved ? t.openPlan : t.confirmPlan}
-            <ArrowRight className="size-3.5" />
-          </Link>
+          {!compact ? (
+            <Link
+              href={plan.href}
+              className="inline-flex shrink-0 items-center justify-center gap-1.5 rounded-lg border border-[#c9bfff]/55 bg-[#c9bfff]/20 px-3 py-2 text-xs font-semibold text-[#6d4ff0] transition hover:bg-[#c9bfff]/35"
+            >
+              {plan.isApproved ? t.openPlan : t.confirmPlan}
+              <ArrowRight className="size-3.5" />
+            </Link>
+          ) : null}
         </div>
 
         {hasArticles ? (
@@ -158,6 +166,7 @@ export function MonthlyPlanPreviewCard({ plan }: MonthlyPlanPreviewCardProps) {
           <p className="mt-3 text-sm text-slate-500">{t.noArticles}</p>
         )}
 
+        {!compact ? (
         <div className="mt-4 flex flex-col gap-3 rounded-xl border border-emerald-200 bg-emerald-50/70 px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <p className="text-sm font-semibold text-emerald-950">
@@ -175,8 +184,10 @@ export function MonthlyPlanPreviewCard({ plan }: MonthlyPlanPreviewCardProps) {
             {t.setupPublishing}
           </Link>
         </div>
+        ) : null}
       </div>
 
+      {!compact ? (
       <div className="mt-4 rounded-xl border border-slate-200 bg-white/70 p-4">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
           <div>
@@ -214,6 +225,7 @@ export function MonthlyPlanPreviewCard({ plan }: MonthlyPlanPreviewCardProps) {
           <p className="mt-3 text-sm text-slate-500">{t.noFixes}</p>
         )}
       </div>
+      ) : null}
 
       <p className="mt-4 text-xs leading-relaxed text-slate-500">
         {plan.isApproved ? t.approvedNote : t.draftNote}
