@@ -799,15 +799,10 @@ export const saasDictionary: SaasDictionary = {
     gscSelectPropertyCta: "Vali Search Console'i sait",
     gscPartialBadge: "Vali sait",
     refreshData: "Värskenda andmeid",
-    manageConnection: "Halda ühendust",
-    disconnectLater: "Ühenduse katkestamine tuleb hiljem.",
     addWebsiteToConnect: "Lisage veebisait ühendamise alustamiseks.",
     googleRedirect:
       "Teid suunatakse Google'isse ainult lugemisõiguse kinnitamiseks.",
-    continueConnect: "Jätka ühendamist",
     customSetupCta: "Seadista kohandatud sait",
-    previewOnly:
-      "OAuth/API ühendus on praegu eelvaate režiimis — uurige võimalusi.",
     connectedSince: "Ühendatud",
     metrics28Days: "Mõõdikud (28 päeva)",
     noMetricsYet:
@@ -832,7 +827,6 @@ export const saasDictionary: SaasDictionary = {
     gscSyncFailed: "Search Console'i andmeid ei õnnestunud värskendada",
     gscSyncNetworkError: "Võrguviga Search Console'i andmete värskendamisel",
     searchConsoleSite: "Search Console'i sait:",
-    oauthApiSoonTitle: "OAuth/API ühendus tuleb järgmises versioonis",
     googleAnalytics: {
       title: "Google Analytics 4",
       description:
@@ -1129,7 +1123,7 @@ export const saasDictionary: SaasDictionary = {
       createDraftsBullet: "Mustandid on toetatud",
       livePublishBullet:
         "Autopublish pärast kuuplaani kinnitamist",
-      updatesComingBullet: "Olemasolevate lehtede uuendused tulevad hiljem",
+      existingPageUpdatesBullet: "Olemasolevate lehtede metadata ja siselinkide uuendused",
       manualPublishBullet: "Käsitsi avaldamine pärast ülevaatust",
       manualPublishNote:
         "Mustandid töötavad alati. Autopublish ainult kinnitatud Autopublish plaanidele Autopublish-režiimis.",

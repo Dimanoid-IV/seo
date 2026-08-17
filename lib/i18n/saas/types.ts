@@ -625,13 +625,9 @@ export type SaasDictionary = {
     gscSelectPropertyCta: string;
     gscPartialBadge: string;
     refreshData: string;
-    manageConnection: string;
-    disconnectLater: string;
     addWebsiteToConnect: string;
     googleRedirect: string;
-    continueConnect: string;
     customSetupCta: string;
-    previewOnly: string;
     connectedSince: string;
     metrics28Days: string;
     noMetricsYet: string;
@@ -652,7 +648,6 @@ export type SaasDictionary = {
     gscSyncFailed: string;
     gscSyncNetworkError: string;
     searchConsoleSite: string;
-    oauthApiSoonTitle: string;
     googleAnalytics: {
       title: string;
       description: string;
@@ -897,7 +892,7 @@ export type SaasDictionary = {
       disconnected: string;
       createDraftsBullet: string;
       livePublishBullet: string;
-      updatesComingBullet: string;
+      existingPageUpdatesBullet: string;
       manualPublishBullet: string;
       manualPublishNote: string;
       livePublishSupportedNote: string;

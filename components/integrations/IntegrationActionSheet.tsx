@@ -494,44 +494,29 @@ function IntegrationActionSheetContent({
         !isWix &&
         !isSquarespace &&
         !isGhost &&
-        !isNoCodeAutomation ? (
+        !isNoCodeAutomation &&
+        (!isGsc || !isConnected) ? (
           <SheetFooter className="border-t border-slate-200">
             {isGsc ? (
-              isConnected ? (
-                <>
-                  <Button
-                    type="button"
-                    disabled
-                    variant="outline"
-                    className="w-full border border-slate-300 bg-white/5 text-slate-600"
-                  >
-                    {i.manageConnection}
-                  </Button>
-                  <p className="text-center text-xs text-slate-500">
-                    {i.disconnectLater}
+              <>
+                <Button
+                  type="button"
+                  onClick={handleConnectGsc}
+                  disabled={!canConnectGsc}
+                  className="w-full bg-[#8169ff] text-white hover:bg-[#6d4ff0]"
+                >
+                  {i.connectGscButton}
+                </Button>
+                {!websiteId ? (
+                  <p className="text-center text-xs text-amber-400/90">
+                    {i.addWebsiteToConnect}
                   </p>
-                </>
-              ) : (
-                <>
-                  <Button
-                    type="button"
-                    onClick={handleConnectGsc}
-                    disabled={!canConnectGsc}
-                    className="w-full bg-[#8169ff] text-white hover:bg-[#6d4ff0]"
-                  >
-                    {i.connectGscButton}
-                  </Button>
-                  {!websiteId ? (
-                    <p className="text-center text-xs text-amber-400/90">
-                      {i.addWebsiteToConnect}
-                    </p>
-                  ) : (
-                    <p className="text-center text-xs text-slate-500">
-                      {i.googleRedirect}
-                    </p>
-                  )}
-                </>
-              )
+                ) : (
+                  <p className="text-center text-xs text-slate-500">
+                    {i.googleRedirect}
+                  </p>
+                )}
+              </>
             ) : isCustomWebhook ? (
               <>
                 <Button
@@ -561,33 +546,8 @@ function IntegrationActionSheetContent({
                 >
                   {i.hermesPlatformManaged}
                 </Button>
-                <p className="text-center text-xs text-slate-500">
-                  {i.previewOnly}
-                </p>
               </>
-            ) : (
-              <>
-                <Button
-                  type="button"
-                  disabled
-                  title={i.oauthApiSoonTitle}
-                  className={cn(
-                    "w-full",
-                    isConnected
-                      ? "border border-slate-300 bg-white/5 text-slate-600"
-                      : "bg-[#8169ff] text-white opacity-80"
-                  )}
-                  variant={isConnected ? "outline" : "default"}
-                >
-                  {isConnected
-                    ? i.manageConnection
-                    : i.continueConnect}
-                </Button>
-                <p className="text-center text-xs text-slate-500">
-                  {i.previewOnly}
-                </p>
-              </>
-            )}
+            ) : null}
           </SheetFooter>
         ) : null}
     </SheetContent>

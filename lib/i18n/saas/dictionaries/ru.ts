@@ -799,15 +799,10 @@ export const saasDictionary: SaasDictionary = {
     gscSelectPropertyCta: "Выбрать сайт Search Console",
     gscPartialBadge: "Нужно выбрать сайт",
     refreshData: "Обновить данные",
-    manageConnection: "Управлять подключением",
-    disconnectLater: "Отключение появится позже.",
     addWebsiteToConnect: "Добавьте сайт, чтобы начать подключение.",
     googleRedirect:
       "Вы будете перенаправлены в Google для подтверждения доступа только на чтение.",
-    continueConnect: "Продолжить подключение",
     customSetupCta: "Настроить свой сайт",
-    previewOnly:
-      "OAuth/API подключение пока в режиме предпросмотра — изучите возможности.",
     connectedSince: "Подключено",
     metrics28Days: "Метрики за 28 дней",
     noMetricsYet:
@@ -832,7 +827,6 @@ export const saasDictionary: SaasDictionary = {
     gscSyncFailed: "Не удалось обновить данные Search Console",
     gscSyncNetworkError: "Сетевая ошибка при обновлении данных Search Console",
     searchConsoleSite: "Сайт Search Console:",
-    oauthApiSoonTitle: "OAuth/API подключение появится в следующем релизе",
     googleAnalytics: {
       title: "Google Analytics 4",
       description:
@@ -1126,7 +1120,7 @@ export const saasDictionary: SaasDictionary = {
       createDraftsBullet: "Черновики поддерживаются",
       livePublishBullet:
         "Автопубликация после подтверждения месячного плана",
-      updatesComingBullet: "Обновления существующих страниц — позже",
+      existingPageUpdatesBullet: "Обновление metadata и внутренних ссылок существующих страниц",
       manualPublishBullet: "Публикация вручную после проверки",
       manualPublishNote:
         "Черновики всегда работают. Автопубликация — только для одобренных планов с автопубликацией при режиме Autopublish.",

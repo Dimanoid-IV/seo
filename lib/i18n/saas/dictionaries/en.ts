@@ -799,15 +799,10 @@ export const saasDictionary: SaasDictionary = {
     gscSelectPropertyCta: "Select Search Console site",
     gscPartialBadge: "Select a site",
     refreshData: "Refresh data",
-    manageConnection: "Manage connection",
-    disconnectLater: "Disconnect will be available later.",
     addWebsiteToConnect: "Add a website to start connecting.",
     googleRedirect:
       "You will be redirected to Google to confirm read-only access.",
-    continueConnect: "Continue connection",
     customSetupCta: "Set up custom site",
-    previewOnly:
-      "OAuth/API connection is preview-only for now — explore capabilities first.",
     connectedSince: "Connected",
     metrics28Days: "Metrics (28 days)",
     noMetricsYet:
@@ -832,7 +827,6 @@ export const saasDictionary: SaasDictionary = {
     gscSyncFailed: "Could not refresh Search Console data",
     gscSyncNetworkError: "Network error while refreshing Search Console data",
     searchConsoleSite: "Search Console site:",
-    oauthApiSoonTitle: "OAuth/API connection will arrive in a future release",
     googleAnalytics: {
       title: "Google Analytics 4",
       description:
@@ -1124,7 +1118,7 @@ export const saasDictionary: SaasDictionary = {
       createDraftsBullet: "Drafts supported",
       livePublishBullet:
         "Auto-publish after you confirm the monthly plan",
-      updatesComingBullet: "Updates to existing pages coming later",
+      existingPageUpdatesBullet: "Metadata and internal-link updates for existing pages",
       manualPublishBullet: "Manual publishing after review",
       manualPublishNote:
         "Drafts always work. Auto-publish runs only for approved Auto-publish plans when Autopilot is on Autopublish.",
