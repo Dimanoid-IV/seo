@@ -68,18 +68,27 @@ export async function POST(request: Request) {
 
   const article = payload.article;
 
-  // TODO: Save article.html, article.metaTitle and article.metaDescription
-  // into your CMS/database and trigger your deploy/revalidation.
+  // Replace this adapter call with your CMS/database write. It must be
+  // idempotent by article.id and return only after the public URL is durable.
+  const post = await cms.posts.upsert({
+    externalId: article.id,
+    slug: article.slug,
+    title: article.title,
+    html: article.html,
+    seo: payload.seo,
+    publishAt: payload.schedule.scheduledAt,
+  });
 
   return NextResponse.json({
     ok: true,
-    externalId: article.id,
-    url: \`https://YOUR_DOMAIN/blog/\${article.slug}\`,
+    externalId: post.id,
+    url: post.publicUrl,
   });
 }`;
 
 export const CUSTOM_WEBHOOK_PAYLOAD_EXAMPLE = `{
   "event": "article.ready",
+  "action": "publish",
   "dryRun": false,
   "article": {
     "id": "article_uuid",
@@ -99,6 +108,17 @@ export const CUSTOM_WEBHOOK_PAYLOAD_EXAMPLE = `{
       "accentColor": "#2563eb",
       "palette": ["#2563eb", "#0f172a"]
     }
+  },
+  "seo": {
+    "title": "SEO title",
+    "description": "SEO meta description",
+    "canonicalUrl": "https://example.com/blog/article-slug",
+    "primaryKeyword": "buyer search query",
+    "indexable": true
+  },
+  "schedule": {
+    "mode": "immediate",
+    "scheduledAt": null
   },
   "website": {
     "id": "website_uuid",

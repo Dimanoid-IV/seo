@@ -39,6 +39,8 @@ The plugin sends:
 ```
 POST {api_url}/api/wordpress/ping
 Header: X-RankBoost-Key: {api_key}
+Header: X-RankBoost-Timestamp: {unix_seconds}
+Header: X-RankBoost-Signature: sha256={HMAC_SHA256(shared_secret, timestamp + "." + raw_body)}
 Body: { "siteUrl": "...", "pluginVersion": "0.2.0" }
 ```
 

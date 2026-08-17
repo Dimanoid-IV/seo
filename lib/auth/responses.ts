@@ -31,7 +31,16 @@ export function authErrorResponse(request: Request, error: unknown): NextRespons
     error,
     getRequestIdFromRequest(request)
   );
-  return NextResponse.json(body, { status, headers });
+  const retryAfter = body.error.details.retryAfterSeconds;
+  return NextResponse.json(body, {
+    status,
+    headers: {
+      ...headers,
+      ...(status === 429 && typeof retryAfter === "number"
+        ? { "Retry-After": String(retryAfter) }
+        : {}),
+    },
+  });
 }
 
 type JsonOkOptions = {

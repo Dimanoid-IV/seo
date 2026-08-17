@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { ClipboardCheck, Globe, Pencil, Send, Webhook, X } from "lucide-react";
 
@@ -132,10 +132,10 @@ export function ReviewPage() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editContent, setEditContent] = useState("");
 
-  async function fetchReviewQueue(): Promise<{
+  const fetchReviewQueue = useCallback(async (): Promise<{
     data: ReviewQueueData | null;
     error: string | null;
-  }> {
+  }> => {
     try {
       const response = await authFetch("/api/review");
       if (!response.ok) {
@@ -146,7 +146,7 @@ export function ReviewPage() {
     } catch {
       return { data: null, error: t.loadFailed };
     }
-  }
+  }, [t.loadFailed]);
 
   async function reload() {
     const result = await fetchReviewQueue();
@@ -179,7 +179,7 @@ export function ReviewPage() {
     return () => {
       cancelled = true;
     };
-  }, [locale, t.loadFailed]);
+  }, [fetchReviewQueue, locale, t.loadFailed]);
 
     const tabs = useMemo(() => {
     const items = data?.items ?? [];

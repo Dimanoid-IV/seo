@@ -1,9 +1,10 @@
 import { z } from "zod";
 
-import { authErrorResponse, authJsonResponse, parseJsonBody, validationErrorFromZod } from "@/lib/auth/responses";
+import { authErrorResponse, authJsonResponse, validationErrorFromZod } from "@/lib/auth/responses";
 import { getServerEnv } from "@/lib/env";
 import { AppError, ErrorCode } from "@/lib/errors";
-import { handleWordPressPing } from "@/lib/integrations/wordpress-connector";
+import { getWordPressPingSecret, handleWordPressPing } from "@/lib/integrations/wordpress-connector";
+import { verifyWordPressPingSignature } from "@/lib/integrations/wordpress-ping-signature";
 
 const pingSchema = z.object({
   siteUrl: z.string().min(1),
@@ -40,14 +41,29 @@ export async function POST(request: Request) {
       );
     }
 
-    const body = await parseJsonBody(request);
+    const rawBody = await request.text();
+    let body: unknown;
+    try {
+      body = JSON.parse(rawBody);
+    } catch {
+      throw new AppError(ErrorCode.VALIDATION_ERROR, "Некорректный JSON в теле запроса");
+    }
     const parsed = pingSchema.safeParse(body);
 
     if (!parsed.success) {
       throw validationErrorFromZod(parsed.error);
     }
 
-    // TODO: verify HMAC signature (X-RankBoost-Signature + X-RankBoost-Timestamp).
+    const secret = await getWordPressPingSecret(apiKey);
+    const signatureValid = verifyWordPressPingSignature({
+      body: rawBody,
+      secret,
+      timestamp: request.headers.get("x-rankboost-timestamp"),
+      signature: request.headers.get("x-rankboost-signature"),
+    });
+    if (!signatureValid) {
+      throw new AppError(ErrorCode.UNAUTHORIZED, "Недействительная или просроченная подпись запроса");
+    }
 
     const result = await handleWordPressPing({
       apiKey,

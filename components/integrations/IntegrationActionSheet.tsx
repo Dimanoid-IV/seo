@@ -1,7 +1,6 @@
 "use client";
 
 import { IntegrationBenefitList } from "@/components/integrations/IntegrationBenefitList";
-import { IntegrationComingSoonForm } from "@/components/integrations/IntegrationComingSoonForm";
 import { GhostConnectionForm } from "@/components/integrations/GhostConnectionForm";
 import { GoogleAnalyticsConnectionForm } from "@/components/integrations/GoogleAnalyticsConnectionForm";
 import { GoogleBusinessProfileConnectionForm } from "@/components/integrations/GoogleBusinessProfileConnectionForm";
@@ -39,7 +38,7 @@ import { formatRelativeTime } from "@/lib/dashboard/display";
 import { useSaasTranslations } from "@/lib/i18n/saas/SaasLocaleProvider";
 import type { SaasLocale } from "@/lib/i18n/saas/locales";
 import { cn } from "@/lib/utils";
-import { ArrowRight, Database, Shield, Sparkles, Zap } from "lucide-react";
+import { ArrowRight, Database, Shield, Zap } from "lucide-react";
 import { useState } from "react";
 
 const GSC_PROVIDER = "google_search_console";
@@ -330,17 +329,9 @@ function IntegrationActionSheetContent({
           ) : null}
 
           {isComingSoon ? (
-            <div className="rounded-xl border border-violet-500/20 bg-violet-500/5 p-4">
-              <div className="mb-4 flex items-center gap-2 text-violet-300">
-                <Sparkles className="size-4" />
-                <span className="text-sm font-medium">{i.comingInRankBoost}</span>
-              </div>
-              <IntegrationComingSoonForm
-                key={integration.provider}
-                providerTitle={integration.title}
-                defaultEmail={userEmail}
-              />
-            </div>
+            <p className="rounded-xl border border-slate-200 bg-slate-50 p-4 text-sm text-slate-600">
+              This connector is not available in the current release.
+            </p>
           ) : null}
 
           {isGsc && isConnected ? (

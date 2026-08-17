@@ -44,7 +44,7 @@ export type ArticleQualityPipelineResult = {
   }>;
 };
 
-export const QUALITY_PASS_THRESHOLD = 80;
+export const QUALITY_PASS_THRESHOLD = 85;
 export const MAX_QUALITY_REPAIR_ATTEMPTS = 2;
 
 // NOTE: JavaScript's \b only recognizes ASCII word chars, so \b around

@@ -212,16 +212,6 @@ export function RegisterForm({
         )}
       </Button>
 
-      <Button
-        type="button"
-        variant="outline"
-        className="w-full rounded-xl border-slate-200 bg-slate-50 text-slate-500"
-        disabled
-        aria-disabled
-      >
-        {auth.googleSoon}
-      </Button>
-
       <p className="text-center text-sm text-slate-500">
         {auth.hasAccount}{" "}
         <Link

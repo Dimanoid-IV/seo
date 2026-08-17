@@ -1,8 +1,8 @@
 /**
  * Content research brief — runs BEFORE article generation (Prompt 11.22).
  *
- * Persistence: embedded in AutopilotPlanItem.researchBrief inside planItemsJson.
- * No separate Prisma model — avoids conflicting content models.
+ * Persistence: stored in ContentBrief and embedded in planItemsJson for an
+ * immutable approval snapshot.
  */
 
 import { isUnsafeArticleTopic } from "./keywords";
@@ -60,6 +60,18 @@ export type ResearchEvidence = {
   source: ResearchEvidenceSource;
   label: string;
   value: string;
+};
+
+export type SerpResearchSnapshot = {
+  provider: "SERPER";
+  query: string;
+  observedAt: string;
+  available: boolean;
+  unavailableReason?: string;
+  topPages: Array<{ position: number; title: string; url: string; snippet: string; headings: string[] }>;
+  relatedQuestions: string[];
+  commonHeadings: string[];
+  entities: string[];
 };
 
 export type SeoStrategyConfidence = "LOW" | "MEDIUM" | "HIGH";
@@ -135,6 +147,7 @@ export type ContentResearchBrief = {
   llmsTxtSuggestion?: string;
   aiReadableSummarySuggestion?: string;
   evidence: ResearchEvidence[];
+  serpResearch?: SerpResearchSnapshot;
   seoStrategy?: SeoStrategySnapshot;
   qualityRequirements: string[];
   riskLevel: "LOW" | "MEDIUM" | "HIGH";

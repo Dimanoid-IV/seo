@@ -277,14 +277,15 @@ function rankboost_connector_handle_check_connection() {
 
 	$api_url = rankboost_connector_sanitize_api_url( (string) get_option( 'rankboost_api_url', RANKBOOST_CONNECTOR_DEFAULT_API_URL ) );
 	$api_key = (string) get_option( 'rankboost_api_key', '' );
+	$api_secret = (string) get_option( 'rankboost_api_secret', '' );
 
-	if ( $api_key === '' ) {
+	if ( $api_key === '' || $api_secret === '' ) {
 		rankboost_connector_set_connection_status( RANKBOOST_CONNECTOR_STATUS_ERROR );
-		rankboost_connector_add_admin_notice( 'error', 'Save an API key before checking the connection.' );
+		rankboost_connector_add_admin_notice( 'error', 'Save both the API key and Shared Secret before checking the connection.' );
 		rankboost_connector_redirect_to_settings();
 	}
 
-	$result = rankboost_connector_ping( $api_url, $api_key );
+	$result = rankboost_connector_ping( $api_url, $api_key, $api_secret );
 
 	if ( $result['success'] ) {
 		update_option( 'rankboost_connection_status', RANKBOOST_CONNECTOR_STATUS_CONNECTED );
@@ -344,25 +345,31 @@ function rankboost_connector_redirect_to_settings() {
  *
  * @param string $api_url RankBoost API base URL.
  * @param string $api_key Plugin API key.
+ * @param string $api_secret Shared signing secret.
  * @return array{success:bool,message:string,permissions?:array}
  */
-function rankboost_connector_ping( $api_url, $api_key ) {
+function rankboost_connector_ping( $api_url, $api_key, $api_secret ) {
 	$endpoint = untrailingslashit( $api_url ) . '/api/wordpress/ping';
+	$body = wp_json_encode(
+		array(
+			'siteUrl'       => home_url(),
+			'pluginVersion' => RANKBOOST_CONNECTOR_VERSION,
+		)
+	);
+	$timestamp = (string) time();
+	$signature = 'sha256=' . hash_hmac( 'sha256', $timestamp . '.' . $body, $api_secret );
 
 	$response = wp_remote_post(
 		$endpoint,
 		array(
 			'timeout' => 15,
 			'headers' => array(
-				'Content-Type'    => 'application/json',
-				'X-RankBoost-Key' => $api_key,
+				'Content-Type'          => 'application/json',
+				'X-RankBoost-Key'       => $api_key,
+				'X-RankBoost-Timestamp' => $timestamp,
+				'X-RankBoost-Signature' => $signature,
 			),
-			'body'    => wp_json_encode(
-				array(
-					'siteUrl'       => home_url(),
-					'pluginVersion' => RANKBOOST_CONNECTOR_VERSION,
-				)
-			),
+			'body'    => $body,
 		)
 	);
 

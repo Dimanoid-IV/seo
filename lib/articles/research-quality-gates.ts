@@ -11,6 +11,7 @@ import {
   ctaLooksRelevant,
   type BrandVoiceProfile,
 } from "@/lib/brand-voice";
+import { assessArticleQualityDimensions } from "./quality-dimensions";
 
 import {
   RESEARCH_QUALITY_PASS_THRESHOLD,
@@ -365,6 +366,38 @@ export function validateResearchAwareArticle(
     )
   );
 
+  const dimensions = assessArticleQualityDimensions({
+    title: article.title ?? "",
+    metaTitle: article.metaTitle ?? "",
+    metaDescription: article.metaDescription ?? "",
+    contentHtml: article.contentHtml ?? "",
+    primaryKeyword: keyword,
+    evidenceCount: context.evidenceNotesCount,
+    brandProfileAvailable: Boolean(context.brandVoice),
+  });
+  checks.push(
+    toCheck(
+      "factual_confidence",
+      "Factual confidence",
+      dimensions.factualConfidence >= 80,
+      "error",
+      dimensions.factualConfidence >= 80
+        ? `Factual confidence ${dimensions.factualConfidence}/100.`
+        : "Unsupported numerical or research claims need a credible cited source or removal."
+    )
+  );
+  checks.push(
+    toCheck(
+      "no_critical_flags",
+      "Critical safety flags",
+      dimensions.criticalFlags.length === 0,
+      "error",
+      dimensions.criticalFlags.length === 0
+        ? "No critical HTML, repetition, or keyword-stuffing flags."
+        : `Critical flags: ${dimensions.criticalFlags.join(", ")}.`
+    )
+  );
+
   for (const issue of baseValidation.issues) {
     const existing = checks.find((c) => c.key === issue.code);
     if (!existing) {
@@ -388,7 +421,10 @@ export function validateResearchAwareArticle(
   ).length;
 
   const penalty = errorCount * 10 + warningCount * 5;
-  const score = Math.max(0, Math.min(100, 100 - penalty));
+  const score = Math.min(
+    Math.max(0, Math.min(100, 100 - penalty)),
+    dimensions.overall
+  );
 
   for (const check of checks.filter((c) => !c.passed)) {
     revisionNotes.push(check.message);
@@ -403,6 +439,15 @@ export function validateResearchAwareArticle(
     revisionNotes,
     validatedAt: new Date().toISOString(),
     threshold: RESEARCH_QUALITY_PASS_THRESHOLD,
+    dimensions: {
+      contentQuality: dimensions.contentQuality,
+      seo: dimensions.seo,
+      brandMatch: dimensions.brandMatch,
+      factualConfidence: dimensions.factualConfidence,
+      readability: dimensions.readability,
+      commercialRelevance: dimensions.commercialRelevance,
+      criticalFlags: dimensions.criticalFlags,
+    },
   };
 }
 

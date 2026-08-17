@@ -20,6 +20,9 @@ export type SearchConsolePerformanceRow = SearchConsolePerformanceSummary & {
   keys: string[];
   page?: string;
   query?: string;
+  date?: string;
+  country?: string;
+  device?: string;
 };
 
 export type SearchConsolePerformanceInput = {
@@ -54,7 +57,7 @@ const EMPTY_PERFORMANCE: SearchConsolePerformanceSummary = {
 };
 
 function throwTokenExpired(): never {
-  // TODO: refresh access token via refreshTokenEncrypted before retrying.
+  // The integration access wrapper refreshes refreshTokenEncrypted once, then retries.
   throw new AppError(
     ErrorCode.INTEGRATION_ERROR,
     "Токен Google Search Console истёк. Переподключите интеграцию.",
@@ -70,7 +73,7 @@ export async function getSearchConsolePerformanceRows({
   dimensions,
   rowLimit = 100,
 }: SearchConsolePerformanceInput & {
-  dimensions: Array<"page" | "query">;
+  dimensions: Array<"date" | "page" | "query" | "country" | "device">;
   rowLimit?: number;
 }): Promise<SearchConsolePerformanceRow[]> {
   assertServerOnly();
@@ -89,7 +92,7 @@ export async function getSearchConsolePerformanceRows({
       startDate,
       endDate,
       dimensions,
-      rowLimit: Math.min(Math.max(rowLimit, 1), 250),
+      rowLimit: Math.min(Math.max(rowLimit, 1), 25_000),
     }),
     cache: "no-store",
   });
@@ -109,6 +112,9 @@ export async function getSearchConsolePerformanceRows({
       query: dimensions.includes("query")
         ? keys[dimensions.indexOf("query")]
         : undefined,
+      date: dimensions.includes("date") ? keys[dimensions.indexOf("date")] : undefined,
+      country: dimensions.includes("country") ? keys[dimensions.indexOf("country")] : undefined,
+      device: dimensions.includes("device") ? keys[dimensions.indexOf("device")] : undefined,
       clicks: row.clicks ?? 0,
       impressions: row.impressions ?? 0,
       ctr: row.ctr ?? 0,

@@ -5,7 +5,6 @@
 import "server-only";
 
 import {
-  ActivityType,
   ArticleStatus,
   AutopilotMode,
   IntegrationExecutionAction,
@@ -14,8 +13,6 @@ import {
   IntegrationExecutionSourceType,
   IntegrationExecutionStatus,
   MonthlyAutopilotStatus,
-  TimelineEventSource,
-  TimelineEventType,
   WordPressConnectionStatus,
   type Prisma,
 } from "@prisma/client";
@@ -31,7 +28,8 @@ import {
   createIntegrationExecutionJob,
   markExecutionJobFailed,
   markExecutionJobRunning,
-  markExecutionJobSucceeded,
+  markExecutionJobWaiting,
+  recordPublishAttempt,
 } from "@/lib/integrations/execution-jobs";
 import { sanitizeExecutionPayload } from "@/lib/integrations/execution-sanitize";
 import {
@@ -42,8 +40,8 @@ import {
 } from "@/lib/integrations/live-publish-rollout";
 import {
   createWordPressRestPublishedPost,
-  verifyWordPressPublishedPost,
 } from "@/lib/integrations/adapters/wordpress/publish-article";
+import { nextPublicationVerificationAt } from "@/lib/publishing/publish-retry";
 import {
   buildWordPressPublishIdempotencyKey,
   canLivePublishArticleViaWordPress,
@@ -78,6 +76,7 @@ export type RunWordPressLivePublishResult = {
   articleStatus?: ArticleStatus;
   blockedReason?: string | null;
   summaryKey: string;
+  verificationPending?: boolean;
 };
 
 async function markJobPartiallyApplied(input: {
@@ -322,6 +321,7 @@ export async function runWordPressLivePublishForPlanArticle(
     capability: IntegrationCapability.PUBLISH_WORDPRESS_ARTICLE,
     idempotencyKey,
     requestPreview: preview,
+    maxRetries: 6,
   });
 
   await appendIntegrationExecutionEvent({
@@ -546,151 +546,46 @@ export async function runWordPressLivePublishForPlanArticle(
     };
   }
 
-  const verification = await verifyWordPressPublishedPost({
-    publicUrl: publishResult.link,
-    expectedTitle: article.title,
-    expectedContentHtml: contentHtml,
-  });
-
-  await appendIntegrationExecutionEvent({
-    jobId: job.id,
-    type: "verification",
-    status: IntegrationExecutionStatus.RUNNING,
-    message: verification.verified
-      ? "Published WordPress URL verified."
-      : "Published WordPress URL could not be fully verified.",
-    metadata: {
-      verified: verification.verified,
-      statusCode: verification.statusCode ?? null,
-      checks: verification.checks,
-      errorCode: verification.errorCode ?? null,
-    },
-  });
-
-  if (!verification.verified) {
-    await markJobPartiallyApplied({
+  if (!publishResult.link) {
+    await markExecutionJobFailed({
       jobId: job.id,
-      externalId: publishResult.postId,
-      externalUrl: publishResult.link ?? publishResult.editUrl,
-      result: {
-        status: "publish",
-        livePublished: true,
-        verified: false,
-        verification,
-        editUrl: publishResult.editUrl,
-      },
-      message:
-        "WordPress returned publish, but RankBoost could not verify the public page content.",
+      errorCode: "PUBLIC_URL_MISSING",
+      errorMessage: "WordPress published the post but did not return a public URL.",
     });
-
-    await prisma.article.update({
-      where: { id: article.id },
-      data: {
-        wordpressPostId: publishResult.postId,
-        wordpressEditUrl: publishResult.editUrl,
-        wordpressPublishedUrl: publishResult.link,
-      },
-    });
-
-    return {
-      allowed: true,
-      gate,
-      jobId: job.id,
-      created,
-      executed: true,
-      livePublished: false,
-      wordpressPostId: publishResult.postId,
-      publishedUrl: publishResult.link,
-      editUrl: publishResult.editUrl,
-      blockedReason: "verification_failed",
-      summaryKey: "wordpressPublishVerificationFailed",
-    };
+    return { allowed: true, gate, jobId: job.id, created, executed: true, livePublished: false, blockedReason: "missing_public_url", summaryKey: "missingPublicUrl" };
   }
 
   const now = new Date();
-  await prisma.$transaction(async (tx) => {
-    await tx.article.update({
-      where: { id: article.id },
-      data: {
-        status: ArticleStatus.PUBLISHED,
-        wordpressPostId: publishResult.postId,
-        wordpressEditUrl: publishResult.editUrl,
-        wordpressPublishedUrl: publishResult.link,
-        wordpressRolledBackAt: null,
-        publishedAt: now,
-      },
-    });
-
-    await tx.wordPressConnection.updateMany({
-      where: {
-        websiteId: input.websiteId,
-        status: WordPressConnectionStatus.CONNECTED,
-        disconnectedAt: null,
-      },
-      data: { lastDraftCreatedAt: now },
-    });
-
-    await tx.activity.create({
-      data: {
-        organizationId: input.organizationId,
-        websiteId: input.websiteId,
-        userId: input.userId,
-        type: ActivityType.SYSTEM_NOTICE,
-        title: "Статья опубликована в WordPress",
-        description: `Статья «${article.title}» опубликована на сайте.`,
-        metadataJson: {
-          articleId: article.id,
-          wordpressPostId: publishResult.postId,
-          publishedUrl: publishResult.link,
-          editUrl: publishResult.editUrl,
-          planId: input.planId,
-          planItemId: input.planItem.id,
-          firstCustomerRollout: true,
-          supportNotify: true,
-        },
-      },
-    });
-
-    await tx.timelineEvent.create({
-      data: {
-        userId: input.userId,
-        websiteId: input.websiteId,
-        type: TimelineEventType.SYSTEM_NOTE,
-        source: TimelineEventSource.WORDPRESS,
-        title: "WordPress live publish",
-        summary: `Article published live: ${article.title}`,
-        relatedArticleId: article.id,
-        details: {
-          articleId: article.id,
-          wordpressPostId: publishResult.postId,
-          publishedUrl: publishResult.link,
-          planId: input.planId,
-          planItemId: input.planItem.id,
-          firstCustomerRollout: true,
-          supportNotify: true,
-        },
-      },
-    });
-  });
-
-  await markExecutionJobSucceeded({
+  await recordPublishAttempt({
     jobId: job.id,
-    externalId: publishResult.postId,
-    externalUrl: publishResult.link ?? publishResult.editUrl,
-    result: {
-      status: "publish",
-      livePublished: true,
-      verified: true,
-      verification,
-      editUrl: publishResult.editUrl,
+    attemptNumber: job.attemptCount + 1,
+    phase: "delivery",
+    outcome: "accepted",
+    statusCode: 201,
+  });
+  await prisma.article.update({
+    where: { id: article.id },
+    data: {
+      status: ArticleStatus.PUBLISHING,
+      wordpressPostId: publishResult.postId,
+      wordpressEditUrl: publishResult.editUrl,
+      wordpressPublishedUrl: publishResult.link,
+      wordpressRolledBackAt: null,
+      publishedAt: null,
     },
   });
-
-  await appendIntegrationExecutionEvent({
+  await prisma.wordPressConnection.updateMany({
+    where: { websiteId: input.websiteId, status: WordPressConnectionStatus.CONNECTED, disconnectedAt: null },
+    data: { lastDraftCreatedAt: now },
+  });
+  await markExecutionJobWaiting({
     jobId: job.id,
-    type: "succeeded",
-    status: IntegrationExecutionStatus.SUCCEEDED,
-    message: "WordPress live publish succeeded.",
+    nextAttemptAt: nextPublicationVerificationAt(now, 1),
+    result: { status: "publish", acceptedBy: "wordpress", editUrl: publishResult.editUrl },
+    verification: { state: "pending" },
+    externalId: publishResult.postId,
+    externalUrl: publishResult.link,
+    message: "WordPress accepted the post; waiting for public URL, canonical, robots and sitemap verification.",
   });
 
   return {
@@ -699,11 +594,12 @@ export async function runWordPressLivePublishForPlanArticle(
     jobId: job.id,
     created,
     executed: true,
-    livePublished: true,
+    livePublished: false,
+    verificationPending: true,
     wordpressPostId: publishResult.postId,
     publishedUrl: publishResult.link,
     editUrl: publishResult.editUrl,
-    articleStatus: ArticleStatus.PUBLISHED,
-    summaryKey: "wordpressLivePublished",
+    articleStatus: ArticleStatus.PUBLISHING,
+    summaryKey: "wordpressPublishVerificationPending",
   };
 }

@@ -6,6 +6,9 @@ import { isAuthorizedCronRequest } from "@/lib/cron/auth";
 import { getPrisma } from "@/lib/db";
 import { getServerEnv } from "@/lib/env";
 import { AppError, ErrorCode } from "@/lib/errors";
+import { runDuePublicationVerifications } from "@/lib/publishing/run-publication-verifications";
+import { runExclusiveCron } from "@/lib/cron/exclusive-run";
+import { runDueDailyMaintenance } from "@/lib/autopilot/run-daily-maintenance";
 
 /** Cap websites per invocation while rotating fairly across every approved site. */
 const MAX_WEBSITES_PER_CRON = 25;
@@ -49,7 +52,7 @@ function summarizeAction(action: string, summaryKey?: string): string {
   }
 }
 
-export async function GET(request: Request) {
+async function executeAutopilotCronRequest(request: Request) {
   if (!isAuthorizedCronRequest(request)) {
     return Response.json({ error: "Unauthorized" }, { status: 401 });
   }
@@ -77,6 +80,12 @@ export async function GET(request: Request) {
       plans: allPlans,
       limit: MAX_WEBSITES_PER_CRON,
     });
+    const publicationVerifications = dryRun
+      ? null
+      : await runDuePublicationVerifications({ limit: 25 });
+    const maintenance = dryRun
+      ? null
+      : await runDueDailyMaintenance({ limit: 5 });
 
     const reports = [];
 
@@ -136,6 +145,8 @@ export async function GET(request: Request) {
         maxPlansPerRun: MAX_WEBSITES_PER_CRON,
         maxWebsitesPerRun: MAX_WEBSITES_PER_CRON,
         dryRun,
+        publicationVerifications,
+        maintenance,
         reports,
       },
     });
@@ -148,5 +159,40 @@ export async function GET(request: Request) {
           : "Cron autopilot run failed";
 
     return Response.json({ error: message }, { status: 500 });
+  }
+}
+
+export async function GET(request: Request) {
+  if (!isAuthorizedCronRequest(request)) {
+    return Response.json({ error: "Unauthorized" }, { status: 401 });
+  }
+  if (new URL(request.url).searchParams.get("dryRun") === "true") {
+    return executeAutopilotCronRequest(request);
+  }
+  try {
+    assertDatabaseConfigured();
+    const exclusive = await runExclusiveCron<Response>({
+      jobKey: "autopilot-run-due",
+      leaseMs: 9 * 60_000,
+      bucketMs: 10 * 60_000,
+      run: () => executeAutopilotCronRequest(request),
+      isFailure: (response) => response.status >= 500,
+      summarize: async (response) => {
+        const body = await response.clone().json().catch(() => null);
+        return { httpStatus: response.status, body };
+      },
+    });
+    if (!exclusive.ran) {
+      return Response.json(
+        { data: { skipped: true, reason: exclusive.reason } },
+        { status: 202 }
+      );
+    }
+    return exclusive.data;
+  } catch (error) {
+    return Response.json(
+      { error: error instanceof Error ? error.message : "Cron lock failed" },
+      { status: 500 }
+    );
   }
 }

@@ -23,7 +23,8 @@ import {
   createIntegrationExecutionJob,
   markExecutionJobFailed,
   markExecutionJobRunning,
-  markExecutionJobSucceeded,
+  markExecutionJobWaiting,
+  recordPublishAttempt,
 } from "@/lib/integrations/execution-jobs";
 import {
   getCustomPublishingConfig,
@@ -43,6 +44,7 @@ import { createGitHubPrForArticle } from "@/lib/publishing/github-pr";
 import { prepareSquarespacePackageForArticle } from "@/lib/publishing/squarespace";
 import { publishArticleToHostedBlog } from "@/lib/hosted-blog/publish";
 import { resolveAutopilotPublishingTarget } from "@/lib/publishing/autopilot-publisher-router";
+import { nextPublicationVerificationAt } from "@/lib/publishing/publish-retry";
 import type { AutopilotPlanItem } from "@/lib/autopilot/plan-item-types";
 
 export type PublishingHandoffResult = {
@@ -168,14 +170,14 @@ export async function preparePublishingHandoff(input: {
     if (input.dryRun) {
       return {
         path: "webhook",
-        pipelineState: mayAutoSend ? "WEBHOOK_SENT" : "WEBHOOK_READY",
+        pipelineState: mayAutoSend ? "WEBHOOK_VERIFYING" : "WEBHOOK_READY",
         patch: {},
         summaryKey: mayAutoSend ? "wouldSendWebhook" : "wouldPrepareWebhookReady",
       };
     }
 
     if (mayAutoSend) {
-      const delivered = await sendWebhookPackage({
+      const delivered = await beginCustomWebhookPublication({
         articleId: input.articleId,
         websiteId: input.websiteId,
         organizationId: input.organizationId,
@@ -186,15 +188,17 @@ export async function preparePublishingHandoff(input: {
       });
       return {
         path: "webhook",
-        pipelineState: delivered ? "WEBHOOK_SENT" : "WEBHOOK_READY",
+        pipelineState: delivered ? "WEBHOOK_VERIFYING" : "WEBHOOK_READY",
         webhookDelivered: delivered,
         patch: {
-          pipelineState: delivered ? "WEBHOOK_SENT" : "WEBHOOK_READY",
+          pipelineState: delivered ? "WEBHOOK_VERIFYING" : "WEBHOOK_READY",
           publishingPath: "webhook",
           webhookReadyAt: nowIso,
           webhookSentAt: delivered ? nowIso : undefined,
-          nextAutomatedStep: delivered ? "done" : "send_webhook_when_allowed",
-          status: delivered ? "executed" : "prepared",
+          nextAutomatedStep: delivered
+            ? "verify_live_url"
+            : "send_webhook_when_allowed",
+          status: "prepared",
           reviewQueueHref: "/app/review",
         },
         summaryKey: delivered ? "webhookSent" : "webhookReady",
@@ -456,7 +460,7 @@ async function assertArticleHasContent(
   }
 }
 
-async function sendWebhookPackage(input: {
+export async function beginCustomWebhookPublication(input: {
   articleId: string;
   websiteId: string;
   organizationId: string;
@@ -464,6 +468,7 @@ async function sendWebhookPackage(input: {
   integrationId: string;
   planId?: string;
   planItemId?: string;
+  mode?: IntegrationExecutionMode;
 }): Promise<boolean> {
   const { deliverCustomWebhook } = await import("@/lib/publishing/custom-webhook");
   const { getCustomPublishingWebhookUrl } = await import(
@@ -510,9 +515,10 @@ async function sendWebhookPackage(input: {
     sourceId: input.articleId,
     action: IntegrationExecutionAction.SEND_WEBHOOK,
     provider: IntegrationExecutionProvider.CUSTOM_WEBHOOK,
-    mode: IntegrationExecutionMode.AUTO_PUBLISH,
+    mode: input.mode ?? IntegrationExecutionMode.AUTO_PUBLISH,
     capability: IntegrationCapability.SEND_CUSTOM_WEBHOOK,
     idempotencyKey,
+    maxRetries: 6,
     requestPreview: {
       articleId: article.id,
       title: article.title,
@@ -525,12 +531,13 @@ async function sendWebhookPackage(input: {
   if (
     !created &&
     (job.status === IntegrationExecutionStatus.SUCCEEDED ||
-      job.status === IntegrationExecutionStatus.PARTIALLY_APPLIED)
+      job.status === IntegrationExecutionStatus.WAITING ||
+      job.status === IntegrationExecutionStatus.RETRYING)
   ) {
     return true;
   }
 
-  await markExecutionJobRunning(job.id);
+  const runningJob = await markExecutionJobRunning(job.id);
 
   try {
     await appendIntegrationExecutionEvent({
@@ -551,6 +558,15 @@ async function sendWebhookPackage(input: {
     });
 
     if (!result.delivered) {
+      await recordPublishAttempt({
+        jobId: job.id,
+        attemptNumber: runningJob.attemptCount,
+        phase: "delivery",
+        outcome: "failed",
+        statusCode: result.statusCode,
+        errorCode: "WEBHOOK_DELIVERY_FAILED",
+        errorMessage: result.error,
+      });
       await markExecutionJobFailed({
         jobId: job.id,
         errorCode: "WEBHOOK_DELIVERY_FAILED",
@@ -560,25 +576,57 @@ async function sendWebhookPackage(input: {
       return false;
     }
 
+    if (!result.externalUrl) {
+      await recordPublishAttempt({
+        jobId: job.id,
+        attemptNumber: runningJob.attemptCount,
+        phase: "delivery",
+        outcome: "accepted_without_public_url",
+        statusCode: result.statusCode,
+        errorCode: "PUBLIC_URL_MISSING",
+      });
+      await markExecutionJobFailed({
+        jobId: job.id,
+        errorCode: "PUBLIC_URL_MISSING",
+        errorMessage:
+          "Publishing endpoint accepted the article but did not return a public URL.",
+        result: { statusCode: result.statusCode },
+      });
+      return false;
+    }
+
+    await recordPublishAttempt({
+      jobId: job.id,
+      attemptNumber: runningJob.attemptCount,
+      phase: "delivery",
+      outcome: result.duplicate ? "duplicate_accepted" : "accepted",
+      statusCode: result.statusCode,
+    });
+
     await prisma.article.update({
       where: { id: article.id },
       data: {
-        status: "PUBLISHED",
-        publishedAt: new Date(),
+        status: "PUBLISHING",
+        publishedAt: null,
         wordpressPublishedUrl: result.externalUrl ?? undefined,
       },
     });
 
-    await markExecutionJobSucceeded({
+    await markExecutionJobWaiting({
       jobId: job.id,
+      nextAttemptAt: nextPublicationVerificationAt(new Date(), 1),
       result: {
         statusCode: result.statusCode,
         articleId: article.id,
-        publishedBy: "custom_webhook",
+        acceptedBy: "custom_webhook",
         externalId: result.externalId ?? null,
         externalUrl: result.externalUrl ?? null,
         duplicate: result.duplicate === true,
       },
+      verification: { state: "pending" },
+      externalId: result.externalId,
+      externalUrl: result.externalUrl,
+      message: "Webhook accepted the article; waiting for the public URL to deploy.",
     });
     return true;
   } catch (error) {

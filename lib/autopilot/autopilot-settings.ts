@@ -122,14 +122,16 @@ export async function updateAutopilotSettings(input: {
   websiteId?: string | null;
   mode: AutopilotMode;
   /**
-   * AUTOPUBLISH is only allowed from explicit monthly-plan confirmation
-   * (Prompt 11.50) — never from silent settings toggles.
+   * AUTOPUBLISH is only allowed from explicit monthly-plan confirmation or
+   * the explicit live-publish activation endpoint — never from silent
+   * settings toggles.
    */
-  source?: "plan_approval" | "settings_ui";
+  source?: "plan_approval" | "explicit_live_publish_enable" | "settings_ui";
 }): Promise<AutopilotSettingsView> {
   if (
     input.mode === AutopilotMode.AUTOPUBLISH &&
-    input.source !== "plan_approval"
+    input.source !== "plan_approval" &&
+    input.source !== "explicit_live_publish_enable"
   ) {
     throw new AppError(
       ErrorCode.VALIDATION_ERROR,

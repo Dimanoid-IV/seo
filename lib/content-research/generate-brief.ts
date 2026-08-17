@@ -27,6 +27,9 @@ import {
   appendSeoStrategyQualityRequirements,
   buildSeoStrategySnapshot,
 } from "./seo-strategy";
+import { persistContentResearchBrief } from "./persist-brief";
+import { researchLiveSerp } from "./serp-research";
+import { extractDomainFromUrl } from "./normalize";
 
 export type GenerateBriefInput = {
   websiteId: string;
@@ -138,56 +141,6 @@ function buildEvidence(
   return evidence.slice(0, 8);
 }
 
-function addKeywordAnglesToCompetitors(
-  competitors: CompetitorInsight[],
-  keyword: string,
-  locale: "en" | "ru" | "et"
-): CompetitorInsight[] {
-  return competitors.map((competitor) => {
-    if (competitor.contentAngles.length > 0 || competitor.observedStrengths.length > 0) {
-      return competitor;
-    }
-
-    const observedStrengths =
-      locale === "ru"
-        ? [
-            "Известный ориентир для сравнения предложения",
-            "Помогает понять, какие вопросы покупатель сравнивает перед заказом",
-          ]
-        : locale === "et"
-          ? [
-              "Tuntud võrdluspunkt pakkumise hindamiseks",
-              "Aitab mõista, mida ostja enne tellimist võrdleb",
-            ]
-          : [
-              "Known reference point for comparing the offer",
-              "Helps identify what buyers compare before ordering",
-            ];
-
-    const contentAngles =
-      locale === "ru"
-        ? [
-            `Показать, чем ваше предложение по «${keyword}» отличается по процессу, срокам и результату`,
-            "Добавить критерии выбора, примеры работ, FAQ и понятный CTA",
-          ]
-        : locale === "et"
-          ? [
-              `Näidata, kuidas teie „${keyword}" pakkumine erineb protsessi, aja ja tulemuse poolest`,
-              "Lisada valikukriteeriumid, tööde näited, FAQ ja selge CTA",
-            ]
-          : [
-              `Show how your "${keyword}" offer differs by process, timing, and result`,
-              "Add selection criteria, examples, FAQ, and a clear CTA",
-            ];
-
-    return {
-      ...competitor,
-      observedStrengths,
-      contentAngles,
-    };
-  });
-}
-
 function buildContentGapSummary(
   keyword: string,
   competitorsUnavailable: boolean,
@@ -196,16 +149,16 @@ function buildContentGapSummary(
   if (locale === "ru") {
     return competitorsUnavailable
       ? `Контент по запросу «${keyword}» поможет закрыть пробел в темах, которые RankBoost нашёл в задачах и аудите. Данные о конкурентах будут добавлены после Search Console или ручного ввода.`
-      : `Статья по «${keyword}» закроет контентный пробел относительно конкурентов и усилит видимость в поиске и AI-ответах.`;
+      : `Статья по «${keyword}» адресует выявленную тему. Сравнение содержания известных конкурентов ещё не проводилось.`;
   }
   if (locale === "et") {
     return competitorsUnavailable
       ? `Sisu päringule „${keyword}" aitab sulgeda lünki, mille RankBoost leidis ülesannetest ja auditist. Konkurentide andmed lisatakse pärast Search Console'i või käsitsi sisestust.`
-      : `Artikkel „${keyword}" kohta sulgeb konkurentide suhtes sisu lünga ja tugevdab nähtavust otsingus ja AI-vastustes.`;
+      : `Artikkel „${keyword}" käsitleb tuvastatud teemat. Teadaolevate konkurentide sisu pole veel võrreldud.`;
   }
   return competitorsUnavailable
     ? `Content for "${keyword}" addresses gaps RankBoost found in tasks and audit. Competitor data will be added after Search Console or manual input.`
-    : `An article on "${keyword}" closes a content gap vs competitors and improves search and AI answer visibility.`;
+    : `An article on "${keyword}" addresses the identified topic. Known competitors' content has not yet been compared.`;
 }
 
 function buildRecommendedTitle(
@@ -318,11 +271,24 @@ export async function generateContentResearchBrief(
   const secondaryKeywords = pickSecondaryKeywords(keywordCandidates, primary);
 
   const competitorResult = resolveCompetitorsFromContext(context);
-  const competitors = addKeywordAnglesToCompetitors(
-    competitorResult.competitors,
-    primary.keyword,
-    locale
+  const serpResearch = await researchLiveSerp({ query: primary.keyword, locale });
+  const ownDomain = extractDomainFromUrl(context.website.url);
+  const competitorByDomain = new Map(
+    competitorResult.competitors.map((competitor) => [competitor.domain, competitor])
   );
+  for (const page of serpResearch.topPages) {
+    const domain = extractDomainFromUrl(page.url);
+    if (!domain || domain === ownDomain || competitorByDomain.has(domain)) continue;
+    competitorByDomain.set(domain, {
+      domain,
+      name: domain,
+      reason: `Observed at position ${page.position} for the live SERP query "${primary.keyword}".`,
+      observedStrengths: page.headings.slice(0, 5),
+      contentAngles: [],
+    });
+  }
+  const competitors = [...competitorByDomain.values()].slice(0, 8);
+  const competitorsUnavailable = competitors.length === 0;
 
   const geoPrompts = generateGeoPrompts({
     primaryKeyword: primary.keyword,
@@ -341,7 +307,7 @@ export async function generateContentResearchBrief(
     searchIntent,
     buyerQuestion,
     competitors,
-    competitorsUnavailable: competitorResult.unavailable,
+    competitorsUnavailable,
     generatedAt,
   });
 
@@ -357,10 +323,10 @@ export async function generateContentResearchBrief(
     buyerQuestion,
     geoPrompts,
     competitors,
-    competitorsUnavailable: competitorResult.unavailable,
+    competitorsUnavailable,
     contentGapSummary: buildContentGapSummary(
       primary.keyword,
-      competitorResult.unavailable,
+      competitorsUnavailable,
       locale
     ),
     recommendedArticleTitle: buildRecommendedTitle(
@@ -368,13 +334,19 @@ export async function generateContentResearchBrief(
       searchIntent,
       locale
     ),
-    outline: buildOutline(primary.keyword),
-    faq: buildFaq(buyerQuestion, primary.keyword),
+    outline: [...new Set([...buildOutline(primary.keyword), ...serpResearch.commonHeadings.slice(0, 6)])],
+    faq: [...new Set([...buildFaq(buyerQuestion, primary.keyword), ...serpResearch.relatedQuestions.slice(0, 8)])],
     internalLinkSuggestions: ["/", "/services", "/blog"],
     schemaSuggestions: buildSchemaSuggestions(searchIntent),
     llmsTxtSuggestion: `Add a concise summary of "${primary.keyword}" to llms.txt for AI crawlers.`,
     aiReadableSummarySuggestion: `One-paragraph factual summary about ${primary.keyword} for ${context.website.displayName ?? "your business"}.`,
-    evidence: buildEvidence(context, primary.sourceLabel, competitors),
+    evidence: [
+      ...buildEvidence(context, primary.sourceLabel, competitors),
+      ...(serpResearch.available
+        ? [{ source: "COMPETITOR" as const, label: "Live SERP research", value: `${serpResearch.topPages.length} organic results observed at ${serpResearch.observedAt}.` }]
+        : [{ source: "COMPETITOR" as const, label: "SERP data gap", value: serpResearch.unavailableReason ?? "Live SERP source unavailable." }]),
+    ].slice(0, 8),
+    serpResearch,
     seoStrategy,
     qualityRequirements: appendSeoStrategyQualityRequirements(
       buildQualityRequirements(),
@@ -385,20 +357,22 @@ export async function generateContentResearchBrief(
     generatedAt,
   };
 
-  if (competitorResult.unavailable && !context.gscConnected && keywordCandidates.length < 2) {
+  if (competitorsUnavailable && !context.gscConnected && keywordCandidates.length < 2) {
     brief.status = "DRAFT";
   }
 
+  let completedBrief = brief;
   if (!input.skipHermesEnhance) {
     try {
       const { tryEnhanceBriefWithHermes } = await import("./hermes-enhance");
-      return await tryEnhanceBriefWithHermes(brief, context);
+      completedBrief = await tryEnhanceBriefWithHermes(brief, context);
     } catch {
-      return brief;
+      completedBrief = brief;
     }
   }
 
-  return brief;
+  await persistContentResearchBrief(completedBrief);
+  return completedBrief;
 }
 
 export { getResearchDisplayStatus, toResearchBriefSummary } from "./types";

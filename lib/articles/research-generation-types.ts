@@ -18,6 +18,15 @@ export type ArticleQualityReport = {
   revisionNotes: string[];
   validatedAt: string;
   threshold: number;
+  dimensions?: {
+    contentQuality: number;
+    seo: number;
+    brandMatch: number;
+    factualConfidence: number;
+    readability: number;
+    commercialRelevance: number;
+    criticalFlags: string[];
+  };
 };
 
 export type ArticleGenerationMetadata = {
@@ -33,12 +42,19 @@ export type ArticleGenerationMetadata = {
   geoPromptsUsed: string[];
   evidenceNotes: Array<{ label: string; value: string }>;
   qualityReport: ArticleQualityReport;
+  pipelineStages: Array<{
+    stage: "RESEARCH" | "BRIEF" | "OUTLINE" | "DRAFT" | "SEO_OPTIMIZATION" | "BRAND_PASS" | "FACT_RISK_REVIEW" | "CRITIC" | "REWRITE" | "FINAL";
+    status: "COMPLETED" | "SKIPPED";
+    method: "deterministic" | "hermes" | "serper";
+    completedAt: string;
+    costCents?: number;
+  }>;
   humanizedAt?: string;
   humanizerMethod?: "hermes" | "deterministic";
   generatedAt: string;
 };
 
-export const RESEARCH_QUALITY_PASS_THRESHOLD = 80;
+export const RESEARCH_QUALITY_PASS_THRESHOLD = 85;
 
 export function buildEvidenceNotes(
   brief: ContentResearchBrief

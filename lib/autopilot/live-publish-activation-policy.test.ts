@@ -7,6 +7,9 @@ assert.deepEqual(
     planApprovedForAutoPublish: true,
     publishingIntegrationConnected: true,
     livePublishPaused: false,
+    // Regression: the activation endpoint must be able to repair this stale
+    // state instead of requiring AUTOPUBLISH before it can enable AUTOPUBLISH.
+    currentMode: "APPROVED_PLAN_AUTOPILOT",
   }),
   { allowed: true, reason: null }
 );
@@ -39,4 +42,3 @@ assert.equal(
 );
 
 console.log("live-publish-activation-policy tests passed");
-

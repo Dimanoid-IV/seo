@@ -13,6 +13,7 @@ import {
 import {
   buildWordPressPublishIdempotencyKey,
   canLivePublishArticleViaWordPress,
+  type CanLivePublishArticleViaWordPressInput,
 } from "./can-live-publish";
 import { mapArticleToWpRestPublishPayload } from "./publish-article";
 import { resolvePlanItemExecutionEligibility } from "@/lib/autopilot/execution-eligibility";
@@ -93,9 +94,9 @@ function baseItem(
 }
 
 function allowedInput(
-  overrides: Parameters<typeof canLivePublishArticleViaWordPress>[0] = {} as never
-) {
-  return {
+  overrides: Partial<CanLivePublishArticleViaWordPressInput> = {}
+): CanLivePublishArticleViaWordPressInput {
+  const base: CanLivePublishArticleViaWordPressInput = {
     article: baseArticle(),
     website: { id: "web-1", organizationId: "org-1" },
     organization: { id: "org-1" },
@@ -114,8 +115,8 @@ function allowedInput(
     minQualityScore: 70,
     monthlyQuotaOk: true,
     duplicatePublishedExternalId: false,
-    ...overrides,
   };
+  return { ...base, ...overrides };
 }
 
 // --- gate denies without approved plan ---
@@ -233,8 +234,8 @@ function allowedInput(
 
 // --- draft/pending response must not claim published ---
 {
-  const draftStatus = "draft";
-  const pendingStatus = "pending";
+  const draftStatus: string = "draft";
+  const pendingStatus: string = "pending";
   const livePublishedDraft = draftStatus === "publish";
   const livePublishedPending = pendingStatus === "publish";
   assert.equal(livePublishedDraft, false);

@@ -90,7 +90,7 @@ export async function registerUser(input: RegisterInput) {
       }
     } else {
       warnings.push("preview_token_invalid");
-      // TODO: track invalid preview token attempts for abuse monitoring
+      console.warn("[auth] invalid audit preview token supplied during registration");
     }
   }
 

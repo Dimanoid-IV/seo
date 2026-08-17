@@ -13,7 +13,10 @@ import {
   parseJsonBody,
   validationErrorFromZod,
 } from "@/lib/auth/responses";
-import { getAutopilotSettings } from "@/lib/autopilot/autopilot-settings";
+import {
+  getAutopilotSettings,
+  updateAutopilotSettings,
+} from "@/lib/autopilot/autopilot-settings";
 import { evaluateLivePublishActivationPrerequisites } from "@/lib/autopilot/live-publish-activation-policy";
 import { resolveWebsiteForAutopilot } from "@/lib/autopilot/resolve-website";
 import { getPrisma } from "@/lib/db";
@@ -79,11 +82,14 @@ export async function POST(request: Request) {
       customPublishing?.endpointConfigured && customPublishing.testedAt
     );
     const decision = evaluateLivePublishActivationPrerequisites({
-      planApprovedForAutoPublish:
-        Boolean(plan) && settings.mode === AutopilotMode.AUTOPUBLISH,
+      // The approved AUTO_PUBLISH plan plus this explicit POST are the user
+      // consent. Requiring the mode to already be AUTOPUBLISH made activation
+      // impossible after a state-sync failure or an earlier mode change.
+      planApprovedForAutoPublish: Boolean(plan),
       publishingIntegrationConnected:
         wordpressConnected || customPublishingConnected,
       livePublishPaused: settings.livePublishPaused,
+      currentMode: settings.mode,
     });
 
     if (!decision.allowed) {
@@ -93,17 +99,28 @@ export async function POST(request: Request) {
       );
     }
 
+    await updateAutopilotSettings({
+      userId: currentUser.id,
+      organizationId: organization.id,
+      websiteId: website.id,
+      mode: AutopilotMode.AUTOPUBLISH,
+      source: "explicit_live_publish_enable",
+    });
+
+    // Enable the website gate before the provider-specific switch. If the
+    // provider update fails, its fail-closed autoSend flag still prevents a
+    // delivery and a retry can safely finish activation.
+    await prisma.website.update({
+      where: { id: website.id },
+      data: { livePublishRolloutEnabled: true },
+    });
+
     if (customPublishingConnected) {
       await setCustomPublishingAutoSend({
         websiteId: website.id,
         enabled: true,
       });
     }
-
-    await prisma.website.update({
-      where: { id: website.id },
-      data: { livePublishRolloutEnabled: true },
-    });
 
     return authJsonResponse({
       data: {
@@ -117,4 +134,3 @@ export async function POST(request: Request) {
     return authErrorResponse(request, error);
   }
 }
-

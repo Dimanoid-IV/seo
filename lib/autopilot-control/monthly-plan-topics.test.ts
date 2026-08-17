@@ -80,9 +80,12 @@ const sourceData = {
   sourceSummary: {
     hasAudit: true,
     hasGsc: false,
-    hasBrandVoice: true,
-    hasSiteTech: false,
-    sourceCount: 2,
+    hasTasks: false,
+    hasArticles: false,
+    hasSocialPosts: false,
+    hasTimelineEvents: false,
+    hasOpportunities: true,
+    hasEnoughData: true,
   },
 } satisfies MonthlyAutopilotSourceData;
 

@@ -35,6 +35,8 @@ export async function getIntegrationsOverview(
   currentUser: CurrentUser
 ): Promise<IntegrationsOverviewResponse> {
   const prisma = getPrisma();
+  // Do not expose unavailable connectors as interactive product surfaces.
+  const catalog = INTEGRATION_CATALOG.filter((item) => item.available);
 
   const organization = await resolveOwnedOrganization(
     prisma,
@@ -42,7 +44,7 @@ export async function getIntegrationsOverview(
     currentUser.organizationId
   );
 
-  const emptyIntegrations = INTEGRATION_CATALOG.map((item) => {
+  const emptyIntegrations = catalog.map((item) => {
     if (item.provider === "hermes_ai") {
       const configured = isHermesConfigured();
       return {
@@ -164,7 +166,7 @@ export async function getIntegrationsOverview(
     hasSharedSecret: customPublishingConfig?.hasSharedSecret,
   });
 
-  const integrations = INTEGRATION_CATALOG.map((item) => {
+  const integrations = catalog.map((item) => {
     if (item.provider === "hermes_ai") {
       const configured = isHermesConfigured();
       return {

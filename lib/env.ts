@@ -47,6 +47,7 @@ const serverEnvSchema = z.object({
   HERMES_MAX_RETRIES: optionalString,
   HERMES_TEST_MODE: optionalString,
   HERMES_STUB_ENABLED: optionalString,
+  SERPER_API_KEY: optionalString,
   GOOGLE_INTEGRATIONS_CLIENT_ID: optionalString,
   GOOGLE_INTEGRATIONS_CLIENT_SECRET: optionalString,
   GOOGLE_INTEGRATIONS_REDIRECT_URI: optionalUrl,
@@ -101,6 +102,7 @@ function parseServerEnv(): ServerEnv {
     HERMES_MAX_RETRIES: process.env.HERMES_MAX_RETRIES,
     HERMES_TEST_MODE: process.env.HERMES_TEST_MODE,
     HERMES_STUB_ENABLED: process.env.HERMES_STUB_ENABLED,
+    SERPER_API_KEY: process.env.SERPER_API_KEY,
     GOOGLE_INTEGRATIONS_CLIENT_ID: process.env.GOOGLE_INTEGRATIONS_CLIENT_ID,
     GOOGLE_INTEGRATIONS_CLIENT_SECRET:
       process.env.GOOGLE_INTEGRATIONS_CLIENT_SECRET,

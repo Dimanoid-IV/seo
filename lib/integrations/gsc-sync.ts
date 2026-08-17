@@ -21,6 +21,16 @@ import { findGscPageQueryOpportunities } from "./gsc-opportunities";
 import { generateTasksFromGscInsights } from "./gsc-task-generator";
 import type { GscMetricsJson } from "./gsc-types";
 import { syncGrowthOpportunitiesForWebsite } from "@/lib/growth/sync-opportunities";
+import { scoreKeywordOpportunity } from "@/lib/content-research/opportunity-score";
+
+function inferIntent(keyword: string): "INFORMATIONAL" | "COMMERCIAL" | "TRANSACTIONAL" | "NAVIGATIONAL" | "LOCAL" | "MIXED" {
+  const value = keyword.toLowerCase();
+  if (/\b(buy|price|order|shop|osta|hind|заказать|купить|цена)\b/.test(value)) return "TRANSACTIONAL";
+  if (/\b(best|compare|review|service|лучший|сравн|услуг)\b/.test(value)) return "COMMERCIAL";
+  if (/\b(tallinn|estonia|eesti|near me|рядом|таллин)\b/.test(value)) return "LOCAL";
+  if (/\b(how|what|why|guide|как|что|почему|kuidas|mis)\b/.test(value)) return "INFORMATIONAL";
+  return "MIXED";
+}
 
 export type GscSyncResult = {
   period: GscMetricsJson["period"];
@@ -113,7 +123,7 @@ export async function syncGscPerformanceForWebsite({
 
   const period = getGscPerformanceDateRange(28);
   const { withGscAccessToken } = await import("@/lib/integrations/gsc-access");
-  const [summary, pages, queries, pageQueries] = await withGscAccessToken(
+  const [summary, pages, queries, pageQueries, dailyPages] = await withGscAccessToken(
     integration.id,
     accessToken,
     async (token) =>
@@ -147,6 +157,14 @@ export async function syncGscPerformanceForWebsite({
         endDate: period.endDate,
           dimensions: ["page", "query"],
           rowLimit: 100,
+        }),
+        getSearchConsolePerformanceRows({
+          accessToken: token,
+          siteUrl: searchConsoleSiteUrl,
+          startDate: period.startDate,
+          endDate: period.endDate,
+          dimensions: ["date", "page", "country", "device"],
+          rowLimit: 5_000,
         }),
       ])
   );
@@ -207,6 +225,103 @@ export async function syncGscPerformanceForWebsite({
       where: { integrationId: integration.id },
       data: { metricsJson },
     });
+
+    if (dailyPages.length > 0) {
+      await tx.pageMetric.createMany({
+        data: dailyPages.flatMap((row) =>
+          row.date && row.page
+            ? [{
+                websiteId: website.id,
+                pageUrl: row.page,
+                date: new Date(`${row.date}T00:00:00.000Z`),
+                country: row.country ?? "all",
+                device: row.device ?? "all",
+                impressions: Math.round(row.impressions),
+                clicks: Math.round(row.clicks),
+                ctr: row.ctr,
+                position: row.position,
+              }]
+            : []
+        ),
+        skipDuplicates: true,
+      });
+    }
+
+    for (const row of pageQueries) {
+      if (!row.query) continue;
+      const normalizedKeyword = row.query.trim().toLocaleLowerCase();
+      const intent = inferIntent(row.query);
+      const recommendedAction =
+        row.position <= 10 && row.ctr < 0.02
+          ? "CHANGE_META"
+          : row.position >= 8 && row.position <= 20
+            ? "UPDATE_EXISTING"
+            : "ADD_SECTION";
+      const keyword = await tx.keyword.upsert({
+        where: {
+          websiteId_normalizedKeyword_locale_country: {
+            websiteId: website.id,
+            normalizedKeyword,
+            locale: "und",
+            country: "all",
+          },
+        },
+        create: {
+          websiteId: website.id,
+          organizationId: website.organizationId,
+          keyword: row.query,
+          normalizedKeyword,
+          locale: "und",
+          country: "all",
+          intent,
+          relevance: 0.75,
+          businessValue: intent === "TRANSACTIONAL" || intent === "COMMERCIAL" ? 0.9 : 0.6,
+          opportunityScore: scoreKeywordOpportunity({
+            relevance: 0.75,
+            intentValue: intent === "TRANSACTIONAL" || intent === "COMMERCIAL" ? 0.9 : 0.6,
+            achievableProbability: row.position > 0 && row.position <= 20 ? 0.85 : 0.45,
+            trafficPotential: Math.min(row.impressions / 500, 1),
+            businessValue: intent === "TRANSACTIONAL" || intent === "COMMERCIAL" ? 0.9 : 0.6,
+            freshnessOpportunity: 0.7,
+            evidenceConfidence: 1,
+          }),
+          confidence: 1,
+          rankingUrl: row.page,
+          currentPosition: row.position,
+          impressions: Math.round(row.impressions),
+          clicks: Math.round(row.clicks),
+          ctr: row.ctr,
+          recommendedAction,
+          evidenceJson: [{ source: "GSC", period, page: row.page }],
+          lastEvaluatedAt: now,
+        },
+        update: {
+          intent,
+          rankingUrl: row.page,
+          currentPosition: row.position,
+          impressions: Math.round(row.impressions),
+          clicks: Math.round(row.clicks),
+          ctr: row.ctr,
+          recommendedAction,
+          lastEvaluatedAt: now,
+        },
+        select: { id: true },
+      });
+      await tx.keywordMetric.createMany({
+        data: [{
+          keywordId: keyword.id,
+          date: new Date(`${period.endDate}T00:00:00.000Z`),
+          pageUrl: row.page ?? "",
+          country: "all",
+          device: "all",
+          impressions: Math.round(row.impressions),
+          clicks: Math.round(row.clicks),
+          ctr: row.ctr,
+          position: row.position,
+        }],
+        skipDuplicates: true,
+      });
+    }
 
     await tx.integration.update({
       where: { id: integration.id },

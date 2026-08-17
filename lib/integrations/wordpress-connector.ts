@@ -315,6 +315,19 @@ export async function verifyWordPressApiKey({
   return serializeConnection(connection);
 }
 
+/** Resolve the ping signing secret only after the one-time API key is verified. */
+export async function getWordPressPingSecret(apiKey: string): Promise<string> {
+  const connection = await verifyWordPressApiKey({ apiKey });
+  const row = await getPrisma().wordPressConnection.findUnique({
+    where: { id: connection.id },
+    select: { apiSecretEncrypted: true },
+  });
+  if (!row?.apiSecretEncrypted) {
+    throw new AppError(ErrorCode.UNAUTHORIZED, "Shared Secret is required for signed plugin requests.");
+  }
+  return decryptSecret(row.apiSecretEncrypted);
+}
+
 /**
  * Handles plugin ping — marks connection as CONNECTED and syncs Integration row.
  */

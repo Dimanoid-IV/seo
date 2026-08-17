@@ -7,6 +7,8 @@ export function evaluateLivePublishActivationPrerequisites(input: {
   planApprovedForAutoPublish: boolean;
   publishingIntegrationConnected: boolean;
   livePublishPaused: boolean;
+  /** Informational only: an explicit activation may repair a stale mode. */
+  currentMode?: string | null;
 }): { allowed: true; reason: null } | { allowed: false; reason: LivePublishActivationBlockReason } {
   if (!input.planApprovedForAutoPublish) {
     return { allowed: false, reason: "plan_not_approved_for_auto_publish" };
@@ -19,4 +21,3 @@ export function evaluateLivePublishActivationPrerequisites(input: {
   }
   return { allowed: true, reason: null };
 }
-

@@ -188,6 +188,36 @@ function parseStringArray(value: unknown): string[] {
   return value.filter((item): item is string => typeof item === "string");
 }
 
+function parseSerpResearch(value: unknown): ContentResearchBrief["serpResearch"] {
+  if (!isRecord(value) || value.provider !== "SERPER") return undefined;
+  const query = typeof value.query === "string" ? value.query : "";
+  const observedAt = typeof value.observedAt === "string" ? value.observedAt : "";
+  if (!query || !observedAt) return undefined;
+  const topPages = Array.isArray(value.topPages)
+    ? value.topPages.flatMap((item) => {
+        if (!isRecord(item) || typeof item.url !== "string" || typeof item.title !== "string") return [];
+        return [{
+          position: typeof item.position === "number" ? item.position : 0,
+          title: item.title,
+          url: item.url,
+          snippet: typeof item.snippet === "string" ? item.snippet : "",
+          headings: parseStringArray(item.headings),
+        }];
+      })
+    : [];
+  return {
+    provider: "SERPER",
+    query,
+    observedAt,
+    available: value.available === true,
+    unavailableReason: typeof value.unavailableReason === "string" ? value.unavailableReason : undefined,
+    topPages,
+    relatedQuestions: parseStringArray(value.relatedQuestions),
+    commonHeadings: parseStringArray(value.commonHeadings),
+    entities: parseStringArray(value.entities),
+  };
+}
+
 export function parseContentResearchBrief(
   value: unknown
 ): ContentResearchBrief | null {
@@ -331,6 +361,7 @@ export function parseContentResearchBrief(
         ? value.aiReadableSummarySuggestion
         : undefined,
     evidence,
+    serpResearch: parseSerpResearch(value.serpResearch),
     seoStrategy: parseSeoStrategy(value.seoStrategy),
     qualityRequirements: parseStringArray(value.qualityRequirements),
     riskLevel,

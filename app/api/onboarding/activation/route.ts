@@ -50,6 +50,12 @@ export async function GET(request: Request) {
     const siteTech = readSiteTechFromBusinessGoals(website?.businessGoals);
     const brandVoice = readBrandVoiceFromBusinessGoals(website?.businessGoals);
     const brandKit = readBrandKitFromBusinessGoals(website?.businessGoals);
+    const businessProfile = website
+      ? await prisma.businessProfile.findUnique({
+          where: { websiteId: website.id },
+          select: { businessName: true, niche: true, country: true, confidence: true, lastInferredAt: true },
+        })
+      : null;
 
     return authJsonResponse({
       data: {
@@ -70,6 +76,7 @@ export async function GET(request: Request) {
               palette: brandKit.palette,
             }
           : null,
+        businessProfile,
         website: website
           ? { id: website.id, url: website.url }
           : null,

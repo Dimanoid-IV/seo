@@ -7,16 +7,16 @@ import {
 } from "@/lib/auth/responses";
 import { loginUser } from "@/lib/auth/service";
 import { loginSchema } from "@/lib/validators/auth";
+import { enforceRateLimit } from "@/lib/security/rate-limit";
 
 function assertDatabaseConfigured(): void {
   assertSaasConfigured();
 }
 
-// TODO: rate limit — 10 login attempts / min / IP (docs/API-Design.md)
-
 export async function POST(request: Request) {
   try {
     assertDatabaseConfigured();
+    await enforceRateLimit({ request, scope: "auth.login", limit: 10, windowMs: 60_000 });
 
     const body = await parseJsonBody(request);
     const parsed = loginSchema.safeParse(body);

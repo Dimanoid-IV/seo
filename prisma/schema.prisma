@@ -369,11 +369,19 @@ enum PlanItemStatus {
 
 enum ArticleStatus {
   IDEA
+  SCHEDULED
+  RESEARCHING
+  GENERATING
   DRAFT
+  REVIEWING
   WAITING_REVIEW
+  READY
+  PUBLISHING
   APPROVED
   WORDPRESS_DRAFT_CREATED
   PUBLISHED
+  MONITORING
+  IMPROVING
   ARCHIVED
   FAILED
 }
@@ -609,6 +617,78 @@ enum AssistedSetupRequestStatus {
   CLOSED
 }
 
+enum CrawlPageType {
+  HOME
+  ABOUT
+  PRODUCT
+  SERVICE
+  CATEGORY
+  BLOG
+  CONTACT
+  LEGAL
+  OTHER
+}
+
+enum SearchIntent {
+  INFORMATIONAL
+  COMMERCIAL
+  TRANSACTIONAL
+  NAVIGATIONAL
+  LOCAL
+  COMPARISON
+  MIXED
+}
+
+enum ContentActionType {
+  CREATE_NEW_PAGE
+  UPDATE_EXISTING
+  ADD_SECTION
+  ADD_FAQ
+  ADD_INTERNAL_LINKS
+  CHANGE_META
+  MERGE_CONTENT
+  NO_ACTION
+}
+
+enum AutopilotActionState {
+  PLANNED
+  SCHEDULED
+  RESEARCHING
+  GENERATING
+  REVIEWING
+  READY
+  PUBLISHING
+  PUBLISHED
+  MONITORING
+  IMPROVING
+  FAILED
+  CANCELED
+}
+
+enum ActionPolicyDecision {
+  SAFE_AUTO
+  REVIEW_REQUIRED
+  BLOCKED
+}
+
+enum AuthorityOpportunityType {
+  UNLINKED_MENTION
+  PARTNER_RESOURCE
+  DIRECTORY
+  COMPETITOR_LINK_GAP
+  DIGITAL_PR
+  OTHER
+}
+
+enum AuthorityStatus {
+  DISCOVERED
+  QUALIFIED
+  CONTACTED
+  WON
+  LOST
+  BLOCKED
+}
+
 // ---------------------------------------------------------------------------
 // Models
 // ---------------------------------------------------------------------------
@@ -632,29 +712,29 @@ model User {
   updatedAt             DateTime  @updatedAt
   deletedAt             DateTime?
 
-  ownedOrganizations    Organization[] @relation("OrganizationOwner")
-  billingOrganizations  Organization[] @relation("OrganizationBilling")
-  subscriptions         Subscription[]
-  payments              Payment[]
-  triggeredAudits       Audit[]        @relation("AuditTriggeredByUser")
-  activities            Activity[]
-  aiJobs                AIJob[]
-  aiUsages              AIUsage[]
-  emailLogs             EmailLog[]
-  adminNotesCreated     AdminNote[]    @relation("AdminNoteAuthor")
-  adminNotesReceived    AdminNote[]    @relation("AdminNoteTarget")
-  errorLogs             ErrorLog[]
-  timelineEvents        TimelineEvent[]
-  websiteUserStates     WebsiteUserState[]
-  socialPostsCreated    SocialPost[] @relation("SocialPostAuthor")
-  monthlyAutopilotPlans MonthlyAutopilotPlan[]
-  emailApprovals        EmailApproval[]
-  usageCounters         UsageCounter[]
-  onboardingState       OnboardingState?
-  assistedSetupRequests AssistedSetupRequest[]
+  ownedOrganizations             Organization[]            @relation("OrganizationOwner")
+  billingOrganizations           Organization[]            @relation("OrganizationBilling")
+  subscriptions                  Subscription[]
+  payments                       Payment[]
+  triggeredAudits                Audit[]                   @relation("AuditTriggeredByUser")
+  activities                     Activity[]
+  aiJobs                         AIJob[]
+  aiUsages                       AIUsage[]
+  emailLogs                      EmailLog[]
+  adminNotesCreated              AdminNote[]               @relation("AdminNoteAuthor")
+  adminNotesReceived             AdminNote[]               @relation("AdminNoteTarget")
+  errorLogs                      ErrorLog[]
+  timelineEvents                 TimelineEvent[]
+  websiteUserStates              WebsiteUserState[]
+  socialPostsCreated             SocialPost[]              @relation("SocialPostAuthor")
+  monthlyAutopilotPlans          MonthlyAutopilotPlan[]
+  emailApprovals                 EmailApproval[]
+  usageCounters                  UsageCounter[]
+  onboardingState                OnboardingState?
+  assistedSetupRequests          AssistedSetupRequest[]
   integrationExecutionsRequested IntegrationExecutionJob[] @relation("IntegrationExecutionRequestedBy")
   integrationExecutionsApproved  IntegrationExecutionJob[] @relation("IntegrationExecutionApprovedBy")
-  websitesLivePublishPaused      Website[] @relation("WebsiteLivePublishPausedBy")
+  websitesLivePublishPaused      Website[]                 @relation("WebsiteLivePublishPausedBy")
 
   @@index([stripeCustomerId])
   @@index([googleAuthId])
@@ -664,41 +744,53 @@ model User {
 }
 
 model Organization {
-  id             String             @id @default(uuid()) @db.Uuid
-  name           String
-  slug           String?
-  country        String?
-  city           String?
-  ownerUserId    String             @db.Uuid
-  billingUserId  String?            @db.Uuid
-  status         OrganizationStatus @default(ACTIVE)
-  createdAt      DateTime           @default(now())
-  updatedAt      DateTime           @updatedAt
-  deletedAt      DateTime?
+  id            String             @id @default(uuid()) @db.Uuid
+  name          String
+  slug          String?
+  country       String?
+  city          String?
+  ownerUserId   String             @db.Uuid
+  billingUserId String?            @db.Uuid
+  status        OrganizationStatus @default(ACTIVE)
+  createdAt     DateTime           @default(now())
+  updatedAt     DateTime           @updatedAt
+  deletedAt     DateTime?
 
-  owner          User               @relation("OrganizationOwner", fields: [ownerUserId], references: [id])
-  billingUser    User?              @relation("OrganizationBilling", fields: [billingUserId], references: [id])
-  websites       Website[]
-  subscriptions  Subscription[]
-  payments       Payment[]
-  planLimits            PlanLimit[]
-  activities            Activity[]
-  tasks                 Task[]
-  monthlyPlans            MonthlyPlan[]
-  monthlyAutopilotPlans   MonthlyAutopilotPlan[]
-  emailApprovals          EmailApproval[]
-  usageCounters           UsageCounter[]
-  articles              Article[]
-  socialPosts           SocialPost[]
-  reports               Report[]
-  integrations          Integration[]
-  wordpressConnections  WordPressConnection[]
-  aiJobs                AIJob[]
-  aiUsages              AIUsage[]
-  emailLogs             EmailLog[]
-  adminNotes            AdminNote[]
-  errorLogs             ErrorLog[]
+  owner                    User                      @relation("OrganizationOwner", fields: [ownerUserId], references: [id])
+  billingUser              User?                     @relation("OrganizationBilling", fields: [billingUserId], references: [id])
+  websites                 Website[]
+  subscriptions            Subscription[]
+  payments                 Payment[]
+  planLimits               PlanLimit[]
+  activities               Activity[]
+  tasks                    Task[]
+  monthlyPlans             MonthlyPlan[]
+  monthlyAutopilotPlans    MonthlyAutopilotPlan[]
+  emailApprovals           EmailApproval[]
+  usageCounters            UsageCounter[]
+  articles                 Article[]
+  socialPosts              SocialPost[]
+  reports                  Report[]
+  integrations             Integration[]
+  wordpressConnections     WordPressConnection[]
+  aiJobs                   AIJob[]
+  aiUsages                 AIUsage[]
+  emailLogs                EmailLog[]
+  adminNotes               AdminNote[]
+  errorLogs                ErrorLog[]
   integrationExecutionJobs IntegrationExecutionJob[]
+  crawledPages             CrawledPage[]
+  keywords                 Keyword[]
+  contentOpportunities     ContentOpportunity[]
+  contentBriefs            ContentBrief[]
+  autopilotActions         AutopilotAction[]
+  pageMetrics              PageMetric[]
+  actionImpacts            ActionImpact[]
+  authorityOpportunities   AuthorityOpportunity[]
+  backlinkProspects        BacklinkProspect[]
+  outreachCampaigns        OutreachCampaign[]
+  mentions                 Mention[]
+  apiRateLimitBuckets      ApiRateLimitBucket[]
 
   @@index([ownerUserId])
   @@index([billingUserId])
@@ -708,57 +800,69 @@ model Organization {
 }
 
 model Website {
-  id                      String          @id @default(uuid()) @db.Uuid
-  organizationId          String          @db.Uuid
-  url                     String
-  displayName             String?
-  niche                   WebsiteNiche?
-  cms                     WebsiteCms?
-  primaryLanguage         WebsiteLanguage @default(RU)
-  contentLanguages        Json            @default("[]")
-  businessGoals           Json?
-  status                  WebsiteStatus   @default(ACTIVE)
-  lastAuditAt             DateTime?
-  currentGrowthScore      Int?
-  currentAIReadinessScore Int?
+  id                                 String          @id @default(uuid()) @db.Uuid
+  organizationId                     String          @db.Uuid
+  url                                String
+  displayName                        String?
+  niche                              WebsiteNiche?
+  cms                                WebsiteCms?
+  primaryLanguage                    WebsiteLanguage @default(RU)
+  contentLanguages                   Json            @default("[]")
+  businessGoals                      Json?
+  status                             WebsiteStatus   @default(ACTIVE)
+  lastAuditAt                        DateTime?
+  currentGrowthScore                 Int?
+  currentAIReadinessScore            Int?
   /// Emergency pause for live WordPress/webhook publish only (Prompt 11.53).
-  autopilotLivePublishPaused Boolean      @default(false)
-  autopilotLivePublishPausedAt DateTime?
-  autopilotLivePublishPausedByUserId String? @db.Uuid
-  autopilotLivePublishPauseReason String?
+  autopilotLivePublishPaused         Boolean         @default(false)
+  autopilotLivePublishPausedAt       DateTime?
+  autopilotLivePublishPausedByUserId String?         @db.Uuid
+  autopilotLivePublishPauseReason    String?
   /// First-customer scoped rollout flag (Prompt 11.55). OR with env allowlist.
-  livePublishRolloutEnabled Boolean @default(false)
-  createdAt               DateTime        @default(now())
-  updatedAt               DateTime        @updatedAt
-  deletedAt               DateTime?
+  livePublishRolloutEnabled          Boolean         @default(false)
+  createdAt                          DateTime        @default(now())
+  updatedAt                          DateTime        @updatedAt
+  deletedAt                          DateTime?
 
-  organization            Organization            @relation(fields: [organizationId], references: [id])
-  livePublishPausedByUser User?                   @relation("WebsiteLivePublishPausedBy", fields: [autopilotLivePublishPausedByUserId], references: [id], onDelete: SetNull)
-  audits                  Audit[]
-  auditChecks             AuditCheck[]
-  growthScoreSnapshots    GrowthScoreSnapshot[]
-  aiReadinessSnapshots    AIReadinessSnapshot[]
-  activities              Activity[]
-  tasks                   Task[]
-  monthlyPlans            MonthlyPlan[]
-  monthlyAutopilotPlans   MonthlyAutopilotPlan[]
-  emailApprovals          EmailApproval[]
-  usageCounters           UsageCounter[]
-  articles                Article[]
-  socialPosts             SocialPost[]
-  reports                 Report[]
-  integrations            Integration[]
-  wordpressConnections    WordPressConnection[]
-  aiJobs                  AIJob[]
-  aiUsages                AIUsage[]
-  emailLogs               EmailLog[]
-  adminNotes              AdminNote[]
-  errorLogs               ErrorLog[]
-  timelineEvents          TimelineEvent[]
-  websiteUserStates       WebsiteUserState[]
-  onboardingStates        OnboardingState[]
-  assistedSetupRequests   AssistedSetupRequest[]
+  organization             Organization              @relation(fields: [organizationId], references: [id])
+  livePublishPausedByUser  User?                     @relation("WebsiteLivePublishPausedBy", fields: [autopilotLivePublishPausedByUserId], references: [id], onDelete: SetNull)
+  audits                   Audit[]
+  auditChecks              AuditCheck[]
+  growthScoreSnapshots     GrowthScoreSnapshot[]
+  aiReadinessSnapshots     AIReadinessSnapshot[]
+  activities               Activity[]
+  tasks                    Task[]
+  monthlyPlans             MonthlyPlan[]
+  monthlyAutopilotPlans    MonthlyAutopilotPlan[]
+  emailApprovals           EmailApproval[]
+  usageCounters            UsageCounter[]
+  articles                 Article[]
+  socialPosts              SocialPost[]
+  reports                  Report[]
+  integrations             Integration[]
+  wordpressConnections     WordPressConnection[]
+  aiJobs                   AIJob[]
+  aiUsages                 AIUsage[]
+  emailLogs                EmailLog[]
+  adminNotes               AdminNote[]
+  errorLogs                ErrorLog[]
+  timelineEvents           TimelineEvent[]
+  websiteUserStates        WebsiteUserState[]
+  onboardingStates         OnboardingState[]
+  assistedSetupRequests    AssistedSetupRequest[]
   integrationExecutionJobs IntegrationExecutionJob[]
+  businessProfile          BusinessProfile?
+  crawledPages             CrawledPage[]
+  keywords                 Keyword[]
+  contentOpportunities     ContentOpportunity[]
+  contentBriefs            ContentBrief[]
+  autopilotActions         AutopilotAction[]
+  pageMetrics              PageMetric[]
+  actionImpacts            ActionImpact[]
+  authorityOpportunities   AuthorityOpportunity[]
+  backlinkProspects        BacklinkProspect[]
+  outreachCampaigns        OutreachCampaign[]
+  mentions                 Mention[]
 
   @@unique([organizationId, url])
   @@index([organizationId])
@@ -769,6 +873,24 @@ model Website {
   @@index([autopilotLivePublishPaused])
   @@index([livePublishRolloutEnabled])
   @@map("websites")
+}
+
+model ApiRateLimitBucket {
+  id             String   @id @default(uuid()) @db.Uuid
+  organizationId String?  @db.Uuid
+  scope          String
+  subjectHash    String
+  windowStart    DateTime
+  requestCount   Int      @default(1)
+  expiresAt      DateTime
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  organization Organization? @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@unique([scope, subjectHash, windowStart])
+  @@index([expiresAt])
+  @@map("api_rate_limit_buckets")
 }
 
 model Subscription {
@@ -790,9 +912,9 @@ model Subscription {
   deletedAt            DateTime?
 
   organization Organization @relation(fields: [organizationId], references: [id])
-  user           User?        @relation(fields: [userId], references: [id])
-  payments       Payment[]
-  planLimits     PlanLimit[]
+  user         User?        @relation(fields: [userId], references: [id])
+  payments     Payment[]
+  planLimits   PlanLimit[]
 
   @@index([organizationId])
   @@index([userId])
@@ -820,8 +942,8 @@ model Payment {
   updatedAt             DateTime      @updatedAt
 
   organization Organization  @relation(fields: [organizationId], references: [id])
-  user           User?         @relation(fields: [userId], references: [id])
-  subscription   Subscription? @relation(fields: [subscriptionId], references: [id])
+  user         User?         @relation(fields: [userId], references: [id])
+  subscription Subscription? @relation(fields: [subscriptionId], references: [id])
 
   @@index([organizationId])
   @@index([userId])
@@ -833,22 +955,22 @@ model Payment {
 }
 
 model PlanLimit {
-  id                 String   @id @default(uuid()) @db.Uuid
-  subscriptionId     String   @db.Uuid
-  organizationId     String   @db.Uuid
-  periodStart        DateTime
-  periodEnd          DateTime
-  auditsLimit        Int      @default(0)
-  auditsUsed         Int      @default(0)
-  articlesLimit      Int      @default(0)
-  articlesUsed       Int      @default(0)
-  socialPostsLimit   Int      @default(0)
-  socialPostsUsed    Int      @default(0)
+  id                  String   @id @default(uuid()) @db.Uuid
+  subscriptionId      String   @db.Uuid
+  organizationId      String   @db.Uuid
+  periodStart         DateTime
+  periodEnd           DateTime
+  auditsLimit         Int      @default(0)
+  auditsUsed          Int      @default(0)
+  articlesLimit       Int      @default(0)
+  articlesUsed        Int      @default(0)
+  socialPostsLimit    Int      @default(0)
+  socialPostsUsed     Int      @default(0)
   aiCreditsLimitCents Int?
-  aiCreditsUsedCents Int      @default(0)
-  websitesLimit      Int      @default(1)
-  createdAt          DateTime @default(now())
-  updatedAt          DateTime @updatedAt
+  aiCreditsUsedCents  Int      @default(0)
+  websitesLimit       Int      @default(1)
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
 
   subscription Subscription @relation(fields: [subscriptionId], references: [id])
   organization Organization @relation(fields: [organizationId], references: [id])
@@ -860,15 +982,15 @@ model PlanLimit {
 }
 
 model UsageCounter {
-  id        String   @id @default(uuid()) @db.Uuid
-  userId    String   @db.Uuid
-  websiteId String?  @db.Uuid
-  organizationId String @db.Uuid
-  month     String
-  key       UsageKey
-  count     Int      @default(0)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id             String   @id @default(uuid()) @db.Uuid
+  userId         String   @db.Uuid
+  websiteId      String?  @db.Uuid
+  organizationId String   @db.Uuid
+  month          String
+  key            UsageKey
+  count          Int      @default(0)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 
   user         User         @relation(fields: [userId], references: [id])
   website      Website?     @relation(fields: [websiteId], references: [id])
@@ -884,32 +1006,32 @@ model UsageCounter {
 }
 
 model Audit {
-  id                String           @id @default(uuid()) @db.Uuid
-  websiteId         String           @db.Uuid
-  type              AuditType
-  status            AuditStatus      @default(QUEUED)
-  triggeredBy       AuditTriggeredBy
-  triggeredByUserId String?          @db.Uuid
-  growthScore       Int?
-  aiReadinessScore  Int?
-  summaryJson       Json?
-  rawResultJson     Json?
+  id                 String           @id @default(uuid()) @db.Uuid
+  websiteId          String           @db.Uuid
+  type               AuditType
+  status             AuditStatus      @default(QUEUED)
+  triggeredBy        AuditTriggeredBy
+  triggeredByUserId  String?          @db.Uuid
+  growthScore        Int?
+  aiReadinessScore   Int?
+  summaryJson        Json?
+  rawResultJson      Json?
   visiblePreviewJson Json?
-  startedAt         DateTime?
-  completedAt       DateTime?
-  failedAt          DateTime?
-  errorCode         String?
-  errorMessage      String?
-  createdAt         DateTime         @default(now())
-  updatedAt         DateTime         @updatedAt
-  deletedAt         DateTime?
+  startedAt          DateTime?
+  completedAt        DateTime?
+  failedAt           DateTime?
+  errorCode          String?
+  errorMessage       String?
+  createdAt          DateTime         @default(now())
+  updatedAt          DateTime         @updatedAt
+  deletedAt          DateTime?
 
-  website               Website                 @relation(fields: [websiteId], references: [id])
-  triggeredByUser       User?                   @relation("AuditTriggeredByUser", fields: [triggeredByUserId], references: [id])
-  checks                AuditCheck[]
-  growthScoreSnapshots  GrowthScoreSnapshot[]
-  aiReadinessSnapshots  AIReadinessSnapshot[]
-  tasks                 Task[]
+  website              Website               @relation(fields: [websiteId], references: [id])
+  triggeredByUser      User?                 @relation("AuditTriggeredByUser", fields: [triggeredByUserId], references: [id])
+  checks               AuditCheck[]
+  growthScoreSnapshots GrowthScoreSnapshot[]
+  aiReadinessSnapshots AIReadinessSnapshot[]
+  tasks                Task[]
 
   @@index([websiteId])
   @@index([status])
@@ -921,20 +1043,20 @@ model Audit {
 }
 
 model AuditCheck {
-  id                  String             @id @default(uuid()) @db.Uuid
-  auditId             String             @db.Uuid
-  websiteId           String             @db.Uuid
-  category            AuditCheckCategory
-  code                String
-  title               String
-  description         String?
-  severity            AuditCheckSeverity
-  status              AuditCheckStatus
-  scoreImpact         Int?
-  isVisibleInPreview  Boolean            @default(false)
-  recommendationJson  Json?
-  evidenceJson        Json?
-  createdAt           DateTime           @default(now())
+  id                 String             @id @default(uuid()) @db.Uuid
+  auditId            String             @db.Uuid
+  websiteId          String             @db.Uuid
+  category           AuditCheckCategory
+  code               String
+  title              String
+  description        String?
+  severity           AuditCheckSeverity
+  status             AuditCheckStatus
+  scoreImpact        Int?
+  isVisibleInPreview Boolean            @default(false)
+  recommendationJson Json?
+  evidenceJson       Json?
+  createdAt          DateTime           @default(now())
 
   audit   Audit   @relation(fields: [auditId], references: [id], onDelete: Cascade)
   website Website @relation(fields: [websiteId], references: [id])
@@ -1017,15 +1139,15 @@ model Activity {
 }
 
 model Task {
-  id                 String        @id @default(uuid()) @db.Uuid
-  websiteId          String        @db.Uuid
-  organizationId     String        @db.Uuid
-  auditId            String?       @db.Uuid
+  id                 String       @id @default(uuid()) @db.Uuid
+  websiteId          String       @db.Uuid
+  organizationId     String       @db.Uuid
+  auditId            String?      @db.Uuid
   title              String
   description        String?
   category           TaskCategory
-  priority           TaskPriority  @default(MEDIUM)
-  status             TaskStatus    @default(OPEN)
+  priority           TaskPriority @default(MEDIUM)
+  status             TaskStatus   @default(OPEN)
   impactScore        Int?
   effort             TaskEffort?
   source             TaskSource
@@ -1033,13 +1155,13 @@ model Task {
   resultJson         Json?
   dueAt              DateTime?
   completedAt        DateTime?
-  createdAt          DateTime      @default(now())
-  updatedAt          DateTime      @updatedAt
+  createdAt          DateTime     @default(now())
+  updatedAt          DateTime     @updatedAt
   deletedAt          DateTime?
 
-  website      Website    @relation(fields: [websiteId], references: [id])
+  website      Website      @relation(fields: [websiteId], references: [id])
   organization Organization @relation(fields: [organizationId], references: [id])
-  audit        Audit?     @relation(fields: [auditId], references: [id])
+  audit        Audit?       @relation(fields: [auditId], references: [id])
   planItems    PlanItem[]
 
   @@index([websiteId])
@@ -1160,20 +1282,20 @@ model EmailApproval {
 }
 
 model PlanItem {
-  id                String         @id @default(uuid()) @db.Uuid
-  monthlyPlanId     String         @db.Uuid
-  type              PlanItemType
-  title             String
-  description       String?
-  status            PlanItemStatus @default(PLANNED)
-  scheduledFor      DateTime?
-  completedAt       DateTime?
-  linkedTaskId      String?        @db.Uuid
-  linkedArticleId   String?        @db.Uuid
-  linkedSocialPostId String?       @db.Uuid
-  metadataJson      Json?
-  createdAt         DateTime       @default(now())
-  updatedAt         DateTime       @updatedAt
+  id                 String         @id @default(uuid()) @db.Uuid
+  monthlyPlanId      String         @db.Uuid
+  type               PlanItemType
+  title              String
+  description        String?
+  status             PlanItemStatus @default(PLANNED)
+  scheduledFor       DateTime?
+  completedAt        DateTime?
+  linkedTaskId       String?        @db.Uuid
+  linkedArticleId    String?        @db.Uuid
+  linkedSocialPostId String?        @db.Uuid
+  metadataJson       Json?
+  createdAt          DateTime       @default(now())
+  updatedAt          DateTime       @updatedAt
 
   monthlyPlan      MonthlyPlan @relation(fields: [monthlyPlanId], references: [id], onDelete: Cascade)
   linkedTask       Task?       @relation(fields: [linkedTaskId], references: [id])
@@ -1188,45 +1310,46 @@ model PlanItem {
 }
 
 model Article {
-  id                 String          @id @default(uuid()) @db.Uuid
-  websiteId          String          @db.Uuid
-  organizationId     String          @db.Uuid
-  monthlyPlanId      String?         @db.Uuid
-  title              String
-  slug               String?
-  language           WebsiteLanguage
-  status             ArticleStatus   @default(IDEA)
-  topic              String?
-  targetKeyword      String?
-  metaTitle          String?
-  metaDescription    String?
-  contentHtml        String?
-  contentJson        Json?
-  faqJson            Json?
-  schemaJson         Json?
-  wordpressPostId    String?
-  wordpressEditUrl   String?
+  id                    String          @id @default(uuid()) @db.Uuid
+  websiteId             String          @db.Uuid
+  organizationId        String          @db.Uuid
+  monthlyPlanId         String?         @db.Uuid
+  title                 String
+  slug                  String?
+  language              WebsiteLanguage
+  status                ArticleStatus   @default(IDEA)
+  topic                 String?
+  targetKeyword         String?
+  metaTitle             String?
+  metaDescription       String?
+  contentHtml           String?
+  contentJson           Json?
+  faqJson               Json?
+  schemaJson            Json?
+  wordpressPostId       String?
+  wordpressEditUrl      String?
   /// Last known public URL from live publish — kept after rollback for history.
   wordpressPublishedUrl String?
   wordpressRolledBackAt DateTime?
-  generatedByAIJobId String?         @db.Uuid
-  qualityScore       Int?
-  qualityPassed      Boolean?
-  qualityIssuesJson  Json?
-  qualityRepairAttempts Int          @default(0)
-  reviewedAt         DateTime?
-  approvedAt         DateTime?
-  publishedAt        DateTime?
-  createdAt          DateTime        @default(now())
-  updatedAt          DateTime        @updatedAt
-  deletedAt          DateTime?
+  generatedByAIJobId    String?         @db.Uuid
+  qualityScore          Int?
+  qualityPassed         Boolean?
+  qualityIssuesJson     Json?
+  qualityRepairAttempts Int             @default(0)
+  reviewedAt            DateTime?
+  approvedAt            DateTime?
+  publishedAt           DateTime?
+  createdAt             DateTime        @default(now())
+  updatedAt             DateTime        @updatedAt
+  deletedAt             DateTime?
 
-  website          Website      @relation(fields: [websiteId], references: [id])
-  organization     Organization @relation(fields: [organizationId], references: [id])
-  monthlyPlan      MonthlyPlan? @relation(fields: [monthlyPlanId], references: [id])
-  generatedByAIJob AIJob?       @relation("ArticleAIJob", fields: [generatedByAIJobId], references: [id])
+  website          Website        @relation(fields: [websiteId], references: [id])
+  organization     Organization   @relation(fields: [organizationId], references: [id])
+  monthlyPlan      MonthlyPlan?   @relation(fields: [monthlyPlanId], references: [id])
+  generatedByAIJob AIJob?         @relation("ArticleAIJob", fields: [generatedByAIJobId], references: [id])
   socialPosts      SocialPost[]
   planItems        PlanItem[]
+  contentBriefs    ContentBrief[]
 
   @@index([websiteId])
   @@index([organizationId])
@@ -1340,9 +1463,9 @@ model Integration {
   updatedAt             DateTime            @updatedAt
   disconnectedAt        DateTime?
 
-  website      Website                @relation(fields: [websiteId], references: [id])
-  organization Organization           @relation(fields: [organizationId], references: [id])
-  googleData   GoogleIntegrationData?
+  website       Website                   @relation(fields: [websiteId], references: [id])
+  organization  Organization              @relation(fields: [organizationId], references: [id])
+  googleData    GoogleIntegrationData?
   executionJobs IntegrationExecutionJob[]
 
   @@unique([websiteId, provider])
@@ -1355,18 +1478,18 @@ model Integration {
 }
 
 model GoogleIntegrationData {
-  id                         String    @id @default(uuid()) @db.Uuid
-  integrationId              String    @unique @db.Uuid
-  propertyId                 String?
-  siteUrl                    String?
-  searchConsoleSiteUrl       String?
-  businessProfileAccountId   String?
-  businessProfileLocationId  String?
-  analyticsPropertyId        String?
-  metricsJson                Json?
-  lastFetchedAt              DateTime?
-  createdAt                  DateTime  @default(now())
-  updatedAt                  DateTime  @updatedAt
+  id                        String    @id @default(uuid()) @db.Uuid
+  integrationId             String    @unique @db.Uuid
+  propertyId                String?
+  siteUrl                   String?
+  searchConsoleSiteUrl      String?
+  businessProfileAccountId  String?
+  businessProfileLocationId String?
+  analyticsPropertyId       String?
+  metricsJson               Json?
+  lastFetchedAt             DateTime?
+  createdAt                 DateTime  @default(now())
+  updatedAt                 DateTime  @updatedAt
 
   integration Integration @relation(fields: [integrationId], references: [id], onDelete: Cascade)
 
@@ -1375,24 +1498,24 @@ model GoogleIntegrationData {
 
 /// WordPress connector — apiKeyHash is SHA-256 hash for verification; secret encrypted.
 model WordPressConnection {
-  id                   String                    @id @default(uuid()) @db.Uuid
-  websiteId            String                    @db.Uuid
-  organizationId       String                    @db.Uuid
-  status               WordPressConnectionStatus @default(PENDING)
-  siteUrl              String
-  pluginVersion        String?
-  apiKeyHash           String
+  id                 String                    @id @default(uuid()) @db.Uuid
+  websiteId          String                    @db.Uuid
+  organizationId     String                    @db.Uuid
+  status             WordPressConnectionStatus @default(PENDING)
+  siteUrl            String
+  pluginVersion      String?
+  apiKeyHash         String
   /// AES-encrypted shared secret for HMAC
-  apiSecretEncrypted   String?
-  permissionsJson      Json
-  lastPingAt           DateTime?
-  lastDraftCreatedAt   DateTime?
-  createdAt            DateTime                  @default(now())
-  updatedAt            DateTime                  @updatedAt
-  disconnectedAt       DateTime?
+  apiSecretEncrypted String?
+  permissionsJson    Json
+  lastPingAt         DateTime?
+  lastDraftCreatedAt DateTime?
+  createdAt          DateTime                  @default(now())
+  updatedAt          DateTime                  @updatedAt
+  disconnectedAt     DateTime?
 
-  website      Website      @relation(fields: [websiteId], references: [id])
-  organization Organization @relation(fields: [organizationId], references: [id])
+  website       Website                   @relation(fields: [websiteId], references: [id])
+  organization  Organization              @relation(fields: [organizationId], references: [id])
   executionJobs IntegrationExecutionJob[]
 
   @@unique([websiteId, siteUrl])
@@ -1405,61 +1528,530 @@ model WordPressConnection {
 
 /// Queued/recorded integration adapter actions (foundation only — no live publish/webhook yet).
 model IntegrationExecutionJob {
-  id                     String                         @id @default(uuid()) @db.Uuid
-  organizationId         String                         @db.Uuid
-  websiteId              String                         @db.Uuid
-  integrationId          String?                        @db.Uuid
-  wordpressConnectionId  String?                        @db.Uuid
-  requestedByUserId      String?                        @db.Uuid
-  approvedByUserId       String?                        @db.Uuid
-  sourceType             IntegrationExecutionSourceType
-  sourceId               String
-  action                 IntegrationExecutionAction
-  provider               IntegrationExecutionProvider
-  mode                   IntegrationExecutionMode       @default(REVIEW_ONLY)
-  status                 IntegrationExecutionStatus     @default(QUEUED)
-  idempotencyKey         String                         @unique
-  capability             String
+  id                    String                         @id @default(uuid()) @db.Uuid
+  organizationId        String                         @db.Uuid
+  websiteId             String                         @db.Uuid
+  integrationId         String?                        @db.Uuid
+  wordpressConnectionId String?                        @db.Uuid
+  requestedByUserId     String?                        @db.Uuid
+  approvedByUserId      String?                        @db.Uuid
+  sourceType            IntegrationExecutionSourceType
+  sourceId              String
+  action                IntegrationExecutionAction
+  provider              IntegrationExecutionProvider
+  mode                  IntegrationExecutionMode       @default(REVIEW_ONLY)
+  status                IntegrationExecutionStatus     @default(QUEUED)
+  idempotencyKey        String                         @unique
+  capability            String
   /// Sanitized preview only — never secrets or full HTML bodies.
-  requestPreviewJson     Json?
+  requestPreviewJson    Json?
   /// Sanitized result only — never secrets or full HTML bodies.
-  resultJson             Json?
-  externalId             String?
-  externalUrl            String?
-  errorCode              String?
-  errorMessage           String?
-  retryCount             Int                            @default(0)
-  maxRetries             Int                            @default(3)
-  createdAt              DateTime                       @default(now())
-  updatedAt              DateTime                       @updatedAt
-  startedAt              DateTime?
-  finishedAt             DateTime?
+  resultJson            Json?
+  externalId            String?
+  externalUrl           String?
+  errorCode             String?
+  errorMessage          String?
+  retryCount            Int                            @default(0)
+  maxRetries            Int                            @default(3)
+  /// Total external execution/verification attempts (initial attempt included).
+  attemptCount          Int                            @default(0)
+  lastAttemptAt         DateTime?
+  nextAttemptAt         DateTime?
+  /// Sanitized verification state; never response bodies or secrets.
+  verificationJson      Json?
+  createdAt             DateTime                       @default(now())
+  updatedAt             DateTime                       @updatedAt
+  startedAt             DateTime?
+  finishedAt            DateTime?
 
-  organization        Organization         @relation(fields: [organizationId], references: [id])
-  website             Website              @relation(fields: [websiteId], references: [id])
-  integration         Integration?         @relation(fields: [integrationId], references: [id], onDelete: SetNull)
-  wordpressConnection WordPressConnection? @relation(fields: [wordpressConnectionId], references: [id], onDelete: SetNull)
-  requestedByUser     User?                @relation("IntegrationExecutionRequestedBy", fields: [requestedByUserId], references: [id], onDelete: SetNull)
-  approvedByUser      User?                @relation("IntegrationExecutionApprovedBy", fields: [approvedByUserId], references: [id], onDelete: SetNull)
+  organization        Organization                @relation(fields: [organizationId], references: [id])
+  website             Website                     @relation(fields: [websiteId], references: [id])
+  integration         Integration?                @relation(fields: [integrationId], references: [id], onDelete: SetNull)
+  wordpressConnection WordPressConnection?        @relation(fields: [wordpressConnectionId], references: [id], onDelete: SetNull)
+  requestedByUser     User?                       @relation("IntegrationExecutionRequestedBy", fields: [requestedByUserId], references: [id], onDelete: SetNull)
+  approvedByUser      User?                       @relation("IntegrationExecutionApprovedBy", fields: [approvedByUserId], references: [id], onDelete: SetNull)
   events              IntegrationExecutionEvent[]
+  publishAttempts     PublishAttempt[]
 
   @@index([organizationId, createdAt])
   @@index([websiteId, createdAt])
   @@index([status, createdAt])
+  @@index([status, nextAttemptAt])
   @@index([provider, action])
   @@index([sourceType, sourceId])
   @@map("integration_execution_jobs")
 }
 
+/// Immutable history for publish delivery and live-URL verification attempts.
+model PublishAttempt {
+  id               String    @id @default(uuid()) @db.Uuid
+  jobId            String    @db.Uuid
+  attemptNumber    Int
+  phase            String
+  outcome          String
+  statusCode       Int?
+  errorCode        String?
+  errorMessage     String?
+  verificationJson Json?
+  startedAt        DateTime  @default(now())
+  finishedAt       DateTime?
+
+  job IntegrationExecutionJob @relation(fields: [jobId], references: [id], onDelete: Cascade)
+
+  @@unique([jobId, attemptNumber, phase])
+  @@index([jobId, startedAt])
+  @@index([outcome, startedAt])
+  @@map("publish_attempts")
+}
+
+model BusinessProfile {
+  id                   String    @id @default(uuid()) @db.Uuid
+  websiteId            String    @unique @db.Uuid
+  organizationId       String    @db.Uuid
+  businessName         String?
+  description          String?
+  niche                String?
+  country              String?
+  targetMarketsJson    Json      @default("[]")
+  languagesJson        Json      @default("[]")
+  servicesJson         Json      @default("[]")
+  productsJson         Json      @default("[]")
+  pricingContextJson   Json?
+  targetAudiencesJson  Json      @default("[]")
+  conversionPagesJson  Json      @default("[]")
+  commercialIntent     String?
+  competitorsJson      Json      @default("[]")
+  toneOfVoiceJson      Json?
+  brandConstraintsJson Json?
+  differentiatorsJson  Json      @default("[]")
+  geographyJson        Json?
+  evidenceJson         Json      @default("[]")
+  confidence           Float?
+  lastInferredAt       DateTime?
+  lastConfirmedAt      DateTime?
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
+
+  website Website @relation(fields: [websiteId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId])
+  @@index([lastInferredAt])
+  @@map("business_profiles")
+}
+
+model CrawledPage {
+  id                  String        @id @default(uuid()) @db.Uuid
+  websiteId           String        @db.Uuid
+  organizationId      String        @db.Uuid
+  url                 String
+  normalizedUrl       String
+  urlHash             String
+  canonicalUrl        String?
+  pageType            CrawlPageType @default(OTHER)
+  locale              String?
+  hreflangGroup       String?
+  statusCode          Int?
+  redirectTarget      String?
+  indexable           Boolean?
+  robotsDirective     String?
+  contentHash         String?
+  etag                String?
+  lastModifiedHeader  String?
+  inSitemap           Boolean       @default(false)
+  crawlDepth          Int?
+  firstSeenAt         DateTime      @default(now())
+  lastCrawledAt       DateTime?
+  nextCrawlAt         DateTime?
+  unchangedCount      Int           @default(0)
+  consecutiveFailures Int           @default(0)
+  lastErrorCode       String?
+  deletedAt           DateTime?
+  createdAt           DateTime      @default(now())
+  updatedAt           DateTime      @updatedAt
+
+  website      Website        @relation(fields: [websiteId], references: [id], onDelete: Cascade)
+  snapshots    PageSnapshot[]
+  metrics      PageMetric[]
+  organization Organization   @relation(fields: [organizationId], references: [id])
+
+  @@unique([websiteId, urlHash])
+  @@index([websiteId, nextCrawlAt])
+  @@index([websiteId, canonicalUrl])
+  @@index([websiteId, pageType])
+  @@index([websiteId, indexable])
+  @@map("crawled_pages")
+}
+
+model PageSnapshot {
+  id                      String   @id @default(uuid()) @db.Uuid
+  crawledPageId           String   @db.Uuid
+  contentHash             String
+  statusCode              Int
+  title                   String?
+  metaDescription         String?
+  headingsJson            Json     @default("[]")
+  bodyText                String?
+  internalLinksJson       Json     @default("[]")
+  internalLinkDetailsJson Json     @default("[]")
+  externalLinksJson       Json     @default("[]")
+  canonicalUrl            String?
+  robotsDirective         String?
+  indexable               Boolean
+  schemaJson              Json     @default("[]")
+  hreflangJson            Json     @default("[]")
+  imagesJson              Json     @default("[]")
+  wordCount               Int      @default(0)
+  responseTimeMs          Int?
+  fetchedAt               DateTime @default(now())
+
+  crawledPage CrawledPage @relation(fields: [crawledPageId], references: [id], onDelete: Cascade)
+
+  @@unique([crawledPageId, contentHash])
+  @@index([crawledPageId, fetchedAt])
+  @@map("page_snapshots")
+}
+
+model Keyword {
+  id                  String            @id @default(uuid()) @db.Uuid
+  websiteId           String            @db.Uuid
+  organizationId      String            @db.Uuid
+  keyword             String
+  normalizedKeyword   String
+  locale              String
+  country             String
+  intent              SearchIntent
+  funnelStage         String?
+  estimatedDifficulty Float?
+  trafficPotential    Float?
+  relevance           Float
+  businessValue       Float
+  opportunityScore    Int
+  confidence          Float?
+  targetUrl           String?
+  rankingUrl          String?
+  currentPosition     Float?
+  impressions         Int?
+  clicks              Int?
+  ctr                 Float?
+  cannibalizationRisk Float?
+  recommendedAction   ContentActionType
+  evidenceJson        Json              @default("[]")
+  lastEvaluatedAt     DateTime?
+  createdAt           DateTime          @default(now())
+  updatedAt           DateTime          @updatedAt
+
+  website       Website              @relation(fields: [websiteId], references: [id], onDelete: Cascade)
+  metrics       KeywordMetric[]
+  opportunities ContentOpportunity[]
+  organization  Organization         @relation(fields: [organizationId], references: [id])
+
+  @@unique([websiteId, normalizedKeyword, locale, country])
+  @@index([websiteId, opportunityScore])
+  @@index([websiteId, intent])
+  @@map("keywords")
+}
+
+model KeywordMetric {
+  id          String   @id @default(uuid()) @db.Uuid
+  keywordId   String   @db.Uuid
+  date        DateTime @db.Date
+  pageUrl     String?
+  country     String?
+  device      String?
+  impressions Int      @default(0)
+  clicks      Int      @default(0)
+  ctr         Float    @default(0)
+  position    Float?
+  source      String   @default("GSC")
+  createdAt   DateTime @default(now())
+
+  keyword Keyword @relation(fields: [keywordId], references: [id], onDelete: Cascade)
+
+  @@unique([keywordId, date, pageUrl, country, device])
+  @@index([keywordId, date])
+  @@map("keyword_metrics")
+}
+
+model ContentOpportunity {
+  id                String            @id @default(uuid()) @db.Uuid
+  websiteId         String            @db.Uuid
+  organizationId    String            @db.Uuid
+  keywordId         String?           @db.Uuid
+  action            ContentActionType
+  targetUrl         String?
+  competingUrlsJson Json              @default("[]")
+  reason            String
+  expectedImpact    Float?
+  confidence        Float?
+  priorityScore     Int
+  evidenceJson      Json              @default("[]")
+  status            String            @default("OPEN")
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+
+  website      Website      @relation(fields: [websiteId], references: [id], onDelete: Cascade)
+  keyword      Keyword?     @relation(fields: [keywordId], references: [id], onDelete: SetNull)
+  organization Organization @relation(fields: [organizationId], references: [id])
+
+  @@index([websiteId, status, priorityScore])
+  @@index([keywordId])
+  @@map("content_opportunities")
+}
+
+model ContentBrief {
+  id                    String       @id @default(uuid()) @db.Uuid
+  websiteId             String       @db.Uuid
+  organizationId        String       @db.Uuid
+  articleId             String?      @db.Uuid
+  primaryKeyword        String
+  secondaryKeywordsJson Json         @default("[]")
+  locale                String
+  country               String?
+  intent                SearchIntent
+  targetAudience        String?
+  requiredSectionsJson  Json         @default("[]")
+  questionsJson         Json         @default("[]")
+  entitiesJson          Json         @default("[]")
+  competitorGapsJson    Json         @default("[]")
+  internalLinksJson     Json         @default("[]")
+  sourcesJson           Json         @default("[]")
+  conversionGoal        String?
+  evidenceConfidence    Float?
+  researchedAt          DateTime?
+  createdAt             DateTime     @default(now())
+  updatedAt             DateTime     @updatedAt
+
+  website      Website      @relation(fields: [websiteId], references: [id], onDelete: Cascade)
+  organization Organization @relation(fields: [organizationId], references: [id])
+  article      Article?     @relation(fields: [articleId], references: [id], onDelete: SetNull)
+
+  @@index([websiteId, createdAt])
+  @@index([articleId])
+  @@map("content_briefs")
+}
+
+model AutopilotAction {
+  id               String               @id @default(uuid()) @db.Uuid
+  websiteId        String               @db.Uuid
+  organizationId   String               @db.Uuid
+  actionType       String
+  policy           ActionPolicyDecision
+  state            AutopilotActionState @default(PLANNED)
+  title            String
+  reason           String
+  targetUrl        String?
+  locale           String?
+  priority         Int
+  expectedImpact   Float?
+  confidence       Float?
+  reversible       Boolean              @default(true)
+  dependenciesJson Json                 @default("[]")
+  evidenceJson     Json                 @default("[]")
+  scheduledAt      DateTime?
+  startedAt        DateTime?
+  publishedAt      DateTime?
+  publishedUrl     String?
+  externalId       String?
+  integrationId    String?              @db.Uuid
+  attemptCount     Int                  @default(0)
+  lastError        String?
+  approvedAt       DateTime?
+  completedAt      DateTime?
+  idempotencyKey   String               @unique
+  createdAt        DateTime             @default(now())
+  updatedAt        DateTime             @updatedAt
+
+  website      Website        @relation(fields: [websiteId], references: [id], onDelete: Cascade)
+  impacts      ActionImpact[]
+  organization Organization   @relation(fields: [organizationId], references: [id])
+
+  @@index([websiteId, state, scheduledAt])
+  @@index([websiteId, policy])
+  @@map("autopilot_actions")
+}
+
+model PageMetric {
+  id            String   @id @default(uuid()) @db.Uuid
+  websiteId     String   @db.Uuid
+  crawledPageId String?  @db.Uuid
+  pageUrl       String
+  date          DateTime @db.Date
+  country       String?
+  device        String?
+  impressions   Int      @default(0)
+  clicks        Int      @default(0)
+  ctr           Float    @default(0)
+  position      Float?
+  source        String   @default("GSC")
+  createdAt     DateTime @default(now())
+
+  website        Website       @relation(fields: [websiteId], references: [id], onDelete: Cascade)
+  crawledPage    CrawledPage?  @relation(fields: [crawledPageId], references: [id], onDelete: SetNull)
+  organization   Organization? @relation(fields: [organizationId], references: [id])
+  organizationId String?       @db.Uuid
+
+  @@unique([websiteId, pageUrl, date, country, device])
+  @@index([websiteId, date])
+  @@index([crawledPageId, date])
+  @@map("page_metrics")
+}
+
+model ActionImpact {
+  id              String    @id @default(uuid()) @db.Uuid
+  websiteId       String    @db.Uuid
+  actionId        String    @db.Uuid
+  pageUrl         String?
+  metricName      String
+  metricBefore    Float?
+  metricAfter     Float?
+  absoluteChange  Float?
+  relativeChange  Float?
+  baselineStart   DateTime?
+  baselineEnd     DateTime?
+  comparisonStart DateTime?
+  comparisonEnd   DateTime?
+  confidence      Float?
+  measuredAt      DateTime  @default(now())
+  metadataJson    Json?
+
+  website        Website         @relation(fields: [websiteId], references: [id], onDelete: Cascade)
+  action         AutopilotAction @relation(fields: [actionId], references: [id], onDelete: Cascade)
+  organization   Organization?   @relation(fields: [organizationId], references: [id])
+  organizationId String?         @db.Uuid
+
+  @@index([websiteId, measuredAt])
+  @@index([actionId])
+  @@map("action_impacts")
+}
+
+model AuthorityOpportunity {
+  id             String                   @id @default(uuid()) @db.Uuid
+  websiteId      String                   @db.Uuid
+  organizationId String                   @db.Uuid
+  type           AuthorityOpportunityType
+  sourceUrl      String?
+  targetUrl      String?
+  domain         String?
+  title          String
+  rationale      String?
+  relevance      Float?
+  authorityScore Float?
+  riskScore      Float?
+  status         AuthorityStatus          @default(DISCOVERED)
+  evidenceJson   Json                     @default("[]")
+  createdAt      DateTime                 @default(now())
+  updatedAt      DateTime                 @updatedAt
+
+  website      Website      @relation(fields: [websiteId], references: [id], onDelete: Cascade)
+  organization Organization @relation(fields: [organizationId], references: [id])
+
+  @@index([websiteId, status])
+  @@index([websiteId, type])
+  @@map("authority_opportunities")
+}
+
+model BacklinkProspect {
+  id             String          @id @default(uuid()) @db.Uuid
+  websiteId      String          @db.Uuid
+  organizationId String          @db.Uuid
+  domain         String
+  contactJson    Json?
+  relevance      Float?
+  authorityScore Float?
+  spamRisk       Float?
+  status         AuthorityStatus @default(DISCOVERED)
+  source         String?
+  notes          String?
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+
+  website      Website      @relation(fields: [websiteId], references: [id], onDelete: Cascade)
+  organization Organization @relation(fields: [organizationId], references: [id])
+
+  @@unique([websiteId, domain])
+  @@index([websiteId, status])
+  @@map("backlink_prospects")
+}
+
+model OutreachCampaign {
+  id             String          @id @default(uuid()) @db.Uuid
+  websiteId      String          @db.Uuid
+  organizationId String          @db.Uuid
+  name           String
+  status         AuthorityStatus @default(DISCOVERED)
+  strategyJson   Json?
+  prospectIds    String[]        @default([])
+  startedAt      DateTime?
+  completedAt    DateTime?
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+
+  website      Website      @relation(fields: [websiteId], references: [id], onDelete: Cascade)
+  organization Organization @relation(fields: [organizationId], references: [id])
+
+  @@index([websiteId, status])
+  @@map("outreach_campaigns")
+}
+
+model Mention {
+  id             String   @id @default(uuid()) @db.Uuid
+  websiteId      String   @db.Uuid
+  organizationId String   @db.Uuid
+  sourceUrl      String
+  domain         String
+  anchorText     String?
+  linked         Boolean  @default(false)
+  targetUrl      String?
+  firstSeenAt    DateTime @default(now())
+  lastSeenAt     DateTime @default(now())
+  metadataJson   Json?
+
+  website      Website      @relation(fields: [websiteId], references: [id], onDelete: Cascade)
+  organization Organization @relation(fields: [organizationId], references: [id])
+
+  @@unique([websiteId, sourceUrl])
+  @@index([websiteId, linked])
+  @@map("mentions")
+}
+
+model JobLease {
+  key         String   @id
+  owner       String
+  expiresAt   DateTime
+  heartbeatAt DateTime @default(now())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([expiresAt])
+  @@map("job_leases")
+}
+
+model CronRun {
+  id             String    @id @default(uuid()) @db.Uuid
+  jobKey         String
+  idempotencyKey String    @unique
+  status         String
+  startedAt      DateTime  @default(now())
+  finishedAt     DateTime?
+  durationMs     Int?
+  reportJson     Json?
+  errorCode      String?
+  errorMessage   String?
+
+  @@index([jobKey, startedAt])
+  @@index([status, startedAt])
+  @@map("cron_runs")
+}
+
 model IntegrationExecutionEvent {
-  id           String                       @id @default(uuid()) @db.Uuid
-  jobId        String                       @db.Uuid
+  id           String                      @id @default(uuid()) @db.Uuid
+  jobId        String                      @db.Uuid
   type         String
   status       IntegrationExecutionStatus?
   message      String?
   /// Sanitized metadata only — never secrets.
   metadataJson Json?
-  createdAt    DateTime                     @default(now())
+  createdAt    DateTime                    @default(now())
 
   job IntegrationExecutionJob @relation(fields: [jobId], references: [id], onDelete: Cascade)
 
@@ -1490,12 +2082,12 @@ model AIJob {
   createdAt      DateTime    @default(now())
   updatedAt      DateTime    @updatedAt
 
-  website            Website?     @relation(fields: [websiteId], references: [id])
-  organization       Organization? @relation(fields: [organizationId], references: [id])
-  user               User?        @relation(fields: [userId], references: [id])
-  usages             AIUsage[]
-  generatedArticles  Article[]    @relation("ArticleAIJob")
-  generatedSocialPosts SocialPost[] @relation("SocialPostAIJob")
+  website              Website?      @relation(fields: [websiteId], references: [id])
+  organization         Organization? @relation(fields: [organizationId], references: [id])
+  user                 User?         @relation(fields: [userId], references: [id])
+  usages               AIUsage[]
+  generatedArticles    Article[]     @relation("ArticleAIJob")
+  generatedSocialPosts SocialPost[]  @relation("SocialPostAIJob")
 
   @@index([websiteId])
   @@index([organizationId])
@@ -1540,21 +2132,21 @@ model AIUsage {
 }
 
 model EmailLog {
-  id             String       @id @default(uuid()) @db.Uuid
-  organizationId String?      @db.Uuid
-  websiteId      String?      @db.Uuid
-  userId         String?      @db.Uuid
+  id             String      @id @default(uuid()) @db.Uuid
+  organizationId String?     @db.Uuid
+  websiteId      String?     @db.Uuid
+  userId         String?     @db.Uuid
   toEmail        String
   fromEmail      String?
   subject        String
   type           EmailType
-  status         EmailStatus  @default(QUEUED)
+  status         EmailStatus @default(QUEUED)
   resendId       String?
   errorMessage   String?
   sentAt         DateTime?
   openedAt       DateTime?
   clickedAt      DateTime?
-  createdAt      DateTime     @default(now())
+  createdAt      DateTime    @default(now())
 
   organization Organization? @relation(fields: [organizationId], references: [id])
   website      Website?      @relation(fields: [websiteId], references: [id])
@@ -1726,22 +2318,22 @@ model AssistedSetupRequest {
 }
 
 model OnboardingState {
-  id        String @id @default(uuid()) @db.Uuid
+  id String @id @default(uuid()) @db.Uuid
 
-  userId    String @unique @db.Uuid
+  userId    String  @unique @db.Uuid
   websiteId String? @db.Uuid
 
-  status    OnboardingStatus @default(NOT_STARTED)
-  currentStep OnboardingStep @default(ADD_WEBSITE)
+  status      OnboardingStatus @default(NOT_STARTED)
+  currentStep OnboardingStep   @default(ADD_WEBSITE)
 
   addWebsiteCompletedAt DateTime?
   firstAuditCompletedAt DateTime?
-  gscStepCompletedAt DateTime?
-  growthScoreViewedAt DateTime?
-  firstTasksViewedAt DateTime?
-  firstPlanGeneratedAt DateTime?
-  completedAt DateTime?
-  skippedAt DateTime?
+  gscStepCompletedAt    DateTime?
+  growthScoreViewedAt   DateTime?
+  firstTasksViewedAt    DateTime?
+  firstPlanGeneratedAt  DateTime?
+  completedAt           DateTime?
+  skippedAt             DateTime?
 
   metadata Json?
 

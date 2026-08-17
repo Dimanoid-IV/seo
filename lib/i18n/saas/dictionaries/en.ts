@@ -126,7 +126,6 @@ export const saasDictionary: SaasDictionary = {
     loggingIn: "Logging in…",
     register: "Create account",
     registering: "Creating account…",
-    googleSoon: "Continue with Google — coming soon",
     noAccount: "Don't have an account?",
     hasAccount: "Already have an account?",
     acceptTerms: "I accept the",

@@ -126,7 +126,6 @@ export const saasDictionary: SaasDictionary = {
     loggingIn: "Sisselogimine…",
     register: "Loo konto",
     registering: "Konto loomine…",
-    googleSoon: "Jätka Google'iga — peagi",
     noAccount: "Pole kontot?",
     hasAccount: "Juba on konto?",
     acceptTerms: "Nõustun",

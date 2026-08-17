@@ -23,6 +23,7 @@ assert.equal(
   pipelineStateToLabelKey("WORDPRESS_DRAFT_CREATED"),
   "wordpressDraftCreated"
 );
+assert.equal(pipelineStateToLabelKey("WORDPRESS_VERIFYING"), "wordpressVerifying");
 assert.equal(pipelineStateToLabelKey("WEBFLOW_ITEM_CREATED"), "webflowItemCreated");
 assert.equal(
   pipelineStateToLabelKey("SHOPIFY_ARTICLE_CREATED"),
@@ -40,6 +41,14 @@ assert.equal(
   "hostedBlogPublished"
 );
 assert.equal(pipelineStateToLabelKey("WEBHOOK_READY"), "webhookReady");
+assert.equal(
+  pipelineStateToLabelKey("WEBHOOK_VERIFYING"),
+  "webhookVerifying"
+);
+assert.equal(
+  pipelineStateToLabelKey("WEBHOOK_VERIFIED_LIVE"),
+  "webhookVerified"
+);
 assert.equal(pipelineStateToLabelKey("UNKNOWN"), null);
 
 assert.equal(publishingPathChip("wordpress_draft"), "wordpress_draft");

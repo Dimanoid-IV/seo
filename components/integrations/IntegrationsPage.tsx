@@ -180,7 +180,7 @@ export function IntegrationsPage() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [i.loadFailed, i.loadNetworkError]);
 
   useEffect(() => {
     if (connectedParam !== "gsc" || gscSuccessHandledRef.current) {
@@ -200,7 +200,7 @@ export function IntegrationsPage() {
         setSheetOpen(true);
       }
     });
-  }, [connectedParam]);
+  }, [connectedParam, i.loadFailed, i.loadNetworkError]);
 
   if (loading) {
     return <PageLoadingState message={i.loading} />;

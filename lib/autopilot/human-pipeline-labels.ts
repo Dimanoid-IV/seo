@@ -17,6 +17,7 @@ export type PipelineHumanLabelKey =
   | "readyForPublishingHandoff"
   | "wordpressDraftCreated"
   | "wordpressLivePublished"
+  | "wordpressVerifying"
   | "webflowItemCreated"
   | "shopifyArticleCreated"
   | "wixDraftCreated"
@@ -26,6 +27,8 @@ export type PipelineHumanLabelKey =
   | "hostedBlogPublished"
   | "universalPackageReady"
   | "webhookReady"
+  | "webhookVerifying"
+  | "webhookVerified"
   | "webhookSent"
   | "publishedManually"
   | "skipped"
@@ -43,6 +46,7 @@ const STATE_TO_KEY: Record<AutopilotPlanItemPipelineState, PipelineHumanLabelKey
   READY_FOR_PUBLISHING_HANDOFF: "readyForPublishingHandoff",
   WORDPRESS_DRAFT_CREATED: "wordpressDraftCreated",
   WORDPRESS_LIVE_PUBLISHED: "wordpressLivePublished",
+  WORDPRESS_VERIFYING: "wordpressVerifying",
   WEBFLOW_ITEM_CREATED: "webflowItemCreated",
   SHOPIFY_ARTICLE_CREATED: "shopifyArticleCreated",
   WIX_DRAFT_CREATED: "wixDraftCreated",
@@ -52,6 +56,8 @@ const STATE_TO_KEY: Record<AutopilotPlanItemPipelineState, PipelineHumanLabelKey
   HOSTED_BLOG_PUBLISHED: "hostedBlogPublished",
   UNIVERSAL_PACKAGE_READY: "universalPackageReady",
   WEBHOOK_READY: "webhookReady",
+  WEBHOOK_VERIFYING: "webhookVerifying",
+  WEBHOOK_VERIFIED_LIVE: "webhookVerified",
   WEBHOOK_SENT: "webhookSent",
   PUBLISHED_MANUALLY_CONFIRMED: "publishedManually",
   SKIPPED: "skipped",
@@ -81,6 +87,7 @@ export const PIPELINE_LABELS_RU: Record<PipelineHumanLabelKey, string> = {
   readyForPublishingHandoff: "Готово к публикации",
   wordpressDraftCreated: "Черновик WordPress создан",
   wordpressLivePublished: "Опубликовано в WordPress",
+  wordpressVerifying: "Проверяем публикацию WordPress",
   webflowItemCreated: "Материал создан в Webflow",
   shopifyArticleCreated: "Статья создана в Shopify",
   wixDraftCreated: "Черновик Wix создан",
@@ -90,6 +97,8 @@ export const PIPELINE_LABELS_RU: Record<PipelineHumanLabelKey, string> = {
   hostedBlogPublished: "Опубликовано в Hosted Blog",
   universalPackageReady: "Готов пакет для публикации",
   webhookReady: "Готово к отправке на сайт",
+  webhookVerifying: "Проверяем публикацию на сайте",
+  webhookVerified: "Опубликовано и проверено",
   webhookSent: "Отправлено на сайт",
   publishedManually: "Опубликовано вручную",
   skipped: "Пропущено",

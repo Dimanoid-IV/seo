@@ -8,7 +8,9 @@ import {
   CheckCircle2,
   Globe2,
   Loader2,
+  Play,
   RefreshCw,
+  RotateCcw,
   Users,
 } from "lucide-react";
 
@@ -93,6 +95,7 @@ export function AdminGrowthDashboardPage() {
   const [data, setData] = useState<AdminGrowthDashboardData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [runningAction, setRunningAction] = useState<string | null>(null);
 
   const load = useCallback(async (nextDays: number) => {
     setLoading(true);
@@ -118,6 +121,27 @@ export function AdminGrowthDashboardPage() {
       setLoading(false);
     }
   }, []);
+
+  const runAdminAction = useCallback(async (key: string, body: Record<string, unknown>) => {
+    setRunningAction(key);
+    setError(null);
+    try {
+      const response = await authFetch("/api/admin/autopilot", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+      if (!response.ok) {
+        setError(await parseApiErrorMessage(response, "Операция Autopilot не выполнена."));
+        return;
+      }
+      await load(days);
+    } catch {
+      setError("Не удалось подключиться к серверу.");
+    } finally {
+      setRunningAction(null);
+    }
+  }, [days, load]);
 
   useEffect(() => {
     const timer = window.setTimeout(() => {
@@ -222,6 +246,47 @@ export function AdminGrowthDashboardPage() {
       </section>
 
       <section className="mt-6 rounded-2xl border border-[#999999]/25 bg-white p-5 shadow-[var(--shadow-md-protopie)]">
+        <div className="flex flex-wrap items-start justify-between gap-3">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[#999999]">Autopilot operations</p>
+            <h2 className="mt-2 font-[var(--font-gilroy)] text-xl font-bold text-black">Очередь, cron и публикации</h2>
+          </div>
+          <div className="flex flex-wrap gap-2 text-xs">
+            <span className="rounded-full bg-amber-50 px-3 py-1.5 text-amber-800">Waiting: {data.autopilot.queueByStatus.WAITING ?? 0}</span>
+            <span className="rounded-full bg-red-50 px-3 py-1.5 text-red-700">Failed: {data.autopilot.queueByStatus.FAILED ?? 0}</span>
+            <span className="rounded-full bg-violet-50 px-3 py-1.5 text-violet-700">AI errors: {data.autopilot.failedAiJobs}</span>
+            <span className="rounded-full bg-orange-50 px-3 py-1.5 text-orange-700">Integration errors: {data.autopilot.integrationErrors}</span>
+          </div>
+        </div>
+        <div className="mt-5 grid gap-5 xl:grid-cols-2">
+          <div>
+            <h3 className="text-sm font-semibold text-black">Последние cron runs</h3>
+            <div className="mt-2 space-y-2">
+              {data.autopilot.latestCronRuns.length === 0 ? <p className="text-sm text-[#777]">Запусков пока нет.</p> : data.autopilot.latestCronRuns.map((run) => (
+                <div key={run.id} className="flex items-center justify-between rounded-xl border border-black/10 px-3 py-2 text-sm">
+                  <div><p className="font-medium">{run.jobKey}</p><p className="text-xs text-[#777]">{formatDate(run.startedAt)} · {run.durationMs == null ? "running" : `${run.durationMs} ms`}</p></div>
+                  <StatusBadge status={run.status} />
+                </div>
+              ))}
+            </div>
+          </div>
+          <div>
+            <h3 className="text-sm font-semibold text-black">Failed jobs</h3>
+            <div className="mt-2 space-y-2">
+              {data.autopilot.failedJobs.length === 0 ? <p className="text-sm text-[#777]">Нет упавших jobs.</p> : data.autopilot.failedJobs.map((job) => (
+                <div key={job.id} className="flex items-center justify-between gap-3 rounded-xl border border-red-100 bg-red-50/40 px-3 py-2 text-sm">
+                  <div className="min-w-0"><p className="truncate font-medium">{job.websiteLabel} · {job.action}</p><p className="truncate text-xs text-red-700">{job.errorCode ?? job.errorMessage ?? "execution_failed"}</p></div>
+                  <Button size="sm" variant="outline" disabled={runningAction === job.id} onClick={() => void runAdminAction(job.id, { action: "RETRY_JOB", jobId: job.id })}>
+                    {runningAction === job.id ? <Loader2 className="size-4 animate-spin" /> : <RotateCcw className="size-4" />} Retry
+                  </Button>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="mt-6 rounded-2xl border border-[#999999]/25 bg-white p-5 shadow-[var(--shadow-md-protopie)]">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[#999999]">
@@ -268,6 +333,7 @@ export function AdminGrowthDashboardPage() {
                   <th className="py-2 pr-3">Добавлен</th>
                   <th className="py-2 pr-3">Аудит</th>
                   <th className="py-2">Score</th>
+                  <th className="py-2">Autopilot</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-[#999999]/15">
@@ -285,6 +351,11 @@ export function AdminGrowthDashboardPage() {
                     </td>
                     <td className="py-3 text-[#181818]">
                       {website.currentGrowthScore ?? "—"}
+                    </td>
+                    <td className="py-3">
+                      <Button size="sm" variant="outline" disabled={runningAction === website.id} onClick={() => void runAdminAction(website.id, { action: "RUN_CYCLE", websiteId: website.id })}>
+                        {runningAction === website.id ? <Loader2 className="size-4 animate-spin" /> : <Play className="size-4" />} Run
+                      </Button>
                     </td>
                   </tr>
                 ))}

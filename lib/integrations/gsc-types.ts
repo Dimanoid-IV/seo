@@ -39,6 +39,9 @@ export type GscMetricsSummary = {
 export type GscPerformanceRow = GscMetricsSummary & {
   page?: string;
   query?: string;
+  date?: string;
+  country?: string;
+  device?: string;
   keys: string[];
 };
 

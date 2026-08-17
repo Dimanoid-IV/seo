@@ -20,7 +20,7 @@ export async function GET() {
       deletedAt: null,
       status: ArticleStatus.PUBLISHED,
       qualityPassed: true,
-      publishedAt: { not: null },
+      publishedAt: { lte: new Date() },
       wordpressPostId: null,
       wordpressPublishedUrl: {
         startsWith: `${siteUrl}/hosted/articles/`,

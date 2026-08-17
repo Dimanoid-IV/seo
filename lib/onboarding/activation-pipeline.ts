@@ -40,6 +40,7 @@ import {
   siteTechAsInputJson,
 } from "./site-tech-persist";
 import { trackEventFireAndForget } from "@/lib/analytics/track";
+import { inferAndPersistBusinessProfile } from "@/lib/business-profile/persist";
 
 function trackActivationStep(
   input: RunActivationPipelineInput,
@@ -75,6 +76,7 @@ export type ActivationPipelineSummary = {
   auditId: string | null;
   monthlyPlanId: string | null;
   planBlockedReason: string | null;
+  businessProfileReady: boolean;
 };
 
 async function loadFacts(websiteId: string): Promise<ActivationFacts> {
@@ -199,6 +201,7 @@ export async function runActivationPipeline(
   let auditId: string | null = null;
   let monthlyPlanId: string | null = null;
   let planBlockedReason: string | null = null;
+  let businessProfileReady = false;
   const articleDraftsGenerated = 0;
 
   const existingTech = readSiteTechFromBusinessGoals(website.businessGoals);
@@ -406,6 +409,16 @@ export async function runActivationPipeline(
     await saveActivationState({ userId: input.userId, activation });
   }
 
+  // The audit's incremental crawl is the evidence source for business understanding.
+  try {
+    await inferAndPersistBusinessProfile(website.id);
+    businessProfileReady = true;
+    trackActivationStep(input, "businessProfile", true);
+  } catch {
+    // Keep activation progressing; a later crawl/cron retries profile inference.
+    trackActivationStep(input, "businessProfile", false);
+  }
+
   // --- 4. Growth opportunities (idempotent sync) ---
   if (shouldRunStep("growth", activation, Boolean(input.retry))) {
     activation = mergeStep(activation, website.id, "growth", {
@@ -550,6 +563,7 @@ export async function runActivationPipeline(
     auditId,
     monthlyPlanId,
     planBlockedReason,
+    businessProfileReady,
   };
 }
 

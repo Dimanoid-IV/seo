@@ -440,6 +440,18 @@ export async function generateArticleFromResearchBrief(
       geoPromptsUsed: brief.geoPrompts.map((g) => g.prompt),
       evidenceNotes,
       qualityReport,
+      pipelineStages: [
+        { stage: "RESEARCH", status: brief.serpResearch?.available ? "COMPLETED" : "SKIPPED", method: brief.serpResearch?.available ? "serper" : "deterministic", completedAt: brief.serpResearch?.observedAt ?? brief.generatedAt },
+        { stage: "BRIEF", status: "COMPLETED", method: "deterministic", completedAt: brief.generatedAt },
+        { stage: "OUTLINE", status: "COMPLETED", method: "deterministic", completedAt: brief.generatedAt },
+        { stage: "DRAFT", status: "COMPLETED", method: "hermes", completedAt: now.toISOString(), costCents: hermesResult.metadata?.costCents ?? 0 },
+        { stage: "SEO_OPTIMIZATION", status: "COMPLETED", method: repairAttempts > 0 ? "hermes" : "deterministic", completedAt: new Date().toISOString() },
+        { stage: "BRAND_PASS", status: "COMPLETED", method: humanized.method === "hermes" ? "hermes" : "deterministic", completedAt: humanized.humanizedAt },
+        { stage: "FACT_RISK_REVIEW", status: "COMPLETED", method: "deterministic", completedAt: qualityReport.validatedAt },
+        { stage: "CRITIC", status: "COMPLETED", method: "deterministic", completedAt: qualityReport.validatedAt },
+        { stage: "REWRITE", status: repairAttempts > 0 ? "COMPLETED" : "SKIPPED", method: repairAttempts > 0 ? "hermes" : "deterministic", completedAt: qualityReport.validatedAt, costCents: repairUsages.reduce((sum, usage) => sum + usage.costCents, 0) },
+        { stage: "FINAL", status: "COMPLETED", method: "deterministic", completedAt: qualityReport.validatedAt },
+      ],
       humanizedAt: humanized.humanizedAt,
       humanizerMethod: humanized.method,
       generatedAt: new Date().toISOString(),
@@ -510,6 +522,17 @@ export async function generateArticleFromResearchBrief(
           createdAt: true,
           updatedAt: true,
         },
+      });
+
+      await tx.contentBrief.updateMany({
+        where: {
+          websiteId: website.id,
+          organizationId: organization.id,
+          articleId: null,
+          primaryKeyword: brief.primaryKeyword,
+          researchedAt: new Date(brief.generatedAt),
+        },
+        data: { articleId: createdArticle.id },
       });
 
       await tx.aIJob.update({

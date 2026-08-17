@@ -212,7 +212,7 @@ function baseGate(overrides: Record<string, unknown> = {}) {
       id: "seo-1",
       type: "SEO_FIX",
       status: "approved",
-      generatedArticleId: null,
+      generatedArticleId: undefined,
     } as Pick<
       AutopilotPlanItem,
       "id" | "type" | "status" | "generatedArticleId"

@@ -9,6 +9,7 @@ import { registerUser } from "@/lib/auth/service";
 import { scheduleWebsiteActivation } from "@/lib/onboarding/schedule-activation";
 import { trackEventFireAndForget } from "@/lib/analytics/track";
 import { registerSchema } from "@/lib/validators/auth";
+import { enforceRateLimit } from "@/lib/security/rate-limit";
 
 function assertDatabaseConfigured(): void {
   assertSaasConfigured();
@@ -16,11 +17,10 @@ function assertDatabaseConfigured(): void {
 
 export const maxDuration = 60;
 
-// TODO: rate limit — 5 registrations / hour / IP (docs/API-Design.md)
-
 export async function POST(request: Request) {
   try {
     assertDatabaseConfigured();
+    await enforceRateLimit({ request, scope: "auth.register", limit: 5, windowMs: 3_600_000 });
 
     const body = await parseJsonBody(request);
     const parsed = registerSchema.safeParse(body);

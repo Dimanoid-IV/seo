@@ -105,6 +105,21 @@ function sectionToHtml(section: Section): string {
   return `<h2>${esc(section.heading)}</h2>${body}`;
 }
 
+function reduceKeywordRepetition(
+  section: Section,
+  keyword: string,
+  locale: RepairLocale
+): Section {
+  if (!keyword) return section;
+  const escaped = keyword.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const pattern = new RegExp(escaped, "gi");
+  const replacement = locale === "ru" ? "эта услуга" : locale === "et" ? "see teenus" : "this service";
+  return {
+    heading: section.heading.replace(pattern, replacement),
+    paragraphs: section.paragraphs.map((paragraph) => paragraph.replace(pattern, replacement)),
+  };
+}
+
 function buildCtaSection(
   locale: RepairLocale,
   keyword: string,
@@ -365,7 +380,7 @@ export function repairArticleForQuality(
     const sections = buildExpansionSections(locale, context.brief, keyword);
     for (const section of sections) {
       if (countArticleWords(contentHtml) >= targetWords) break;
-      contentHtml += sectionToHtml(section);
+      contentHtml += sectionToHtml(reduceKeywordRepetition(section, keyword, locale));
     }
   }
 
@@ -398,8 +413,11 @@ export function repairArticleForQuality(
       const suffix =
         iteration < extra.length ? moreSuffix : `${moreSuffix} ${iteration + 1}`;
       contentHtml += sectionToHtml({
-        heading: `${source.heading}: ${suffix}`,
-        paragraphs: source.paragraphs,
+        heading: `${reduceKeywordRepetition(source, keyword, locale).heading}: ${suffix}`,
+        paragraphs: reduceKeywordRepetition(source, keyword, locale).paragraphs.map(
+          (paragraph, paragraphIndex) =>
+            `${paragraph} ${locale === "ru" ? "Практический контекст" : locale === "et" ? "Praktiline kontekst" : "Practical context"} ${iteration + 1}.${paragraphIndex + 1}.`
+        ),
       });
       iteration += 1;
     }
@@ -431,7 +449,16 @@ export function analyzeQualityRepairability(
     (c) => !c.passed && c.severity === "error"
   );
   const nonRepairable = failingErrors.filter(
-    (c) => !REPAIRABLE_ERROR_CODES.has(c.key)
+    (c) =>
+      !REPAIRABLE_ERROR_CODES.has(c.key) &&
+      !(
+        c.key === "no_critical_flags" &&
+        report.dimensions?.criticalFlags.length === 1 &&
+        report.dimensions.criticalFlags[0] === "keyword_stuffing" &&
+        failingErrors.some((failure) =>
+          failure.key === "min_length" || failure.key === "content_word_count"
+        )
+      )
   );
   return {
     repairable: failingErrors.length > 0 && nonRepairable.length === 0,

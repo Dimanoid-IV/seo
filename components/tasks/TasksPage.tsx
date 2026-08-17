@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Globe, ListTodo } from "lucide-react";
 
@@ -77,10 +77,10 @@ export function TasksPage() {
   const [hermesFallbackWarning, setHermesFallbackWarning] = useState(false);
   const [showExistingPreparedFix, setShowExistingPreparedFix] = useState(false);
 
-  async function fetchTasks(): Promise<{
+  const fetchTasks = useCallback(async (): Promise<{
     data: TasksOverviewData | null;
     error: string | null;
-  }> {
+  }> => {
     try {
       const response = await authFetch("/api/tasks");
 
@@ -93,7 +93,7 @@ export function TasksPage() {
     } catch {
       return { data: null, error: t.loadNetworkError };
     }
-  }
+  }, [t.loadFailed, t.loadNetworkError]);
 
   async function reloadTasks() {
     const result = await fetchTasks();
@@ -119,7 +119,7 @@ export function TasksPage() {
     return () => {
       cancelled = true;
     };
-  }, [locale, t.loadFailed, t.loadNetworkError]);
+  }, [fetchTasks, locale, t.loadFailed, t.loadNetworkError]);
 
   const selectedTask = useMemo(
     () => overview?.tasks.find((task) => task.id === selectedTaskId) ?? null,
@@ -171,7 +171,7 @@ export function TasksPage() {
     }
 
     return groups.filter((group) => group.tasks.length > 0);
-  }, [overview?.tasks, t.sections]);
+  }, [overview?.tasks, t]);
 
   const hasActiveTasks = useMemo(
     () => overview?.tasks.some((task) => isActiveTask(task.status)) ?? false,

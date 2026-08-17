@@ -45,6 +45,7 @@ export type ExecutionReasonKey =
   | "wordpressDraftAlreadyCreated"
   | "universalPackageReady"
   | "webhookReady"
+  | "publishVerificationPending"
   | "nonArticleNoop"
   | "blockedStatus"
   | "handoffComplete"
@@ -322,6 +323,10 @@ export function resolvePlanItemExecutionEligibility(
         "prepared"
       );
     }
+  }
+
+  if (item.pipelineState === "WEBHOOK_VERIFYING" || item.pipelineState === "WORDPRESS_VERIFYING") {
+    return skip("publishVerificationPending", "publishVerificationPending");
   }
 
   if (isHandoffComplete(item) || article.wordpressPostId) {

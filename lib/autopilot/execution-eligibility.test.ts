@@ -420,6 +420,38 @@ function runExecutionEligibilityChecks(): void {
   assert.equal(autoPublishCustomWebhook.summaryKey, "wouldSendWebhook");
   assert.equal(classifyDryRunOutcome(autoPublishCustomWebhook), "wouldRun");
 
+  const customWebhookVerificationPending = resolvePlanItemExecutionEligibility({
+    item: baseArticleItem({
+      status: "prepared",
+      generatedArticleId: "article-custom-auto",
+      articleQualityPassed: true,
+      publishingPath: "webhook",
+      pipelineState: "WEBHOOK_VERIFYING",
+      webhookSentAt: "2026-07-11T11:30:00.000Z",
+    }),
+    now,
+    autopilotMode: AutopilotMode.AUTOPUBLISH,
+    wordpressConnected: false,
+    webhookConfiguredAndTested: true,
+    customWebhookAutoSendAllowed: true,
+    planPublishingMode: PlanPublishingMode.AUTO_PUBLISH,
+    websiteId,
+    organizationId,
+    article: {
+      id: "article-custom-auto",
+      status: ArticleStatus.PUBLISHING,
+      qualityPassed: true,
+      websiteId,
+      organizationId,
+      wordpressPostId: null,
+    },
+  });
+  assert.equal(customWebhookVerificationPending.action, "SKIP");
+  assert.equal(
+    customWebhookVerificationPending.reasonKey,
+    "publishVerificationPending"
+  );
+
   const autoPublishCustomWebhookNotAllowlisted =
     resolvePlanItemExecutionEligibility({
       item: baseArticleItem({

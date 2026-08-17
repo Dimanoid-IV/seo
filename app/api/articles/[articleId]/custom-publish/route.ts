@@ -9,7 +9,8 @@ import {
   assertWebhookReadyForExplicitSend,
   deliverCustomWebhook,
 } from "@/lib/publishing/custom-webhook";
-import { markArticlePublishedInMonthlyPlans } from "@/lib/autopilot/link-article-publication";
+import { beginCustomWebhookPublication } from "@/lib/publishing/prepare-publishing-handoff";
+import { IntegrationExecutionMode } from "@prisma/client";
 import {
   getCustomPublishingConfig,
   getCustomPublishingWebhookUrl,
@@ -94,35 +95,57 @@ export async function POST(request: Request, context: RouteContext) {
       );
     }
 
-    const result = await deliverCustomWebhook({
-      articleId: article.id,
-      websiteId: article.websiteId,
-      organizationId: article.organizationId,
-      endpointUrl: url,
-      dryRun,
-      persistOnSuccess: false,
-    });
+    const result = dryRun
+      ? await deliverCustomWebhook({
+          articleId: article.id,
+          websiteId: article.websiteId,
+          organizationId: article.organizationId,
+          endpointUrl: url,
+          dryRun: true,
+          persistOnSuccess: false,
+        })
+      : {
+          dryRun: false,
+          delivered: await beginCustomWebhookPublication({
+            articleId: article.id,
+            websiteId: article.websiteId,
+            organizationId: article.organizationId,
+            userId: currentUser.id,
+            integrationId:
+              (await getCustomPublishingConfig(article.websiteId))!.integrationId,
+            mode: IntegrationExecutionMode.REVIEW_ONLY,
+          }),
+          statusCode: 202,
+          error: null,
+        };
 
-    if (!dryRun && result.delivered) {
-      const publishedAt = new Date();
-      await prisma.article.update({
-        where: { id: article.id },
-        data: {
-          status: "PUBLISHED",
-          publishedAt,
-          wordpressPublishedUrl: result.externalUrl ?? undefined,
+    if (!dryRun && !result.delivered) {
+      throw new AppError(
+        ErrorCode.INTERNAL_ERROR,
+        "Webhook did not accept the article for publication."
+      );
+    }
+
+    if (!dryRun) {
+      // Delivery acceptance is not publication. The durable verification job
+      // moves the article to PUBLISHED only after the public URL is live.
+      await prisma.article.updateMany({
+        where: {
+          id: article.id,
+          status: { not: "PUBLISHING" },
         },
-      });
-      await markArticlePublishedInMonthlyPlans({
-        articleId: article.id,
-        websiteId: article.websiteId,
-        publishedAt,
-        publishingPath: "webhook",
+        data: { status: "PUBLISHING", publishedAt: null },
       });
     }
 
     const config = await getCustomPublishingConfig(article.websiteId);
-    return authJsonResponse({ data: { ...result, config } });
+    return authJsonResponse({
+      data: {
+        ...result,
+        publicationStatus: dryRun ? "TESTED" : "PUBLISHING",
+        config,
+      },
+    });
   } catch (error) {
     return authErrorResponse(request, error);
   }

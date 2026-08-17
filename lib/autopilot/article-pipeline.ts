@@ -17,6 +17,7 @@ export type ArticlePipelineState =
   | "READY_FOR_PUBLISHING_HANDOFF"
   | "WORDPRESS_DRAFT_CREATED"
   | "WORDPRESS_LIVE_PUBLISHED"
+  | "WORDPRESS_VERIFYING"
   | "WEBFLOW_ITEM_CREATED"
   | "SHOPIFY_ARTICLE_CREATED"
   | "WIX_DRAFT_CREATED"
@@ -26,6 +27,8 @@ export type ArticlePipelineState =
   | "HOSTED_BLOG_PUBLISHED"
   | "UNIVERSAL_PACKAGE_READY"
   | "WEBHOOK_READY"
+  | "WEBHOOK_VERIFYING"
+  | "WEBHOOK_VERIFIED_LIVE"
   | "WEBHOOK_SENT"
   | "PUBLISHED_MANUALLY_CONFIRMED"
   | "SKIPPED"
@@ -54,6 +57,7 @@ export type LinkedArticlePipelineSnapshot = {
 const HANDOFF_STATES = new Set<ArticlePipelineState>([
   "WORDPRESS_DRAFT_CREATED",
   "WORDPRESS_LIVE_PUBLISHED",
+  "WORDPRESS_VERIFYING",
   "WEBFLOW_ITEM_CREATED",
   "SHOPIFY_ARTICLE_CREATED",
   "WIX_DRAFT_CREATED",
@@ -63,6 +67,8 @@ const HANDOFF_STATES = new Set<ArticlePipelineState>([
   "HOSTED_BLOG_PUBLISHED",
   "UNIVERSAL_PACKAGE_READY",
   "WEBHOOK_READY",
+  "WEBHOOK_VERIFYING",
+  "WEBHOOK_VERIFIED_LIVE",
   "WEBHOOK_SENT",
   "PUBLISHED_MANUALLY_CONFIRMED",
 ]);
@@ -185,6 +191,8 @@ export function nextAutomatedStepLabel(
       return "review_wordpress_draft";
     case "WORDPRESS_LIVE_PUBLISHED":
       return "done";
+    case "WORDPRESS_VERIFYING":
+      return "verify_live_url";
     case "WEBFLOW_ITEM_CREATED":
     case "SHOPIFY_ARTICLE_CREATED":
     case "WIX_DRAFT_CREATED":
@@ -199,6 +207,9 @@ export function nextAutomatedStepLabel(
       return "copy_or_send_package";
     case "WEBHOOK_READY":
       return "send_webhook_when_allowed";
+    case "WEBHOOK_VERIFYING":
+      return "verify_live_url";
+    case "WEBHOOK_VERIFIED_LIVE":
     case "WEBHOOK_SENT":
     case "PUBLISHED_MANUALLY_CONFIRMED":
       return "done";

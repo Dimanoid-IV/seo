@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Globe, LifeBuoy } from "lucide-react";
 
 import { cn } from "@/lib/utils";
@@ -32,6 +33,7 @@ const DASHBOARD_MAIN =
   "app-content mx-auto w-full max-w-6xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8";
 
 export function SimpleDashboardPage() {
+  const router = useRouter();
   const { dict, locale } = useSaasTranslations();
   const d = dict.dashboard;
   const modeCopy = dict.dashboardMode;
@@ -95,7 +97,7 @@ export function SimpleDashboardPage() {
     }
 
     if (action.apiAction === "generate_email_approval") {
-      window.location.href = "/app/email-approvals";
+      router.push("/app/email-approvals");
       return;
     }
 
@@ -275,6 +277,42 @@ export function SimpleDashboardPage() {
               accent="amber"
             />
           </section>
+
+          {isSimple && simple.outcomes ? (
+            <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+              <h2 className="text-base font-semibold text-slate-900">
+                {locale === "ru" ? "Результаты автопилота" : locale === "et" ? "Autopiloodi tulemused" : "Autopilot outcomes"}
+              </h2>
+              <div className="mt-4 grid gap-4 sm:grid-cols-3">
+                <div>
+                  <p className="text-2xl font-semibold text-slate-900">{simple.outcomes.changedLast30Days}</p>
+                  <p className="text-sm text-slate-600">{locale === "ru" ? "изменений за 30 дней" : locale === "et" ? "muudatust 30 päevaga" : "changes in 30 days"}</p>
+                </div>
+                <div>
+                  <p className="text-2xl font-semibold text-slate-900">{simple.outcomes.awaitingReview}</p>
+                  <p className="text-sm text-slate-600">{locale === "ru" ? "ждут проверки" : locale === "et" ? "ootab ülevaatust" : "awaiting review"}</p>
+                </div>
+                <div>
+                  <p className="text-sm font-semibold text-slate-900">
+                    {simple.outcomes.nextScheduledAt
+                      ? new Date(simple.outcomes.nextScheduledAt).toLocaleDateString(locale === "ru" ? "ru-RU" : locale === "et" ? "et-EE" : "en-US")
+                      : "—"}
+                  </p>
+                  <p className="text-sm text-slate-600">{locale === "ru" ? "следующее действие" : locale === "et" ? "järgmine tegevus" : "next action"}</p>
+                </div>
+              </div>
+              {simple.outcomes.latestMeasuredChange ? (
+                <p className="mt-4 border-t border-slate-100 pt-4 text-sm text-slate-600">
+                  {simple.outcomes.latestMeasuredChange.metric}: {simple.outcomes.latestMeasuredChange.relativeChange >= 0 ? "+" : ""}{Math.round(simple.outcomes.latestMeasuredChange.relativeChange * 100)}%
+                  {simple.outcomes.latestMeasuredChange.confidence != null ? ` · confidence ${Math.round(simple.outcomes.latestMeasuredChange.confidence * 100)}%` : ""}
+                </p>
+              ) : (
+                <p className="mt-4 border-t border-slate-100 pt-4 text-sm text-slate-500">
+                  {locale === "ru" ? "Измеримый эффект появится после накопления данных GSC." : locale === "et" ? "Mõõdetav mõju ilmub pärast GSC andmete kogunemist." : "Measured impact appears after enough GSC data is collected."}
+                </p>
+              )}
+            </section>
+          ) : null}
 
           {simple.hasAudit && simple.readyToPublish && !isSimple ? (
             <ReadyToPublishCard article={simple.readyToPublish} />

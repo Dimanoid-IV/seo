@@ -1,11 +1,6 @@
 "use client";
 
-/**
- * Client-side access token storage for MVP.
- *
- * TODO: Move access token to secure session strategy before production hardening.
- */
-
+/** Access tokens stay in memory; the rotating refresh token is HttpOnly. */
 const ACCESS_TOKEN_STORAGE_KEY = "rb_access_token";
 
 let memoryAccessToken: string | null = null;
@@ -15,21 +10,15 @@ let refreshInFlight: Promise<boolean> | null = null;
 export function storeAccessToken(token: string): void {
   memoryAccessToken = token;
   if (typeof window !== "undefined") {
-    window.localStorage.setItem(ACCESS_TOKEN_STORAGE_KEY, token);
+    // Remove tokens written by older releases. Never persist bearer tokens in
+    // script-readable storage because an XSS would turn into session theft.
+    window.localStorage.removeItem(ACCESS_TOKEN_STORAGE_KEY);
   }
 }
 
 export function getAccessToken(): string | null {
   if (memoryAccessToken) {
     return memoryAccessToken;
-  }
-
-  if (typeof window !== "undefined") {
-    const stored = window.localStorage.getItem(ACCESS_TOKEN_STORAGE_KEY);
-    if (stored) {
-      memoryAccessToken = stored;
-      return stored;
-    }
   }
 
   return null;

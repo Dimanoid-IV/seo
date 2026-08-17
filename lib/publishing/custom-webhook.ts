@@ -302,6 +302,7 @@ export async function deliverCustomWebhook(input: {
       }
     : {
         event: "article.ready",
+        action: "publish",
         dryRun: false,
         article: {
           id: article.id,
@@ -316,6 +317,17 @@ export async function deliverCustomWebhook(input: {
           targetKeyword: article.targetKeyword ?? "",
           qualityScore: article.qualityScore ?? null,
           brandKit: pkg.brandKit ?? null,
+        },
+        seo: {
+          title: pkg.metaTitle,
+          description: pkg.metaDescription,
+          canonicalUrl: pkg.canonicalUrl,
+          primaryKeyword: article.targetKeyword ?? null,
+          indexable: true,
+        },
+        schedule: {
+          mode: "immediate",
+          scheduledAt: null,
         },
         website: {
           id: input.websiteId,

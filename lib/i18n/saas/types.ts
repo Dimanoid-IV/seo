@@ -99,7 +99,6 @@ export type SaasDictionary = {
     loggingIn: string;
     register: string;
     registering: string;
-    googleSoon: string;
     noAccount: string;
     hasAccount: string;
     acceptTerms: string;

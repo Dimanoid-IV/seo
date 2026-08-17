@@ -35,7 +35,6 @@ import {
   getCustomPublishingConfig,
   setCustomPublishingAutoSend,
 } from "@/lib/publishing/custom-webhook-config";
-import { updateAutopilotSettings } from "./autopilot-settings";
 import { trackEventFireAndForget } from "@/lib/analytics/track";
 
 export async function approveSelectedPlanItems(input: {
@@ -200,33 +199,42 @@ export async function approveSelectedPlanItems(input: {
       ? PlanPublishingMode.AUTO_PUBLISH
       : PlanPublishingMode.REVIEW_ONLY;
 
-  const updated = await prisma.monthlyAutopilotPlan.update({
-    where: { id: existing.id },
-    data: {
-      planItemsJson: planItemsToJson(document),
-      status: MonthlyAutopilotStatus.APPROVED,
-      approvedAt: existing.approvedAt ?? new Date(),
-      publishingMode: prismaPublishingMode,
-    },
-  });
-
   // Explicit mode from plan confirm — never silent AUTO_PUBLISH.
   const autopilotMode =
     publishingMode === "AUTO_PUBLISH"
       ? AutopilotMode.AUTOPUBLISH
       : AutopilotMode.REVIEW_FIRST;
 
-  try {
-    await updateAutopilotSettings({
-      userId: input.userId,
-      organizationId: existing.organizationId,
-      websiteId: existing.websiteId,
-      mode: autopilotMode,
-      source: "plan_approval",
+  // The plan permission and effective site mode are one decision. Persist
+  // them atomically so an AUTO_PUBLISH plan cannot silently remain in review.
+  const updated = await prisma.$transaction(async (tx) => {
+    const plan = await tx.monthlyAutopilotPlan.update({
+      where: { id: existing.id },
+      data: {
+        planItemsJson: planItemsToJson(document),
+        status: MonthlyAutopilotStatus.APPROVED,
+        approvedAt: existing.approvedAt ?? new Date(),
+        publishingMode: prismaPublishingMode,
+      },
     });
-  } catch {
-    // Mode update must not block approval.
-  }
+
+    await tx.websiteUserState.upsert({
+      where: {
+        userId_websiteId: {
+          userId: input.userId,
+          websiteId: existing.websiteId,
+        },
+      },
+      create: {
+        userId: input.userId,
+        websiteId: existing.websiteId,
+        autopilotMode,
+      },
+      update: { autopilotMode },
+    });
+
+    return plan;
+  });
 
   if (webhookConfiguredAndTested) {
     try {

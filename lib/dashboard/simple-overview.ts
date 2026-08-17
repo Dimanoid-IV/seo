@@ -155,6 +155,12 @@ export type SimpleDashboardViewModel = {
     summary?: string;
     href?: string;
   }>;
+  outcomes?: {
+    changedLast30Days: number;
+    awaitingReview: number;
+    nextScheduledAt: string | null;
+    latestMeasuredChange: { metric: string; relativeChange: number; confidence: number | null } | null;
+  };
   billingNote?: string;
   showSetupBanner: boolean;
   gsc?: {
@@ -406,6 +412,7 @@ export async function getSimpleDashboardOverview(
   }
 
   let activation: SimpleDashboardViewModel["activation"];
+  let outcomes: SimpleDashboardViewModel["outcomes"];
   if (controlCenter.website?.id) {
     const prisma = getPrisma();
     const website = await prisma.website.findFirst({
@@ -428,6 +435,40 @@ export async function getSimpleDashboardOverview(
       brandVoiceReady: Boolean(brandVoice),
       preparingAnalysis: Boolean(preparingAnalysis),
     };
+    const since = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+    const [changedLast30Days, nextAction, latestImpact] = await Promise.all([
+      prisma.autopilotAction.count({
+        where: {
+          websiteId: controlCenter.website.id,
+          state: { in: ["PUBLISHED", "MONITORING", "IMPROVING"] },
+          completedAt: { gte: since },
+        },
+      }),
+      prisma.autopilotAction.findFirst({
+        where: {
+          websiteId: controlCenter.website.id,
+          state: { in: ["PLANNED", "SCHEDULED"] },
+          scheduledAt: { not: null },
+        },
+        orderBy: { scheduledAt: "asc" },
+        select: { scheduledAt: true },
+      }),
+      prisma.actionImpact.findFirst({
+        where: { websiteId: controlCenter.website.id, relativeChange: { not: null } },
+        orderBy: { measuredAt: "desc" },
+        select: { metricName: true, relativeChange: true, confidence: true },
+      }),
+    ]);
+    outcomes = {
+      changedLast30Days,
+      awaitingReview: reviewQueueCount,
+      nextScheduledAt: nextAction?.scheduledAt?.toISOString() ?? null,
+      latestMeasuredChange: latestImpact?.relativeChange == null ? null : {
+        metric: latestImpact.metricName,
+        relativeChange: latestImpact.relativeChange,
+        confidence: latestImpact.confidence,
+      },
+    };
   }
 
   const viewModel = buildSimpleDashboardViewModel({
@@ -440,5 +481,5 @@ export async function getSimpleDashboardOverview(
     activation,
   });
 
-  return { ...viewModel, gsc };
+  return { ...viewModel, gsc, outcomes };
 }

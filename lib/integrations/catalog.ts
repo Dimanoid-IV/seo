@@ -224,17 +224,6 @@ export const INTEGRATION_CATALOG: IntegrationCatalogEntry[] = [
     capabilities: [IntegrationCapability.NO_CODE_AUTOMATION_TRIGGER],
   },
   {
-    provider: "cloudflare",
-    dbProvider: null,
-    title: "Cloudflare",
-    description:
-      "Скорость, CDN и безопасность — для технического роста и стабильности.",
-    available: false,
-    comingSoon: true,
-    category: "platform",
-    capabilities: [],
-  },
-  {
     provider: "resend",
     dbProvider: null,
     title: "Resend",

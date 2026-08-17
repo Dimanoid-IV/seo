@@ -209,37 +209,170 @@ async function transitionJob(input: {
 export async function markExecutionJobRunning(
   jobId: string
 ): Promise<IntegrationExecutionJob> {
+  const attemptedAt = new Date();
   return transitionJob({
     jobId,
     to: IntegrationExecutionStatus.RUNNING,
-    patch: { startedAt: new Date() },
+    patch: {
+      startedAt: attemptedAt,
+      lastAttemptAt: attemptedAt,
+      nextAttemptAt: null,
+      attemptCount: { increment: 1 },
+    },
     eventType: "job.running",
     message: "Задание запущено.",
+  });
+}
+
+function sanitizeExternalUrl(value?: string | null): string | null {
+  if (!value) return null;
+  try {
+    const url = new URL(value);
+    return `${url.origin}${url.pathname}`.slice(0, 500);
+  } catch {
+    return null;
+  }
+}
+
+export async function markExecutionJobWaiting(input: {
+  jobId: string;
+  nextAttemptAt: Date;
+  result?: Record<string, unknown> | null;
+  verification?: Record<string, unknown> | null;
+  externalId?: string | null;
+  externalUrl?: string | null;
+  message?: string;
+  incrementRetry?: boolean;
+}): Promise<IntegrationExecutionJob> {
+  const result = sanitizeExecutionPayload(input.result ?? null);
+  const verification = sanitizeExecutionPayload(input.verification ?? null);
+
+  return transitionJob({
+    jobId: input.jobId,
+    to: IntegrationExecutionStatus.WAITING,
+    patch: {
+      resultJson: (result as Prisma.InputJsonValue | undefined) ?? undefined,
+      verificationJson:
+        (verification as Prisma.InputJsonValue | undefined) ?? undefined,
+      externalId: input.externalId?.slice(0, 200) ?? undefined,
+      externalUrl: sanitizeExternalUrl(input.externalUrl) ?? undefined,
+      nextAttemptAt: input.nextAttemptAt,
+      retryCount: input.incrementRetry ? { increment: 1 } : undefined,
+      finishedAt: null,
+      errorCode: null,
+      errorMessage: null,
+    },
+    eventType: "job.waiting_for_verification",
+    message: input.message ?? "Ожидаем появления опубликованной страницы.",
+    metadata: {
+      nextAttemptAt: input.nextAttemptAt.toISOString(),
+      ...(verification ?? {}),
+    },
+  });
+}
+
+/** Atomically claims one due verification job so overlapping cron runs cannot duplicate work. */
+export async function claimDueExecutionJob(
+  jobId: string,
+  now: Date = new Date()
+): Promise<IntegrationExecutionJob | null> {
+  const prisma = getPrisma();
+  const claimed = await prisma.integrationExecutionJob.updateMany({
+    where: {
+      id: jobId,
+      status: {
+        in: [
+          IntegrationExecutionStatus.WAITING,
+          IntegrationExecutionStatus.RETRYING,
+        ],
+      },
+      OR: [{ nextAttemptAt: null }, { nextAttemptAt: { lte: now } }],
+    },
+    data: {
+      status: IntegrationExecutionStatus.RUNNING,
+      startedAt: now,
+      lastAttemptAt: now,
+      nextAttemptAt: null,
+      attemptCount: { increment: 1 },
+    },
+  });
+  if (claimed.count !== 1) return null;
+
+  const job = await prisma.integrationExecutionJob.findUnique({
+    where: { id: jobId },
+  });
+  if (!job) return null;
+
+  await appendIntegrationExecutionEvent({
+    jobId,
+    type: "job.verification_claimed",
+    status: IntegrationExecutionStatus.RUNNING,
+    message: "Проверка опубликованной страницы запущена.",
+    metadata: { attemptCount: job.attemptCount },
+  });
+  return job;
+}
+
+export async function recordPublishAttempt(input: {
+  jobId: string;
+  attemptNumber: number;
+  phase: "delivery" | "verification";
+  outcome: string;
+  statusCode?: number | null;
+  errorCode?: string | null;
+  errorMessage?: string | null;
+  verification?: Record<string, unknown> | null;
+}): Promise<void> {
+  const prisma = getPrisma();
+  const verification = sanitizeExecutionPayload(input.verification ?? null);
+  await prisma.publishAttempt.upsert({
+    where: {
+      jobId_attemptNumber_phase: {
+        jobId: input.jobId,
+        attemptNumber: input.attemptNumber,
+        phase: input.phase,
+      },
+    },
+    create: {
+      jobId: input.jobId,
+      attemptNumber: input.attemptNumber,
+      phase: input.phase,
+      outcome: input.outcome.slice(0, 80),
+      statusCode: input.statusCode ?? null,
+      errorCode: input.errorCode?.slice(0, 80) ?? null,
+      errorMessage: sanitizeExecutionErrorMessage(input.errorMessage),
+      verificationJson:
+        (verification as Prisma.InputJsonValue | undefined) ?? undefined,
+      finishedAt: new Date(),
+    },
+    update: {
+      outcome: input.outcome.slice(0, 80),
+      statusCode: input.statusCode ?? null,
+      errorCode: input.errorCode?.slice(0, 80) ?? null,
+      errorMessage: sanitizeExecutionErrorMessage(input.errorMessage),
+      verificationJson:
+        (verification as Prisma.InputJsonValue | undefined) ?? undefined,
+      finishedAt: new Date(),
+    },
   });
 }
 
 export async function markExecutionJobSucceeded(input: {
   jobId: string;
   result?: Record<string, unknown> | null;
+  verification?: Record<string, unknown> | null;
   externalId?: string | null;
   externalUrl?: string | null;
 }): Promise<IntegrationExecutionJob> {
   const result = sanitizeExecutionPayload(input.result ?? null);
+  const verification = sanitizeExecutionPayload(input.verification ?? null);
   if (result && !assertPayloadHasNoSecrets(result)) {
     throw new AppError(
       ErrorCode.VALIDATION_ERROR,
       "Результат содержит запрещённые поля."
     );
   }
-  let externalUrl: string | null = null;
-  if (input.externalUrl) {
-    try {
-      const url = new URL(input.externalUrl);
-      externalUrl = `${url.origin}${url.pathname}`.slice(0, 500);
-    } catch {
-      externalUrl = null;
-    }
-  }
+  const externalUrl = sanitizeExternalUrl(input.externalUrl);
 
   return transitionJob({
     jobId: input.jobId,
@@ -247,8 +380,11 @@ export async function markExecutionJobSucceeded(input: {
     patch: {
       finishedAt: new Date(),
       resultJson: (result as Prisma.InputJsonValue | undefined) ?? undefined,
+      verificationJson:
+        (verification as Prisma.InputJsonValue | undefined) ?? undefined,
       externalId: input.externalId?.slice(0, 200) ?? null,
       externalUrl,
+      nextAttemptAt: null,
       errorCode: null,
       errorMessage: null,
     },
@@ -289,6 +425,7 @@ export async function markExecutionJobPartiallyApplied(input: {
     patch: {
       finishedAt: new Date(),
       resultJson: (result as Prisma.InputJsonValue | undefined) ?? undefined,
+      nextAttemptAt: null,
       externalId: input.externalId?.slice(0, 200) ?? null,
       externalUrl,
       errorCode: input.errorCode?.slice(0, 80) ?? "PARTIALLY_APPLIED",
@@ -317,6 +454,7 @@ export async function markExecutionJobFailed(input: {
     patch: {
       finishedAt: new Date(),
       resultJson: (result as Prisma.InputJsonValue | undefined) ?? undefined,
+      nextAttemptAt: null,
       errorCode: input.errorCode?.slice(0, 80) ?? "EXECUTION_FAILED",
       errorMessage: safeMessage,
     },

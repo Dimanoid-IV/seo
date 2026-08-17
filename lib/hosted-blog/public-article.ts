@@ -9,6 +9,7 @@ import {
   buildHostedArticleUrl,
 } from "@/lib/hosted-blog/urls";
 import { buildUniversalExport } from "@/lib/publishing/universal-export";
+import { isPubliclyPublished } from "@/lib/hosted-blog/publication-policy";
 
 export type HostedPublicArticle = {
   id: string;
@@ -41,7 +42,7 @@ export async function getHostedPublicArticle({
       deletedAt: null,
       status: ArticleStatus.PUBLISHED,
       qualityPassed: true,
-      publishedAt: { not: null },
+      publishedAt: { lte: new Date() },
       wordpressPostId: null,
     },
     select: {
@@ -49,6 +50,7 @@ export async function getHostedPublicArticle({
       websiteId: true,
       title: true,
       slug: true,
+      status: true,
       language: true,
       metaTitle: true,
       metaDescription: true,
@@ -65,7 +67,13 @@ export async function getHostedPublicArticle({
     },
   });
 
-  if (!article?.publishedAt) {
+  if (
+    !article?.publishedAt ||
+    !isPubliclyPublished({
+      status: article.status,
+      publishedAt: article.publishedAt,
+    })
+  ) {
     return null;
   }
 

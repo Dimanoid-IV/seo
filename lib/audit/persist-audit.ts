@@ -25,6 +25,8 @@ import {
 } from "./rule-engine";
 import type { AuditRuleResult } from "./rules-types";
 import { scanWebsite } from "./scanner";
+import { loadSiteWideAuditRules } from "./load-site-wide-rules";
+import { runIncrementalCrawl, type IncrementalCrawlReport } from "@/lib/crawler/run-incremental-crawl";
 
 export type RunAndPersistWebsiteAuditInput = {
   websiteId: string;
@@ -180,7 +182,7 @@ export async function runAndPersistWebsiteAudit(
   const audit = await prisma.audit.create({
     data: {
       websiteId: website.id,
-      type: AuditType.PREVIEW,
+      type: AuditType.FULL,
       status: AuditStatus.QUEUED,
       triggeredBy: input.trigger,
       triggeredByUserId: input.userId,
@@ -201,11 +203,18 @@ export async function runAndPersistWebsiteAudit(
   });
 
   let results: AuditRuleResult[];
+  let crawlReport: IncrementalCrawlReport | null = null;
 
   try {
+    try {
+      crawlReport = await runIncrementalCrawl({ websiteId: website.id, maxPages: 100 });
+    } catch {
+      // The homepage audit remains useful and the next cron can retry a failed crawl.
+    }
     const scan = await scanWebsite(website.url);
     const onPage = extractOnPageSeo(scan.html, scan.finalUrl);
-    results = runAuditRules({ scan, onPage });
+    const siteWideResults = crawlReport ? await loadSiteWideAuditRules(website.id) : [];
+    results = [...runAuditRules({ scan, onPage }), ...siteWideResults];
 
     const previewPayload = buildAuditPreviewResponse({
       inputUrl: website.url,
@@ -267,7 +276,10 @@ export async function runAndPersistWebsiteAudit(
           summaryJson: previewPayload.data as unknown as Prisma.InputJsonValue,
           visiblePreviewJson:
             previewIssues as unknown as Prisma.InputJsonValue,
-          rawResultJson: results as unknown as Prisma.InputJsonValue,
+          rawResultJson: {
+            checks: results,
+            crawl: crawlReport,
+          } as unknown as Prisma.InputJsonValue,
           completedAt,
         },
       });
@@ -296,6 +308,7 @@ export async function runAndPersistWebsiteAudit(
               growthScore: rawScore,
               delta,
               source: "dashboard_rerun",
+              crawl: crawlReport,
             },
           },
           {

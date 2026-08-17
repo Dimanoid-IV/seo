@@ -13,13 +13,13 @@ import {
   parseJsonBody,
   validationErrorFromZod,
 } from "@/lib/auth/responses";
-
-// TODO: Add IP-based rate limiting before public launch.
+import { enforceRateLimit } from "@/lib/security/rate-limit";
 
 export async function POST(request: Request) {
   const requestId = getRequestIdFromRequest(request);
 
   try {
+    await enforceRateLimit({ request, scope: "audit.preview", limit: 10, windowMs: 3_600_000 });
     const body = await parseJsonBody(request);
     const parsed = auditPreviewInputSchema.safeParse(body);
 

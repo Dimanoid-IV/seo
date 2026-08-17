@@ -635,6 +635,24 @@ export async function runScheduledAutopilotPlans(input: {
             autopilotMode: settings.mode,
           });
 
+          if (live.verificationPending) {
+            items = applyPlanItemUpdate(items, currentItem.id, {
+              status: "prepared",
+              blockedReasonKey: undefined,
+              pipelineState: "WORDPRESS_VERIFYING",
+              publishingPath: "wordpress_live",
+              nextAutomatedStep: "verify_live_url",
+              reviewQueueHref: undefined,
+            });
+            planDirty = true;
+            itemResult.executed = true;
+            itemResult.nextStatus = "prepared";
+            itemResult.summaryKey = live.summaryKey;
+            report.executedCount += 1;
+            report.results.push(itemResult);
+            continue;
+          }
+
           if (!live.allowed || !live.livePublished) {
             items = applyPlanItemUpdate(items, currentItem.id, {
               status: "blocked",
