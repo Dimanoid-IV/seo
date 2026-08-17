@@ -5,6 +5,7 @@ import {
 } from "@prisma/client";
 
 import type { CurrentUser } from "@/lib/auth/types";
+import { isUnsafeArticleTopic } from "@/lib/content-research/keywords";
 import { getPrisma } from "@/lib/db";
 import { AppError, ErrorCode } from "@/lib/errors";
 
@@ -139,6 +140,7 @@ export async function updateArticleForUser({
     metaTitle?: string | null;
     metaDescription?: string | null;
     contentHtml?: string | null;
+    targetKeyword?: string | null;
     status?: ArticleStatus;
     approvedAt?: Date | null;
     qualityScore?: number;
@@ -179,6 +181,12 @@ export async function updateArticleForUser({
     data.metaTitle !== undefined ||
     data.metaDescription !== undefined ||
     data.contentHtml !== undefined;
+  if (
+    updateData.title &&
+    isUnsafeArticleTopic(existing.targetKeyword ?? existing.title)
+  ) {
+    updateData.targetKeyword = updateData.title;
+  }
   const currentQuality = contentChanged
     ? evaluateCurrentArticlePublishQuality({
         title: updateData.title ?? existing.title,
@@ -194,7 +202,7 @@ export async function updateArticleForUser({
           updateData.contentHtml !== undefined
             ? updateData.contentHtml
             : existing.contentHtml,
-        targetKeyword: existing.targetKeyword,
+        targetKeyword: updateData.targetKeyword ?? existing.targetKeyword,
         language: existing.language,
       })
     : null;
