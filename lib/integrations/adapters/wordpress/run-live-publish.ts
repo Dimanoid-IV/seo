@@ -49,6 +49,7 @@ import {
 } from "@/lib/integrations/adapters/wordpress/can-live-publish";
 import type { AutopilotPlanItem } from "@/lib/autopilot/plan-item-types";
 import type { PlanPublishingModeValue } from "@/lib/autopilot/plan-publishing-mode";
+import { evaluateCurrentArticlePublishQuality } from "@/lib/articles/publish-quality";
 
 export type RunWordPressLivePublishInput = {
   userId: string;
@@ -144,6 +145,9 @@ export async function runWordPressLivePublishForPlanArticle(
           title: true,
           slug: true,
           metaDescription: true,
+          metaTitle: true,
+          targetKeyword: true,
+          language: true,
         },
       }),
       prisma.website.findFirst({
@@ -225,6 +229,10 @@ export async function runWordPressLivePublishForPlanArticle(
     duplicatePublished = Boolean(other);
   }
 
+  const currentQuality = article
+    ? evaluateCurrentArticlePublishQuality(article)
+    : null;
+
   const gate = canLivePublishArticleViaWordPress({
     article,
     website,
@@ -241,8 +249,12 @@ export async function runWordPressLivePublishForPlanArticle(
         }
       : null,
     quality: {
-      qualityPassed: article?.qualityPassed,
-      qualityScore: article?.qualityScore,
+      qualityPassed:
+        article?.qualityPassed === true && currentQuality?.passed === true,
+      qualityScore: Math.min(
+        article?.qualityScore ?? 0,
+        currentQuality?.overall ?? 0
+      ),
     },
     websiteLivePublishPaused: website?.autopilotLivePublishPaused === true,
     livePublishRolloutEnabled: website?.livePublishRolloutEnabled === true,

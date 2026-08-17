@@ -9,6 +9,7 @@ import { AppError, ErrorCode } from "@/lib/errors";
 import { getPrisma } from "@/lib/db";
 import { buildUniversalExport } from "@/lib/publishing/universal-export";
 import { loadBrandKitForWebsite } from "@/lib/brand-kit";
+import { evaluateCurrentArticlePublishQuality } from "@/lib/articles/publish-quality";
 import {
   getCustomPublishingConfig,
   getCustomPublishingSharedSecret,
@@ -268,10 +269,11 @@ export async function deliverCustomWebhook(input: {
     throw new AppError(ErrorCode.NOT_FOUND, "Статья не найдена");
   }
 
-  if (!input.dryRun && article.qualityPassed !== true) {
+  const currentQuality = evaluateCurrentArticlePublishQuality(article);
+  if (!input.dryRun && (article.qualityPassed !== true || !currentQuality.passed)) {
     throw new AppError(
       ErrorCode.VALIDATION_ERROR,
-      "Отправка доступна только для статей, прошедших проверку качества."
+      "Текущая версия статьи не прошла обязательную проверку перед публикацией."
     );
   }
 

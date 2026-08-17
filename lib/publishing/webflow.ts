@@ -11,6 +11,7 @@ import {
 
 import { getPrisma } from "@/lib/db";
 import { AppError, ErrorCode } from "@/lib/errors";
+import { evaluateCurrentArticlePublishQuality } from "@/lib/articles/publish-quality";
 import { IntegrationCapability } from "@/lib/integrations/adapters/capabilities";
 import {
   appendIntegrationExecutionEvent,
@@ -249,7 +250,10 @@ export async function createWebflowItemForArticle(input: {
   if (!config?.connected || !token) {
     throw new AppError(ErrorCode.VALIDATION_ERROR, "Webflow не подключён.");
   }
-  if (article.qualityPassed !== true) {
+  if (
+    article.qualityPassed !== true ||
+    !evaluateCurrentArticlePublishQuality(article).passed
+  ) {
     throw new AppError(
       ErrorCode.VALIDATION_ERROR,
       "Webflow публикация доступна только после quality gate."

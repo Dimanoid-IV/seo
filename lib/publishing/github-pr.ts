@@ -8,6 +8,7 @@ import { ArticleStatus, IntegrationExecutionStatus } from "@prisma/client";
 
 import { getPrisma } from "@/lib/db";
 import { AppError, ErrorCode } from "@/lib/errors";
+import { evaluateCurrentArticlePublishQuality } from "@/lib/articles/publish-quality";
 import { buildUniversalExport } from "@/lib/publishing/universal-export";
 import { loadBrandKitForWebsite } from "@/lib/brand-kit";
 import {
@@ -322,7 +323,10 @@ export async function createGitHubPrForArticle(input: {
   if (!config?.connected || !token) {
     throw new AppError(ErrorCode.VALIDATION_ERROR, "GitHub PR не подключён.");
   }
-  if (article.qualityPassed !== true) {
+  if (
+    article.qualityPassed !== true ||
+    !evaluateCurrentArticlePublishQuality(article).passed
+  ) {
     throw new AppError(
       ErrorCode.VALIDATION_ERROR,
       "GitHub PR доступен только для статьи, прошедшей quality gate."

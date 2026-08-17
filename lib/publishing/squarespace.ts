@@ -9,6 +9,7 @@ import {
 } from "@prisma/client";
 
 import { assertSafeUrl } from "@/lib/audit/ssrf";
+import { evaluateCurrentArticlePublishQuality } from "@/lib/articles/publish-quality";
 import { loadBrandKitForWebsite } from "@/lib/brand-kit";
 import { getPrisma } from "@/lib/db";
 import { AppError, ErrorCode } from "@/lib/errors";
@@ -130,7 +131,10 @@ export async function prepareSquarespacePackageForArticle(input: {
   if (!config?.connected) {
     throw new AppError(ErrorCode.VALIDATION_ERROR, "Squarespace не подключён.");
   }
-  if (article.qualityPassed !== true) {
+  if (
+    article.qualityPassed !== true ||
+    !evaluateCurrentArticlePublishQuality(article).passed
+  ) {
     throw new AppError(
       ErrorCode.VALIDATION_ERROR,
       "Squarespace пакет доступен только после quality gate."

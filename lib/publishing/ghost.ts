@@ -11,6 +11,7 @@ import {
 } from "@prisma/client";
 
 import { assertSafeUrl } from "@/lib/audit/ssrf";
+import { evaluateCurrentArticlePublishQuality } from "@/lib/articles/publish-quality";
 import { loadBrandKitForWebsite } from "@/lib/brand-kit";
 import { getPrisma } from "@/lib/db";
 import { AppError, ErrorCode } from "@/lib/errors";
@@ -243,7 +244,10 @@ export async function createGhostPostForArticle(input: {
   if (!config?.connected || !adminKey) {
     throw new AppError(ErrorCode.VALIDATION_ERROR, "Ghost не подключён.");
   }
-  if (article.qualityPassed !== true) {
+  if (
+    article.qualityPassed !== true ||
+    !evaluateCurrentArticlePublishQuality(article).passed
+  ) {
     throw new AppError(
       ErrorCode.VALIDATION_ERROR,
       "Ghost публикация доступна только после quality gate."

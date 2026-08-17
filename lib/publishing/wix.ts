@@ -10,6 +10,7 @@ import {
 } from "@prisma/client";
 
 import { loadBrandKitForWebsite } from "@/lib/brand-kit";
+import { evaluateCurrentArticlePublishQuality } from "@/lib/articles/publish-quality";
 import { getPrisma } from "@/lib/db";
 import { AppError, ErrorCode } from "@/lib/errors";
 import { IntegrationCapability } from "@/lib/integrations/adapters/capabilities";
@@ -274,7 +275,10 @@ export async function createWixDraftPostForArticle(input: {
   if (!config?.connected || !apiKey) {
     throw new AppError(ErrorCode.VALIDATION_ERROR, "Wix не подключён.");
   }
-  if (article.qualityPassed !== true) {
+  if (
+    article.qualityPassed !== true ||
+    !evaluateCurrentArticlePublishQuality(article).passed
+  ) {
     throw new AppError(
       ErrorCode.VALIDATION_ERROR,
       "Wix публикация доступна только после quality gate."

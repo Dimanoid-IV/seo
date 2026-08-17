@@ -19,6 +19,7 @@ import {
   parseJsonBody,
   validationErrorFromZod,
 } from "@/lib/auth/responses";
+import { evaluateCurrentArticlePublishQuality } from "@/lib/articles/publish-quality";
 
 function assertDatabaseConfigured(): void {
   if (!getServerEnv().DATABASE_URL) {
@@ -76,6 +77,13 @@ export async function POST(request: Request, context: RouteContext) {
         websiteId: true,
         organizationId: true,
         qualityPassed: true,
+        qualityScore: true,
+        title: true,
+        metaTitle: true,
+        metaDescription: true,
+        contentHtml: true,
+        targetKeyword: true,
+        language: true,
       },
     });
     if (!article) {
@@ -88,10 +96,32 @@ export async function POST(request: Request, context: RouteContext) {
       throw new AppError(ErrorCode.VALIDATION_ERROR, "Webhook URL не настроен.");
     }
 
-    if (!dryRun && article.qualityPassed !== true) {
+    const currentQuality = evaluateCurrentArticlePublishQuality(article);
+    if (!dryRun && (article.qualityPassed !== true || !currentQuality.passed)) {
+      if (!currentQuality.passed) {
+        await prisma.article.update({
+          where: { id: article.id },
+          data: {
+            qualityPassed: false,
+            qualityScore: Math.min(article.qualityScore ?? 100, currentQuality.overall),
+            qualityIssuesJson: {
+              score: currentQuality.overall,
+              passed: false,
+              items: currentQuality.criticalFlags.map((code) => ({
+                code,
+                message: `Publication-time quality check failed: ${code}.`,
+                status: "open",
+                displayLabel: code,
+              })),
+              repairAttempts: 0,
+              validatedAt: new Date().toISOString(),
+            },
+          },
+        });
+      }
       throw new AppError(
         ErrorCode.VALIDATION_ERROR,
-        "Отправка доступна только после успешной проверки качества."
+        "Текущая версия статьи не прошла обязательную проверку перед публикацией. Исправьте или перегенерируйте материал."
       );
     }
 

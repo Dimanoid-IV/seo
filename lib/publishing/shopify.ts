@@ -10,6 +10,7 @@ import {
 } from "@prisma/client";
 
 import { loadBrandKitForWebsite } from "@/lib/brand-kit";
+import { evaluateCurrentArticlePublishQuality } from "@/lib/articles/publish-quality";
 import { getPrisma } from "@/lib/db";
 import { AppError, ErrorCode } from "@/lib/errors";
 import { IntegrationCapability } from "@/lib/integrations/adapters/capabilities";
@@ -261,7 +262,10 @@ export async function createShopifyArticleForArticle(input: {
   if (!config?.connected || !token) {
     throw new AppError(ErrorCode.VALIDATION_ERROR, "Shopify не подключён.");
   }
-  if (article.qualityPassed !== true) {
+  if (
+    article.qualityPassed !== true ||
+    !evaluateCurrentArticlePublishQuality(article).passed
+  ) {
     throw new AppError(
       ErrorCode.VALIDATION_ERROR,
       "Shopify публикация доступна только после quality gate."
