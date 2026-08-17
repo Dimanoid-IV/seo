@@ -121,11 +121,23 @@ export async function checkUsageLimit(input: {
     month,
     websiteId: input.websiteId,
   });
+  const costLimit =
+    input.key === "AI_GENERATION"
+      ? subscription.planLimit?.aiCreditsLimitCents ?? null
+      : null;
+  const costUsed =
+    input.key === "AI_GENERATION"
+      ? subscription.planLimit?.aiCreditsUsedCents ?? 0
+      : 0;
+  const withinCostBudget =
+    costLimit === null || costLimit <= 0 ? true : costUsed < costLimit;
 
   return {
-    allowed: limit <= 0 ? false : current < limit,
+    allowed: limit > 0 && current < limit && withinCostBudget,
     current,
     limit,
+    costUsed,
+    costLimit,
     plan: planKey,
   };
 }
@@ -135,6 +147,7 @@ export async function incrementUsage(input: {
   organizationId: string;
   websiteId?: string | null;
   key: UsageKey;
+  costCents?: number;
 }) {
   const prisma = getPrisma();
   const month = currentMonthKey();
@@ -189,6 +202,11 @@ export async function incrementUsage(input: {
       data.auditsUsed = { increment: 1 };
     } else if (input.key === "SOCIAL_POST") {
       data.socialPostsUsed = { increment: 1 };
+    }
+    if (input.key === "AI_GENERATION" && (input.costCents ?? 0) > 0) {
+      data.aiCreditsUsedCents = {
+        increment: Math.max(0, Math.round(input.costCents ?? 0)),
+      };
     }
     // AI_GENERATION is cost/attempt protection only — do not bump articlesUsed.
     // articlesUsed tracks usable ARTICLE_DRAFT slots (live / reconciled).

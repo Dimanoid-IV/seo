@@ -232,6 +232,23 @@ function allowedInput(
   assert.equal(payload.title, "T");
 }
 
+// --- scheduled/taxonomy/media payload stays explicit and deterministic ---
+{
+  const payload = mapArticleToWpRestPublishPayload({
+    title: "Scheduled",
+    contentHtml: "<p>x</p>",
+    scheduledAt: new Date(Date.now() + 86_400_000),
+    categories: [3],
+    tags: [7, 9],
+    featuredMediaId: 42,
+  });
+  assert.equal(payload.status, "future");
+  assert.deepEqual(payload.categories, [3]);
+  assert.deepEqual(payload.tags, [7, 9]);
+  assert.equal(payload.featured_media, 42);
+  assert.equal(typeof payload.date, "string");
+}
+
 // --- draft/pending response must not claim published ---
 {
   const draftStatus: string = "draft";

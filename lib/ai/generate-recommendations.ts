@@ -395,6 +395,7 @@ export async function generateRecommendationsForWebsite(
         organizationId: organization.id,
         websiteId: website.id,
         key: "AI_GENERATION",
+        costCents: hermesResult.metadata?.costCents ?? 0,
       });
 
       return {
@@ -479,6 +480,7 @@ export async function generateRecommendationsForWebsite(
         organizationId: organization.id,
         websiteId: website.id,
         key: "AI_GENERATION",
+        costCents: hermesResult.metadata?.costCents ?? 0,
       });
 
       return {
@@ -529,6 +531,7 @@ export async function generateRecommendationsForWebsite(
       organizationId: organization.id,
       websiteId: website.id,
       key: "AI_GENERATION",
+      costCents: hermesResult.metadata?.costCents ?? 0,
     });
 
     return {

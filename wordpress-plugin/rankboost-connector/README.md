@@ -86,7 +86,7 @@ Posts are always created with `post_status = draft`. The current plugin does not
 - Does **not** update existing posts
 - Does **not** use HMAC request signing
 - Does **not** run autopilot or background sync
-- Does **not** assign categories or tags
+- The native Application Password adapter supports categories, tags, featured-media IDs, scheduled posts, and explicit existing post/page updates.
 
 Future RankBoost automation features, if added, will require explicit user setup in the RankBoost dashboard.
 

@@ -479,6 +479,7 @@ export async function generateArticleDraftForWebsite(
       organizationId: organization.id,
       websiteId: website.id,
       key: "AI_GENERATION",
+      costCents: totalCostCents,
     });
 
     await recordUsage({

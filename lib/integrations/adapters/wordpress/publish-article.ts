@@ -1,6 +1,5 @@
 /**
- * WordPress REST live publish — POST /wp-json/wp/v2/posts with status publish.
- * Only for new articles; never updates existing posts/pages.
+ * WordPress REST create/update publisher.
  */
 import "server-only";
 
@@ -17,7 +16,12 @@ export type WordPressPublishInput = {
   excerpt?: string;
   slug?: string | null;
   categories?: number[];
+  tags?: number[];
+  featuredMediaId?: number | null;
   author?: number | null;
+  scheduledAt?: Date | string | null;
+  existingPostId?: string | null;
+  objectType?: "posts" | "pages";
 };
 
 export type WordPressPublishResult = {
@@ -28,6 +32,7 @@ export type WordPressPublishResult = {
   status: string;
   /** True only when WP confirmed status === "publish". */
   livePublished: boolean;
+  operation: "created" | "updated";
 };
 
 export type WordPressPublishVerificationResult = {
@@ -64,14 +69,27 @@ function safeWpErrorMessage(status: number): string {
 export function mapArticleToWpRestPublishPayload(
   input: WordPressPublishInput
 ): Record<string, unknown> {
+  const scheduledAt = input.scheduledAt
+    ? new Date(input.scheduledAt)
+    : null;
+  const isFuture = Boolean(
+    scheduledAt &&
+      Number.isFinite(scheduledAt.getTime()) &&
+      scheduledAt.getTime() > Date.now()
+  );
   return {
     title: input.title,
     content: input.contentHtml,
-    status: "publish",
+    status: isFuture ? "future" : "publish",
     excerpt: input.excerpt ?? "",
     ...(input.slug ? { slug: input.slug } : {}),
     ...(input.categories?.length ? { categories: input.categories } : {}),
+    ...(input.tags?.length ? { tags: input.tags } : {}),
+    ...(input.featuredMediaId && input.featuredMediaId > 0
+      ? { featured_media: input.featuredMediaId }
+      : {}),
     ...(input.author && input.author > 0 ? { author: input.author } : {}),
+    ...(isFuture && scheduledAt ? { date: scheduledAt.toISOString() } : {}),
   };
 }
 
@@ -83,14 +101,25 @@ export async function createWordPressRestPublishedPost(
   credentials: WordPressRestCredentials,
   article: WordPressPublishInput
 ): Promise<WordPressPublishResult> {
+  return upsertWordPressRestPost(credentials, article);
+}
+
+/** Create or update a WordPress post/page with publish or future status. */
+export async function upsertWordPressRestPost(
+  credentials: WordPressRestCredentials,
+  article: WordPressPublishInput
+): Promise<WordPressPublishResult> {
   const { normalized } = await assertSafeWordPressUrl(credentials.siteUrl);
   const base = buildWpRestBase(normalized);
   const payload = mapArticleToWpRestPublishPayload(article);
-  payload.status = "publish";
+  const objectType = article.objectType ?? "posts";
+  const endpoint = article.existingPostId
+    ? `${base}/${objectType}/${encodeURIComponent(article.existingPostId)}`
+    : `${base}/${objectType}`;
 
   let response: Response;
   try {
-    response = await fetch(`${base}/posts`, {
+    response = await fetch(endpoint, {
       method: "POST",
       headers: {
         Authorization: basicAuthHeader(
@@ -144,6 +173,7 @@ export async function createWordPressRestPublishedPost(
     link: typeof body.link === "string" ? body.link : null,
     status,
     livePublished,
+    operation: article.existingPostId ? "updated" : "created",
   };
 }
 

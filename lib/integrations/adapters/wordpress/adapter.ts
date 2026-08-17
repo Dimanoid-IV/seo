@@ -1,7 +1,6 @@
 /**
  * WordPress integration adapter (Prompt 11.51 / 11.53).
- * Capabilities: ARTICLE_CREATE_DRAFT, ARTICLE_PUBLISH, ARTICLE_ROLLBACK.
- * Does not implement UPDATE / META / IMAGE.
+ * Capabilities: draft, create/update publish, rollback.
  */
 
 import { IntegrationCapability } from "../capabilities";
@@ -14,10 +13,11 @@ import type {
 } from "../types";
 import { evaluateLivePublishGate } from "../../live-publish-gate";
 import { createWordPressArticleDraft } from "./create-draft";
-import { createWordPressRestPublishedPost } from "./publish-article";
+import { upsertWordPressRestPost } from "./publish-article";
 
 export const WORDPRESS_ADAPTER_CAPABILITIES = [
   IntegrationCapability.CREATE_WORDPRESS_DRAFT,
+  IntegrationCapability.UPDATE_WORDPRESS_ARTICLE,
   IntegrationCapability.PUBLISH_WORDPRESS_ARTICLE,
   IntegrationCapability.ROLLBACK_WORDPRESS_ARTICLE,
   IntegrationCapability.TEST_CONNECTION,
@@ -34,7 +34,12 @@ export type WordPressAdapterExecuteContext = {
   excerpt?: string;
   slug?: string | null;
   categories?: number[];
+  tags?: number[];
+  featuredMediaId?: number | null;
   author?: number | null;
+  scheduledAt?: Date | string | null;
+  existingPostId?: string | null;
+  objectType?: "posts" | "pages";
 };
 
 /**
@@ -100,7 +105,7 @@ export function createWordPressAdapter(
         };
       }
 
-      if (change.action === "PUBLISH") {
+      if (change.action === "PUBLISH" || change.action === "UPDATE_ARTICLE") {
         const gateState = evaluateLivePublishGate(gate);
         if (!gateState.livePublishEnabled) {
           return {
@@ -120,7 +125,14 @@ export function createWordPressAdapter(
           };
         }
 
-        const published = await createWordPressRestPublishedPost(
+        if (change.action === "UPDATE_ARTICLE" && !ctx.existingPostId) {
+          return {
+            externalActionPerformed: false,
+            result: { errorCode: "wordpress_existing_post_id_missing" },
+          };
+        }
+
+        const published = await upsertWordPressRestPost(
           ctx.credentials,
           {
             title: ctx.title,
@@ -128,7 +140,12 @@ export function createWordPressAdapter(
             excerpt: ctx.excerpt,
             slug: ctx.slug,
             categories: ctx.categories,
+            tags: ctx.tags,
+            featuredMediaId: ctx.featuredMediaId,
             author: ctx.author,
+            scheduledAt: ctx.scheduledAt,
+            existingPostId: ctx.existingPostId,
+            objectType: ctx.objectType,
           }
         );
 
@@ -141,6 +158,7 @@ export function createWordPressAdapter(
             editUrl: published.editUrl,
             link: published.link,
             livePublished: published.livePublished,
+            operation: published.operation,
           },
         };
       }
@@ -156,5 +174,6 @@ export function createWordPressAdapter(
 export const wordpressAdapterCapabilities = {
   ARTICLE_CREATE_DRAFT: IntegrationCapability.CREATE_WORDPRESS_DRAFT,
   ARTICLE_PUBLISH: IntegrationCapability.PUBLISH_WORDPRESS_ARTICLE,
+  ARTICLE_UPDATE: IntegrationCapability.UPDATE_WORDPRESS_ARTICLE,
   ARTICLE_ROLLBACK: IntegrationCapability.ROLLBACK_WORDPRESS_ARTICLE,
 } as const;

@@ -641,6 +641,7 @@ export async function generateArticleFromResearchBrief(
       organizationId: organization.id,
       websiteId: website.id,
       key: "AI_GENERATION",
+      costCents: totalCostCents,
     });
 
     await recordUsage({

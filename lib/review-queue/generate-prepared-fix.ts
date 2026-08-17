@@ -177,6 +177,7 @@ export async function generatePreparedFixForTask(
       organizationId: input.organizationId,
       websiteId: input.websiteId,
       key: "AI_GENERATION",
+      costCents: hermesResult.metadata?.costCents ?? 0,
     });
 
     return {

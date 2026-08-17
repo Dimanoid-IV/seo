@@ -157,6 +157,7 @@ export async function generateSocialPostDraftForWebsite(
       organizationId: organization.id,
       websiteId: website.id,
       key: "AI_GENERATION",
+      costCents,
     });
 
     await recordUsage({

@@ -69,6 +69,7 @@ export async function recordUsage(input: {
   organizationId: string;
   websiteId?: string | null;
   key: UsageKey;
+  costCents?: number;
 }) {
   await incrementUsage(input);
 }
