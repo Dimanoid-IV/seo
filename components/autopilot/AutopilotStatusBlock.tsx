@@ -247,6 +247,7 @@ export function AutopilotStatusBlock({
         data: {
           dryRun: boolean;
           dueItemsFound: number;
+          wouldRunCount: number;
           executedCount: number;
           skippedCount: number;
           blockedCount: number;
@@ -256,7 +257,7 @@ export function AutopilotStatusBlock({
       if (body.data.dryRun) {
         setRunMessage(
           t.dryRunSuccess(
-            body.data.executedCount,
+            body.data.wouldRunCount,
             body.data.skippedCount,
             body.data.blockedCount
           )

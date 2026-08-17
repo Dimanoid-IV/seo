@@ -1,13 +1,14 @@
 import { MonthlyAutopilotStatus } from "@prisma/client";
 
 import { runScheduledAutopilotPlans } from "@/lib/autopilot/run-scheduled-plan";
+import { selectFairCronPlans } from "@/lib/autopilot/cron-fairness";
 import { isAuthorizedCronRequest } from "@/lib/cron/auth";
 import { getPrisma } from "@/lib/db";
 import { getServerEnv } from "@/lib/env";
 import { AppError, ErrorCode } from "@/lib/errors";
 
-/** Cap websites processed per cron invocation to avoid runaway Hermes cost. */
-const MAX_PLANS_PER_CRON = 25;
+/** Cap websites per invocation while rotating fairly across every approved site. */
+const MAX_WEBSITES_PER_CRON = 25;
 
 function assertDatabaseConfigured(): void {
   if (!getServerEnv().DATABASE_URL) {
@@ -58,59 +59,82 @@ export async function GET(request: Request) {
     const prisma = getPrisma();
     const dryRun = new URL(request.url).searchParams.get("dryRun") === "true";
 
-    const plans = await prisma.monthlyAutopilotPlan.findMany({
+    const allPlans = await prisma.monthlyAutopilotPlan.findMany({
       where: {
         archivedAt: null,
         status: MonthlyAutopilotStatus.APPROVED,
+        website: { deletedAt: null, status: "ACTIVE" },
       },
       select: {
         id: true,
         userId: true,
         websiteId: true,
         organizationId: true,
+        month: true,
       },
-      orderBy: { month: "desc" },
-      take: MAX_PLANS_PER_CRON,
+    });
+    const plans = selectFairCronPlans({
+      plans: allPlans,
+      limit: MAX_WEBSITES_PER_CRON,
     });
 
     const reports = [];
 
     for (const plan of plans) {
-      const report = await runScheduledAutopilotPlans({
-        userId: plan.userId,
-        organizationId: plan.organizationId,
-        websiteId: plan.websiteId,
-        dryRun,
-      });
+      try {
+        const report = await runScheduledAutopilotPlans({
+          userId: plan.userId,
+          organizationId: plan.organizationId,
+          websiteId: plan.websiteId,
+          dryRun,
+        });
 
-      reports.push({
-        planId: plan.id,
-        websiteId: plan.websiteId,
-        dryRun: report.dryRun,
-        dueItemsFound: report.dueItemsFound,
-        wouldRunCount: report.wouldRunCount,
-        executedCount: report.executedCount,
-        skippedCount: report.skippedCount,
-        blockedCount: report.blockedCount,
-        errorCount: report.errorCount,
-        results: report.results.map((result) => ({
-          planItemId: result.planItemId,
-          // Title only — never article body / webhook URL / secrets.
-          itemTitle: result.itemTitle.slice(0, 120),
-          action: result.action,
-          reasonKey: result.reasonKey,
-          would: summarizeAction(result.action, result.summaryKey ?? result.would),
-          eligible: result.eligible,
-          executed: result.executed,
-          error: result.error ? "execution_error" : undefined,
-        })),
-      });
+        reports.push({
+          planId: plan.id,
+          websiteId: plan.websiteId,
+          dryRun: report.dryRun,
+          dueItemsFound: report.dueItemsFound,
+          wouldRunCount: report.wouldRunCount,
+          executedCount: report.executedCount,
+          skippedCount: report.skippedCount,
+          blockedCount: report.blockedCount,
+          errorCount: report.errorCount,
+          results: report.results.map((result) => ({
+            planItemId: result.planItemId,
+            // Title only — never article body / webhook URL / secrets.
+            itemTitle: result.itemTitle.slice(0, 120),
+            action: result.action,
+            reasonKey: result.reasonKey,
+            would: summarizeAction(result.action, result.summaryKey ?? result.would),
+            eligible: result.eligible,
+            executed: result.executed,
+            error: result.error ? "execution_error" : undefined,
+          })),
+        });
+      } catch {
+        reports.push({
+          planId: plan.id,
+          websiteId: plan.websiteId,
+          dryRun,
+          dueItemsFound: 0,
+          wouldRunCount: 0,
+          executedCount: 0,
+          skippedCount: 0,
+          blockedCount: 0,
+          errorCount: 1,
+          results: [],
+          error: "website_execution_error",
+        });
+      }
     }
 
     return Response.json({
       data: {
         plansProcessed: plans.length,
-        maxPlansPerRun: MAX_PLANS_PER_CRON,
+        websitesProcessed: plans.length,
+        eligibleWebsites: new Set(allPlans.map((plan) => plan.websiteId)).size,
+        maxPlansPerRun: MAX_WEBSITES_PER_CRON,
+        maxWebsitesPerRun: MAX_WEBSITES_PER_CRON,
         dryRun,
         reports,
       },

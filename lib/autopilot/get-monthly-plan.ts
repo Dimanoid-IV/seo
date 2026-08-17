@@ -153,7 +153,10 @@ export async function getMonthlyAutopilotPlan(input: {
         data: sourceData,
         articleIntegration: wordpressConnected ? "none" : "wordpress",
       });
-      if (replenished.addedCount > 0) {
+      if (
+        replenished.addedCount > 0 ||
+        replenished.removedNonStrategicArticleCount > 0
+      ) {
         planItems = replenished.document;
         await prisma.monthlyAutopilotPlan.update({
           where: { id: plan.id },

@@ -24,6 +24,8 @@ export type BrandVoiceConfidence = "high" | "medium" | "low";
 export type BrandVoiceProfile = {
   language: string;
   audience: string;
+  /** Concrete products/services extracted from site copy. Never audience or CTA text. */
+  offerings?: string[];
   tone: BrandVoiceTone;
   formality: BrandVoiceFormality;
   sellingStyle: BrandVoiceSellingStyle;
@@ -42,6 +44,7 @@ export type BrandVoiceProfile = {
 
 export type BrandVoiceManualPatch = {
   audience?: string;
+  offerings?: string[];
   tone?: BrandVoiceTone;
   formality?: BrandVoiceFormality;
   sellingStyle?: BrandVoiceSellingStyle;

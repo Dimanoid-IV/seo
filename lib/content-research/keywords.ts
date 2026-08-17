@@ -50,6 +50,27 @@ const TECHNICAL_INSTRUCTION_PATTERNS = [
   /(lisage|looge|uuendage|parandage).*(kirjeldus|teenus|eelis|faq|cta|title|meta|h1|schema|sisu|leht)/i,
 ];
 
+const NON_TOPIC_PATTERNS = [
+  /^(people|customers|buyers|users|audience)\b.*\b(looking|who|seeking|need)/i,
+  /^(люди|клиенты|покупатели|пользователи|аудитория)[\s,]+.*(которые|ищут|желающие|нуждаются)/i,
+  /^(inimesed|kliendid|ostjad|kasutajad)[\s,]+.*(kes|otsivad|vajavad)/i,
+  /\b(your\s+photos?|pure\s+art|artistic\s+perfection)\b/i,
+  /\b\d+\s*(steps?|шага|шагов|sammu)\b/i,
+  /^(match site ctas|prefer (shorter|longer) sentences|site copy uses)/i,
+];
+
+function isAudienceDescriptionOrSlogan(value: string): boolean {
+  const normalized = value.trim().replace(/\s+/g, " ");
+  if (!normalized) return false;
+  if (NON_TOPIC_PATTERNS.some((pattern) => pattern.test(normalized))) return true;
+
+  const sentenceFragments = normalized
+    .split(/[.!?]+/)
+    .map((part) => part.trim())
+    .filter(Boolean);
+  return normalized.length <= 80 && sentenceFragments.length > 1;
+}
+
 function isAuditSymptomPhrase(value: string): boolean {
   const normalized = normalizeKeyword(value);
   if (!normalized) {
@@ -74,7 +95,8 @@ function isUnsafeAutopilotKeyword(value: string): boolean {
   return (
     containsDomainToken(value) ||
     isAuditSymptomPhrase(value) ||
-    isTechnicalInstructionPhrase(value)
+    isTechnicalInstructionPhrase(value) ||
+    isAudienceDescriptionOrSlogan(value)
   );
 }
 
@@ -244,6 +266,7 @@ export function extractKeywordCandidates(
 export const __contentResearchKeywordInternals = {
   isAuditSymptomPhrase,
   isTechnicalInstructionPhrase,
+  isAudienceDescriptionOrSlogan,
   isUnsafeAutopilotKeyword,
   cleanKeywordCandidate,
 };

@@ -59,6 +59,26 @@ assert.equal(
 assert.equal(isResearchBriefReadyForArticleGeneration(readyBrief()), true);
 assert.equal(isResearchBriefReadyForArticleGeneration(pollutedBrief), false);
 assert.equal(
+  isResearchBriefReadyForArticleGeneration(
+    readyBrief({
+      primaryKeyword: "Your Photos. Pure Art.",
+      recommendedArticleTitle: "Your Photos. Pure Art.: how to choose",
+    })
+  ),
+  false,
+  "brand slogans must not pass research readiness"
+);
+assert.equal(
+  isResearchBriefReadyForArticleGeneration(
+    readyBrief({
+      primaryKeyword:
+        "Люди, которые ищут оригинальный портрет или художественный подарок",
+    })
+  ),
+  false,
+  "audience descriptions must not pass research readiness"
+);
+assert.equal(
   analyzeResearchBriefReadiness(pollutedBrief).reasonKey,
   "unsafePrimaryKeyword"
 );

@@ -238,6 +238,55 @@ function pickCommonPhrases(samples: BrandVoicePageSample[]): string[] {
   return uniqueStrings(candidates, 8);
 }
 
+const OFFERING_REJECT_PATTERNS = [
+  /\b(your|you|we|our|my|ваш|ваша|ваши|вы|мы|наш|meie|sinu|teie)\b/i,
+  /\b(start|learn|discover|contact|upload|click|начать|узнать|загрузить|связаться|alusta|laadi|võta ühendust)\b/i,
+  /\b\d+\s*(steps?|шага|шагов|sammu)\b/i,
+];
+
+function cleanOfferingCandidate(value: string): string | null {
+  const candidate = value
+    .replace(/https?:\/\/\S+/gi, " ")
+    .replace(/\b(?:www\.)?[a-z0-9][-a-z0-9]*(?:\.[a-z0-9][-a-z0-9]*)+\b/gi, " ")
+    .replace(/^(order|buy|get|book|заказать|купить|telli)\s+/i, "")
+    .replace(/\s+/g, " ")
+    .trim()
+    .replace(/[.!?]+$/, "");
+  const words = candidate.split(/\s+/).filter(Boolean);
+  if (words.length < 2 || words.length > 6 || candidate.length > 70) return null;
+  if ((value.match(/[.!?]/g) ?? []).length > 1) return null;
+  if (OFFERING_REJECT_PATTERNS.some((pattern) => pattern.test(candidate))) return null;
+  return candidate;
+}
+
+function inferOfferings(
+  samples: BrandVoicePageSample[],
+  corpus: string,
+  language: string
+): string[] {
+  const inferred: string[] = [];
+  if (ARTISTIC_MARKERS.test(corpus) && /\b(портрет|portrait|portree)\b/i.test(corpus)) {
+    inferred.push(
+      language.startsWith("ru")
+        ? "портрет по фото на холсте"
+        : language.startsWith("et")
+          ? "fotost portree lõuendil"
+          : "custom portrait from a photo"
+    );
+  }
+
+  const sitePhrases = samples.flatMap((sample) => [sample.title, ...sample.headings]);
+  for (const phrase of sitePhrases) {
+    const parts = phrase.split(/\s*[|:—–-]\s*/).filter(Boolean);
+    for (const part of parts) {
+      const offering = cleanOfferingCandidate(part);
+      if (offering) inferred.push(offering);
+    }
+  }
+
+  return uniqueStrings(inferred, 4);
+}
+
 function pickExamples(samples: BrandVoicePageSample[]): string[] {
   return uniqueStrings(
     samples.flatMap((s) => s.paragraphs),
@@ -269,6 +318,7 @@ export function extractBrandVoiceFromPages(input: {
   const formality = detectFormality(corpus);
   const sellingStyle = detectSellingStyle(corpus, tone);
   const commonPhrases = pickCommonPhrases(pages);
+  const offerings = inferOfferings(pages, corpus, input.language);
   const examples = pickExamples(pages);
   const ctaCandidates = pages.flatMap((p) => p.ctaCandidates);
   const { confidence } = scoreConfidence({
@@ -292,6 +342,7 @@ export function extractBrandVoiceFromPages(input: {
       examples,
       ctaStyle: inferCtaStyle(ctaCandidates, sellingStyle, input.language),
       audience: inferAudience(corpus, input.language),
+      offerings,
       confidence: "low",
       updatedAt: new Date().toISOString(),
     };
@@ -304,6 +355,7 @@ export function extractBrandVoiceFromPages(input: {
   return {
     language: input.language,
     audience: inferAudience(corpus, input.language),
+    offerings,
     tone,
     formality,
     sellingStyle,

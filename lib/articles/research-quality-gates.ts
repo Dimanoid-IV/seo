@@ -5,6 +5,7 @@ import {
   type ArticleQualityIssue,
 } from "@/lib/hermes/article-quality";
 import type { ContentResearchBrief } from "@/lib/content-research/types";
+import { isUnsafeArticleTopic } from "@/lib/content-research/keywords";
 import {
   countGenericMarketingPhrases,
   ctaLooksRelevant,
@@ -163,6 +164,21 @@ export function validateResearchAwareArticle(
     )
   );
 
+  const keyword = context.targetKeyword?.trim() ?? context.brief.primaryKeyword;
+  const topicSafe =
+    !isUnsafeArticleTopic(title) && !isUnsafeArticleTopic(keyword);
+  checks.push(
+    toCheck(
+      "safe_article_topic",
+      "Business topic safety",
+      topicSafe,
+      "error",
+      topicSafe
+        ? "Title and keyword describe a concrete business topic."
+        : "The title or keyword looks like a domain, slogan, audience description, or audit symptom."
+    )
+  );
+
   const hasMeta =
     Boolean(article.metaTitle?.trim()) &&
     Boolean(article.metaDescription?.trim());
@@ -178,7 +194,6 @@ export function validateResearchAwareArticle(
     )
   );
 
-  const keyword = context.targetKeyword?.trim() ?? context.brief.primaryKeyword;
   const hasKeyword = textIncludesKeyword(searchable, keyword);
   checks.push(
     toCheck(

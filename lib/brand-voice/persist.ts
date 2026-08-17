@@ -23,6 +23,7 @@ export function applyManualBrandVoicePatch(
   return {
     ...current,
     audience: patch.audience?.trim() || current.audience,
+    offerings: patch.offerings ?? current.offerings,
     tone: patch.tone ?? current.tone,
     formality: patch.formality ?? current.formality,
     sellingStyle: patch.sellingStyle ?? current.sellingStyle,

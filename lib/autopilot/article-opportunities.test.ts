@@ -19,6 +19,7 @@ const baseSource: MonthlyAutopilotSourceData = {
       brandVoice: {
         language: "ru",
         audience: "люди, ищущие портрет или художественный подарок",
+        offerings: ["портрет по фото на холсте"],
         tone: "artistic",
         formality: "neutral",
         sellingStyle: "gift-oriented",
@@ -225,6 +226,52 @@ assert.equal(
     status: "approved",
   }),
   false
+);
+
+for (const pollutedTitle of [
+  "Люди, которые ищут оригинальный портрет или художественный подарок: как выбрать лучший вариант",
+  "Your Photos. Pure Art.: как выбрать лучший вариант",
+  "Artistic Perfection in 3 Steps: как выбрать лучший вариант",
+]) {
+  assert.equal(
+    isNonStrategicArticlePlanItem({
+      type: "ARTICLE",
+      title: pollutedTitle,
+      status: "approved",
+    }),
+    true,
+    `audience descriptions and slogans must be removed: ${pollutedTitle}`
+  );
+}
+
+const legacyBrandVoiceSource: MonthlyAutopilotSourceData = {
+  ...baseSource,
+  website: {
+    ...baseSource.website,
+    niche: null,
+    businessGoals: {
+      brandVoice: {
+        ...(baseSource.website.businessGoals as { brandVoice: Record<string, unknown> })
+          .brandVoice,
+        offerings: undefined,
+        audience:
+          "Люди, которые ищут оригинальный портрет или художественный подарок",
+        commonPhrases: ["Your Photos. Pure Art.", "Artistic Perfection in 3 Steps"],
+      },
+    },
+  },
+};
+const legacyBrandVoicePlan = buildPlanItemsFromSource(legacyBrandVoiceSource);
+const legacyBrandVoiceArticles = legacyBrandVoicePlan.items.filter(
+  (item) => item.type === "ARTICLE"
+);
+assert.ok(legacyBrandVoiceArticles.length >= 3);
+assert.ok(
+  legacyBrandVoiceArticles.every(
+    (item) =>
+      !/люди,? которые ищут|your photos|artistic perfection/i.test(item.title)
+  ),
+  "legacy audience and slogan fields must never become article topics"
 );
 
 console.log("strategic article opportunities for monthly plan passed");

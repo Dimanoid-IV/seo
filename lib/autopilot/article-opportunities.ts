@@ -45,14 +45,29 @@ function normalizeSeed(value: string): string | null {
   return cleaned;
 }
 
+function extractOfferingSeedsFromAudience(value: string | undefined): string[] {
+  if (!value?.trim()) return [];
+  const subject = value
+    .replace(
+      /^(?:people|customers|buyers|users)\s+(?:who\s+are\s+)?(?:looking\s+for|seeking)|^(?:люди|клиенты|покупатели|пользователи),?\s*(?:которые\s+)?(?:ищут|желающие)|^(?:inimesed|kliendid|ostjad|kasutajad),?\s*(?:kes\s+)?(?:otsivad|vajavad)/i,
+      ""
+    )
+    .trim();
+  if (!subject || subject === value.trim()) return [];
+
+  return subject
+    .split(/\s+(?:or|или|või)\s+/i)
+    .map((part) => normalizeSeed(part))
+    .filter((part): part is string => Boolean(part))
+    .filter((part) => part.split(/\s+/).length <= 6);
+}
+
 function seedFromBrandVoice(data: MonthlyAutopilotSourceData): string | null {
   const brandVoice = readBrandVoiceFromBusinessGoals(data.website.businessGoals);
   const candidates = [
     data.website.niche,
-    ...(brandVoice?.commonPhrases ?? []),
-    brandVoice?.ctaStyle,
-    brandVoice?.audience,
-    brandVoice?.manualNotes,
+    ...(brandVoice?.offerings ?? []),
+    ...extractOfferingSeedsFromAudience(brandVoice?.audience),
   ];
 
   for (const value of candidates) {
@@ -70,10 +85,8 @@ function collectSeedKeywords(data: MonthlyAutopilotSourceData): string[] {
 
   for (const value of [
     data.website.niche,
-    brandVoice?.audience,
-    brandVoice?.ctaStyle,
-    brandVoice?.manualNotes,
-    ...(brandVoice?.commonPhrases ?? []),
+    ...(brandVoice?.offerings ?? []),
+    ...extractOfferingSeedsFromAudience(brandVoice?.audience),
   ]) {
     if (typeof value === "string") {
       seeds.push(...extractKeywordCandidates(value));
@@ -113,16 +126,13 @@ function expandBuyerKeywords(data: MonthlyAutopilotSourceData): string[] {
   const locale = localeFromLanguage(data.website.primaryLanguage);
   const baseSeeds = collectSeedKeywords(data);
   const niche =
-    seedFromBrandVoice(data) ??
-    (locale === "ru"
-      ? "портрет по фото"
-      : locale === "et"
-        ? "fotost portree"
-        : "custom portrait");
+    seedFromBrandVoice(data);
   const brandVoice = readBrandVoiceFromBusinessGoals(data.website.businessGoals);
   const giftOriented = brandVoice?.sellingStyle === "gift-oriented";
 
-  const fallback =
+  const fallback = !niche
+    ? []
+    :
     locale === "ru"
       ? giftOriented
         ? [
