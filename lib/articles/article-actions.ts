@@ -1,6 +1,7 @@
 import {
   ActivityType,
   ArticleStatus,
+  Prisma,
 } from "@prisma/client";
 
 import type { CurrentUser } from "@/lib/auth/types";
@@ -12,6 +13,7 @@ import {
   isWordPressConnectedForWebsite,
   serializeArticleRecord,
 } from "./article-serialize";
+import { evaluateCurrentArticlePublishQuality } from "./publish-quality";
 
 const ARTICLE_SELECT = {
   id: true,
@@ -139,6 +141,9 @@ export async function updateArticleForUser({
     contentHtml?: string | null;
     status?: ArticleStatus;
     approvedAt?: Date | null;
+    qualityScore?: number;
+    qualityPassed?: boolean;
+    qualityIssuesJson?: Prisma.InputJsonValue;
   } = {};
 
   if (data.title !== undefined) {
@@ -169,13 +174,55 @@ export async function updateArticleForUser({
     updateData.contentHtml = data.contentHtml;
   }
 
+  const contentChanged =
+    data.title !== undefined ||
+    data.metaTitle !== undefined ||
+    data.metaDescription !== undefined ||
+    data.contentHtml !== undefined;
+  const currentQuality = contentChanged
+    ? evaluateCurrentArticlePublishQuality({
+        title: updateData.title ?? existing.title,
+        metaTitle:
+          updateData.metaTitle !== undefined
+            ? updateData.metaTitle
+            : existing.metaTitle,
+        metaDescription:
+          updateData.metaDescription !== undefined
+            ? updateData.metaDescription
+            : existing.metaDescription,
+        contentHtml:
+          updateData.contentHtml !== undefined
+            ? updateData.contentHtml
+            : existing.contentHtml,
+        targetKeyword: existing.targetKeyword,
+        language: existing.language,
+      })
+    : null;
+
+  if (currentQuality) {
+    updateData.qualityScore = currentQuality.overall;
+    updateData.qualityPassed = currentQuality.passed;
+    updateData.qualityIssuesJson = {
+      score: currentQuality.overall,
+      passed: currentQuality.passed,
+      items: currentQuality.criticalFlags.map((code) => ({
+        code,
+        message: `Publication-time quality check failed: ${code}.`,
+        status: "open",
+        displayLabel: code,
+      })),
+      repairAttempts: 0,
+      validatedAt: new Date().toISOString(),
+    };
+  }
+
   let approved = false;
   if (data.status !== undefined) {
     const nextStatus = parseEditableStatus(data.status);
     if (
       nextStatus === ArticleStatus.APPROVED &&
       existing.generatedByAIJobId &&
-      existing.qualityPassed === false
+      (currentQuality?.passed ?? existing.qualityPassed) === false
     ) {
       throw new AppError(
         ErrorCode.VALIDATION_ERROR,
