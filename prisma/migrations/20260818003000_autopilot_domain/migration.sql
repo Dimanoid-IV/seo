@@ -99,7 +99,7 @@ CREATE TABLE "autopilot_actions" (
 );
 
 CREATE TABLE "page_metrics" (
-  "id" UUID NOT NULL DEFAULT gen_random_uuid(), "websiteId" UUID NOT NULL, "crawledPageId" UUID,
+  "id" UUID NOT NULL DEFAULT gen_random_uuid(), "websiteId" UUID NOT NULL, "organizationId" UUID, "crawledPageId" UUID,
   "pageUrl" TEXT NOT NULL, "date" DATE NOT NULL, "country" TEXT, "device" TEXT,
   "impressions" INTEGER NOT NULL DEFAULT 0, "clicks" INTEGER NOT NULL DEFAULT 0,
   "ctr" DOUBLE PRECISION NOT NULL DEFAULT 0, "position" DOUBLE PRECISION, "source" TEXT NOT NULL DEFAULT 'GSC',
@@ -107,7 +107,7 @@ CREATE TABLE "page_metrics" (
 );
 
 CREATE TABLE "action_impacts" (
-  "id" UUID NOT NULL DEFAULT gen_random_uuid(), "websiteId" UUID NOT NULL, "actionId" UUID NOT NULL,
+  "id" UUID NOT NULL DEFAULT gen_random_uuid(), "websiteId" UUID NOT NULL, "organizationId" UUID, "actionId" UUID NOT NULL,
   "pageUrl" TEXT, "metricName" TEXT NOT NULL, "metricBefore" DOUBLE PRECISION, "metricAfter" DOUBLE PRECISION,
   "absoluteChange" DOUBLE PRECISION, "relativeChange" DOUBLE PRECISION, "baselineStart" TIMESTAMP(3),
   "baselineEnd" TIMESTAMP(3), "comparisonStart" TIMESTAMP(3), "comparisonEnd" TIMESTAMP(3),
