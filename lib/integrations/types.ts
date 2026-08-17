@@ -30,7 +30,6 @@ export type IntegrationOverviewItem = {
   connected: boolean;
   status: string;
   available: boolean;
-  comingSoon: boolean;
   connectedAt: string | null;
   lastSyncAt: string | null;
   lastSuccessAt: string | null;

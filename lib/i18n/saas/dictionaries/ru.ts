@@ -26,7 +26,6 @@ export const saasDictionary: SaasDictionary = {
     setup: "Настройка",
     more: "Ещё",
     menu: "Меню",
-    comingSoon: "Скоро",
     trustFooter: "Начните с режима проверки",
   },
   header: {
@@ -791,7 +790,6 @@ export const saasDictionary: SaasDictionary = {
       "Подключение Google ещё не готово. Напишите в поддержку, если нужна помощь с Search Console.",
     connect: "Подключить",
     manage: "Управлять",
-    comingSoon: "Скоро",
     clicks: "кликов",
     impressions: "показов",
     last28Days: "за 28 дней",
@@ -806,7 +804,6 @@ export const saasDictionary: SaasDictionary = {
     addWebsiteToConnect: "Добавьте сайт, чтобы начать подключение.",
     googleRedirect:
       "Вы будете перенаправлены в Google для подтверждения доступа только на чтение.",
-    oauthSoon: "OAuth-подключение появится в следующем релизе",
     continueConnect: "Продолжить подключение",
     customSetupCta: "Настроить свой сайт",
     previewOnly:
@@ -818,7 +815,6 @@ export const saasDictionary: SaasDictionary = {
     riskLevel: "Уровень риска:",
     youControl: "Вы всегда контролируете, что RankBoost может делать автоматически.",
     connectionPath: "Путь подключения",
-    comingInRankBoost: "Скоро в RankBoost",
     hermesPlatformManaged: "Настроено RankBoost",
     hermesNotConfigured: "Не настроено",
     dataUsage: "Какие данные использует RankBoost",
@@ -2051,7 +2047,6 @@ export const saasDictionary: SaasDictionary = {
       noApprovedActions: "Нет одобренных действий",
       planApprovalStatus: "Статус плана",
       openReviewQueue: "Открыть очередь проверки",
-      comingSoon: "Включается при подтверждении месячного плана",
       modeChangeFailed: "Не удалось обновить режим автопилота.",
       modeChangeNetworkError: "Сетевая ошибка при обновлении режима.",
       enableAutoPublishFailed: "Не удалось включить автоматическую публикацию.",

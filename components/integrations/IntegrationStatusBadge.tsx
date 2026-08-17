@@ -3,14 +3,12 @@ import {
   AlertTriangle,
   CheckCircle2,
   Clock,
-  Sparkles,
   Unplug,
   XCircle,
 } from "lucide-react";
 
 type IntegrationStatusBadgeProps = {
   status: string;
-  comingSoon?: boolean;
   className?: string;
   /** Overrides the displayed label (e.g. localized partial-state text). */
   label?: string;
@@ -69,24 +67,9 @@ const STATUS_STYLES: Record<
 
 export function IntegrationStatusBadge({
   status,
-  comingSoon = false,
   className,
   label,
 }: IntegrationStatusBadgeProps) {
-  if (comingSoon) {
-    return (
-      <span
-        className={cn(
-          "inline-flex items-center gap-1.5 rounded-full border border-violet-200 bg-violet-50 px-2.5 py-1 text-xs font-medium text-violet-700",
-          className
-        )}
-      >
-        <Sparkles className="size-3" aria-hidden />
-        Coming Soon
-      </span>
-    );
-  }
-
   const config = STATUS_STYLES[status] ?? STATUS_STYLES.Disconnected;
   const Icon = config.icon;
 

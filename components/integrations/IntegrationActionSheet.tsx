@@ -170,7 +170,7 @@ function IntegrationActionSheetContent({
   const i = dict.integrations;
   const details = INTEGRATION_PROVIDER_DETAILS[integration.provider];
   const risk = details ? RISK_LEVEL_LABELS[details.riskLevel] : null;
-  const isComingSoon = integration.comingSoon || !integration.available;
+  const isUnavailable = !integration.available;
   const isGsc = integration.provider === GSC_PROVIDER;
   const isGa = integration.provider === GA_PROVIDER;
   const isGbp = integration.provider === GBP_PROVIDER;
@@ -180,7 +180,7 @@ function IntegrationActionSheetContent({
   const isConnected =
     (isGsc
       ? Boolean(integration.googleConnected)
-      : integration.connected) && !isComingSoon;
+      : integration.connected) && !isUnavailable;
   const isWordPress = integration.provider === WORDPRESS_PROVIDER;
   const isCustomWebhook = integration.provider === CUSTOM_WEBHOOK_PROVIDER;
   const isGhost = integration.provider === GHOST_PROVIDER;
@@ -191,7 +191,7 @@ function IntegrationActionSheetContent({
   const isWix = integration.provider === WIX_PROVIDER;
   const isNoCodeAutomation =
     integration.provider === ZAPIER_PROVIDER || integration.provider === MAKE_PROVIDER;
-  const canConnectGsc = isGsc && !isComingSoon && !isConnected && Boolean(websiteId);
+  const canConnectGsc = isGsc && !isUnavailable && !isConnected && Boolean(websiteId);
   const gscPropertySelected = Boolean(integration.selectedProperty);
   const [syncing, setSyncing] = useState(false);
   const [syncError, setSyncError] = useState<string | null>(null);
@@ -248,7 +248,7 @@ function IntegrationActionSheetContent({
             </SheetTitle>
             <IntegrationStatusBadge
               status={integration.status}
-              comingSoon={isComingSoon}
+              label={isUnavailable ? i.hermesNotConfigured : undefined}
             />
           </div>
           <SheetDescription className="text-slate-600">
@@ -301,7 +301,7 @@ function IntegrationActionSheetContent({
                 </div>
               ) : null}
 
-              {!isComingSoon ? (
+              {!isUnavailable ? (
                 <>
                   <p className="rounded-lg border border-[#c9bfff]/40 bg-[#c9bfff]/5 px-4 py-3 text-sm text-violet-100/90">
                     {i.youControl}
@@ -328,7 +328,7 @@ function IntegrationActionSheetContent({
             </>
           ) : null}
 
-          {isComingSoon ? (
+          {isUnavailable ? (
             <p className="rounded-xl border border-slate-200 bg-slate-50 p-4 text-sm text-slate-600">
               This connector is not available in the current release.
             </p>
@@ -387,7 +387,7 @@ function IntegrationActionSheetContent({
             </section>
           ) : null}
 
-          {isGa && !isComingSoon ? (
+          {isGa && !isUnavailable ? (
             <GoogleAnalyticsConnectionForm
               integration={integration}
               websiteId={websiteId}
@@ -395,7 +395,7 @@ function IntegrationActionSheetContent({
             />
           ) : null}
 
-          {isGbp && !isComingSoon ? (
+          {isGbp && !isUnavailable ? (
             <GoogleBusinessProfileConnectionForm
               integration={integration}
               websiteId={websiteId}
@@ -403,7 +403,7 @@ function IntegrationActionSheetContent({
             />
           ) : null}
 
-          {isWordPress && !isComingSoon ? (
+          {isWordPress && !isUnavailable ? (
             <div className="space-y-4">
               <WordPressConnectionForm
                 integration={integration}
@@ -426,7 +426,7 @@ function IntegrationActionSheetContent({
             </div>
           ) : null}
 
-          {isGitHub && !isComingSoon ? (
+          {isGitHub && !isUnavailable ? (
             <GitHubPrConnectionForm
               websiteId={websiteId}
               connected={integration.connected}
@@ -434,7 +434,7 @@ function IntegrationActionSheetContent({
             />
           ) : null}
 
-          {isWebflow && !isComingSoon ? (
+          {isWebflow && !isUnavailable ? (
             <WebflowConnectionForm
               websiteId={websiteId}
               connected={integration.connected}
@@ -442,7 +442,7 @@ function IntegrationActionSheetContent({
             />
           ) : null}
 
-          {isShopify && !isComingSoon ? (
+          {isShopify && !isUnavailable ? (
             <ShopifyConnectionForm
               websiteId={websiteId}
               connected={integration.connected}
@@ -450,7 +450,7 @@ function IntegrationActionSheetContent({
             />
           ) : null}
 
-          {isWix && !isComingSoon ? (
+          {isWix && !isUnavailable ? (
             <WixConnectionForm
               websiteId={websiteId}
               connected={integration.connected}
@@ -458,7 +458,7 @@ function IntegrationActionSheetContent({
             />
           ) : null}
 
-          {isSquarespace && !isComingSoon ? (
+          {isSquarespace && !isUnavailable ? (
             <SquarespaceConnectionForm
               websiteId={websiteId}
               connected={integration.connected}
@@ -466,7 +466,7 @@ function IntegrationActionSheetContent({
             />
           ) : null}
 
-          {isGhost && !isComingSoon ? (
+          {isGhost && !isUnavailable ? (
             <GhostConnectionForm
               websiteId={websiteId}
               connected={integration.connected}
@@ -474,7 +474,7 @@ function IntegrationActionSheetContent({
             />
           ) : null}
 
-          {isNoCodeAutomation && !isComingSoon ? (
+          {isNoCodeAutomation && !isUnavailable ? (
             <NoCodeAutomationConnectionForm
               websiteId={websiteId}
               provider={integration.provider === ZAPIER_PROVIDER ? "zapier" : "make"}
@@ -484,7 +484,7 @@ function IntegrationActionSheetContent({
           ) : null}
         </div>
 
-        {!isComingSoon &&
+        {!isUnavailable &&
         !isGa &&
         !isGbp &&
         !isWordPress &&

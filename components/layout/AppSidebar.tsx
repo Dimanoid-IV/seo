@@ -36,14 +36,12 @@ function NavLink({
   pathname,
   compact,
   onNavigate,
-  comingSoonLabel,
 }: {
   item: AppNavItemConfig;
   label: string;
   pathname: string;
   compact?: boolean;
   onNavigate?: () => void;
-  comingSoonLabel: string;
 }) {
   const active = isActive(pathname, item.href);
   const Icon = item.icon;
@@ -54,17 +52,7 @@ function NavLink({
     active
       ? "bg-[#c9bfff]/25 text-[#6d4ff0] ring-1 ring-[#c9bfff]/45"
       : "text-[#555555] hover:bg-black/[0.04] hover:text-[#181818]",
-    !item.enabled && "pointer-events-none opacity-40"
   );
-
-  if (!item.enabled) {
-    return (
-      <span className={className} title={comingSoonLabel}>
-        <Icon className={cn("size-5 shrink-0", compact && "size-5")} />
-        <span className={cn(compact && "leading-tight")}>{label}</span>
-      </span>
-    );
-  }
 
   return (
     <Link href={item.href} className={className} onClick={onNavigate}>
@@ -134,7 +122,6 @@ export function AppSidebar() {
                         item={item}
                         label={labelFor(item)}
                         pathname={pathname}
-                        comingSoonLabel={nav.comingSoon}
                       />
                     ))}
                   </div>
@@ -169,16 +156,7 @@ export function AppSidebar() {
           const itemClass = cn(
             "flex flex-1 flex-col items-center justify-center gap-1 py-2.5 text-[10px] font-medium transition-colors",
             active ? "text-[#8169ff]" : "text-[#555555]",
-            !item.enabled && "opacity-40"
           );
-
-          if (!item.enabled) {
-            return (
-              <span key={item.href} className={itemClass} title={nav.comingSoon}>
-                {content}
-              </span>
-            );
-          }
 
           return (
             <Link key={item.href} href={item.href} className={itemClass}>
@@ -217,7 +195,6 @@ export function AppSidebar() {
                   item={item}
                   label={labelFor(item)}
                   pathname={pathname}
-                  comingSoonLabel={nav.comingSoon}
                 />
               ))}
             </div>

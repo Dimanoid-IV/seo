@@ -19,7 +19,6 @@ export type SaasDictionary = {
     setup: string;
     more: string;
     menu: string;
-    comingSoon: string;
     trustFooter: string;
   };
   header: {
@@ -618,7 +617,6 @@ export type SaasDictionary = {
     gscOauthNotConfigured: string;
     connect: string;
     manage: string;
-    comingSoon: string;
     clicks: string;
     impressions: string;
     last28Days: string;
@@ -631,7 +629,6 @@ export type SaasDictionary = {
     disconnectLater: string;
     addWebsiteToConnect: string;
     googleRedirect: string;
-    oauthSoon: string;
     continueConnect: string;
     customSetupCta: string;
     previewOnly: string;
@@ -641,7 +638,6 @@ export type SaasDictionary = {
     riskLevel: string;
     youControl: string;
     connectionPath: string;
-    comingInRankBoost: string;
     hermesPlatformManaged: string;
     hermesNotConfigured: string;
     dataUsage: string;
@@ -1681,7 +1677,6 @@ export type SaasDictionary = {
       noApprovedActions: string;
       planApprovalStatus: string;
       openReviewQueue: string;
-      comingSoon: string;
       modeChangeFailed: string;
       modeChangeNetworkError: string;
       enableAutoPublishFailed: string;

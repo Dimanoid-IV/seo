@@ -12,7 +12,6 @@ import {
   Plug,
   Rocket,
   Gauge,
-  Settings,
   Share2,
 } from "lucide-react";
 
@@ -152,14 +151,6 @@ export const APP_NAV_ITEMS: AppNavItemConfig[] = [
     enabled: true,
     advanced: false,
   },
-  {
-    id: "settings",
-    href: "/app/settings",
-    group: "settings",
-    icon: Settings,
-    enabled: false,
-    advanced: false,
-  },
 ];
 
 export function filterNavItemsForMode(
@@ -167,10 +158,10 @@ export function filterNavItemsForMode(
   mode: "simple" | "advanced"
 ): AppNavItemConfig[] {
   if (mode === "advanced") {
-    return items;
+    return items.filter((item) => item.enabled);
   }
 
-  return items.filter((item) => !item.advanced);
+  return items.filter((item) => item.enabled && !item.advanced);
 }
 
 export function groupNavItems(items: AppNavItemConfig[]): Map<NavGroupKey, AppNavItemConfig[]> {

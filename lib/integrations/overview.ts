@@ -56,7 +56,6 @@ export async function getIntegrationsOverview(
         connected: configured,
         status: configured ? "Configured" : "Not configured",
         available: item.available,
-        comingSoon: item.comingSoon,
         connectedAt: null,
         lastSyncAt: null,
         lastSuccessAt: null,
@@ -77,7 +76,6 @@ export async function getIntegrationsOverview(
       connected: mapped.connected,
       status: mapped.status,
       available: item.available,
-      comingSoon: item.comingSoon,
       connectedAt: null,
       lastSyncAt: null,
       lastSuccessAt: null,
@@ -178,7 +176,6 @@ export async function getIntegrationsOverview(
         connected: configured,
         status: configured ? "Configured" : "Not configured",
         available: item.available,
-        comingSoon: item.comingSoon,
         connectedAt: null,
         lastSyncAt: null,
         lastSuccessAt: null,
@@ -209,7 +206,6 @@ export async function getIntegrationsOverview(
         connected,
         status: connected ? "Connected" : mapped.status,
         available: item.available,
-        comingSoon: item.comingSoon,
         connectedAt: connected
           ? (customPublishingConfig?.testedAt ?? null)
           : null,
@@ -233,7 +229,6 @@ export async function getIntegrationsOverview(
         connected,
         status: connected ? "Connected" : mapped.status,
         available: item.available,
-        comingSoon: item.comingSoon,
         connectedAt: connected ? githubPrConfig?.testedAt ?? null : null,
         lastSyncAt: null,
         lastSuccessAt: connected ? githubPrConfig?.testedAt ?? null : null,
@@ -253,7 +248,6 @@ export async function getIntegrationsOverview(
         connected,
         status: connected ? "Connected" : mapped.status,
         available: item.available,
-        comingSoon: item.comingSoon,
         connectedAt: connected ? webflowConfig?.testedAt ?? null : null,
         lastSyncAt: null,
         lastSuccessAt: connected ? webflowConfig?.testedAt ?? null : null,
@@ -273,7 +267,6 @@ export async function getIntegrationsOverview(
         connected,
         status: connected ? "Connected" : mapped.status,
         available: item.available,
-        comingSoon: item.comingSoon,
         connectedAt: connected ? shopifyConfig?.testedAt ?? null : null,
         lastSyncAt: null,
         lastSuccessAt: connected ? shopifyConfig?.testedAt ?? null : null,
@@ -293,7 +286,6 @@ export async function getIntegrationsOverview(
         connected,
         status: connected ? "Connected" : mapped.status,
         available: item.available,
-        comingSoon: item.comingSoon,
         connectedAt: connected ? wixConfig?.testedAt ?? null : null,
         lastSyncAt: null,
         lastSuccessAt: connected ? wixConfig?.testedAt ?? null : null,
@@ -313,7 +305,6 @@ export async function getIntegrationsOverview(
         connected,
         status: connected ? "Connected" : mapped.status,
         available: item.available,
-        comingSoon: item.comingSoon,
         connectedAt: connected ? squarespaceConfig?.testedAt ?? null : null,
         lastSyncAt: null,
         lastSuccessAt: connected ? squarespaceConfig?.testedAt ?? null : null,
@@ -333,7 +324,6 @@ export async function getIntegrationsOverview(
         connected,
         status: connected ? "Connected" : mapped.status,
         available: item.available,
-        comingSoon: item.comingSoon,
         connectedAt: connected ? ghostConfig?.testedAt ?? null : null,
         lastSyncAt: null,
         lastSuccessAt: connected ? ghostConfig?.testedAt ?? null : null,
@@ -354,7 +344,6 @@ export async function getIntegrationsOverview(
         connected,
         status: connected ? "Connected" : mapped.status,
         available: item.available,
-        comingSoon: item.comingSoon,
         connectedAt: connected ? config?.testedAt ?? null : null,
         lastSyncAt: null,
         lastSuccessAt: connected ? config?.testedAt ?? null : null,
@@ -373,7 +362,6 @@ export async function getIntegrationsOverview(
         connected: true,
         status: "Configured",
         available: item.available,
-        comingSoon: item.comingSoon,
         connectedAt: null,
         lastSyncAt: null,
         lastSuccessAt: null,
@@ -404,7 +392,6 @@ export async function getIntegrationsOverview(
         connected,
         status: statusLabel,
         available: item.available,
-        comingSoon: item.comingSoon,
         connectedAt:
           connected && (wordpressConnection || record)
             ? (wordpressConnection?.updatedAt ?? record?.updatedAt)?.toISOString() ??
@@ -447,7 +434,6 @@ export async function getIntegrationsOverview(
         connected: gscState === "CONNECTED",
         status: awaitingProperty ? "NeedsProperty" : mapped.status,
         available: item.available,
-        comingSoon: item.comingSoon,
         connectedAt:
           mapped.connected && record ? record.updatedAt.toISOString() : null,
         // Do not imply a property sync happened when none is selected.
@@ -483,7 +469,6 @@ export async function getIntegrationsOverview(
         connected,
         status: connected ? mapped.status : propertyId ? "NeedsSync" : "NeedsProperty",
         available: item.available,
-        comingSoon: item.comingSoon,
         connectedAt:
           mapped.connected && record ? record.updatedAt.toISOString() : null,
         lastSyncAt: record?.lastSyncAt?.toISOString() ?? null,
@@ -509,7 +494,6 @@ export async function getIntegrationsOverview(
         connected,
         status: connected ? mapped.status : accountId ? "NeedsSync" : "NeedsLocation",
         available: item.available,
-        comingSoon: item.comingSoon,
         connectedAt:
           mapped.connected && record ? record.updatedAt.toISOString() : null,
         lastSyncAt: record?.lastSyncAt?.toISOString() ?? null,
@@ -534,7 +518,6 @@ export async function getIntegrationsOverview(
       connected: mapped.connected,
       status: mapped.status,
       available: item.available,
-      comingSoon: item.comingSoon,
       connectedAt:
         mapped.connected && record
           ? record.updatedAt.toISOString()

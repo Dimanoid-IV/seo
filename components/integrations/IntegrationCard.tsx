@@ -133,7 +133,6 @@ function resolveAction(
     connectGsc: string;
     selectGscProperty: string;
     manage: string;
-    comingSoon: string;
     platformManaged: string;
     notConfigured: string;
   }
@@ -153,8 +152,8 @@ function resolveAction(
     return { label: labels.platformManaged, variant: "secondary", disabled: true };
   }
 
-  if (integration.comingSoon || !integration.available) {
-    return { label: labels.comingSoon, variant: "muted" };
+  if (!integration.available) {
+    return { label: labels.notConfigured, variant: "muted", disabled: true };
   }
   if (integration.provider === "google_search_console") {
     if (integration.gscState === "GOOGLE_CONNECTED_NO_PROPERTY") {
@@ -186,7 +185,6 @@ export function IntegrationCard({
     connectGsc: i.connectGscButton,
     selectGscProperty: i.gscSelectPropertyCta,
     manage: i.manage,
-    comingSoon: i.comingSoon,
     platformManaged: i.hermesPlatformManaged,
     notConfigured: i.hermesNotConfigured,
   });
@@ -216,7 +214,6 @@ export function IntegrationCard({
         </div>
         <IntegrationStatusBadge
           status={integration.status}
-          comingSoon={integration.comingSoon}
           label={gscAwaitingProperty ? i.gscPartialBadge : undefined}
         />
       </div>

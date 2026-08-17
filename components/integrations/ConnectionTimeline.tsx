@@ -45,9 +45,7 @@ export function ConnectionTimeline({
   if (events.length === 0 && !hasProperty) {
     return (
       <p className={cn("text-xs text-slate-500", className)}>
-        {integration.comingSoon
-          ? "Интеграция появится в следующих релизах"
-          : "Синхронизаций пока не было"}
+        Синхронизаций пока не было
       </p>
     );
   }

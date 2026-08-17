@@ -7,7 +7,6 @@ export type IntegrationCatalogEntry = {
   title: string;
   description: string;
   available: boolean;
-  comingSoon: boolean;
   category:
     | "seo_data"
     | "publishing"
@@ -27,7 +26,6 @@ export const INTEGRATION_CATALOG: IntegrationCatalogEntry[] = [
     description:
       "Данные о кликах, показах и позициях в Google — для приоритетов роста.",
     available: true,
-    comingSoon: false,
     category: "seo_data",
     capabilities: [
       IntegrationCapability.ANALYTICS_READ_METRICS,
@@ -41,7 +39,6 @@ export const INTEGRATION_CATALOG: IntegrationCatalogEntry[] = [
     description:
       "Трафик, конверсии и поведение пользователей для точных решений.",
     available: true,
-    comingSoon: false,
     category: "seo_data",
     capabilities: [IntegrationCapability.ANALYTICS_READ_METRICS],
   },
@@ -52,7 +49,6 @@ export const INTEGRATION_CATALOG: IntegrationCatalogEntry[] = [
     description:
       "Локальная видимость, отзывы и карточка компании в Google Maps.",
     available: true,
-    comingSoon: false,
     category: "seo_data",
     capabilities: [
       IntegrationCapability.LOCAL_PROFILE_READ,
@@ -66,7 +62,6 @@ export const INTEGRATION_CATALOG: IntegrationCatalogEntry[] = [
     description:
       "Публикация статей и обновлений SEO прямо на ваш сайт без ручного копирования.",
     available: true,
-    comingSoon: false,
     category: "cms",
     capabilities: [
       IntegrationCapability.CREATE_WORDPRESS_DRAFT,
@@ -83,7 +78,6 @@ export const INTEGRATION_CATALOG: IntegrationCatalogEntry[] = [
     description:
       "Один защищённый endpoint для самописных сайтов и любых CMS без готового коннектора.",
     available: true,
-    comingSoon: false,
     category: "publishing",
     capabilities: [
       IntegrationCapability.SEND_CUSTOM_WEBHOOK,
@@ -98,7 +92,6 @@ export const INTEGRATION_CATALOG: IntegrationCatalogEntry[] = [
     description:
       "Публичные SEO-страницы RankBoost как запасной путь, пока CMS клиента не подключена.",
     available: true,
-    comingSoon: false,
     category: "publishing",
     platformManaged: true,
     capabilities: [
@@ -113,7 +106,6 @@ export const INTEGRATION_CATALOG: IntegrationCatalogEntry[] = [
     description:
       "Публикация в Webflow CMS collections и обновление SEO-полей страниц.",
     available: true,
-    comingSoon: false,
     category: "cms",
     capabilities: [
       IntegrationCapability.CMS_ARTICLE_CREATE,
@@ -128,7 +120,6 @@ export const INTEGRATION_CATALOG: IntegrationCatalogEntry[] = [
     description:
       "SEO для e-commerce: блог, коллекции, карточки товаров и внутренние ссылки.",
     available: true,
-    comingSoon: false,
     category: "commerce",
     capabilities: [
       IntegrationCapability.ECOMMERCE_BLOG_PUBLISH,
@@ -142,7 +133,6 @@ export const INTEGRATION_CATALOG: IntegrationCatalogEntry[] = [
     description:
       "Путь для малого бизнеса на Wix: статьи, SEO-поля и понятная ручная страховка.",
     available: true,
-    comingSoon: false,
     category: "cms",
     capabilities: [
       IntegrationCapability.CMS_ARTICLE_CREATE,
@@ -156,7 +146,6 @@ export const INTEGRATION_CATALOG: IntegrationCatalogEntry[] = [
     description:
       "Готовый SEO-пакет для Squarespace Blog с проверкой сайта и понятным handoff.",
     available: true,
-    comingSoon: false,
     category: "cms",
     capabilities: [
       IntegrationCapability.PREPARE_UNIVERSAL_PACKAGE,
@@ -170,7 +159,6 @@ export const INTEGRATION_CATALOG: IntegrationCatalogEntry[] = [
     description:
       "Публикация SEO-статей в Ghost с тегами, excerpt и canonical metadata.",
     available: true,
-    comingSoon: false,
     category: "cms",
     capabilities: [
       IntegrationCapability.CMS_ARTICLE_CREATE,
@@ -185,7 +173,6 @@ export const INTEGRATION_CATALOG: IntegrationCatalogEntry[] = [
     description:
       "Безопасный путь для кастомных сайтов: RankBoost создаёт pull request с статьёй или SEO-fix.",
     available: true,
-    comingSoon: false,
     category: "publishing",
     capabilities: [IntegrationCapability.GITHUB_CREATE_PULL_REQUEST],
   },
@@ -196,7 +183,6 @@ export const INTEGRATION_CATALOG: IntegrationCatalogEntry[] = [
     description:
       "Автоматическое чтение sitemap.xml, robots.txt и URL сайта без паролей.",
     available: true,
-    comingSoon: false,
     category: "seo_data",
     platformManaged: true,
     capabilities: [IntegrationCapability.SITEMAP_DISCOVER_URLS],
@@ -208,7 +194,6 @@ export const INTEGRATION_CATALOG: IntegrationCatalogEntry[] = [
     description:
       "No-code автоматизация для команд, которым удобнее собирать публикацию через Zap.",
     available: true,
-    comingSoon: false,
     category: "automation",
     capabilities: [IntegrationCapability.NO_CODE_AUTOMATION_TRIGGER],
   },
@@ -219,7 +204,6 @@ export const INTEGRATION_CATALOG: IntegrationCatalogEntry[] = [
     description:
       "No-code сценарии публикации и уведомлений для кастомных процессов.",
     available: true,
-    comingSoon: false,
     category: "automation",
     capabilities: [IntegrationCapability.NO_CODE_AUTOMATION_TRIGGER],
   },
@@ -230,7 +214,6 @@ export const INTEGRATION_CATALOG: IntegrationCatalogEntry[] = [
     description:
       "Email-отчёты и уведомления о прогрессе сайта для вашей команды.",
     available: true,
-    comingSoon: false,
     category: "platform",
     platformManaged: true,
     capabilities: [],
@@ -242,7 +225,6 @@ export const INTEGRATION_CATALOG: IntegrationCatalogEntry[] = [
     description:
       "Platform AI engine for review-first SEO recommendations and content drafts.",
     available: true,
-    comingSoon: false,
     category: "platform",
     platformManaged: true,
     capabilities: [],

@@ -26,7 +26,6 @@ export const saasDictionary: SaasDictionary = {
     setup: "Seadistamine",
     more: "Rohkem",
     menu: "Menüü",
-    comingSoon: "Peagi",
     trustFooter: "Alustage ülevaatusrežiimis",
   },
   header: {
@@ -791,7 +790,6 @@ export const saasDictionary: SaasDictionary = {
       "Google'i ühendus pole veel valmis. Kirjutage toele, kui vajate abi Search Console'iga.",
     connect: "Ühenda",
     manage: "Halda",
-    comingSoon: "Peagi",
     clicks: "klikke",
     impressions: "kuvamist",
     last28Days: "28 päeva jooksul",
@@ -806,7 +804,6 @@ export const saasDictionary: SaasDictionary = {
     addWebsiteToConnect: "Lisage veebisait ühendamise alustamiseks.",
     googleRedirect:
       "Teid suunatakse Google'isse ainult lugemisõiguse kinnitamiseks.",
-    oauthSoon: "OAuth ühendus tuleb järgmises versioonis",
     continueConnect: "Jätka ühendamist",
     customSetupCta: "Seadista kohandatud sait",
     previewOnly:
@@ -818,7 +815,6 @@ export const saasDictionary: SaasDictionary = {
     riskLevel: "Riskitase:",
     youControl: "Teie kontrollite alati, mida RankBoost automaatselt teha tohib.",
     connectionPath: "Ühenduse tee",
-    comingInRankBoost: "Peagi RankBoostis",
     hermesPlatformManaged: "RankBoosti seadistatud",
     hermesNotConfigured: "Pole seadistatud",
     dataUsage: "Milliseid andmeid RankBoost kasutab",
@@ -2055,7 +2051,6 @@ export const saasDictionary: SaasDictionary = {
       noApprovedActions: "Kinnitatud tegevusi pole",
       planApprovalStatus: "Plaani kinnitus",
       openReviewQueue: "Ava ülevaate järjekord",
-      comingSoon: "Lülitatakse sisse kuuplaani kinnitamisel",
       modeChangeFailed: "Autopiloodi režiimi ei saanud uuendada.",
       modeChangeNetworkError: "Võrguviga režiimi uuendamisel.",
       enableAutoPublishFailed: "Automaatset avaldamist ei saanud lubada.",

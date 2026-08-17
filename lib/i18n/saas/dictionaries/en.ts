@@ -26,7 +26,6 @@ export const saasDictionary: SaasDictionary = {
     setup: "Setup",
     more: "More",
     menu: "Menu",
-    comingSoon: "Coming soon",
     trustFooter: "Start in Review Mode",
   },
   header: {
@@ -791,7 +790,6 @@ export const saasDictionary: SaasDictionary = {
       "Google connection is not ready yet. Contact support if you need help connecting Search Console.",
     connect: "Connect",
     manage: "Manage",
-    comingSoon: "Coming soon",
     clicks: "clicks",
     impressions: "impressions",
     last28Days: "over 28 days",
@@ -806,7 +804,6 @@ export const saasDictionary: SaasDictionary = {
     addWebsiteToConnect: "Add a website to start connecting.",
     googleRedirect:
       "You will be redirected to Google to confirm read-only access.",
-    oauthSoon: "OAuth connection will arrive in a future release",
     continueConnect: "Continue connection",
     customSetupCta: "Set up custom site",
     previewOnly:
@@ -818,7 +815,6 @@ export const saasDictionary: SaasDictionary = {
     riskLevel: "Risk level:",
     youControl: "You always control what RankBoost can do automatically.",
     connectionPath: "Connection path",
-    comingInRankBoost: "Coming soon in RankBoost",
     hermesPlatformManaged: "Configured by RankBoost",
     hermesNotConfigured: "Not configured",
     dataUsage: "What data RankBoost uses",
@@ -2046,7 +2042,6 @@ export const saasDictionary: SaasDictionary = {
       noApprovedActions: "No approved actions",
       planApprovalStatus: "Plan approval",
       openReviewQueue: "Open Review Queue",
-      comingSoon: "Enable when confirming a monthly plan",
       modeChangeFailed: "Could not update autopilot mode.",
       modeChangeNetworkError: "Network error while updating autopilot mode.",
       enableAutoPublishFailed: "Could not enable automatic publishing.",
