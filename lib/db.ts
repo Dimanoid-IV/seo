@@ -7,6 +7,20 @@ const globalForPrisma = globalThis as unknown as {
   pool: Pool | undefined;
 };
 
+/** Preserve pg v8's strict TLS behavior explicitly before pg v9 changes defaults. */
+export function normalizeDatabaseConnectionString(value: string): string {
+  try {
+    const parsed = new URL(value);
+    const sslMode = parsed.searchParams.get("sslmode");
+    if (sslMode === "prefer" || sslMode === "require" || sslMode === "verify-ca") {
+      parsed.searchParams.set("sslmode", "verify-full");
+    }
+    return parsed.toString();
+  } catch {
+    return value;
+  }
+}
+
 function createPrismaClient(): PrismaClient {
   const connectionString = process.env.DATABASE_URL?.trim();
   if (!connectionString) {
@@ -16,7 +30,9 @@ function createPrismaClient(): PrismaClient {
   }
 
   if (!globalForPrisma.pool) {
-    globalForPrisma.pool = new Pool({ connectionString });
+    globalForPrisma.pool = new Pool({
+      connectionString: normalizeDatabaseConnectionString(connectionString),
+    });
   }
 
   const adapter = new PrismaPg(globalForPrisma.pool);
