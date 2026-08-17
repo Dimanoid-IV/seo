@@ -83,6 +83,7 @@ type ArticlePublishPanelProps = {
   wordpressPublishedUrl?: string | null;
   wordpressEditUrl?: string | null;
   onRolledBack?: () => void;
+  onPublicationVerified?: () => void;
 };
 
 type CopyKey = "html" | "markdown" | "metaTitle" | "metaDescription" | "email";
@@ -122,6 +123,7 @@ export function ArticlePublishPanel({
   wordpressPublishedUrl,
   wordpressEditUrl,
   onRolledBack,
+  onPublicationVerified,
 }: ArticlePublishPanelProps) {
   const [webhookTested, setWebhookTested] = useState(false);
   const publishPriority = resolveArticlePublishPriority({
@@ -138,6 +140,7 @@ export function ArticlePublishPanel({
   const [customHost, setCustomHost] = useState<string | null>(null);
   const [customConnected, setCustomConnected] = useState(false);
   const [publishing, setPublishing] = useState<"test" | "send" | null>(null);
+  const [verifyingPublication, setVerifyingPublication] = useState(false);
   const [hostedPublishing, setHostedPublishing] = useState(false);
   const [publishMessage, setPublishMessage] = useState<string | null>(null);
   const [publishError, setPublishError] = useState<string | null>(null);
@@ -341,6 +344,36 @@ export function ArticlePublishPanel({
       );
     } finally {
       setPublishing(null);
+    }
+  }
+
+  async function handlePublicationVerification() {
+    setVerifyingPublication(true);
+    setPublishMessage(null);
+    setPublishError(null);
+    try {
+      const response = await authFetch(
+        `/api/articles/${articleId}/verify-publication`,
+        { method: "POST" }
+      );
+      const body = (await response.json().catch(() => ({}))) as {
+        data?: { article?: { status?: string } };
+        error?: { message?: string };
+      };
+      if (!response.ok) {
+        setPublishError(body.error?.message ?? "Не удалось проверить публикацию.");
+        return;
+      }
+      if (body.data?.article?.status === "PUBLISHED") {
+        setPublishMessage("Публичная страница проверена и подтверждена.");
+        onPublicationVerified?.();
+      } else {
+        setPublishError("Страница пока не готова. Повторите проверку после деплоя.");
+      }
+    } catch {
+      setPublishError("Сетевая ошибка при проверке публикации.");
+    } finally {
+      setVerifyingPublication(false);
     }
   }
 
@@ -941,6 +974,22 @@ export function ArticlePublishPanel({
               ) : null}
               Проверить связь
             </Button>
+            {articleStatus === "PUBLISHING" ? (
+              <Button
+                type="button"
+                size="sm"
+                variant="outline"
+                disabled={verifyingPublication}
+                onClick={() => void handlePublicationVerification()}
+              >
+                {verifyingPublication ? (
+                  <Loader2 className="size-4 animate-spin" />
+                ) : (
+                  <Check className="size-4" />
+                )}
+                Проверить публикацию
+              </Button>
+            ) : null}
           </div>
           {publishMessage ? (
             <p className="mt-3 text-xs text-emerald-800">{publishMessage}</p>

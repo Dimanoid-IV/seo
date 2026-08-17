@@ -482,6 +482,16 @@ export function ArticleEditorForm({ article, onUpdated }: ArticleEditorFormProps
                 onUpdated(body.data);
               })();
             }}
+            onPublicationVerified={() => {
+              void (async () => {
+                const response = await authFetch(`/api/articles/${article.id}`);
+                if (!response.ok) return;
+                const body = (await response.json()) as {
+                  data: typeof article;
+                };
+                onUpdated(body.data);
+              })();
+            }}
           />
         </div>
       </div>

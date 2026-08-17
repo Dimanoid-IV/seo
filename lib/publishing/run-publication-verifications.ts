@@ -45,6 +45,9 @@ function asRecord(value: unknown): Record<string, unknown> {
 export async function runDuePublicationVerifications(input: {
   now?: Date;
   limit?: number;
+  articleId?: string;
+  organizationId?: string;
+  ignoreSchedule?: boolean;
 } = {}): Promise<PublicationVerificationRunReport> {
   const prisma = getPrisma();
   const now = input.now ?? new Date();
@@ -64,8 +67,12 @@ export async function runDuePublicationVerifications(input: {
             },
           ],
         },
-        { OR: [{ nextAttemptAt: null }, { nextAttemptAt: { lte: now } }] },
+        ...(input.ignoreSchedule
+          ? []
+          : [{ OR: [{ nextAttemptAt: null }, { nextAttemptAt: { lte: now } }] }]),
       ],
+      sourceId: input.articleId,
+      organizationId: input.organizationId,
       sourceType: IntegrationExecutionSourceType.ARTICLE,
       status: {
         in: [
