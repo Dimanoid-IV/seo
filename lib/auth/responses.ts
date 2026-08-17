@@ -13,6 +13,11 @@ import {
   setRefreshTokenCookieOnResponse,
 } from "./cookies";
 
+const AUTH_RESPONSE_HEADERS = {
+  "Cache-Control": "no-store, max-age=0",
+  Pragma: "no-cache",
+} as const;
+
 export function validationErrorFromZod(error: z.ZodError): AppError {
   const firstMessage =
     error.issues[0]?.message ?? "Ошибка валидации входных данных";
@@ -35,6 +40,7 @@ export function authErrorResponse(request: Request, error: unknown): NextRespons
   return NextResponse.json(body, {
     status,
     headers: {
+      ...AUTH_RESPONSE_HEADERS,
       ...headers,
       ...(status === 429 && typeof retryAfter === "number"
         ? { "Retry-After": String(retryAfter) }
@@ -52,7 +58,10 @@ export function authJsonResponse<T>(
   data: T,
   options?: JsonOkOptions
 ): NextResponse {
-  const response = NextResponse.json(data, { status: options?.status ?? 200 });
+  const response = NextResponse.json(data, {
+    status: options?.status ?? 200,
+    headers: AUTH_RESPONSE_HEADERS,
+  });
 
   if (options?.refreshToken) {
     setRefreshTokenCookieOnResponse(response, options.refreshToken);
@@ -62,7 +71,10 @@ export function authJsonResponse<T>(
 }
 
 export function authNoContentResponse(): NextResponse {
-  const response = new NextResponse(null, { status: 204 });
+  const response = new NextResponse(null, {
+    status: 204,
+    headers: AUTH_RESPONSE_HEADERS,
+  });
   return clearRefreshTokenCookieOnResponse(response);
 }
 
