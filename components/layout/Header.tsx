@@ -57,7 +57,7 @@ export function Header({ locale, dict }: HeaderProps) {
           </span>
         </LocaleLink>
 
-        <nav className="hidden items-center gap-1 md:flex">
+        <nav className="hidden items-center gap-1 lg:flex">
           {navItems.map((item) => (
             <LocaleLink
               key={item.key}
@@ -73,7 +73,7 @@ export function Header({ locale, dict }: HeaderProps) {
           ))}
         </nav>
 
-        <div className="hidden items-center gap-2 md:flex">
+        <div className="hidden items-center gap-2 lg:flex">
           <LanguageSwitcher currentLocale={locale} />
           <TrackedLink
             event="login_click"
@@ -99,7 +99,7 @@ export function Header({ locale, dict }: HeaderProps) {
           </TrackedLink>
         </div>
 
-        <div className="flex items-center gap-2 md:hidden">
+        <div className="flex items-center gap-2 lg:hidden">
           <LanguageSwitcher currentLocale={locale} />
           <Sheet open={open} onOpenChange={setOpen}>
             <SheetTrigger
