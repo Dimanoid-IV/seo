@@ -6,6 +6,7 @@
     "dev": "next dev",
     "build": "node scripts/migrate-for-build.mjs && prisma generate && next build",
     "start": "next start",
+    "test": "node scripts/run-tests.mjs",
     "lint": "eslint",
     "prisma:generate": "prisma generate",
     "prisma:validate": "DATABASE_URL=${DATABASE_URL:-postgresql://postgres:postgres@127.0.0.1:5432/rankboost} prisma validate",

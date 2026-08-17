@@ -1,11 +1,20 @@
 import "server-only";
 
-import { ActionPolicyDecision, AutopilotActionState, AutopilotMode, MonthlyAutopilotStatus, PlanPublishingMode } from "@prisma/client";
+import {
+  ActionPolicyDecision,
+  AutopilotActionState,
+  AutopilotMode,
+  IntegrationProvider,
+  MonthlyAutopilotStatus,
+  PlanPublishingMode,
+} from "@prisma/client";
 
 import { getPrisma } from "@/lib/db";
 import { getCustomPublishingConfig, getCustomPublishingWebhookUrl } from "@/lib/publishing/custom-webhook-config";
 import { deliverCustomFixWebhook } from "@/lib/publishing/custom-webhook";
 import { resolveLivePublishScope } from "@/lib/integrations/live-publish-rollout";
+import { getApplicationPasswordCredentials } from "@/lib/integrations/wordpress/connect-application-password";
+import { addWordPressInternalLink } from "@/lib/integrations/adapters/wordpress/internal-links";
 import { canExecuteActionAutomatically } from "./action-policy";
 import { safeLogError, safeLogInfo } from "@/lib/logging";
 
@@ -23,6 +32,12 @@ export async function runDueSafeActions(input: { websiteId: string; now?: Date; 
       organizationId: true,
       livePublishRolloutEnabled: true,
       autopilotLivePublishPaused: true,
+      integrations: {
+        where: {
+          provider: IntegrationProvider.WORDPRESS,
+        },
+        select: { id: true, provider: true },
+      },
       monthlyAutopilotPlans: {
         where: { status: MonthlyAutopilotStatus.APPROVED, publishingMode: PlanPublishingMode.AUTO_PUBLISH, archivedAt: null },
         orderBy: { approvedAt: "desc" },
@@ -33,19 +48,35 @@ export async function runDueSafeActions(input: { websiteId: string; now?: Date; 
   });
   const plan = website?.monthlyAutopilotPlans[0];
   if (!website || !plan || website.autopilotLivePublishPaused) return { attempted: 0, applied: 0, failed: 0 };
-  const [state, config] = await Promise.all([
+  const [state, config, wordpressCredentials] = await Promise.all([
     prisma.websiteUserState.findUnique({
       where: { userId_websiteId: { userId: plan.userId, websiteId: website.id } },
       select: { autopilotMode: true },
     }),
     getCustomPublishingConfig(website.id),
+    getApplicationPasswordCredentials(website.id),
   ]);
   const rollout = resolveLivePublishScope({ websiteId: website.id, dbRolloutEnabled: website.livePublishRolloutEnabled });
-  if (state?.autopilotMode !== AutopilotMode.AUTOPUBLISH || !rollout.allowed || !config?.autoSendEnabled || !config.testedAt) {
+  if (state?.autopilotMode !== AutopilotMode.AUTOPUBLISH || !rollout.allowed) {
     return { attempted: 0, applied: 0, failed: 0 };
   }
-  const endpointUrl = await getCustomPublishingWebhookUrl(website.id);
-  if (!endpointUrl) return { attempted: 0, applied: 0, failed: 0 };
+  const endpointUrl =
+    config?.autoSendEnabled && config.testedAt
+      ? await getCustomPublishingWebhookUrl(website.id)
+      : null;
+  const customReady = Boolean(endpointUrl && config?.autoSendEnabled && config.testedAt);
+  const wordpressReady = Boolean(
+    wordpressCredentials?.permissions.canUpdateMeta === true
+  );
+  if (!customReady && !wordpressReady) {
+    return { attempted: 0, applied: 0, failed: 0 };
+  }
+  const transport = customReady ? "CUSTOM_WEBHOOK" : "WORDPRESS";
+  const integrationId = customReady
+    ? config?.integrationId ?? null
+    : website.integrations.find(
+        (integration) => integration.provider === IntegrationProvider.WORDPRESS
+      )?.id ?? null;
 
   const actions = await prisma.autopilotAction.findMany({
     where: {
@@ -72,35 +103,55 @@ export async function runDueSafeActions(input: { websiteId: string; now?: Date; 
     });
     const startedAt = Date.now();
     try {
-      const result = await deliverCustomFixWebhook({
-        taskId: action.id,
-        websiteId: website.id,
-        organizationId: website.organizationId,
-        endpointUrl,
-        dryRun: false,
-        fix: {
-          id: action.id,
-          type: "SEO_FIX",
-          field: "internal_links",
-          title: action.title,
-          preview: `Add a contextual link from ${action.targetUrl} to ${targetUrl}.`,
-          suggestedValue: JSON.stringify({ operation: "ADD_INTERNAL_LINK", sourceUrl: action.targetUrl, targetUrl, anchor }),
-          summary: action.reason,
-          implementationNotes: "Insert one contextual link in relevant visible body copy. Preserve existing content and anchors.",
-          riskLevel: "low",
-        },
-      });
-      if (!result.delivered || result.applied !== true) throw new Error(result.error ?? "Target did not confirm application.");
+      let confirmed: boolean;
+      let externalId: string | null;
+      let deliveryError: string | null = null;
+      if (transport === "CUSTOM_WEBHOOK") {
+        if (!endpointUrl) throw new Error("Custom webhook is not configured.");
+        const result = await deliverCustomFixWebhook({
+          taskId: action.id,
+          websiteId: website.id,
+          organizationId: website.organizationId,
+          endpointUrl,
+          dryRun: false,
+          fix: {
+            id: action.id,
+            type: "SEO_FIX",
+            field: "internal_links",
+            title: action.title,
+            preview: `Add a contextual link from ${action.targetUrl} to ${targetUrl}.`,
+            suggestedValue: JSON.stringify({ operation: "ADD_INTERNAL_LINK", sourceUrl: action.targetUrl, targetUrl, anchor }),
+            summary: action.reason,
+            implementationNotes: "Insert one contextual link in relevant visible body copy. Preserve existing content and anchors.",
+            riskLevel: "low",
+          },
+        });
+        confirmed = result.delivered && result.applied === true;
+        externalId = result.externalId ?? null;
+        deliveryError = result.error ?? null;
+      } else {
+        if (!wordpressCredentials) throw new Error("WordPress is not configured.");
+        const result = await addWordPressInternalLink(wordpressCredentials, {
+          sourceUrl: action.targetUrl,
+          targetUrl,
+          anchor,
+        });
+        confirmed = result.applied && result.verified;
+        externalId = result.postId;
+      }
+      if (!confirmed) {
+        throw new Error(deliveryError ?? "Target did not confirm and verify application.");
+      }
       await prisma.autopilotAction.update({
         where: { id: action.id },
-        data: { state: AutopilotActionState.PUBLISHED, publishedAt: now, completedAt: now, publishedUrl: action.targetUrl, externalId: result.externalId ?? null, lastError: null },
+        data: { state: AutopilotActionState.PUBLISHED, publishedAt: now, completedAt: now, publishedUrl: action.targetUrl, externalId: externalId ?? null, integrationId, lastError: null },
       });
       applied += 1;
       safeLogInfo("autopilot.action", "Safe action applied", {
         siteId: website.id,
         actionId: action.id,
-        jobId: null,
-        integrationId: config.integrationId,
+        jobId: action.id,
+        integrationId,
         type: action.actionType,
         status: "PUBLISHED",
         durationMs: Date.now() - startedAt,
@@ -120,8 +171,8 @@ export async function runDueSafeActions(input: { websiteId: string; now?: Date; 
       safeLogError("autopilot.action", error, {
         siteId: website.id,
         actionId: action.id,
-        jobId: null,
-        integrationId: config.integrationId,
+        jobId: action.id,
+        integrationId,
         type: action.actionType,
         status: attempts >= 5 ? "FAILED" : "SCHEDULED",
         durationMs: Date.now() - startedAt,
