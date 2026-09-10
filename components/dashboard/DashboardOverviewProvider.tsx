@@ -43,13 +43,14 @@ export function useDashboardOverview(): DashboardOverviewContextValue {
 /** Hard cap so the dashboard never sits on an infinite loader if the network hangs. */
 const OVERVIEW_FETCH_TIMEOUT_MS = 15_000;
 
-async function fetchOverview(): Promise<{
+async function fetchOverview(locale: string): Promise<{
   overview: DashboardOverviewData | null;
   simple: SimpleDashboardViewModel | null;
   error: string | null;
 }> {
   try {
     const response = await authFetch("/api/dashboard/overview", {
+      headers: { "X-RankBoost-Locale": locale },
       signal: AbortSignal.timeout(OVERVIEW_FETCH_TIMEOUT_MS),
     });
 
@@ -124,7 +125,7 @@ export function DashboardOverviewProvider({
       setErrorKey(null);
     }
 
-    const result = await fetchOverview();
+    const result = await fetchOverview(locale);
     setOverview(result.overview);
     setSimple(result.simple);
     if (!options?.silent) {
@@ -133,13 +134,13 @@ export function DashboardOverviewProvider({
     } else if (result.error) {
       setErrorKey(result.error);
     }
-  }, []);
+  }, [locale]);
 
   useEffect(() => {
     let cancelled = false;
 
     async function loadInitialOverview() {
-      const result = await fetchOverview();
+      const result = await fetchOverview(locale);
       if (cancelled) {
         return;
       }
