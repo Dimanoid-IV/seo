@@ -45,7 +45,6 @@ export function SaasLocaleProvider({
 
   useEffect(() => {
     setClientLocale(locale);
-    persistLocale(locale);
   }, [locale]);
 
   const setLocale = useCallback((next: SaasLocale) => {
