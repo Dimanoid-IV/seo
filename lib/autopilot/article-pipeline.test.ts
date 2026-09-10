@@ -1,12 +1,16 @@
 import assert from "node:assert/strict";
 
 import {
+  articleDraftResultPipelineState,
   assignPipelineScheduleDates,
   deriveArticlePipelineState,
   resolvePublishingPath,
 } from "./article-pipeline";
 import type { AutopilotPlanItem } from "./plan-item-types";
 import { assignEveryOtherDaySlots } from "./scheduling";
+
+assert.equal(articleDraftResultPipelineState(true), "DRAFT_READY_FOR_REVIEW");
+assert.equal(articleDraftResultPipelineState(false), "QUALITY_FAILED_NEEDS_REPAIR");
 
 function articleItem(
   overrides: Partial<AutopilotPlanItem> = {}
@@ -90,6 +94,17 @@ assert.equal(
     { qualityPassed: true }
   ),
   "UNIVERSAL_PACKAGE_READY"
+);
+assert.equal(
+  deriveArticlePipelineState(
+    articleItem({
+      status: "prepared",
+      generatedArticleId: "art-2",
+      articleQualityPassed: true,
+      pipelineState: "SCHEDULED_FOR_DRAFT",
+    })
+  ),
+  "DRAFT_READY_FOR_REVIEW"
 );
 
 const dates = assignPipelineScheduleDates(

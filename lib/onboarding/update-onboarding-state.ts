@@ -12,16 +12,10 @@ import { getPrisma } from "@/lib/db";
 export async function ensureOnboardingState(userId: string): Promise<OnboardingState> {
   const prisma = getPrisma();
 
-  const existing = await prisma.onboardingState.findUnique({
+  return prisma.onboardingState.upsert({
     where: { userId },
-  });
-
-  if (existing) {
-    return existing;
-  }
-
-  return prisma.onboardingState.create({
-    data: {
+    update: {},
+    create: {
       userId,
       status: "NOT_STARTED",
       currentStep: "ADD_WEBSITE",

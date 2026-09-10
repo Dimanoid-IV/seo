@@ -26,6 +26,7 @@ import { currentMonthKey, normalizeMonthKey } from "./month-utils";
 import { resolveWebsiteForAutopilot } from "./resolve-website";
 import { getMonthlyAutopilotSourceData } from "./source-data";
 import type { MonthlyAutopilotGetResponse } from "./types";
+import { deriveArticlePipelineState } from "./article-pipeline";
 
 export async function getMonthlyAutopilotPlan(input: {
   currentUser: CurrentUser;
@@ -171,6 +172,14 @@ export async function getMonthlyAutopilotPlan(input: {
         tasks,
         wordpressConnected,
       });
+      planItems = {
+        ...planItems,
+        items: planItems.items.map((item) =>
+          item.type === "ARTICLE"
+            ? { ...item, pipelineState: deriveArticlePipelineState(item) }
+            : item
+        ),
+      };
     }
 
     const aiVisibility = buildAutopilotAiVisibilitySnapshot({

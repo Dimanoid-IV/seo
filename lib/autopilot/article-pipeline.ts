@@ -54,6 +54,14 @@ export type LinkedArticlePipelineSnapshot = {
   wordpressPostId?: string | null;
 };
 
+export function articleDraftResultPipelineState(
+  qualityPassed: boolean
+): "DRAFT_READY_FOR_REVIEW" | "QUALITY_FAILED_NEEDS_REPAIR" {
+  return qualityPassed
+    ? "DRAFT_READY_FOR_REVIEW"
+    : "QUALITY_FAILED_NEEDS_REPAIR";
+}
+
 const HANDOFF_STATES = new Set<ArticlePipelineState>([
   "WORDPRESS_DRAFT_CREATED",
   "WORDPRESS_LIVE_PUBLISHED",

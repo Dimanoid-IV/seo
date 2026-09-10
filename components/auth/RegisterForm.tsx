@@ -87,7 +87,7 @@ export function RegisterForm({
       }
 
       storeAccessToken(data.accessToken);
-      router.push(normalizedPlan ? billingPathForPlanQuery(normalizedPlan) : "/app");
+      router.push(normalizedPlan ? billingPathForPlanQuery(normalizedPlan) : "/app/onboarding");
       router.refresh();
     } catch {
       setError(auth.networkError);

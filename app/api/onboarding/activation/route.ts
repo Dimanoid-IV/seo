@@ -3,9 +3,7 @@ import { authErrorResponse, authJsonResponse } from "@/lib/auth/responses";
 import { getServerEnv } from "@/lib/env";
 import { AppError, ErrorCode } from "@/lib/errors";
 import { getActivationStateForUser } from "@/lib/onboarding/activation-state";
-import {
-  runActivationPipelineSafe,
-} from "@/lib/onboarding/activation-pipeline";
+import { scheduleWebsiteActivation } from "@/lib/onboarding/schedule-activation";
 import { findPrimaryOrganization } from "@/lib/auth/queries";
 import { getPrisma } from "@/lib/db";
 import { WebsiteStatus } from "@prisma/client";
@@ -15,7 +13,7 @@ import {
 import { readBrandVoiceFromBusinessGoals } from "@/lib/brand-voice/business-goals";
 import { readBrandKitFromBusinessGoals } from "@/lib/brand-kit";
 
-export const maxDuration = 60;
+export const maxDuration = 300;
 
 function assertDatabaseConfigured(): void {
   if (!getServerEnv().DATABASE_URL) {
@@ -117,15 +115,15 @@ export async function POST(request: Request) {
       throw new AppError(ErrorCode.NOT_FOUND, "Website not found");
     }
 
-    const summary = await runActivationPipelineSafe({
+    await scheduleWebsiteActivation({
       userId: currentUser.id,
       organizationId: organization.id,
       websiteId: website.id,
       websiteUrl: website.url,
-      retry: body.retry !== false,
+      source: "retry",
     });
 
-    return authJsonResponse({ data: { summary } });
+    return authJsonResponse({ data: { activationStarted: true } }, { status: 202 });
   } catch (error) {
     return authErrorResponse(request, error);
   }

@@ -41,6 +41,12 @@ import {
 } from "./site-tech-persist";
 import { trackEventFireAndForget } from "@/lib/analytics/track";
 import { inferAndPersistBusinessProfile } from "@/lib/business-profile/persist";
+import { runExclusiveCron } from "@/lib/cron/exclusive-run";
+import { ACTIVATION_LEASE_MS, prepareActivationAttempt } from "./activation-recovery";
+import { launchPreparedPlan } from "./launch-plan";
+import { approveSelectedPlanItems } from "@/lib/autopilot/approve-plan-items";
+import { resolvePlanItemsDocumentFromPlan } from "@/lib/autopilot/plan-items";
+import { markUserOnboardingCompleted } from "./update-onboarding-state";
 
 function trackActivationStep(
   input: RunActivationPipelineInput,
@@ -547,6 +553,26 @@ export async function runActivationPipeline(
     }
   }
 
+  // Initial setup opts into preparation, never changes the customer's live site.
+  // Existing customers' approved modes and plans are not overwritten on retries.
+  const onboarding = await prisma.onboardingState.findUnique({ where: { userId: input.userId }, select: { status: true } });
+  if (onboarding?.status !== "COMPLETED" && activation.steps.audit?.status === "done" && activation.steps.monthlyPlan?.status === "done") {
+    const planId = monthlyPlanId ?? activation.steps.monthlyPlan.resultRef ?? null;
+    const plan = planId ? await prisma.monthlyAutopilotPlan.findFirst({ where: { id: planId, websiteId: website.id, userId: input.userId, archivedAt: null } }) : null;
+    const launched = await launchPreparedPlan({ hasAudit: true, planId: plan?.id ?? null, planApproved: plan?.status === "APPROVED" }, {
+      approve: async (id) => {
+        if (!plan) return false;
+        const document = resolvePlanItemsDocumentFromPlan(plan);
+        const itemIds = document?.items.filter(item => item.status === "proposed" && item.riskLevel !== "high" && !(item.needsIntegration && item.integrationType === "gsc")).map(item => item.id) ?? [];
+        if (!itemIds.length) return false;
+        const approved = await approveSelectedPlanItems({ planId: id, userId: input.userId, itemIds, publishingMode: "REVIEW_ONLY" });
+        return Boolean(approved.plan.planItems?.items.some(item => ["approved", "scheduled", "prepared"].includes(item.status)));
+      },
+      complete: () => markUserOnboardingCompleted(input.userId),
+    });
+    if (!launched) activation = mergeStep(activation, website.id, "monthlyPlan", { status: "needs_action", detail: "plan_needs_review", resultRef: planId ?? undefined });
+  }
+
   activation = {
     ...activation,
     status: deriveOverallStatus(activation.steps),
@@ -574,20 +600,8 @@ export async function markActivationStarted(input: {
   userId: string;
   websiteId: string;
 }): Promise<ActivationState> {
-  const activation: ActivationState = {
-    status: "running",
-    version: 1,
-    websiteId: input.websiteId,
-    startedAt: new Date().toISOString(),
-    steps: {
-      siteTech: { status: "pending" },
-      brandVoice: { status: "pending" },
-      audit: { status: "pending" },
-      growth: { status: "pending" },
-      topics: { status: "pending" },
-      monthlyPlan: { status: "pending" },
-    },
-  };
+  const previous = await getActivationStateForUser(input.userId);
+  const activation = prepareActivationAttempt(previous, input.websiteId);
   return saveActivationState({ userId: input.userId, activation });
 }
 
@@ -597,6 +611,18 @@ export async function markActivationStarted(input: {
 export async function runActivationPipelineSafe(
   input: RunActivationPipelineInput
 ): Promise<ActivationPipelineSummary | null> {
+  const result = await runExclusiveCron({
+    jobKey: `website-activation:${input.websiteId}`,
+    leaseMs: ACTIVATION_LEASE_MS,
+    bucketMs: 1,
+    run: () => runActivationAttemptSafe(input),
+    isFailure: (summary) => !summary || summary.activation.status !== "done",
+    summarize: (summary) => ({ websiteId: input.websiteId, status: summary?.activation.status ?? "failed" }),
+  });
+  return result.ran ? result.data : null;
+}
+
+async function runActivationAttemptSafe(input: RunActivationPipelineInput): Promise<ActivationPipelineSummary | null> {
   try {
     return await runActivationPipeline(input);
   } catch (error) {

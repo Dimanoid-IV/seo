@@ -1,4 +1,5 @@
 import { spawnSync } from "node:child_process";
+import { migrationConnectionString } from "./migration-connection.mjs";
 
 const connectionString = process.env.DATABASE_URL?.trim();
 let validDatabaseUrl = false;
@@ -21,7 +22,7 @@ function runPrisma(args, capture = false) {
   const result = spawnSync(process.execPath, [prismaCli, ...args], {
     stdio: capture ? "pipe" : "inherit",
     encoding: capture ? "utf8" : undefined,
-    env: process.env,
+    env: { ...process.env, DATABASE_URL: migrationConnectionString(connectionString, process.env.DIRECT_DATABASE_URL) },
   });
   if (result.error) throw result.error;
   if (capture) {
@@ -29,6 +30,14 @@ function runPrisma(args, capture = false) {
     if (result.stderr) process.stderr.write(result.stderr);
   }
   return result;
+}
+
+// Read-only fast path avoids taking a migration lock on every code-only deploy.
+// When the database differs, deploy still validates and applies migrations.
+const status = runPrisma(["migrate", "status"], true);
+if (status.status === 0) {
+  console.log("[build] Database schema is up to date.");
+  process.exit(0);
 }
 
 let result = runPrisma(["migrate", "deploy"], true);

@@ -2,298 +2,42 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { ArrowRight, Loader2, Sparkles } from "lucide-react";
-
-import { OnboardingAuditStep } from "@/components/onboarding/OnboardingAuditStep";
-import { OnboardingBillingNotice } from "@/components/onboarding/OnboardingBillingNotice";
-import { OnboardingCompleteCard } from "@/components/onboarding/OnboardingCompleteCard";
-import { OnboardingGscStep } from "@/components/onboarding/OnboardingGscStep";
-import { OnboardingPlanStep } from "@/components/onboarding/OnboardingPlanStep";
-import { OnboardingProgress } from "@/components/onboarding/OnboardingProgress";
-import { OnboardingResultsStep } from "@/components/onboarding/OnboardingResultsStep";
-import { OnboardingStepCard } from "@/components/onboarding/OnboardingStepCard";
-import { OnboardingWebsiteStep } from "@/components/onboarding/OnboardingWebsiteStep";
-import { useOnboarding } from "@/components/onboarding/useOnboarding";
-import { useAuthSession } from "@/components/auth/AuthSessionProvider";
-import { Button } from "@/components/ui/button";
-import { authFetch, parseApiErrorMessage } from "@/lib/auth/client-session";
+import { CheckCircle2, Globe2, Loader2, ArrowRight } from "lucide-react";
+import { ActivationProgressCard } from "@/components/dashboard/ActivationProgressCard";
+import { OnboardingWebsiteStep } from "./OnboardingWebsiteStep";
+import { useOnboarding } from "./useOnboarding";
 import { useSaasTranslations } from "@/lib/i18n/saas/SaasLocaleProvider";
-import type { OnboardingStepViewModel, OnboardingViewModel } from "@/lib/onboarding/types";
-
-function renderStepContent(
-  step: OnboardingStepViewModel,
-  input: {
-    websiteId?: string;
-    websiteUrl?: string;
-    userEmail?: string | null;
-    userName?: string | null;
-    results?: OnboardingViewModel["results"];
-    reload: () => Promise<OnboardingViewModel | null>;
-    setActionError: (message: string) => void;
-  }
-) {
-  const disabled = step.status === "LOCKED" || step.status === "DONE";
-
-  switch (step.key) {
-    case "ADD_WEBSITE":
-      return step.status === "DONE" ? null : (
-        <OnboardingWebsiteStep
-          disabled={disabled}
-          onSuccess={async () => {
-            await input.reload();
-          }}
-          onError={input.setActionError}
-        />
-      );
-    case "RUN_AUDIT":
-      return step.status === "DONE" ? null : (
-        <OnboardingAuditStep
-          websiteId={input.websiteId}
-          disabled={disabled}
-          onSuccess={async () => {
-            await input.reload();
-          }}
-          onError={input.setActionError}
-        />
-      );
-    case "CONNECT_GSC":
-      return step.status === "DONE" || step.status === "SKIPPED" ? null : (
-        <OnboardingGscStep
-          disabled={disabled}
-          websiteId={input.websiteId}
-          websiteUrl={input.websiteUrl}
-          userEmail={input.userEmail}
-          userName={input.userName}
-          onSkip={async () => {
-            await input.reload();
-          }}
-          onError={input.setActionError}
-        />
-      );
-    case "REVIEW_RESULTS":
-      return (
-        <OnboardingResultsStep
-          results={input.results}
-          disabled={disabled}
-          onViewed={async () => {
-            await input.reload();
-          }}
-        />
-      );
-    case "GENERATE_PLAN":
-      return step.status === "DONE" ? null : (
-        <OnboardingPlanStep
-          disabled={disabled}
-          onSuccess={async () => {
-            await input.reload();
-          }}
-          onError={input.setActionError}
-        />
-      );
-    default:
-      return null;
-  }
-}
+import { getLaunchCopy } from "@/lib/onboarding/launch-copy";
 
 export function OnboardingPage() {
-  const { dict } = useSaasTranslations();
-  const o = dict.onboarding;
-  const { user } = useAuthSession();
+  const { locale } = useSaasTranslations();
+  const t = getLaunchCopy(locale);
   const { data, loading, error, reload } = useOnboarding();
   const [actionError, setActionError] = useState<string | null>(null);
-  const [skippingAll, setSkippingAll] = useState(false);
-
-  async function handleSkipAll() {
-    setSkippingAll(true);
-    setActionError(null);
-    try {
-      const response = await authFetch("/api/onboarding/skip", { method: "POST" });
-      if (!response.ok) {
-        setActionError(
-          await parseApiErrorMessage(response, o.errors.skipSetupFailed)
-        );
-        return;
-      }
-      await reload();
-    } catch {
-      setActionError(o.errors.skipSetupNetworkError);
-    } finally {
-      setSkippingAll(false);
-    }
-  }
-
-  if (loading && !data) {
-    return (
-      <div className="flex min-h-[40vh] items-center justify-center">
-        <Loader2 className="size-8 animate-spin text-violet-400" />
-      </div>
-    );
-  }
-
-  if (data?.status === "COMPLETED") {
-    return (
-      <div className="app-content mx-auto min-w-0 max-w-3xl space-y-8 overflow-x-hidden p-4 sm:p-6 lg:p-10">
-        <section className="saas-card-success text-center">
-          <h2 className="text-xl font-semibold tracking-tight text-slate-900 sm:text-2xl">
-            {o.setupCompleteTitle}
-          </h2>
-          <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-slate-600">
-            {o.setupCompletePageSubtitle}
-          </p>
-          <Link href="/app/autopilot-control" className="mt-7 inline-block">
-            <Button type="button" className="min-h-11 rounded-xl px-6">
-              {o.openControlCenter}
-            </Button>
-          </Link>
-        </section>
-      </div>
-    );
-  }
-
-  const showCompleteCard =
-    data?.currentStep === "COMPLETE" ||
-    (data != null &&
-      data.progress.completed === data.progress.total &&
-      data.progress.total > 0);
+  const ready = data?.status === "COMPLETED" && data.results?.monthlyPlanStatus === "approved";
 
   return (
-    <div className="app-content mx-auto min-w-0 max-w-6xl space-y-8 overflow-x-hidden p-4 sm:p-6 lg:p-10">
-      <header className="saas-card-hero border border-violet-500/15 bg-gradient-to-br from-violet-500/[0.1] to-blue-500/[0.05]">
-        <div className="flex items-start gap-4">
-          <div className="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-violet-500/20 ring-1 ring-violet-500/20">
-            <Sparkles className="size-5 text-violet-300" />
-          </div>
-          <div>
-            <p className="saas-eyebrow text-violet-400/80">{o.eyebrow}</p>
-            <h1 className="mt-2 text-2xl font-bold tracking-tight text-slate-900 sm:text-[1.875rem]">
-              {o.pageTitle}
-            </h1>
-            <p className="mt-3 max-w-2xl text-sm leading-relaxed text-slate-400">
-              {o.pageSubtitle}
-            </p>
-          </div>
-        </div>
+    <main className="app-content mx-auto w-full max-w-3xl space-y-7 px-4 py-8 sm:px-8 sm:py-12">
+      <header className="space-y-4">
+        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-violet-700">RankBoost / {t.progress}</p>
+        <h1 className="max-w-xl text-3xl font-semibold leading-tight tracking-tight text-slate-950 sm:text-4xl">{ready ? t.ready : data?.website ? t.working : t.title}</h1>
+        <p className="max-w-xl text-base leading-relaxed text-slate-600">{ready ? t.readyBody : data?.website ? t.background : t.subtitle}</p>
       </header>
-
-      {error ? (
-        <p className="rounded-xl border border-red-500/30 bg-red-500/10 p-3 text-sm text-red-200">
-          {error}
-        </p>
-      ) : null}
-      {actionError ? (
-        <p className="rounded-xl border border-amber-500/30 bg-amber-500/10 p-3 text-sm text-amber-200">
-          {actionError}
-        </p>
-      ) : null}
-
-      {data ? (
-        <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_340px]">
-          <div className="space-y-5">
-            <OnboardingProgress {...data.progress} />
-
-            {data.steps.map((step) => (
-              <OnboardingStepCard key={step.key} step={step}>
-                {renderStepContent(step, {
-                  websiteId: data.website?.id,
-                  websiteUrl: data.website?.domain
-                    ? `https://${data.website.domain}`
-                    : undefined,
-                  userEmail: user?.email,
-                  userName: user?.name,
-                  results: data.results,
-                  reload,
-                  setActionError,
-                })}
-              </OnboardingStepCard>
-            ))}
-
-            {showCompleteCard ? (
-              <OnboardingCompleteCard
-                onComplete={async () => {
-                  await reload();
-                }}
-              />
-            ) : null}
-
-            <div className="flex flex-wrap gap-2 pt-2">
-              <Button
-                type="button"
-                variant="ghost"
-                disabled={skippingAll}
-                onClick={() => void handleSkipAll()}
-                className="text-slate-400 hover:text-slate-700"
-              >
-                {skippingAll ? <Loader2 className="size-4 animate-spin" /> : null}
-                {o.skipSetupForNow}
-              </Button>
-              <Link href="/app">
-                <Button
-                  type="button"
-                  variant="outline"
-                  className="gap-2 border-slate-200 bg-transparent text-slate-600"
-                >
-                  {o.goToDashboard}
-                  <ArrowRight className="size-4" />
-                </Button>
-              </Link>
-            </div>
-          </div>
-
-          <aside className="space-y-5">
-            <section className="saas-card-muted">
-              <h2 className="text-sm font-semibold text-slate-900">
-                {o.sidebarNextTitle}
-              </h2>
-              <ul className="mt-4 space-y-3 text-sm leading-relaxed text-slate-400">
-                {o.sidebarNextItems.map((item) => (
-                  <li key={item}>{item}</li>
-                ))}
-              </ul>
-            </section>
-
-            {data.results ? (
-              <section className="saas-card-muted">
-                <h2 className="text-sm font-semibold text-slate-900">
-                  {o.sidebarResultsTitle}
-                </h2>
-                {data.results.growthScore != null ? (
-                  <div className="mt-3 grid gap-2 text-sm">
-                    <p className="text-slate-600">
-                      {o.growthScoreLabel}{" "}
-                      <span className="font-medium text-slate-900">
-                        {data.results.growthScore}
-                      </span>
-                    </p>
-                    <p className="text-slate-600">
-                      {o.openTasksLabel}{" "}
-                      <span className="font-medium text-slate-900">
-                        {data.results.tasksCount ?? 0}
-                      </span>
-                    </p>
-                    {data.results.monthlyPlanStatus ? (
-                      <p className="text-slate-600">
-                        {o.monthlyPlanLabel}{" "}
-                        <span className="font-medium capitalize text-slate-900">
-                          {data.results.monthlyPlanStatus}
-                        </span>
-                      </p>
-                    ) : null}
-                  </div>
-                ) : (
-                  <p className="mt-2 text-sm text-slate-400">{o.resultsPending}</p>
-                )}
-              </section>
-            ) : null}
-
-            {data.billing ? (
-              <OnboardingBillingNotice
-                billing={data.billing}
-                actionLimitMessage={actionError}
-              />
-            ) : null}
-          </aside>
+      {(error || actionError) && <p role="alert" className="rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">{actionError || error}</p>}
+      {loading && !data ? <div role="status" className="flex items-center gap-3 py-12 text-slate-600"><Loader2 className="size-5 animate-spin motion-reduce:animate-none" />{t.waiting}</div> : null}
+      {data?.website ? (
+        <div className="flex min-w-0 items-center gap-3 border-y border-slate-200 py-5">
+          <Globe2 className="size-6 shrink-0 text-violet-600" />
+          <div className="min-w-0"><p className="text-xs text-slate-500">{t.website}</p><p className="break-all text-lg font-semibold text-slate-900">{data.website.domain}</p></div>
+          {ready && <CheckCircle2 className="ml-auto size-6 shrink-0 text-emerald-600" />}
         </div>
-      ) : null}
-    </div>
+      ) : data ? <section className="rounded-2xl border border-slate-200 bg-white p-5 sm:p-7"><OnboardingWebsiteStep onSuccess={async () => { await reload(); }} onError={setActionError} /></section> : null}
+      {data?.website && !ready ? <ActivationProgressCard key={data.website.id} initialActivation={{ version: 1, websiteId: data.website.id, status: "running", steps: {} }} onSettled={reload} /> : null}
+      {ready ? <section className="space-y-6">
+        <dl className="grid grid-cols-2 gap-4"><div><dt className="text-sm text-slate-500">{t.tasks}</dt><dd className="mt-1 text-3xl font-semibold text-slate-950">{data?.results?.tasksCount ?? 0}</dd></div><div><dt className="text-sm text-slate-500">{t.plan}</dt><dd className="mt-1 text-3xl font-semibold text-emerald-700">{t.done}</dd></div></dl>
+        <div className="flex flex-wrap gap-3"><Link href="/app/autopilot" className="inline-flex min-h-11 items-center gap-2 rounded-xl bg-violet-600 px-5 py-3 text-sm font-semibold text-white hover:bg-violet-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-600">{t.details}<ArrowRight className="size-4" /></Link><Link href="/app/integrations" className="inline-flex min-h-11 items-center rounded-xl border border-slate-300 px-5 py-3 text-sm font-medium text-slate-800 hover:bg-slate-50">{t.connect}</Link></div>
+      </section> : null}
+      <footer className="space-y-3 border-t border-slate-200 pt-6 text-sm leading-relaxed text-slate-500"><p>{t.safety}</p><p>{t.later}</p>{data?.website && <Link href="/app" className="inline-block py-2 font-medium text-violet-700 underline underline-offset-4">{t.dashboard}</Link>}</footer>
+    </main>
   );
 }

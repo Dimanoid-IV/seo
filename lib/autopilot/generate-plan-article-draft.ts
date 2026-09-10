@@ -24,6 +24,7 @@ import {
   serializeArticleRecord,
 } from "@/lib/articles/article-serialize";
 import { RESEARCH_QUALITY_PASS_THRESHOLD } from "@/lib/articles/research-generation-types";
+import { articleDraftResultPipelineState } from "@/lib/autopilot/article-pipeline";
 
 export type GeneratePlanArticleDraftResult = GenerateArticleFromResearchResult & {
   planItem: {
@@ -32,6 +33,7 @@ export type GeneratePlanArticleDraftResult = GenerateArticleFromResearchResult &
     generatedArticleId: string;
     articleQualityScore: number;
     articleQualityPassed: boolean;
+    pipelineState: "DRAFT_READY_FOR_REVIEW" | "QUALITY_FAILED_NEEDS_REPAIR";
     reviewQueueHref: string;
   };
 };
@@ -203,6 +205,9 @@ export async function generatePlanItemArticleDraft(input: {
             existingArticle.qualityScore ?? item.articleQualityScore ?? 0,
           articleQualityPassed:
             existingArticle.qualityPassed ?? item.articleQualityPassed ?? false,
+          pipelineState: articleDraftResultPipelineState(
+            existingArticle.qualityPassed ?? item.articleQualityPassed ?? false
+          ),
           reviewQueueHref,
         },
       };
@@ -219,6 +224,9 @@ export async function generatePlanItemArticleDraft(input: {
   });
 
   const reviewQueueHref = `/app/review`;
+  const pipelineState = articleDraftResultPipelineState(
+    result.qualityReport.passed
+  );
 
   const updatedItems = [...document.items];
   updatedItems[itemIndex] = {
@@ -228,6 +236,10 @@ export async function generatePlanItemArticleDraft(input: {
     generatedArticleId: result.article.id,
     articleQualityScore: result.qualityReport.score,
     articleQualityPassed: result.qualityReport.passed,
+    pipelineState,
+    nextAutomatedStep: result.qualityReport.passed
+      ? "prepare_publishing_handoff"
+      : "repair_quality",
     reviewQueueHref,
     blockedReasonKey: result.qualityReport.passed
       ? undefined
@@ -252,6 +264,7 @@ export async function generatePlanItemArticleDraft(input: {
       generatedArticleId: result.article.id,
       articleQualityScore: result.qualityReport.score,
       articleQualityPassed: result.qualityReport.passed,
+      pipelineState,
       reviewQueueHref,
     },
   };

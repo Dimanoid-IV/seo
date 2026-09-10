@@ -51,3 +51,18 @@ assert.equal(
 );
 
 console.log("content research keyword guardrails passed");
+
+const launchCandidates = extractKeywordCandidates({
+  planItemTitle: "портрет по фото на холсте: как выбрать лучший вариант",
+  planItemReason: "Тема построена вокруг покупательского запроса: исследование проверит конкурентов.",
+  opportunities: [{ type: "CONTENT", title: "Опубликовать первую статью", description: "На сайте ещё нет опубликованных статей. Опубликуйте первый материал, чтобы начать получать органический трафик." }],
+  gscInsightTitles: ["подарок на день рождения"],
+});
+assert.equal(pickPrimaryKeyword(launchCandidates)?.keyword, "портрет по фото на холсте", "a plan brief must research its own selected topic, not a generic opportunity");
+assert.equal(launchCandidates.some(candidate => candidate.keyword.includes("Опубликуйте") || candidate.keyword.includes("Тема построена")), false);
+for (const instruction of [
+  "На сайте ещё нет опубликованных статей. Опубликуйте первый материал, чтобы начать получать органический трафик.",
+  "Your website has no published articles. Publish your first article to get organic traffic.",
+  "Подключите Search Console, чтобы RankBoost видел реальные клики и показы.",
+  "Instant Magic",
+]) assert.equal(isUnsafeArticleTopic(instruction), true, instruction);

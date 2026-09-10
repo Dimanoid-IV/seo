@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import {
   CheckCircle2,
@@ -19,6 +19,8 @@ import type {
 import { ACTIVATION_STEP_ORDER } from "@/lib/onboarding/activation-types";
 import { useSaasTranslations } from "@/lib/i18n/saas/SaasLocaleProvider";
 import { cn } from "@/lib/utils";
+import { activationNeedsRecovery } from "@/lib/onboarding/activation-recovery";
+import { getLaunchCopy } from "@/lib/onboarding/launch-copy";
 
 type ActivationProgressCardProps = {
   initialActivation?: ActivationState | null;
@@ -26,6 +28,7 @@ type ActivationProgressCardProps = {
   brandVoiceReady?: boolean;
   gscConnected?: boolean;
   poll?: boolean;
+  onSettled?: () => Promise<unknown>;
 };
 
 function StepIcon({ status }: { status: ActivationStepStatus }) {
@@ -47,43 +50,65 @@ export function ActivationProgressCard({
   brandVoiceReady = false,
   gscConnected = false,
   poll = true,
+  onSettled,
 }: ActivationProgressCardProps) {
-  const { dict } = useSaasTranslations();
+  const { dict, locale } = useSaasTranslations();
+  const copy = getLaunchCopy(locale);
   const t = dict.dashboard.activation;
   const [polled, setPolled] = useState<ActivationState | null>(null);
   const [retrying, setRetrying] = useState(false);
+  const [connectionFailed, setConnectionFailed] = useState(false);
+  const [retryFailed, setRetryFailed] = useState(false);
+  const [missing, setMissing] = useState(false);
+  const inFlight = useRef(false);
+  const notified = useRef<string | null>(null);
 
   const activation = polled ?? initialActivation;
 
   const refresh = useCallback(async () => {
+    if (inFlight.current) return;
+    inFlight.current = true;
     try {
       const response = await authFetch("/api/onboarding/activation");
-      if (!response.ok) return;
+      if (!response.ok) throw new Error("progress_unavailable");
       const body = (await response.json()) as {
         data: { activation: ActivationState | null };
       };
       setPolled(body.data.activation);
+      setMissing(!body.data.activation);
+      setConnectionFailed(false);
+      const state = body.data.activation;
+      if (state && ["done", "failed", "partial"].includes(state.status) && notified.current !== `${state.status}:${state.finishedAt}`) {
+        notified.current = `${state.status}:${state.finishedAt}`;
+        await onSettled?.();
+      }
     } catch {
-      // ignore poll errors
+      setConnectionFailed(true);
+    } finally {
+      inFlight.current = false;
     }
-  }, []);
+  }, [onSettled]);
 
   useEffect(() => {
     if (!poll) return;
+    const initialRefresh = window.setTimeout(() => void refresh(), 0);
     if (
       activation?.status === "done" ||
       activation?.status === "failed" ||
       activation?.status === "partial"
     ) {
-      return;
+      return () => window.clearTimeout(initialRefresh);
     }
     if (activation?.status !== "running" && activation?.status !== "idle") {
-      return;
+      return () => window.clearTimeout(initialRefresh);
     }
     const id = window.setInterval(() => {
       void refresh();
     }, 4000);
-    return () => window.clearInterval(id);
+    return () => {
+      window.clearTimeout(initialRefresh);
+      window.clearInterval(id);
+    };
   }, [activation?.status, poll, refresh]);
 
   if (!activation || activation.status === "idle") {
@@ -110,28 +135,33 @@ export function ActivationProgressCard({
   };
 
   const showRetry =
-    activation.status === "failed" || activation.status === "partial";
+    missing || (Boolean(polled || initialActivation?.startedAt) && activationNeedsRecovery(activation)) || activation.status === "failed" || activation.status === "partial";
 
   async function handleRetry() {
     setRetrying(true);
+    setRetryFailed(false);
     try {
-      await authFetch("/api/onboarding/activation", {
+      const response = await authFetch("/api/onboarding/activation", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ retry: true }),
+        body: JSON.stringify({ retry: true, websiteId: activation?.websiteId }),
       });
+      if (!response.ok) throw new Error("retry_failed");
+      notified.current = null;
       await refresh();
+    } catch {
+      setRetryFailed(true);
     } finally {
       setRetrying(false);
     }
   }
 
   return (
-    <section className="rounded-2xl border border-sky-200 bg-gradient-to-br from-sky-50/90 to-white p-5 sm:p-6">
+    <section aria-label={copy.progress} className="rounded-2xl border border-slate-200 bg-white p-5 sm:p-6">
       <h2 className="text-lg font-semibold text-slate-900">{t.title}</h2>
       <p className="mt-1 text-sm text-slate-600">{t.subtitle}</p>
 
-      <ul className="mt-4 space-y-2.5">
+      <ul aria-live="polite" className="mt-5 space-y-4">
         {ACTIVATION_STEP_ORDER.map((key) => {
           const step = activation.steps[key];
           const status = step?.status ?? "pending";
@@ -157,6 +187,9 @@ export function ActivationProgressCard({
           );
         })}
       </ul>
+      {connectionFailed ? <p role="status" className="mt-4 text-sm text-amber-800">{copy.connectionError}</p> : null}
+      {retryFailed ? <p role="alert" className="mt-4 text-sm text-amber-800">{copy.retryError}</p> : null}
+      {showRetry ? <p className="mt-4 text-sm text-amber-800">{copy.stalled}</p> : null}
 
       <div className="mt-4 space-y-1.5 text-xs text-slate-500">
         {brandVoiceReady ? <p>{t.brandVoiceReady}</p> : null}
@@ -186,7 +219,7 @@ export function ActivationProgressCard({
             <RefreshCw
               className={cn("size-3.5", retrying && "animate-spin")}
             />
-            {t.retry}
+            {copy.retry}
           </button>
         ) : null}
       </div>

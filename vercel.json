@@ -1,5 +1,10 @@
 {
+  "buildCommand": "npm run lint && npm test && npm run build",
   "crons": [
+    {
+      "path": "/api/cron/activation-recovery",
+      "schedule": "0 5 * * *"
+    },
     {
       "path": "/api/cron/autopilot-run-due",
       "schedule": "0 6 * * *"

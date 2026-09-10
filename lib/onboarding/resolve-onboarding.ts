@@ -112,7 +112,7 @@ export async function resolveOnboardingFacts(userId: string): Promise<Onboarding
     gscSkipped,
     resultsViewed,
     openTasksCount,
-    opportunitiesCount: 0,
+    opportunitiesCount: website ? await prisma.activity.count({ where: { websiteId: website.id, type: "GROWTH_OPPORTUNITY_FOUND" } }) : 0,
     hasMonthlyPlan: Boolean(monthlyPlan),
     monthlyPlanStatus: monthlyPlan?.status.toLowerCase() ?? null,
   };

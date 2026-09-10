@@ -6,6 +6,7 @@ import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { authFetch, parseApiErrorMessage } from "@/lib/auth/client-session";
 import { useSaasTranslations } from "@/lib/i18n/saas/SaasLocaleProvider";
+import { getLaunchCopy } from "@/lib/onboarding/launch-copy";
 
 type OnboardingWebsiteStepProps = {
   disabled?: boolean;
@@ -18,7 +19,8 @@ export function OnboardingWebsiteStep({
   onSuccess,
   onError,
 }: OnboardingWebsiteStepProps) {
-  const { dict } = useSaasTranslations();
+  const { dict, locale } = useSaasTranslations();
+  const t = getLaunchCopy(locale);
   const o = dict.onboarding;
   const [url, setUrl] = useState("");
   const [loading, setLoading] = useState(false);
@@ -53,23 +55,30 @@ export function OnboardingWebsiteStep({
   }
 
   return (
-    <div className="space-y-3">
+    <form className="space-y-4" onSubmit={(event) => { event.preventDefault(); if (!loading && !disabled) void handleSubmit(); }}>
+      <label htmlFor="onboarding-website" className="block text-sm font-medium text-slate-800">{t.url}</label>
       <input
-        type="url"
+        id="onboarding-website"
+        type="text"
+        inputMode="url"
+        autoComplete="url"
+        autoCapitalize="none"
+        spellCheck={false}
+        required
         value={url}
         onChange={(event) => setUrl(event.target.value)}
         placeholder={o.websitePlaceholder}
         disabled={disabled || loading}
-        className="min-w-0 w-full rounded-xl border border-slate-200 border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none focus:border-violet-500/50"
+        className="min-h-12 min-w-0 w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-base text-slate-900 outline-none focus:border-violet-500 focus:ring-2 focus:ring-violet-100"
       />
       <Button
-        type="button"
+        type="submit"
         disabled={disabled || loading}
-        onClick={() => void handleSubmit()}
+        className="min-h-11 w-full sm:w-auto"
       >
         {loading ? <Loader2 className="size-4 animate-spin" /> : null}
-        {o.addWebsite}
+        {t.start}
       </Button>
-    </div>
+    </form>
   );
 }

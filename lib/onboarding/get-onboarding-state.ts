@@ -72,9 +72,6 @@ async function syncOnboardingFromFacts(userId: string) {
   }
   if ((facts.gscConnected || facts.gscSkipped) && !state.gscStepCompletedAt) {
     patch.gscStepCompletedAt = now;
-    if (facts.gscSkipped) {
-      patch.metadata = { gscSkipped: true };
-    }
   }
   if (facts.hasMonthlyPlan && !state.firstPlanGeneratedAt) {
     patch.firstPlanGeneratedAt = now;
@@ -106,10 +103,9 @@ export async function getOnboardingState(
   userId: string,
   locale?: SaasLocale
 ): Promise<OnboardingViewModel> {
-  await syncOnboardingFromFacts(userId);
+  const { facts } = await syncOnboardingFromFacts(userId);
 
   const prisma = getPrisma();
-  const facts = await resolveOnboardingFacts(userId);
   const state = await prisma.onboardingState.findUnique({
     where: { userId },
   });

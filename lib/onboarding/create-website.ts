@@ -39,6 +39,14 @@ export async function createWebsiteForOnboarding(input: {
 
   const websiteUrl = normalizeWebsiteUrl(input.url);
 
+  // A retried POST after a lost response must return the saved website, even
+  // when adding it consumed the customer's last available website slot.
+  const duplicate = await prisma.website.findFirst({
+    where: { organizationId: organization.id, url: websiteUrl, deletedAt: null, status: WebsiteStatus.ACTIVE },
+    select: { id: true, url: true, displayName: true, organizationId: true },
+  });
+  if (duplicate) return duplicate;
+
   const existingCount = await prisma.website.count({
     where: {
       organizationId: organization.id,
@@ -56,22 +64,6 @@ export async function createWebsiteForOnboarding(input: {
     throw new AppError(
       ErrorCode.PLAN_LIMIT_EXCEEDED,
       "You've reached the website limit for your current plan. Upgrade to add more websites."
-    );
-  }
-
-  const duplicate = await prisma.website.findFirst({
-    where: {
-      organizationId: organization.id,
-      url: websiteUrl,
-      deletedAt: null,
-    },
-    select: { id: true },
-  });
-
-  if (duplicate) {
-    throw new AppError(
-      ErrorCode.CONFLICT,
-      "This website is already in your workspace."
     );
   }
 

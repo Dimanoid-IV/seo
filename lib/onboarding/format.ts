@@ -3,7 +3,6 @@ import { DEFAULT_SAAS_LOCALE } from "@/lib/i18n/saas/locales";
 import { getSaasDictionary } from "@/lib/i18n/saas";
 import { checkUsageLimit } from "@/lib/billing/usage";
 import { getCurrentSubscription } from "@/lib/billing/get-subscription";
-import { syncGrowthOpportunitiesForWebsite } from "@/lib/growth/sync-opportunities";
 
 import type {
   OnboardingFacts,
@@ -154,19 +153,7 @@ export async function formatOnboardingViewModel(input: {
   const currentStep = input.currentStep;
   const progress = computeProgress(facts, currentStep);
 
-  let opportunitiesCount = facts.opportunitiesCount;
-  if (facts.website && facts.hasCompletedAudit && facts.organizationId) {
-    try {
-      const opportunities = await syncGrowthOpportunitiesForWebsite({
-        websiteId: facts.website.id,
-        organizationId: facts.organizationId,
-        userId: facts.userId,
-      });
-      opportunitiesCount = opportunities.length;
-    } catch {
-      opportunitiesCount = facts.opportunitiesCount;
-    }
-  }
+  const opportunitiesCount = facts.opportunitiesCount;
 
   const billingLimits: NonNullable<OnboardingViewModel["billing"]>["limits"] = [];
   let upgradeRecommended = false;

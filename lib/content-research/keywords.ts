@@ -43,6 +43,14 @@ const AUDIT_SYMPTOM_PATTERNS = [
 ];
 
 const TECHNICAL_INSTRUCTION_PATTERNS = [
+  /\b(publish|connect)\b.*\b(first\s+(article|post)|search\s+console|rankboost)\b/i,
+  /\b(website|site)\b.*\bno\s+published\s+(articles|posts)\b/i,
+  /(опубликуйте|опубликовать).*(перв[уыо]|материал|стать)/i,
+  /подключ(ите|ить).*(search\s+console|rankboost)/i,
+  /на\s+сайте.*нет\s+опубликованн/i,
+  /(avalda|avaldage).*(esime|artikkel|postitus)/i,
+  /(ühenda|ühendage).*(search\s+console|rankboost)/i,
+  /^тема\s+построена\s+вокруг/i,
   /\b(add|create|update|improve|fix|prepare|continue|finish)\b.*\b(description|service|services|benefits|faq|call\s+to\s+action|cta|title|meta|h1|schema|content|page)\b/i,
   /\b(high-priority|growth audit|seo task|audit finding|plan item|review queue)\b/i,
   /(добавьте|создайте|обновите|улучшите|исправьте|подготовьте).*(описани|услуг|преимуществ|faq|призыв|действи|заголов|meta|h1|schema|контент|страниц)/i,
@@ -54,7 +62,7 @@ const NON_TOPIC_PATTERNS = [
   /^(people|customers|buyers|users|audience)\b.*\b(looking|who|seeking|need)/i,
   /^(люди|клиенты|покупатели|пользователи|аудитория)[\s,]+.*(которые|ищут|желающие|нуждаются)/i,
   /^(inimesed|kliendid|ostjad|kasutajad)[\s,]+.*(kes|otsivad|vajavad)/i,
-  /\b(your\s+photos?|pure\s+art|artistic\s+perfection)\b/i,
+  /\b(your\s+photos?|pure\s+art|artistic\s+perfection|instant\s+magic)\b/i,
   /\b\d+\s*(steps?|шага|шагов|sammu)\b/i,
   /^(match site ctas|prefer (shorter|longer) sentences|site copy uses)/i,
 ];
@@ -213,13 +221,7 @@ export function extractKeywordCandidates(
     }
   }
 
-  if (input.planItemReason) {
-    for (const kw of extractKeywordsFromText(input.planItemReason)) {
-      if (!isUnsafeAutopilotKeyword(kw)) {
-        pushCandidate(kw, "PLAN_ITEM", "Plan item reason");
-      }
-    }
-  }
+  // A rationale explains why work is needed; it is not a search query.
 
   for (const opp of input.opportunities ?? []) {
     if (opp.type === "CONTENT" || opp.type === "GSC") {
@@ -296,10 +298,10 @@ export function pickPrimaryKeyword(candidates: KeywordCandidate[]): KeywordCandi
   const priority: KeywordCandidate["source"][] = [
     "MANUAL",
     "ARTICLE",
+    "PLAN_ITEM",
     "TASK",
     "GSC",
     "OPPORTUNITY",
-    "PLAN_ITEM",
     "AUDIT",
   ];
 

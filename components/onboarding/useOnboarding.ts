@@ -29,7 +29,6 @@ export function useOnboarding(): OnboardingState {
 
       if (!response.ok) {
         setError(await parseApiErrorMessage(response, o.loadFailed));
-        setData(null);
         return null;
       }
 
@@ -38,7 +37,6 @@ export function useOnboarding(): OnboardingState {
       return body.data.onboarding;
     } catch {
       setError(o.loadNetworkError);
-      setData(null);
       return null;
     } finally {
       setLoading(false);

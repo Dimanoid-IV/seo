@@ -10,12 +10,13 @@ import { scheduleWebsiteActivation } from "@/lib/onboarding/schedule-activation"
 import { trackEventFireAndForget } from "@/lib/analytics/track";
 import { registerSchema } from "@/lib/validators/auth";
 import { enforceRateLimit } from "@/lib/security/rate-limit";
+import { safeLogError } from "@/lib/logging";
 
 function assertDatabaseConfigured(): void {
   assertSaasConfigured();
 }
 
-export const maxDuration = 60;
+export const maxDuration = 300;
 
 export async function POST(request: Request) {
   try {
@@ -43,13 +44,21 @@ export async function POST(request: Request) {
       },
     });
 
+    let activationStarted = false;
     if (result.website?.id && result.organization?.id) {
-      await scheduleWebsiteActivation({
+      try { await scheduleWebsiteActivation({
         userId: result.user.id,
         organizationId: result.organization.id,
         websiteId: result.website.id,
         websiteUrl: result.website.url,
+        locale: parsed.data.locale,
       });
+      activationStarted = true;
+      } catch (error) {
+        // The account already exists. Do not turn successful registration into
+        // an error that sends the customer back to an "email already used" form.
+        safeLogError("registration.activation", error, { websiteId: result.website.id });
+      }
     }
 
     return authJsonResponse(
@@ -64,7 +73,7 @@ export async function POST(request: Request) {
         ...(result.previewAuditId
           ? { previewAuditId: result.previewAuditId }
           : {}),
-        ...(result.website?.id ? { activationStarted: true } : {}),
+        ...(result.website?.id ? { activationStarted } : {}),
       },
       { status: 201, refreshToken: result.refreshToken }
     );

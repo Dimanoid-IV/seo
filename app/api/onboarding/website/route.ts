@@ -15,7 +15,7 @@ import { trackEventFireAndForget } from "@/lib/analytics/track";
 import { getServerEnv } from "@/lib/env";
 import { AppError, ErrorCode } from "@/lib/errors";
 
-export const maxDuration = 60;
+export const maxDuration = 300;
 
 function assertDatabaseConfigured(): void {
   if (!getServerEnv().DATABASE_URL) {
