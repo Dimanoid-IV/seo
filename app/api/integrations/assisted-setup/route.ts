@@ -9,6 +9,7 @@ import { getServerEnv } from "@/lib/env";
 import { AppError, ErrorCode } from "@/lib/errors";
 import { createAssistedSetupRequest } from "@/lib/integrations/assisted-setup";
 import { assistedSetupFormSchema } from "@/lib/validators";
+import { getPrisma } from "@/lib/db";
 
 function assertDatabaseConfigured(): void {
   if (!getServerEnv().DATABASE_URL) {
@@ -34,6 +35,18 @@ export async function POST(request: Request) {
 
     if (parsed.data.honeypot?.trim()) {
       return authJsonResponse({ data: { success: true } });
+    }
+
+    if (parsed.data.websiteId) {
+      const website = await getPrisma().website.findFirst({
+        where: {
+          id: parsed.data.websiteId,
+          deletedAt: null,
+          organization: { ownerUserId: currentUser.id, deletedAt: null },
+        },
+        select: { id: true },
+      });
+      if (!website) throw new AppError(ErrorCode.NOT_FOUND, "Website not found");
     }
 
     const result = await createAssistedSetupRequest({

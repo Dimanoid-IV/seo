@@ -88,12 +88,12 @@ async function sendAssistedSetupEmail(input: {
     from: FROM_EMAIL,
     to: CONTACT_EMAIL,
     replyTo: data.email,
-    subject: `GSC assisted setup request #${id.slice(0, 8)} — RankBoost.eu`,
+    subject: `${data.integrationType} setup request #${id.slice(0, 8)} — RankBoost.eu`,
     html: `
       <!DOCTYPE html>
       <html>
       <body style="font-family:Arial,sans-serif;color:#111;max-width:600px;">
-        <h2 style="color:#2563eb;">Assisted Search Console setup request</h2>
+        <h2 style="color:#2563eb;">Integration setup request</h2>
         <p style="color:#666;">Request ID: ${escapeHtml(id)}</p>
         <table style="width:100%;border-collapse:collapse;margin-top:16px;">
           ${row("Name", data.name)}

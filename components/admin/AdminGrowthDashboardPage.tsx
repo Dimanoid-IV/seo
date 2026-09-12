@@ -1,4 +1,5 @@
 "use client";
+import { SetupRequests } from "@/components/admin/SetupRequests";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import {
@@ -400,6 +401,7 @@ export function AdminGrowthDashboardPage() {
           </div>
         </section>
       </div>
+      <SetupRequests />
     </main>
   );
 }

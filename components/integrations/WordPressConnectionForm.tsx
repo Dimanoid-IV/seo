@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import {
   AlertTriangle,
   CheckCircle2,
@@ -13,6 +14,7 @@ import { authFetch, parseApiErrorMessage } from "@/lib/auth/client-session";
 import type { IntegrationOverviewItem } from "@/lib/integrations/types";
 import { useSaasTranslations } from "@/lib/i18n/saas/SaasLocaleProvider";
 import { cn } from "@/lib/utils";
+import { setupCopy, wordpressProfileUrl } from "@/lib/integrations/setup-copy";
 
 type WordPressConnectionFormProps = {
   integration: IntegrationOverviewItem;
@@ -43,8 +45,10 @@ export function WordPressConnectionForm({
   onConnectionUpdated,
   className,
 }: WordPressConnectionFormProps) {
-  const { dict } = useSaasTranslations();
+  const { dict, locale } = useSaasTranslations();
   const wp = dict.integrations.wordpress;
+  const t = setupCopy(locale);
+  const [step, setStep] = useState(0);
 
   const [siteUrl, setSiteUrl] = useState(
     integration.wordpress?.siteUrl || defaultSiteUrl || ""
@@ -55,10 +59,12 @@ export function WordPressConnectionForm({
   const [error, setError] = useState<string | null>(null);
   const [status, setStatus] = useState<string | null>(null);
   const [httpsWarning, setHttpsWarning] = useState(false);
-  const [testPassed, setTestPassed] = useState(false);
+  const [, setTestPassed] = useState(false);
+  const [saved, setSaved] = useState(false);
+  const profileUrl = wordpressProfileUrl(siteUrl);
 
   const isConnected =
-    integration.connected ||
+    saved || integration.connected ||
     integration.wordpress?.connectionStatus === "CONNECTED";
 
   async function callConnect(save: boolean) {
@@ -109,6 +115,7 @@ export function WordPressConnectionForm({
       );
       if (save) {
         setApplicationPassword("");
+        setSaved(true);
         onConnectionUpdated?.();
       }
     } catch {
@@ -137,6 +144,7 @@ export function WordPressConnectionForm({
         return;
       }
       setStatus(wp.disconnected);
+      setSaved(false);
       setTestPassed(false);
       onConnectionUpdated?.();
     } catch {
@@ -177,6 +185,7 @@ export function WordPressConnectionForm({
           {wp.manualPublishNote}
         </p>
         <p className="text-xs text-slate-500">{wp.passwordHiddenNote}</p>
+        <Link href="/app/content-plan" className="block text-sm font-medium text-violet-700 underline">{t.plan}</Link>
 
         <Button
           type="button"
@@ -202,19 +211,23 @@ export function WordPressConnectionForm({
         className
       )}
     >
+      <ol className="grid grid-cols-3 gap-2" aria-label={wp.connectionTitle}>
+        {t.steps.map((label, index) => <li key={label} aria-current={index === step ? "step" : undefined} className={cn("border-t-4 pt-2 text-xs", index <= step ? "border-violet-500 text-violet-800" : "border-slate-200 text-slate-500")}>{index + 1}. {label}</li>)}
+      </ol>
       <div className="flex items-start gap-2">
         <Lock className="mt-0.5 size-4 shrink-0 text-sky-700" />
         <div>
           <p className="text-sm font-medium text-slate-900">
-            {wp.connectionTitle}
+            {t.steps[step]}
           </p>
           <p className="mt-1 text-sm text-slate-600">
-            {wp.connectionDescription}
+            {step === 0 ? t.siteHelp : step === 1 ? wp.appPasswordGuideIntro : t.checkHelp}
           </p>
         </div>
       </div>
 
-      <div className="rounded-lg border border-sky-200 bg-white p-3">
+      {step === 1 && <div className="rounded-lg border border-sky-200 bg-white p-3">
+        {profileUrl && <a href={profileUrl} target="_blank" rel="noopener noreferrer" className="mb-4 block text-sm font-semibold text-violet-700 underline">{t.openProfile} ↗</a>}
         <p className="text-sm font-semibold text-slate-900">
           {wp.appPasswordGuideTitle}
         </p>
@@ -222,17 +235,18 @@ export function WordPressConnectionForm({
           {wp.appPasswordGuideIntro}
         </p>
         <ol className="mt-3 list-decimal space-y-2 pl-5 text-sm text-slate-700">
-          {wp.appPasswordSteps.map((step) => (
+          {wp.appPasswordSteps.slice(0, 5).map((step) => (
             <li key={step}>{step}</li>
           ))}
         </ol>
         <p className="mt-3 rounded-md bg-slate-50 px-3 py-2 text-xs text-slate-600">
           {wp.appPasswordSafetyNote}
         </p>
-      </div>
+        <p className="mt-3 text-sm text-slate-600">{t.passwordHelp}</p>
+      </div>}
 
       <div className="space-y-3">
-        <label className="block space-y-1">
+        {step === 0 && <label className="block space-y-1">
           <span className="text-xs font-medium text-slate-700">
             {wp.siteUrlLabel}
           </span>
@@ -246,8 +260,8 @@ export function WordPressConnectionForm({
             placeholder="https://example.com"
             className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:border-sky-400"
           />
-        </label>
-        <label className="block space-y-1">
+        </label>}
+        {step === 2 && <><label className="block space-y-1">
           <span className="text-xs font-medium text-slate-700">
             {wp.usernameLabel}
           </span>
@@ -280,7 +294,7 @@ export function WordPressConnectionForm({
           <span className="text-[11px] text-slate-500">
             {wp.appPasswordGuideIntro}
           </span>
-        </label>
+        </label></>}
       </div>
 
       {httpsWarning ? (
@@ -291,33 +305,28 @@ export function WordPressConnectionForm({
       ) : null}
 
       <div className="flex flex-wrap gap-2">
+        {step > 0 && <Button type="button" variant="outline" disabled={busy !== null} onClick={() => { setStep(step - 1); setError(null); }}>{t.back}</Button>}
+        {step < 2 ? <Button type="button" onClick={() => {
+          if (!profileUrl) { setError(t.invalidUrl); return; }
+          setError(null); setStep(step + 1);
+        }}>{step === 1 ? t.passwordReady : t.next}</Button> : <>
         <Button
           type="button"
-          variant="outline"
           disabled={busy !== null || !websiteId}
-          onClick={() => void callConnect(false)}
-        >
-          {busy === "test" ? (
-            <Loader2 className="size-4 animate-spin" />
-          ) : null}
-          {wp.testConnection}
-        </Button>
-        <Button
-          type="button"
-          disabled={busy !== null || !websiteId || !testPassed}
           onClick={() => void callConnect(true)}
         >
           {busy === "save" ? (
             <Loader2 className="size-4 animate-spin" />
           ) : null}
-          {wp.saveConnection}
+          {t.connect}
         </Button>
+        </>}
       </div>
 
       {!websiteId ? (
         <p className="text-xs text-amber-700">{wp.addWebsiteForKey}</p>
       ) : null}
-      {error ? <p className="text-xs text-red-600">{error}</p> : null}
+      {error ? <p role="alert" className="text-xs text-red-600">{error}</p> : null}
       {status ? <p className="text-xs text-emerald-700">{status}</p> : null}
     </section>
   );

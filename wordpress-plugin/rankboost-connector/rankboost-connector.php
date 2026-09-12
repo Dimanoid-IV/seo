@@ -15,7 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 define( 'RANKBOOST_CONNECTOR_VERSION', '0.2.0' );
 define( 'RANKBOOST_CONNECTOR_OPTION_GROUP', 'rankboost_connector_settings' );
-define( 'RANKBOOST_CONNECTOR_DEFAULT_API_URL', 'https://rankboost.eu' );
+define( 'RANKBOOST_CONNECTOR_DEFAULT_API_URL', 'https://www.rankboost.eu' );
 
 define( 'RANKBOOST_CONNECTOR_STATUS_NOT_CONNECTED', 'not_connected' );
 define( 'RANKBOOST_CONNECTOR_STATUS_CONNECTED', 'connected' );

@@ -85,7 +85,7 @@ export const INTEGRATION_PROVIDER_DETAILS: Record<
     benefits: [
       "Создание черновиков статей",
       "Подготовка Meta Title / Description",
-      "Будущая автопубликация по разрешению",
+      "Автопубликация после подтверждения плана",
     ],
     dataUsed: [
       "Список страниц и записей",
@@ -171,8 +171,8 @@ export const INTEGRATION_PROVIDER_DETAILS: Record<
     ],
     riskLevel: "high",
     connectionPath: [
-      "Подключить Webflow OAuth или API token",
-      "Выбрать site и blog collection",
+      "Специалист поможет создать API token",
+      "Указать Site ID и Collection ID",
       "Сопоставить поля статьи",
       "Запустить тестовую отправку",
     ],
@@ -195,8 +195,8 @@ export const INTEGRATION_PROVIDER_DETAILS: Record<
     ],
     riskLevel: "high",
     connectionPath: [
-      "Подключить Shopify app",
-      "Выбрать blog и режим публикации",
+      "Специалист поможет настроить Admin API token",
+      "Указать Blog ID и режим публикации",
       "Подтвердить права на articles/products",
       "Проверить draft/live publish на тестовой статье",
     ],
@@ -219,8 +219,8 @@ export const INTEGRATION_PROVIDER_DETAILS: Record<
     ],
     riskLevel: "medium",
     connectionPath: [
-      "Подключить Wix OAuth/app",
-      "Выбрать сайт",
+      "Специалист поможет создать Wix API key",
+      "Указать Site ID",
       "Проверить доступ к блогу",
       "Сделать тестовую публикацию",
     ],
@@ -291,8 +291,8 @@ export const INTEGRATION_PROVIDER_DETAILS: Record<
     ],
     riskLevel: "medium",
     connectionPath: [
-      "Подключить GitHub App",
-      "Выбрать repo и content folder",
+      "Специалист поможет создать ограниченный GitHub token",
+      "Указать repository и папку контента",
       "Настроить frontmatter mapping",
       "Создать тестовый PR",
     ],

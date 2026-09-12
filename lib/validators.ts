@@ -69,7 +69,7 @@ export const assistedSetupFormSchema = z
     email: z.string().trim().email("Invalid email address").max(254),
     websiteUrl: z.string().trim().min(1, "Website URL is required").max(500),
     integrationType: z
-      .enum(["GOOGLE_SEARCH_CONSOLE"])
+      .enum(["GOOGLE_SEARCH_CONSOLE", "WORDPRESS", "WEBFLOW", "SHOPIFY", "WIX", "SQUARESPACE", "GHOST", "GITHUB", "ZAPIER", "MAKE", "CUSTOM_WEBHOOK", "GOOGLE_ANALYTICS", "GOOGLE_BUSINESS_PROFILE"])
       .default("GOOGLE_SEARCH_CONSOLE"),
     issueType: assistedSetupIssueTypeSchema,
     comment: optionalString(2000),

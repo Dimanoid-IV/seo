@@ -601,6 +601,18 @@ enum ErrorSeverity {
 
 enum AssistedSetupIntegrationType {
   GOOGLE_SEARCH_CONSOLE
+  WORDPRESS
+  WEBFLOW
+  SHOPIFY
+  WIX
+  SQUARESPACE
+  GHOST
+  GITHUB
+  ZAPIER
+  MAKE
+  CUSTOM_WEBHOOK
+  GOOGLE_ANALYTICS
+  GOOGLE_BUSINESS_PROFILE
 }
 
 enum AssistedSetupIssueType {

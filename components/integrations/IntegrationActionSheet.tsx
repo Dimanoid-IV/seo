@@ -40,6 +40,8 @@ import type { SaasLocale } from "@/lib/i18n/saas/locales";
 import { cn } from "@/lib/utils";
 import { ArrowRight, Database, Shield, Zap } from "lucide-react";
 import { useState } from "react";
+import { IntegrationSetupHelp } from "@/components/integrations/IntegrationSetupHelp";
+import { setupCopy } from "@/lib/integrations/setup-copy";
 
 const GSC_PROVIDER = "google_search_console";
 const GA_PROVIDER = "google_analytics";
@@ -122,6 +124,7 @@ export function IntegrationActionSheet({
     <Sheet open={open && Boolean(integration)} onOpenChange={onOpenChange}>
       {integration ? (
         <IntegrationActionSheetContent
+          key={integration.provider}
           integration={integration}
           websiteId={websiteId}
           websiteUrl={websiteUrl}
@@ -168,6 +171,7 @@ function IntegrationActionSheetContent({
 }) {
   const { dict, locale } = useSaasTranslations();
   const i = dict.integrations;
+  const t = setupCopy(locale);
   const details = INTEGRATION_PROVIDER_DETAILS[integration.provider];
   const risk = details ? RISK_LEVEL_LABELS[details.riskLevel] : null;
   const isUnavailable = !integration.available;
@@ -191,6 +195,7 @@ function IntegrationActionSheetContent({
   const isWix = integration.provider === WIX_PROVIDER;
   const isNoCodeAutomation =
     integration.provider === ZAPIER_PROVIDER || integration.provider === MAKE_PROVIDER;
+  const assisted = isGitHub || isWebflow || isShopify || isWix || isSquarespace || isGhost || isNoCodeAutomation || isCustomWebhook;
   const canConnectGsc = isGsc && !isUnavailable && !isConnected && Boolean(websiteId);
   const gscPropertySelected = Boolean(integration.selectedProperty);
   const [syncing, setSyncing] = useState(false);
@@ -239,7 +244,7 @@ function IntegrationActionSheetContent({
   return (
     <SheetContent
       side="right"
-      className="max-h-[100dvh] min-w-0 w-full overflow-y-auto border-slate-200 bg-white text-slate-700 sm:max-w-lg"
+      className="max-h-[100dvh] min-w-0 overflow-y-auto border-slate-200 bg-white text-slate-700 data-[side=right]:w-full data-[side=right]:sm:max-w-lg"
     >
         <SheetHeader className="border-b border-slate-200 pb-4">
           <div className="flex flex-wrap items-center gap-2 pr-8">
@@ -271,10 +276,16 @@ function IntegrationActionSheetContent({
         </SheetHeader>
 
         <div className="flex flex-1 flex-col gap-6 px-4 py-2">
-          <IntegrationBenefitList provider={integration.provider} />
+          {assisted && <section className="space-y-3">
+            <h3 className="text-base font-semibold text-slate-900">{t.specialist}</h3>
+            <p className="text-sm text-slate-600">{isSquarespace ? t.manualIntro : t.assistedIntro}</p>
+            <IntegrationSetupHelp provider={integration.provider} websiteId={websiteId} websiteUrl={websiteUrl} />
+          </section>}
 
-          {details ? (
-            <>
+          {details && !assisted ? (
+            <details className="rounded-lg border border-slate-200 p-3">
+              <summary className="cursor-pointer text-sm font-medium">{t.details}</summary>
+              <IntegrationBenefitList provider={integration.provider} />
               <DetailSection
                 title={i.dataUsage}
                 icon={Database}
@@ -325,7 +336,7 @@ function IntegrationActionSheetContent({
                   </section>
                 </>
               ) : null}
-            </>
+            </details>
           ) : null}
 
           {isUnavailable ? (
@@ -413,9 +424,11 @@ function IntegrationActionSheetContent({
               />
               <details className="rounded-lg border border-slate-200 bg-white p-3">
                 <summary className="cursor-pointer text-sm font-medium text-slate-700">
-                  Дополнительно: плагин RankBoost Connector
+                  {t.plugin}
                 </summary>
                 <div className="mt-3">
+                  <a href="/api/integrations/wordpress/plugin" download className="block text-sm font-semibold text-violet-700 underline">{t.download}</a>
+                  <p className="my-3 text-sm text-slate-600">{t.pluginHelp}</p>
                   <WordPressConnectorPanel
                     integration={integration}
                     websiteId={websiteId}
@@ -423,9 +436,19 @@ function IntegrationActionSheetContent({
                   />
                 </div>
               </details>
+              <IntegrationSetupHelp provider="wordpress" websiteId={websiteId} websiteUrl={websiteUrl} />
             </div>
           ) : null}
 
+          {assisted && !isUnavailable && <details className="rounded-lg border border-slate-200 p-3">
+          <summary className="cursor-pointer text-sm font-medium text-slate-700">{t.technical}</summary>
+          <div className="mt-4 space-y-4">
+          {isCustomWebhook && <Button type="button" onClick={() => {
+            onOpenChange(false);
+            const panel = document.getElementById("custom-publishing-setup");
+            if (panel instanceof HTMLDetailsElement) panel.open = true;
+            panel?.scrollIntoView({ behavior: "smooth", block: "start" });
+          }}>{i.customSetupCta}</Button>}
           {isGitHub && !isUnavailable ? (
             <GitHubPrConnectionForm
               websiteId={websiteId}
@@ -482,6 +505,9 @@ function IntegrationActionSheetContent({
               onConnectionUpdated={onIntegrationUpdated}
             />
           ) : null}
+          </div>
+          </details>}
+          {(isGsc || isGa || isGbp) && <IntegrationSetupHelp provider={integration.provider} websiteId={websiteId} websiteUrl={websiteUrl} />}
         </div>
 
         {!isUnavailable &&
@@ -495,6 +521,7 @@ function IntegrationActionSheetContent({
         !isSquarespace &&
         !isGhost &&
         !isNoCodeAutomation &&
+        !isCustomWebhook &&
         (!isGsc || !isConnected) ? (
           <SheetFooter className="border-t border-slate-200">
             {isGsc ? (

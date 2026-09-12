@@ -281,7 +281,9 @@ export function IntegrationCard({
           action.disabled && "cursor-default opacity-80 hover:bg-inherit"
         )}
       >
-        {action.label}
+        {!integration.connected && !action.disabled && ["webflow", "shopify", "wix", "squarespace", "ghost", "github", "zapier", "make", "custom_webhook"].includes(integration.provider)
+          ? (locale === "ru" ? "Подключить со специалистом" : locale === "et" ? "Ühenda spetsialisti abiga" : "Connect with a specialist")
+          : action.label}
       </button>
     </article>
   );

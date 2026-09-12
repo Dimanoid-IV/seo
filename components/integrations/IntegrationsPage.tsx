@@ -24,6 +24,7 @@ import type {
   IntegrationsOverviewData,
 } from "@/lib/integrations/types";
 import { cn } from "@/lib/utils";
+import { setupCopy } from "@/lib/integrations/setup-copy";
 
 async function fetchIntegrationsOverview(
   loadFailed: string,
@@ -66,7 +67,7 @@ function clearOauthQueryParams(): void {
 }
 
 export function IntegrationsPage() {
-  const { dict } = useSaasTranslations();
+  const { dict, locale } = useSaasTranslations();
   const i = dict.integrations;
   const { user } = useAuthSession();
   const searchParams = useSearchParams();
@@ -230,8 +231,23 @@ export function IntegrationsPage() {
         </div>
       ) : null}
 
+      {data.integrations.length > 0 ? <div className="mb-8 space-y-4">
+        <IntegrationGrid
+          integrations={data.integrations.filter(item => ["wordpress", "google_search_console"].includes(item.provider) || (item.connected && !item.platformManaged))}
+          onIntegrationAction={handleIntegrationAction}
+        />
+        <details className="rounded-xl border border-slate-200 bg-white p-4">
+          <summary className="cursor-pointer text-sm font-semibold text-slate-900">{locale === "ru" ? "Другие платформы и сервисы" : locale === "et" ? "Muud platvormid ja teenused" : "Other platforms and services"}</summary>
+          <div className="mt-4"><IntegrationGrid
+            integrations={data.integrations.filter(item => !["wordpress", "google_search_console"].includes(item.provider) && !(item.connected && !item.platformManaged))}
+            onIntegrationAction={handleIntegrationAction}
+          /></div>
+        </details>
+      </div> : <EmptyState icon={Globe} title={i.emptyTitle} description={i.emptyDescription} />}
+
       {data.website?.id ? (
-        <div className="mb-8">
+        <details id="custom-publishing-setup" className="mb-8 rounded-xl border border-slate-200 p-4">
+          <summary className="cursor-pointer text-sm font-medium">Custom API / Webhook — {setupCopy(locale).technical}</summary>
           <CustomWebsiteIntegrationPanel
             websiteId={data.website.id}
             initialConfig={
@@ -245,7 +261,7 @@ export function IntegrationsPage() {
                 : null
             }
           />
-        </div>
+        </details>
       ) : null}
 
       {data.website?.id ? (
@@ -295,19 +311,6 @@ export function IntegrationsPage() {
           </button>
         </div>
       ) : null}
-
-      {data.integrations.length > 0 ? (
-        <IntegrationGrid
-          integrations={data.integrations}
-          onIntegrationAction={handleIntegrationAction}
-        />
-      ) : (
-        <EmptyState
-          icon={Globe}
-          title={i.emptyTitle}
-          description={i.emptyDescription}
-        />
-      )}
 
       <section className="saas-card-muted mt-12">
         <h2 className="text-base font-semibold text-slate-900">{i.benefitsTitle}</h2>

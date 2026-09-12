@@ -10,6 +10,7 @@ import {
 import { getServerEnv } from "@/lib/env";
 import { AppError, ErrorCode } from "@/lib/errors";
 import { WordPressConnectionStatus } from "@prisma/client";
+import { getPrisma } from "@/lib/db";
 import {
   createWordPressConnection,
   getWordPressConnection,
@@ -19,6 +20,7 @@ import {
 const createConnectionSchema = z.object({
   websiteId: z.string().uuid().optional(),
   siteUrl: z.string().url().optional(),
+  replacePending: z.boolean().optional().default(false),
 });
 
 function assertDatabaseConfigured(): void {
@@ -54,7 +56,7 @@ export async function POST(request: Request) {
 
     if (
       existing &&
-      (existing.status === WordPressConnectionStatus.PENDING ||
+      ((existing.status === WordPressConnectionStatus.PENDING && !parsed.data.replacePending) ||
         existing.status === WordPressConnectionStatus.CONNECTED)
     ) {
       return authJsonResponse({
@@ -68,6 +70,13 @@ export async function POST(request: Request) {
           },
           message: "API key уже создан",
         },
+      });
+    }
+
+    if (existing?.status === WordPressConnectionStatus.PENDING && parsed.data.replacePending) {
+      await getPrisma().wordPressConnection.updateMany({
+        where: { id: existing.id, status: WordPressConnectionStatus.PENDING },
+        data: { status: WordPressConnectionStatus.DISCONNECTED, disconnectedAt: new Date(), apiSecretEncrypted: null },
       });
     }
 

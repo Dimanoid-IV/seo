@@ -16,6 +16,7 @@ import type { WordPressCreateConnectionResponse } from "@/lib/integrations/wordp
 import { formatRelativeTime } from "@/lib/dashboard/display";
 import { useSaasTranslations } from "@/lib/i18n/saas/SaasLocaleProvider";
 import { cn } from "@/lib/utils";
+import { setupCopy } from "@/lib/integrations/setup-copy";
 
 type WordPressConnectorPanelProps = {
   integration: IntegrationOverviewItem;
@@ -30,7 +31,8 @@ export function WordPressConnectorPanel({
   onConnectionUpdated,
   className,
 }: WordPressConnectorPanelProps) {
-  const { dict } = useSaasTranslations();
+  const { dict, locale } = useSaasTranslations();
+  const t = setupCopy(locale);
   const wp = dict.integrations.wordpress;
   const [creating, setCreating] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -69,7 +71,7 @@ export function WordPressConnectorPanel({
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ websiteId }),
+          body: JSON.stringify({ websiteId, replacePending: isPending }),
         }
       );
 
@@ -166,7 +168,7 @@ export function WordPressConnectorPanel({
     );
   }
 
-  if (isPending) {
+  if (isPending && !apiKey) {
     return (
       <section
         className={cn(
@@ -186,6 +188,11 @@ export function WordPressConnectorPanel({
         </div>
 
         <p className="text-xs text-amber-800">{wp.draftOnlyMessage}</p>
+        <p className="text-sm">{t.lostKeys}</p>
+        <Button type="button" disabled={creating} onClick={() => void handleCreateConnection()}>{t.regenerate}</Button>
+        <Button type="button" variant="outline" onClick={() => { onConnectionUpdated?.(); setInfoMessage(t.pending); }}>{t.refresh}</Button>
+        {infoMessage && <p role="status" className="text-sm">{infoMessage}</p>}
+        {error && <p role="alert" className="text-sm text-red-700">{error}</p>}
 
         <ol className="list-decimal space-y-2 pl-5 text-sm text-slate-700">
           {wp.setupSteps.map((step) => (
@@ -283,6 +290,7 @@ export function WordPressConnectorPanel({
           ) : null}
         </div>
       ) : null}
+      {apiKey && <Button type="button" variant="outline" onClick={() => { onConnectionUpdated?.(); setInfoMessage(t.pending); }}>{t.refresh}</Button>}
 
       <div>
         <p className="mb-2 text-sm font-medium text-slate-900">{wp.instructions}</p>
